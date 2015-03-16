@@ -491,6 +491,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             private set;
         }
 
+        public InteractiveObject Zaapi
+        {
+            get;
+            private set;
+        }
+
         public bool IsMuted
         {
             get;
@@ -647,6 +653,13 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 Zaap = interactiveObject;
             }
+            else if (interactiveObject.Template != null && interactiveObject.Template.Type == InteractiveTypeEnum.TYPE_ZAAPI)
+            {
+                if (Zaapi != null)
+                    throw new Exception("Cannot add a second zaapi on the map");
+
+                Zaapi = interactiveObject;
+            }
 
             if (m_interactives.ContainsKey(interactiveObject.Id))
             {
@@ -658,6 +671,8 @@ namespace Stump.Server.WorldServer.Game.Maps
             Area.Enter(interactiveObject);
 
             OnInteractiveSpawned(interactiveObject);
+
+            //logger.Debug("Spawn interactive {0}", interactiveObject.Id);
 
             return interactiveObject;
         }
@@ -673,6 +688,8 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             if (interactive.Template != null && interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAP && Zaap != null)
                 Zaap = null;
+            else if (interactive.Template != null && interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAPI && Zaapi != null)
+                Zaapi = null;
 
             interactive.Delete();
             m_interactives.Remove(interactive.Id);
@@ -901,6 +918,18 @@ namespace Stump.Server.WorldServer.Game.Maps
                     continue;
 
                 group.AddMonster(new Monster(monster, group));
+            }
+
+            return @group.Count() <= 0 ? null : @group;
+        }
+
+        public MonsterGroup GenerateRandomMonsterGroup(MonsterGroup monsterGroup)
+        {
+            var group = new MonsterGroup(GetNextContextualId(), new ObjectPosition(this, GetRandomFreeCell(), GetRandomDirection()));
+
+            foreach (var monster in monsterGroup.GetMonsters())
+            {
+                group.AddMonster(new Monster(monster.Grade, group));
             }
 
             return @group.Count() <= 0 ? null : @group;
@@ -1208,7 +1237,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                     Leave(actor);
                     return;
                 }
-                TaxCollector = actor as TaxCollectorNpc;
+                TaxCollector = (TaxCollectorNpc) actor;
             }
             if (actor is IAutoMovedEntity)
             {
@@ -1273,12 +1302,21 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
             BasicHandler.SendBasicNoOperationMessage(Clients);
+
+            actor.IsInMovement = true;
+
+            var character = actor as Character;
+            if (character == null)
+                return;
+
+            Refresh(character);
         }
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
         {
-            var character = actor as Character;
+            actor.IsInMovement = false;
 
+            var character = actor as Character;
             if (character == null)
                 return;
 
@@ -1290,14 +1328,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (monster != null)
                 monster.FightWith(character);
 
-            if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
-            {
-                character.ToggleAura(EmotesEnum.EMOTE_AURA_VAMPYRIQUE, true);
-            }
-            else if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100)
-            {
-                character.ToggleAura(EmotesEnum.EMOTE_AURA_DE_PUISSANCE, true);
-            }
+            Refresh(character);
         }
 
         #endregion
@@ -1406,7 +1437,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public InteractiveObject GetInteractiveObject(int id)
         {
-            return m_interactives[id];
+            return !m_interactives.ContainsKey(id) ? null : m_interactives[id];
         }
 
         public IEnumerable<InteractiveObject> GetInteractiveObjects()

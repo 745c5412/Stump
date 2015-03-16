@@ -147,15 +147,26 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         private void AdjustTakenDamage()
         {
-            if (m_damageTaken > TotalMax)
+            if (m_damageTaken > TotalMaxWithoutPermanentDamages)
             {
                 m_realDamageTaken = m_damageTaken;
-                m_damageTaken = (short) TotalMax; // hp cannot be lesser than 0
+                m_damageTaken = (short)TotalMaxWithoutPermanentDamages; // hp cannot be lesser than 0
             }
             else if (m_realDamageTaken > m_damageTaken)
             {
                 m_damageTaken = m_realDamageTaken;
             }
+        }
+
+        public override StatsData Clone()
+        {
+            var clone = new StatsHealth(Owner, Base, 0)
+            {
+                Equiped = Equiped,
+                Given = Given
+            };
+
+            return clone;
         }
     }
 }

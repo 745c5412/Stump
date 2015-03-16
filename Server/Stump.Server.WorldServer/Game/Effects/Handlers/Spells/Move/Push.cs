@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -36,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (integerEffect == null)
                 return false;
 
-            foreach (var actor in GetAffectedActors().OrderByDescending(entry => entry.Position.Point.DistanceToCell(TargetedPoint)))
+            foreach (var actor in GetAffectedActors().OrderByDescending(entry => entry.Position.Point.ManhattanDistanceTo(TargetedPoint)))
             {
                 if (actor.HasState((int)SpellStatesEnum.Unmovable) || actor.HasState((int)SpellStatesEnum.Rooted))
                     continue;
@@ -65,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                             var damage = new Fights.Damage(pushbackDamages)
                             {
                                 Source = Caster,
-                                School = EffectSchoolEnum.Unknown,
+                                School = EffectSchoolEnum.Pushback,
                                 IgnoreDamageBoost = true,
                                 IgnoreDamageReduction = false
                             };
@@ -82,13 +83,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                                     damage = new Fights.Damage(pushbackDamages)
                                     {
                                         Source = actor,
-                                        School = EffectSchoolEnum.Unknown,
+                                        School = EffectSchoolEnum.Pushback,
                                         IgnoreDamageBoost = true,
                                         IgnoreDamageReduction = false
                                     };
 
                                     fighter.InflictDamage(damage);
-                                    fighter.OnActorPushed(actor, true);
+                                    fighter.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
+
+                                    fighter.OnActorPushed(fighter, true);
                                 }
                             }
                         }
@@ -106,16 +109,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 }
 
                 var endCell = lastCell;
-                var actorCopy = actor;
 
                 if (actor.IsCarrying())
                     actor.ThrowActor(Map.Cells[startCell.CellId], true);
 
-                foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actorCopy.IsVisibleFor))
-                    ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);
+                foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actor.IsVisibleFor))
+                    ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actor, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
-                actor.OnActorPushed(Caster, takeDamage);
+                actor.OnActorPushed(actor, takeDamage);
+                if (takeDamage)
+                    actor.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
             }
 
             return true;

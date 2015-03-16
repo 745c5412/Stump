@@ -2,6 +2,7 @@
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -42,8 +43,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             Effects = MountManager.Instance.GetMountEffects(this);
 
             Owner = character;
-
-            ApplyMountEffects(false);
         }
 
         public Mount(MountRecord record)
@@ -334,7 +333,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public void RenameMount(Character character, string name)
         {
-            Name = name;
+            if (string.IsNullOrWhiteSpace(name))
+                return;
+
+            Name = name.EscapeString();
 
             MountHandler.SendMountRenamedMessage(character.Client, Id, name);
         }
@@ -374,26 +376,52 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 return;
             }
 
+            if (!IsRiding && !character.Map.Outdoor)
+            {
+                //Impossible d'être sur une monture à l'intérieur d'une maison.
+                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 117);
+
+                return;
+            }
+
             IsRiding = !IsRiding;
 
             character.RefreshActor();
 
             MountHandler.SendMountRidingMessage(character.Client, IsRiding);
 
-            if (!IsRiding)
+            if (IsRiding)
+            {
+                var pet = character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
+                if (pet != null)
+                {
+                    character.Inventory.MoveItem(pet, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                }
+
+                ApplyMountEffects();
+            }            
+            else
             {
                 //Vous descendez de votre monture.
                 BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+
+                UnApplyMountEffects();
             }
         }
 
         public void Dismount(Character character)
         {
             IsRiding = false;
+            UnApplyMountEffects();
 
             character.RefreshActor();
 
             MountHandler.SendMountRidingMessage(character.Client, false);
+
+            //Vous descendez de votre monture.
+            BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+            //Impossible d'entrer dans une demeure en restant sur sa monture.
+            BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 118);
         }
 
         public void AddXP(Character character, long experience)

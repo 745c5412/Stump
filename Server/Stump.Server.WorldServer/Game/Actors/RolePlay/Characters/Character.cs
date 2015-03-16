@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -60,9 +61,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
-        private const int AURA_1_SKIN = 170;
-        private const int AURA_2_SKIN = 171;
-
         [Variable]
         private const ushort HonorLimit = 16000;
 
@@ -308,6 +306,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return Dialog as ZaapDialog; }
         }
 
+        public ZaapiDialog ZaapiDialog
+        {
+            get { return Dialog as ZaapiDialog; }
+        }
+
         public MerchantShopDialog MerchantShopDialog
         {
             get { return Dialog as MerchantShopDialog; }
@@ -389,6 +392,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsInZaapDialog()
         {
             return Dialog is ZaapDialog;
+        }
+
+        public bool IsInZaapiDialog()
+        {
+            return Dialog is ZaapiDialog;
         }
 
         #endregion
@@ -684,73 +692,70 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        public ActorLook MountLook
-        {
-            get
-            {
-                if (!IsRiding())
-                    return null;
-
-                var mountLook = Mount.Model.EntityLook.Clone();
-                var playerLook = RealLook.Clone();
-
-                if (Mount.Behaviors.Contains(MountBehaviorEnum.Caméléone))
-                {
-                    Color color1;
-                    Color color2;
-                    Color color3;
-
-                    playerLook.Colors.TryGetValue(3, out color1);
-                    playerLook.Colors.TryGetValue(4, out color2);
-                    playerLook.Colors.TryGetValue(5, out color3);
-
-                    mountLook.SetColors(color1, color2, color3);
-                }
-
-                playerLook.BonesID = 2;
-                mountLook.SetRiderLook(playerLook);
-
-                return mountLook;
-            }
-        }
-
-        public ActorLook MountItemLook
-        {
-            get
-            {
-                var petSkin = GetEquipedMount();
-                if (petSkin == -1)
-                    return null;
-
-                var mountLook = new ActorLook { BonesID = (short)petSkin };
-                var playerLook = RealLook.Clone();
-
-                //KramKram
-                if (petSkin == 1792)
-                {
-                    Color color1;
-                    Color color2;
-
-                    playerLook.Colors.TryGetValue(3, out color1);
-                    playerLook.Colors.TryGetValue(4, out color2);
-
-                    mountLook.AddColor(1, color1);
-                    mountLook.AddColor(2, color2);
-
-                    //mountLook.AddColor(1, Color.FromArgb(212, 246, 212));
-                    //mountLook.AddColor(2, Color.FromArgb(111, 133, 145));
-                }
-
-                playerLook.BonesID = 2;
-                mountLook.SetRiderLook(playerLook);
-
-                return mountLook;
-            }
-        }
-
         public override ActorLook Look
         {
-            get { return IsRiding() ? MountLook : (GetEquipedMount() != -1 ? MountItemLook : (CustomLookActivated && CustomLook != null ? CustomLook : RealLook)); }
+            get
+            {
+                var playerLook = CustomLookActivated && CustomLook != null ? CustomLook.Clone() : RealLook.Clone();
+
+                var equipedMount = GetEquipedMount();
+                if (equipedMount != -1)
+                {
+                    var mountLook = new ActorLook { BonesID = (short)equipedMount };
+
+                    //KramKram
+                    if (equipedMount == 1792)
+                    {
+                        Color color1;
+                        Color color2;
+
+                        playerLook.Colors.TryGetValue(3, out color1);
+                        playerLook.Colors.TryGetValue(4, out color2);
+
+                        mountLook.AddColor(1, color1);
+                        mountLook.AddColor(2, color2);
+                    }
+
+                    playerLook.BonesID = 2;
+                    mountLook.SetRiderLook(playerLook);
+
+                    playerLook = mountLook;
+                }
+                else if (IsRiding())
+                {
+                    var mountLook = Mount.Model.EntityLook.Clone();
+
+                    if (Mount.Behaviors.Contains(MountBehaviorEnum.Caméléone))
+                    {
+                        Color color1;
+                        Color color2;
+                        Color color3;
+
+                        playerLook.Colors.TryGetValue(3, out color1);
+                        playerLook.Colors.TryGetValue(4, out color2);
+                        playerLook.Colors.TryGetValue(5, out color3);
+
+                        mountLook.SetColors(color1, color2, color3);
+                    }
+
+                    playerLook.BonesID = 2;
+                    mountLook.SetRiderLook(playerLook);
+
+                    playerLook = mountLook;
+                }
+
+                if (!IsInMovement && Direction == DirectionsEnum.DIRECTION_SOUTH && Level >= 100)
+                {
+                    var auraLook = new ActorLook
+                    {
+                        BonesID = Level == 200 ? (short)170 : (short)169
+                    };
+
+                    playerLook.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, auraLook));
+                }
+
+                return playerLook;
+            }
         }
 
         public override SexTypeEnum Sex
@@ -1313,6 +1318,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void TogglePvPMode(bool state)
         {
+            if (IsInFight())
+                return;
+
             PvPEnabled = state;
         }
 
@@ -1814,7 +1822,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
 
             if (m_earnKamasInMerchant > 0)
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 45, m_earnKamasInMerchant);
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, m_earnKamasInMerchant, 1);
         }
 
         public void SendServerMessage(string message)
@@ -1882,6 +1890,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             else if (!MustBeJailed() && IsInJail())
                 Teleport(Breed.GetStartPosition());
 
+            if (IsRiding() && !map.Outdoor)
+                Mount.Dismount(this);
+
             base.OnEnterMap(map);
         }
 
@@ -1893,7 +1904,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public override bool StartMove(Path movementPath)
         {
             if (IsFighting() || MustBeJailed() || !IsInJail())
-                return IsFighting() ? Fighter.StartMove(movementPath) : base.StartMove(movementPath);
+                return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
 
             Teleport(Breed.GetStartPosition());
             return false;
@@ -2513,47 +2524,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void PlayEmote(EmotesEnum emote)
         {
-            var auraSkin = GetAuraSkin(emote);
-
-            if (auraSkin != -1)
-            {
-                if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == auraSkin)
-                    RealLook.RemoveAuras();
-                else
-                    RealLook.SetAuraSkin(auraSkin);
-                RefreshActor();
-            }
-
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
-        }
-
-        public short GetAuraSkin(EmotesEnum auraEmote)
-        {
-            switch (auraEmote)
-            {
-                case EmotesEnum.EMOTE_AURA_VAMPYRIQUE:
-                    return AURA_1_SKIN;
-                case EmotesEnum.EMOTE_AURA_DE_PUISSANCE:
-                    return AURA_2_SKIN;
-                default:
-                    return -1;
-            }
-        }
-
-        public void ToggleAura(EmotesEnum emote, bool toggle)
-        {
-            var auraSkin = GetAuraSkin(emote);
-
-            if (auraSkin == -1)
-                return;
-
-            var hasAura = (RealLook.AuraLook == null || RealLook.AuraLook.BonesID != GetAuraSkin(emote));
-
-            if (!hasAura && toggle)
-                PlayEmote(emote);
-
-            else if (hasAura && !toggle)
-                PlayEmote(emote);
         }
 
         #endregion
@@ -2677,6 +2648,42 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             });
 
             return false;
+        }
+
+        #endregion
+
+        #region Debug
+
+        public void ClearHighlight()
+        {
+            Client.Send(new DebugClearHighlightCellsMessage());
+        }
+
+        public Color HighlightCell(Cell cell)
+        {
+            var rand = new Random();
+            var color = Color.FromArgb(0xFF << 24 | rand.Next(0xFFFFFF));
+            HighlightCell(cell, color);
+
+            return color;
+        }
+
+        public void HighlightCell(Cell cell, Color color)
+        {
+            Client.Send(new DebugHighlightCellsMessage(color.ToArgb() & 16777215, new[] { cell.Id }));
+        }
+        public Color HighlightCells(IEnumerable<Cell> cells)
+        {
+            var rand = new Random();
+            var color = Color.FromArgb(0xFF << 24 | rand.Next(0xFFFFFF));
+
+            HighlightCells(cells, color);
+            return color;
+        }
+
+        public void HighlightCells(IEnumerable<Cell> cells, Color color)
+        {
+            Client.Send(new DebugHighlightCellsMessage(color.ToArgb() & 16777215, cells.Select(x => x.Id)));
         }
 
         #endregion
