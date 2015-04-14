@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Web.UI.WebControls;
+using Stump.Core.Collections;
 using Stump.Core.Mathematics;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
@@ -275,11 +277,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, amount);
         }
 
-        public event Action<FightActor, bool> ActorPushed;
+        public event Action<FightActor, bool> ActorMoved;
 
-        public virtual void OnActorPushed(FightActor fighter, bool takeDamage)
+        public virtual void OnActorMoved(FightActor fighter, bool takeDamage)
         {
-            var handler = ActorPushed;
+            var handler = ActorMoved;
             if (handler != null)
                 handler(fighter, takeDamage);
         }
@@ -324,12 +326,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public abstract ObjectPosition MapPosition
         {
             get;
-        }
-
-        public FightActor CarriedActor
-        {
-            get;
-            protected set;
         }
 
         public virtual bool IsReady
@@ -735,13 +731,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
 
-            handler.Initialize();
+            if (!handler.Initialize())
+                return false;
 
             OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
             if (!ApFree)
                 UseAP((short)spellLevel.ApCost);
 
-            var fighter = Fight.GetOneFighter(handler.TargetedCell);
+            var fighter = handler.TargetedActor ?? Fight.GetOneFighter(handler.TargetedCell);
 
             handler.Execute();
 
@@ -886,8 +883,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source);
 
-            if (IsDead())
-                OnDead(damage.Source);
+            CheckDead(damage.Source);
 
             OnDamageInflicted(damage);
 
@@ -1297,6 +1293,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return m_buffList.Where(entry => predicate(entry));
         }
 
+        public virtual bool CanAddBuff(Buff buff)
+        {
+            return true;
+        }
+
         public bool BuffMaxStackReached(Buff buff)
         {
             return buff.Spell.CurrentSpellLevel.MaxStack > 0 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell && entry.Effect.EffectId == buff.Effect.EffectId && !(buff is DelayBuff));
@@ -1304,7 +1305,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool AddAndApplyBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
         {
-            if (BuffMaxStackReached(buff) && !bypassMaxStack)
+            if (!CanAddBuff(buff) || (BuffMaxStackReached(buff) && !bypassMaxStack))
             {
                 if (freeIdIfFail)
                     FreeBuffId(buff.Id);
@@ -1317,7 +1318,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!(buff is TriggerBuff) && !(buff is DelayBuff))
                 buff.Apply();
 
-            if (buff is TriggerBuff && ((buff as TriggerBuff).Trigger & BuffTriggerType.BUFF_ADDED) == BuffTriggerType.BUFF_ADDED)
+            if (buff is TriggerBuff && (((TriggerBuff) buff).Trigger & BuffTriggerType.BUFF_ADDED) == BuffTriggerType.BUFF_ADDED)
                 buff.Apply();
 
             return true;
@@ -1325,7 +1326,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool AddBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
         {
-            if (BuffMaxStackReached(buff) && !bypassMaxStack)
+            if (!CanAddBuff(buff) || (BuffMaxStackReached(buff) && !bypassMaxStack))
             {
                 if (freeIdIfFail)
                     FreeBuffId(buff.Id);
@@ -1646,6 +1647,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnVisibleStateChanged(source, lastState);
         }
 
+        public bool IsIndirectSpellCast(Spell spell)
+        {
+            return spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_MASSE
+                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_MASSE_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_MORTEL
+                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_SILENCE
+                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_SILENCE_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.CONCENTRATION_DE_CHAKRA
+                   || spell.Template.Id == (int) SpellIdEnum.VERTIGE
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_ENFLAMMÉ
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_ENFLAMMÉ_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_1503
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_17
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_DE_RÉPULSION
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_DE_RÉPULSION_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.CONTRE
+                   || spell.Template.Id == (int) SpellIdEnum.MOT_D_EPINE
+                   || spell.Template.Id == (int) SpellIdEnum.MOT_D_EPINE_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.MUR_DE_FEU
+                   || spell.Template.Id == (int) SpellIdEnum.MUR_D_AIR
+                   || spell.Template.Id == (int) SpellIdEnum.MUR_D_EAU
+                   || spell.Template.Id == (int) SpellIdEnum.EXPLOSION_ROUBLARDE
+                   || spell.Template.Id == (int) SpellIdEnum.AVERSE_ROUBLARDE
+                   || spell.Template.Id == (int) SpellIdEnum.TORNADE_ROUBLARDE;
+        }
+
         public bool IsPoisonSpellCast(Spell spell)
         {
             return spell.Template.Id == (int) SpellIdEnum.POISON_INSIDIEUX ||
@@ -1758,6 +1786,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var stateCarrying = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Carrying);
 
             if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
+                return;
+
+            if (target.HasState((int) SpellStatesEnum.Rooted))
                 return;
 
             var actorBuffId = PopNextBuffId();
@@ -1934,6 +1965,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return !IsAlive();
         }
 
+        public void CheckDead(FightActor source)
+        {
+            if (IsDead())
+                OnDead(source);
+        }
+
         private bool m_left;
         public bool HasLeft()
         {
@@ -2017,7 +2054,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations(WorldClient client = null)
         {
-            return new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.Character) ? Cell.Id : (short)-1 ) : Cell.Id, (sbyte)Direction, CarriedActor != null ? CarriedActor.Id : 0);
+            return new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.Character) ? Cell.Id : (short)-1 ) : Cell.Id, (sbyte)Direction, GetCarryingActor() != null ? GetCarryingActor().Id : 0);
         }
 
         public virtual GameFightMinimalStats GetGameFightMinimalStats()

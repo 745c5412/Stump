@@ -12,5 +12,19 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         {
             return EnumerateSet().Where(x => x.IsInMap());
         }
+
+        public Set IntersectWith(Set A)
+        {
+            return new Intersection(A, this);
+        }
+        public Set UnionWith(Set A)
+        {
+            return new Union(A, this);
+        }
+
+        public Set Substract(Set A)
+        {
+            return new Complement(this, A);
+        }
     }
 }

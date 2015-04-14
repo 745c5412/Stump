@@ -92,13 +92,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson, Version=1.8.3.9, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+    <Reference Include="MongoDB.Bson, Version=1.10.0.62, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\mongocsharpdriver.1.8.3\lib\net35\MongoDB.Bson.dll</HintPath>
+      <HintPath>..\..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=1.8.3.9, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+    <Reference Include="MongoDB.Driver, Version=1.10.0.62, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\mongocsharpdriver.1.8.3\lib\net35\MongoDB.Driver.dll</HintPath>
+      <HintPath>..\..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Driver.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -125,10 +125,12 @@
     <Compile Include="AI\Fights\Actions\MoveNearTo.cs" />
     <Compile Include="AI\Fights\Actions\RandomMove.cs" />
     <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
+    <Compile Include="AI\Fights\Actions\StayInRange.cs" />
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\GlourselesteBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\KorriandreBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Invocations\BarrelBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="AI\Fights\Behaviors\AIBehavior.cs" />
     <Compile Include="AI\Fights\Behaviors\EfficienceCalculator.cs" />
     <Compile Include="AI\Fights\Brain\Brain.cs" />
+    <Compile Include="AI\Fights\Spells\SpellTargetStrategy.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
     <Compile Include="Commands\Commands\AICommands.cs" />
@@ -206,6 +209,7 @@
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
     <Compile Include="Database\Interactives\InteractiveSkillRecord.cs" />
     <Compile Include="Database\ISaveable.cs" />
+    <Compile Include="Database\Items\PlayerPresetRecord.cs" />
     <Compile Include="Database\Items\TaxCollectorItemRecord.cs" />
     <Compile Include="Database\Items\Templates\PetTemplate.cs" />
     <Compile Include="Database\Items\PlayerItemRecord.cs" />
@@ -244,6 +248,7 @@
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
     <Compile Include="Database\Npcs\Replies\DeleteItemReply.cs" />
     <Compile Include="Database\PrimaryKeyIdProvider.cs" />
+    <Compile Include="Database\Shortcuts\PresetShortcut.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\Tinsel\OrnamentRecord.cs" />
     <Compile Include="Database\Tinsel\TinselManager.cs" />
@@ -259,6 +264,7 @@
     <Compile Include="Game\Actors\Fight\SummonedBomb.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Fight\SummonedImage.cs" />
+    <Compile Include="Game\Actors\Fight\SummonedTurret.cs" />
     <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
     <Compile Include="Game\Actors\Interfaces\IAutoMovedEntity.cs" />
     <Compile Include="Game\Actors\Interfaces\IContextDependant.cs" />
@@ -329,6 +335,8 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\BuffTrigger.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPLost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Armor\GiveShieldPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHpPercentWhenAttack.cs" />
@@ -338,7 +346,6 @@
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Buffs\Frikt.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Putsch.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
@@ -430,6 +437,46 @@
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
     <Compile Include="Game\Fights\Buffs\DelayBuff.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\BarbaricChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\BlitzkriegChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\CleanHandsChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ContaminationChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\DodgyDevsChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\DuelChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\HermitChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ImpertinenceChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\MulesChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\PigHeadChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\KeepMovingChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ContractKillerChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\CruelChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\SelfSacrificeChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\SharingChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\SightseeingChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ToEachHisPwn.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\TwoForThePriceOfOneChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\VolunteerChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ScantyChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ElementaryChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ElitistChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\FocusChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\UnpredictableChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\IncurableChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\UntouchableChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\LowLevelChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\TimeFliesChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\MystiqueChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\SexChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\NomadChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\SpellUseChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\StatueChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ReprieveChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\SurvivorChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\VersatileChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ZombieChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\DefaultChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\ChallengeIdentifierAttribute.cs" />
+    <Compile Include="Game\Fights\Challenges\ChallengeManager.cs" />
     <Compile Include="Game\Fights\Damage.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
     <Compile Include="Game\Fights\FightAgression.cs" />
@@ -500,6 +547,7 @@
     <Compile Include="Game\Maps\Paddocks\Paddock.cs" />
     <Compile Include="Game\Maps\Paddocks\PaddockManager.cs" />
     <Compile Include="Game\Maps\Spawns\GroupSize.cs" />
+    <Compile Include="Game\Maps\WorldObjectItem.cs" />
     <Compile Include="Game\Maps\WorldObjectsContext.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\Mount.cs" />
@@ -512,6 +560,7 @@
     <Compile Include="Game\Spells\Casts\Ecaflip\ClawOfCeangal.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Elementary\CawotteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />
@@ -532,11 +581,15 @@
     <Compile Include="Game\Maps\Cells\Shapes\Single.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\LifeTreeCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Steamer\TurretCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Steamer\TurretSpecialCastHandler.cs" />
     <Compile Include="Game\Spells\SpellCastResult.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
+    <Compile Include="Handlers\Compass\CompassHandler.cs" />
     <Compile Include="Handlers\Context\ContextArenaHandler.cs" />
+    <Compile Include="Handlers\Context\ContextChallengeHandler.cs" />
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Guilds\GuildHandler.cs" />
@@ -816,6 +869,10 @@
     <ProjectReference Include="..\..\Library\TreeSharp\TreeSharp.csproj">
       <Project>{8BFDD80E-9E64-4386-B676-ED3CFDF1B095}</Project>
       <Name>TreeSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
+      <Project>{72E591D6-8F83-4D8C-8F67-9C325E623234}</Project>
+      <Name>Xceed.Wpf.Toolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>

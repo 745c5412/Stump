@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
 
-                var pushDirection = actor.Position.Point.OrientationTo(referenceCell, false);
+                var pushDirection = actor.Position.Point.OrientationTo(referenceCell);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 
@@ -77,6 +77,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
+                actor.OnActorMoved(Caster, false);
             }
 
             return true;

@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             set;
         }
 
-        protected override void OnItemStackChanged(MerchantItem item, int difference)
+        protected override void OnItemStackChanged(MerchantItem item, int difference, bool removeMsg = true)
         {
             IsDirty = true;
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             IsDirty = true;
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
 
-            base.OnItemAdded(item, addItemMsg);
+            base.OnItemAdded(item, false);
         }
 
         protected override void OnItemRemoved(MerchantItem item, bool removeItemMsg)

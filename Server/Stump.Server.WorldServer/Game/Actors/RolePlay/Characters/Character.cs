@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using MongoDB.Bson;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Threading;
@@ -11,6 +13,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
@@ -31,6 +34,7 @@ using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
@@ -49,6 +53,7 @@ using Stump.Server.WorldServer.Game.Social;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
+using Stump.Server.WorldServer.Handlers.Compass;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
@@ -107,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 var item = GetPrestigeItem();
                 if (item != null)
-                    Inventory.RemoveItem(item);
+                    Inventory.RemoveItem(item, true, false);
             }
 
             var handler = LoggedIn;
@@ -130,6 +135,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (ArenaPopup != null)
                 ArenaPopup.Deny();
 
+            var document = new BsonDocument
+            {
+                { "AcctId", Client.Account.Id },
+                { "CharacterId", Id },
+                { "IPAddress", Client.IP },
+                { "Action", "Loggout" },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            MongoLogger.Instance.Insert("characters_connections", document);
+
             var handler = LoggedOut;
             if (handler != null) handler(this);
         }
@@ -137,7 +153,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public event Action<Character> Saved;
         private bool m_isLocalSaving;
 
-        private void OnSaved()
+        public void OnSaved()
         {
             UnBlockAccount();
 
@@ -406,6 +422,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private readonly Dictionary<int, PartyInvitation> m_partyInvitations
             = new Dictionary<int, PartyInvitation>();
 
+        private Character m_followedCharacter;
 
         public Party Party
         {
@@ -1532,7 +1549,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public PrestigeItem CreatePrestigeItem()
         {
-            return (PrestigeItem) Inventory.AddItem(PrestigeManager.BonusItem);
+            return (PrestigeItem) Inventory.AddItem(PrestigeManager.BonusItem, 1, false);
         }
 
         public bool IncrementPrestige()
@@ -1599,7 +1616,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     item.UpdateEffects();
                     Inventory.RefreshItem(item);
                 }
-                else Inventory.RemoveItem(item);
+                else Inventory.RemoveItem(item, true, false);
             }
 
             OpenPopup(
@@ -1623,7 +1640,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (item != null)
             {
-                Inventory.RemoveItem(item);
+                Inventory.RemoveItem(item, true, false);
             }
         }
 
@@ -2182,6 +2199,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnPartyMemberRemoved(Party party, Character member, bool kicked)
         {
+            if (m_followedCharacter == member)
+                UnfollowMember();
+
             if (member != this)
                 return;
 
@@ -2197,6 +2217,38 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             party.PartyDeleted -= OnPartyDeleted;
 
             ResetParty(party.Type);
+        }
+
+        public void FollowMember(Character character)
+        {
+            if (m_followedCharacter != null)
+                UnfollowMember();
+
+            m_followedCharacter = character;
+            character.EnterMap += OnFollowedMemberEnterMap;
+
+            PartyHandler.SendPartyFollowStatusUpdateMessage(Client, Party, true, character.Id);
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, Party, character);
+        }
+
+        public void UnfollowMember()
+        {
+            if (m_followedCharacter == null)
+                return;
+
+            m_followedCharacter.EnterMap -= OnFollowedMemberEnterMap;
+
+            PartyHandler.SendPartyFollowStatusUpdateMessage(Client, Party, true, 0);
+
+            m_followedCharacter = null;
+        }
+
+        private void OnFollowedMemberEnterMap(RolePlayActor actor, Map map)
+        {
+            if (!(actor is Character))
+                return;
+
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, Party, (Character) actor);
         }
 
         #endregion
@@ -2652,6 +2704,50 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Drop Items
+
+        public void GetDroppedItem(WorldObjectItem objectItem)
+        {
+            objectItem.Map.Leave(objectItem);
+            Inventory.AddItem(objectItem.Item, objectItem.Effects, objectItem.Quantity);
+        }
+
+        public void DropItem(int itemId, int quantity)
+        {
+            if (quantity <= 0)
+                return;
+
+            var cell = Position.Point.GetAdjacentCells(x => Map.Cells[x].Walkable && Map.IsCellFree(x) && !Map.IsObjectItemOnCell(x)).FirstOrDefault();
+            if (cell == null)
+            {
+                //Il n'y a pas assez de place ici.
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 145);
+                return;
+            }
+
+            var item = Inventory.TryGetItem(itemId);
+            if (item == null)
+                return;
+
+            if (item.IsLinkedToAccount() || item.IsLinkedToPlayer() || item.Template.Id == 20000) //Temporary block orb drop
+                return;
+
+            if(item.Stack < quantity)
+            {
+                //Vous ne possédez pas l'objet en quantité suffisante.
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
+                return;
+            }
+
+            Inventory.RemoveItem(item, quantity);
+
+            var objectItem = new WorldObjectItem(item.Guid, Map, Map.Cells[cell.CellId], item.Template, item.Effects, quantity);
+
+            Map.Enter(objectItem);
+        }
+        
+        #endregion
+
         #region Debug
 
         public void ClearHighlight()
@@ -2702,6 +2798,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get;
             private set;
+        }
+
+        public bool IsAuthSynced
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -2855,8 +2957,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 }
             }
 
-            OnSaved();
-
+            if (IsAuthSynced)
+                OnSaved();
         }
 
         private void LoadRecord()
@@ -2889,6 +2991,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
+            Inventory.LoadPresets();
+
             UpdateLook(false);
 
             Bank = new Bank(this); // lazy loading here !

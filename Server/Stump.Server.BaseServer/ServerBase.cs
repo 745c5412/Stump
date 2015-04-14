@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -391,7 +392,7 @@ namespace Stump.Server.BaseServer
             Running = true;
             Initializing = false;
 
-            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(30).TotalMilliseconds, KeepSQLConnectionAlive);
+            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(10).TotalMilliseconds, KeepSQLConnectionAlive);
             IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(5).TotalMilliseconds, CheckScheduledShutdown);
         }
 

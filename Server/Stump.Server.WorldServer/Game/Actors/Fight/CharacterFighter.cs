@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
         {
-            if (!IsFighterTurn())
+            if (!IsFighterTurn() && !force)
                 return false;
 
             // weapon attack
@@ -133,7 +133,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var weaponTemplate =  weapon.Template as WeaponTemplate;
 
             if (weaponTemplate == null || !CanUseWeapon(cell, weaponTemplate))
+            {
+                OnSpellCastFailed(spell, cell);
                 return false;
+            }  
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 

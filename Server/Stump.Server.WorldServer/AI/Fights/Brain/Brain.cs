@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
 {
@@ -13,7 +14,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
     {
         public const int MaxMovesTries = 20;
         public const int MaxCastLimit = 20;
-
 
         [Variable(true)]
         public static bool DebugMode = false;
@@ -45,12 +45,51 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             private set;
         }
 
+        public bool IsRange
+        {
+            get;
+            set;
+        }
+
         public virtual void Play()
         {
             SpellSelector.AnalysePossibilities();
 
             if (!Fighter.Fight.AIDebugMode)
+            {
                 ExecuteAllSpellCast();
+                ExecutePostMove();
+            }
+        }
+
+        public void ExecutePostMove()
+        {
+            if (!Fighter.CanMove()) 
+                return;
+
+            Action action;
+            int maxRange;
+            int minRange;
+            bool hasRangeAttack = SpellSelector.GetRangeAttack(out minRange, out maxRange);
+
+            /*if ((Fighter.Stats.MP.Base - Fighter.Stats.MP.Used) > 6)
+            {
+                action = new FleeAction(Fighter);
+            }*/
+            if (hasRangeAttack && maxRange > 3)
+            {
+                action = new StayInRange(Fighter, minRange, maxRange);
+            }
+            else
+            {
+                action = new MoveNearTo(Fighter, Environment.GetNearestEnemy());
+            }
+
+            foreach (var result in action.Execute(this))
+            {
+                if (result == RunStatus.Failure)
+                    break;
+            }
         }
 
         public void ExecuteAllSpellCast()
@@ -58,14 +97,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             foreach (var cast in SpellSelector.EnumerateSpellsCast())
             {
                 ExecuteSpellCast(cast);
-            }
-
-            if (!Fighter.CanMove()) 
-                return;
-
-            foreach (var action in new MoveNearTo(Fighter, Environment.GetNearestEnemy()).Execute(this))
-            {
-
             }
         }
 

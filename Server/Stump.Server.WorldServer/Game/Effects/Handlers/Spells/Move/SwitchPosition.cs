@@ -8,6 +8,7 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_SwitchPosition)]
+    [EffectHandler(EffectsEnum.Effect_SwitchPosition_1023)]
     public class SwitchPosition : SpellEffectHandler
     {
         public SwitchPosition(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical) : base(effect, caster, spell, targetedCell, critical)
@@ -27,7 +28,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target.IsCarrying())
                 return false;
 
+            if ((target is SummonedTurret) && !(Caster is SummonedTurret))
+                return false;
+            
             Caster.ExchangePositions(target);
+
+            target.OnActorMoved(Caster, false);
+            Caster.OnActorMoved(Caster, false);
 
             return true;
         }
