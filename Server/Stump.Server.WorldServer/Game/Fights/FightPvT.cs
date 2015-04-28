@@ -198,7 +198,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
                 else
                 {
-                    TaxCollector = actor as TaxCollectorFighter;
+                    TaxCollector = (TaxCollectorFighter) actor;
                     TaxCollector.Dead += OnTaxCollectorDeath;
                 }
             }
@@ -245,7 +245,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             if (actor is TaxCollectorFighter && actor.IsAlive())
-                (actor as TaxCollectorFighter).TaxCollectorNpc.RejoinMap();
+                ((TaxCollectorFighter) actor).TaxCollectorNpc.RejoinMap();
 
             base.OnFighterRemoved(team, actor);
         }

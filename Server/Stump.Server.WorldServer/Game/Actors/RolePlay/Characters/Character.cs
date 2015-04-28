@@ -41,6 +41,7 @@ using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
+using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Maps;
@@ -227,8 +228,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get;
             private set;
         }
-
-        private int m_earnKamasInMerchant;
 
         #region Identifier
 
@@ -508,7 +507,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 default:
                     logger.Error("Cannot manage party of type {0}", type);
                     break;
-            }        }
+            }
+
+            CompassHandler.SendCompassResetMessage(Client, CompassTypeEnum.COMPASS_TYPE_PARTY);
+        }
 
         #endregion
 
@@ -702,7 +704,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ActorLook RealLook
         {
             get { return m_record.EntityLook; }
-            private set
+            set
             {
                 m_record.EntityLook = value;
                 base.Look = value;
@@ -800,7 +802,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public Head Head
         {
             get;
-            private set;
+            set;
         }
 
         public bool Invisible
@@ -843,6 +845,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var skins = new List<short>(Breed.GetLook(Sex).Skins);
             skins.AddRange(Head.Skins);
             skins.AddRange(Inventory.GetItemsSkins());
+
+            if (skins.Contains(2990) && Guild != null)
+            {
+                skins.Remove(2990); //Old ApparenceId
+                skins.Add(1730); //New ApparenceId
+
+                skins.Add((short)Guild.Emblem.Template.SkinId); //Emblem Skin
+
+                if (RealLook.Colors.ContainsKey(7))
+                    RealLook.RemoveColor(7);
+                if (RealLook.Colors.ContainsKey(8))
+                    RealLook.RemoveColor(8);
+
+                RealLook.AddColor(8, Guild.Emblem.SymbolColor);
+                RealLook.AddColor(7, Guild.Emblem.BackgroundColor);
+            }
 
             RealLook.SetSkins(skins.ToArray());
 
@@ -1166,6 +1184,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsGameMaster()
         {
             return UserGroup.IsGameMaster;
+        }
+
+        public void SetBreed(PlayableBreedEnum breed)
+        {
+            BreedId = breed;
         }
 
         #endregion
@@ -1587,7 +1610,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 string.Format(
                     "Vous venez de passer au rang prestige {0}. \r\nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
                     PrestigeRank, item.Template.Name) +
-                "les bonus s'appliquent sans équiper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.");
+                "les bonus s'appliquent sans équiper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.", "PRESTIGE", 0);
 
             foreach (var equippedItem in Inventory.ToArray())
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
@@ -1808,6 +1831,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion
+
         #endregion
 
         #region Actions
@@ -1838,8 +1862,40 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 153, Client.IP);
             }
 
-            if (m_earnKamasInMerchant > 0)
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, m_earnKamasInMerchant, 1);
+            var kamasMerchant = 0;
+
+            foreach (var item in MerchantBag.ToArray())
+            {
+                if (item.StackSold <= 0)
+                    continue;
+
+                var price = (int) (item.Price*item.StackSold);
+                kamasMerchant += price;
+
+                //Vous avez gagné %1 kamas suite à la vente en mode marchand de %4 '$item%3' lorsque vous étiez hors jeu.
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, price, 0, item.Template.Id, item.StackSold);
+
+                item.StackSold = 0;
+
+                if (item.Stack == 0)
+                    MerchantBag.RemoveItem(item, true, false);
+            }
+
+            Inventory.AddKamas(kamasMerchant);
+
+            var soldItems = BidHouseManager.Instance.GetSoldBidHouseItems(Account.Id);
+            var kamasBidHouse = 0;
+
+            foreach (var item in soldItems)
+            {
+                kamasBidHouse += (int)item.Price;
+                BidHouseManager.Instance.RemoveBidHouseItem(item, true);
+
+                //Banque : + %1 Kamas (vente de %4 $item%3 hors jeu).
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, kamasBidHouse, 0, item.Template.Id, item.Stack);
+            }
+
+            Bank.AddKamas(kamasBidHouse);
         }
 
         public void SendServerMessage(string message)
@@ -1904,10 +1960,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (MustBeJailed() && !IsInJail())
                 TeleportToJail();
-            else if (!MustBeJailed() && IsInJail())
+            else if (!MustBeJailed() && IsInJail() && !IsGameMaster())
                 Teleport(Breed.GetStartPosition());
 
-            if (IsRiding() && !map.Outdoor)
+            if (IsRiding() && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
                 Mount.Dismount(this);
 
             base.OnEnterMap(map);
@@ -1915,7 +1971,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanMove()
         {
-            return base.CanMove() && !IsDialoging();
+            if (Inventory.Weight <= Inventory.WeightTotal)
+                return base.CanMove() && !IsDialoging();
+
+            if (!Inventory.WeightEnabled)
+                return base.CanMove() && !IsDialoging();
+
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 12);
+
+            return false;
         }
 
         public override bool StartMove(Path movementPath)
@@ -2626,14 +2690,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if (Kamas <= MerchantBag.GetMerchantTax())
-            {
-                if (sendError)
-                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 76);
-                return false;
-            }
+            if (Kamas >= MerchantBag.GetMerchantTax())
+                return true;
 
-            return true;
+            if (sendError)
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 76);
+            return false;
         }
 
         public bool EnableMerchantMode()
@@ -2653,17 +2715,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void CheckMerchantModeReconnection()
         {
-            foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
+           foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
             {
                 merchant.Save();
 
                 if (merchant.Record.CharacterId != Id)
                     continue;
-                if (merchant.KamasEarned > 0)
-                {
-                    Inventory.AddKamas((int) merchant.KamasEarned);
-                    m_earnKamasInMerchant = (int) merchant.KamasEarned;
-                }
+
                 MerchantBag.LoadMerchantBag(merchant.Bag);
 
                 MerchantManager.Instance.RemoveMerchantSpawn(merchant.Record);
@@ -2674,8 +2732,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (record == null)
                 return;
 
-            Inventory.AddKamas((int) record.KamasEarned);
-            m_earnKamasInMerchant = (int) record.KamasEarned;
             MerchantManager.Instance.RemoveMerchantSpawn(record);
         }
 
@@ -2993,8 +3049,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory.LoadInventory();
             Inventory.LoadPresets();
 
-            UpdateLook(false);
-
             Bank = new Bank(this); // lazy loading here !
 
             MerchantBag = new CharacterMerchantBag(this);
@@ -3002,6 +3056,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             MerchantBag.LoadMerchantBag();
 
             GuildMember = GuildManager.Instance.TryGetGuildMember(Id);
+
+            UpdateLook(false);
 
             Mount = MountManager.Instance.TryGetMountByCharacterId(Id) != null ? new Mount(this) : null;
 
@@ -3241,7 +3297,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
-        internal CharacterRecord Record
+        public CharacterRecord Record
         {
             get { return m_record; }
         }

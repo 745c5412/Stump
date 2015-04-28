@@ -9,6 +9,7 @@ using Stump.Core.Mathematics;
 using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -281,6 +282,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         int PopNextTriggerId();
         void FreeTriggerId(int id);
         void SetChallenge(DefaultChallenge challenge);
+        int GetChallengeBonus();
         IEnumerable<Character> GetAllCharacters();
         IEnumerable<Character> GetAllCharacters(bool withSpectators = false);
         void ForEach(Action<Character> action);
@@ -1781,8 +1783,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             ActionsHandler.SendGameActionFightTackledMessage(Clients, actor, tacklers);
-            actor.LostAP((short)apTackled);
-            actor.LostMP((short)mpTackled);
+            actor.LostAP((short)apTackled, actor);
+            actor.LostMP((short)mpTackled, actor);
 
             if (path.MPCost > actor.MP)
                 path.CutPath(actor.MP + 1);
@@ -2072,6 +2074,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnPlayerReadyToLeave(CharacterFighter fighter)
         {
+            if (fighter.Fight != fighter.Character.Fight)
+                return;
+
             fighter.PersonalReadyChecker = null;
             var isfighterTurn = fighter.IsFighterTurn();
 
@@ -2087,7 +2092,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fightend = CheckFightEnd();
 
             if (!fightend && isfighterTurn)
-                StopTurn();   
+                StopTurn();
 
             fighter.ResetFightProperties();
             fighter.Character.RejoinMap();
@@ -2116,6 +2121,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             
             Challenge = challenge;
             ContextHandler.SendChallengeInfoMessage(Clients, challenge);
+        }
+
+        public int GetChallengeBonus()
+        {
+            if (Challenge == null)
+                return 0;
+
+            return Challenge.Status == ChallengeStatusEnum.SUCCESS ? Challenge.Bonus : 1;
         }
 
         #endregion

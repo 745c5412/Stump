@@ -58,10 +58,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 {
                     AddStatBuff(actor, (short)(-value), PlayerFields.MP, true);
                     ActionsHandler.SendGameActionFightPointsVariationMessage(Fight.Clients, ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, Caster, actor, (short)(-value));
+                    actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, Caster, actor, (short)(-value));
                 }
                 else
                 {
-                    actor.LostMP(value);
+                    actor.LostMP(value, Caster);
                 }
 
                 actor.TriggerBuffs(BuffTriggerType.LOST_MP);
