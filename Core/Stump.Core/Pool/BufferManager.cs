@@ -377,10 +377,10 @@ namespace Stump.Core.Pool
 
             //Debug.WriteLineIf(UsedSegmentCount != lastValue, string.Format("Used:{0} Last:{1} Stack:{2}", UsedSegmentCount, lastValue, new StackTrace()));
             lastValue = UsedSegmentCount;
-#if DEBUG
             m_segmentsInUse.TryAdd(segment.Number, segment);
-            segment.LastUserTrace = new StackTrace().ToString();
             segment.LastUsage = DateTime.Now;
+#if DEBUG
+            segment.LastUserTrace = new StackTrace().ToString();
 #endif
             return segment;
         }
@@ -488,6 +488,21 @@ namespace Stump.Core.Pool
         public static SegmentStream GetSegmentStream(int payloadSize)
         {
             return new SegmentStream(GetSegment(payloadSize));
+        }
+
+        public int CheckForLeaks()
+        {
+            int leaks = 0;
+            foreach (var segment in m_segmentsInUse.Values)
+            {
+                if (segment.LastUsage < DateTime.Now - TimeSpan.FromMinutes(10))
+                {
+                    CheckIn(segment);
+                    leaks++;
+                }
+            }
+
+            return leaks;
         }
 
         #region IDisposable Members
