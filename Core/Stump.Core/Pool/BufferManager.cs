@@ -93,12 +93,6 @@ namespace Stump.Core.Pool
             set { m_uses = value; }
         }
 
-#if DEBUG
-        public string LastUserTrace
-        {
-            get;
-            set;
-        }
 
         public DateTime LastUsage
         {
@@ -106,6 +100,12 @@ namespace Stump.Core.Pool
             set;
         }
 
+#if DEBUG
+        public string LastUserTrace
+        {
+            get;
+            set;
+        }
         public object Token
         {
             get;
