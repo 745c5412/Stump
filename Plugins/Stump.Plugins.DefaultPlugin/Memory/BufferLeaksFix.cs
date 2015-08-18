@@ -1,13 +1,9 @@
 ﻿using NLog;
 using Stump.Core.Pool;
-using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Stump.Plugins.DefaultPlugin.Memory
 {
