@@ -1882,9 +1882,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
             m_carriedActor.RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
 
-            m_carriedActor.Position.Cell = cell;
-
-            Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, m_carriedActor));
+            if (m_carriedActor.IsAlive())
+            {
+                m_carriedActor.Position.Cell = cell;
+                Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, m_carriedActor));
+            }
 
             Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
 
