@@ -59,9 +59,7 @@ namespace Stump.Core.Pool
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-#if DEBUG
             Segment.LastUsage = DateTime.Now;
-#endif
 
             if (count + Position > m_segment.Offset + Length)
                 throw new ArgumentOutOfRangeException("Exceed buffer size");
@@ -73,9 +71,7 @@ namespace Stump.Core.Pool
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-#if DEBUG
             Segment.LastUsage = DateTime.Now;
-#endif
 
             if (m_position + count > m_segment.Offset + Length)
             {
@@ -89,9 +85,7 @@ namespace Stump.Core.Pool
 
         public override int ReadByte()
         {
-#if DEBUG
             Segment.LastUsage = DateTime.Now;
-#endif
             if (m_position == Length + m_segment.Offset)
                 throw new ArgumentOutOfRangeException("Exceed buffer size");
 
@@ -101,9 +95,7 @@ namespace Stump.Core.Pool
 
         public override void WriteByte(byte value)
         {
-#if DEBUG
             Segment.LastUsage = DateTime.Now;
-#endif
             if (m_position + 1 > m_segment.Offset + m_segment.Length)
             {
                 EnsureCapacity(m_position - m_segment.Offset + 1);
