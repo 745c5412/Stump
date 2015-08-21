@@ -907,7 +907,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void RefreshActor()
         {
-            if (Fight != null)
+            if (Fight != null && Fighter != null)
             {
                 Fighter.Look = Look.Clone();
                 Fighter.Look.RemoveAuras();
