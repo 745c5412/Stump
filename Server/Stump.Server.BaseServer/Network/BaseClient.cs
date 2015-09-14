@@ -369,8 +369,16 @@ namespace Stump.Server.BaseServer.Network
 		{
 			if (Socket != null && Socket.Connected)
 			{
-				Socket.Shutdown(SocketShutdown.Both);
-				Socket.Close();
+                try
+                {
+				    Socket.Shutdown(SocketShutdown.Both);
+				    Socket.Close();
+                }
+                catch(Exception ex)
+                {
+                    logger.Error("Exception occurs while shutdown socket of client {0} : {1}", ToString(), ex);
+                }
+
 			}
 			if (m_bufferSegment != null)
 			{
