@@ -55,19 +55,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var coef = baseCoef + (0.02*(m_spell.CurrentLevel - 1));
             m_stats.Health.Base += (int)(((Summoner.Level - 1) * 5 + 55) * coef) + (int)((Summoner.MaxLifePoints) * coef);
 
-            m_stats.Intelligence.Base = (short)(Summoner.Stats.Intelligence.Base * (1 + (Summoner.Level / 100d)));
-            m_stats.Chance.Base = (short)(Summoner.Stats.Chance.Base * (1 + (Summoner.Level / 100d)));
-            m_stats.Strength.Base = (short)(Summoner.Stats.Strength.Base * (1 + (Summoner.Level / 100d)));
-            m_stats.Agility.Base = (short)(Summoner.Stats.Agility.Base * (1 + (Summoner.Level / 100d)));
-            m_stats.Wisdom.Base = (short)(Summoner.Stats.Wisdom.Base * (1 + (Summoner.Level / 100d)));
+            m_stats.Intelligence.Base += (short)(Summoner.Stats.Intelligence.Base * (1 + (Summoner.Level / 100d)));
+            m_stats.Chance.Base += (short)(Summoner.Stats.Chance.Base * (1 + (Summoner.Level / 100d)));
+            m_stats.Strength.Base += (short)(Summoner.Stats.Strength.Base * (1 + (Summoner.Level / 100d)));
+            m_stats.Agility.Base += (short)(Summoner.Stats.Agility.Base * (1 + (Summoner.Level / 100d)));
+            m_stats.Wisdom.Base += (short)(Summoner.Stats.Wisdom.Base * (1 + (Summoner.Level / 100d)));
 
-            m_stats[PlayerFields.DamageBonus].Base = Summoner.Stats[PlayerFields.DamageBonus].Equiped;
-            m_stats[PlayerFields.DamageBonusPercent].Base = Summoner.Stats[PlayerFields.DamageBonusPercent].Equiped;
-            m_stats[PlayerFields.AirDamageBonus].Base = Summoner.Stats[PlayerFields.AirDamageBonus].Equiped;
-            m_stats[PlayerFields.FireDamageBonus].Base = Summoner.Stats[PlayerFields.FireDamageBonus].Equiped;
-            m_stats[PlayerFields.WaterDamageBonus].Base = Summoner.Stats[PlayerFields.WaterDamageBonus].Equiped;
-            m_stats[PlayerFields.EarthDamageBonus].Base = Summoner.Stats[PlayerFields.EarthDamageBonus].Equiped;
-            m_stats[PlayerFields.PushDamageBonus].Base = Summoner.Stats[PlayerFields.PushDamageBonus].Equiped;
+            m_stats[PlayerFields.DamageBonus].Base += Summoner.Stats[PlayerFields.DamageBonus].Equiped;
+            m_stats[PlayerFields.DamageBonusPercent].Base += Summoner.Stats[PlayerFields.DamageBonusPercent].Equiped;
+            m_stats[PlayerFields.AirDamageBonus].Base += Summoner.Stats[PlayerFields.AirDamageBonus].Equiped;
+            m_stats[PlayerFields.FireDamageBonus].Base += Summoner.Stats[PlayerFields.FireDamageBonus].Equiped;
+            m_stats[PlayerFields.WaterDamageBonus].Base += Summoner.Stats[PlayerFields.WaterDamageBonus].Equiped;
+            m_stats[PlayerFields.EarthDamageBonus].Base += Summoner.Stats[PlayerFields.EarthDamageBonus].Equiped;
+            m_stats[PlayerFields.PushDamageBonus].Base += Summoner.Stats[PlayerFields.PushDamageBonus].Equiped;
         }
 
         private void KillOtherTurrets()
