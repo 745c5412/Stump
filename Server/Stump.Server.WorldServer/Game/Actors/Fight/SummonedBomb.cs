@@ -409,8 +409,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Unmovable);
                 RemoveState(state);
-
-                Explode();
             }      
 
             base.OnDead(killedBy, passTurn);

@@ -25,10 +25,11 @@ using Stump.Server.WorldServer.Game.Maps;
 
 namespace ArkalysPlugin
 {
-    public class ZaapsAutoFinder
+    public static class ZaapsAutoFinder
     {
-        private static Map[] m_zaaps;
         private const int ZAAP_TEMPLATE = 16;
+        private static Map[] m_zaaps;
+
         static ZaapsAutoFinder()
         {
             CharacterManager.Instance.CreatingCharacter += OnCreatingCharacter;
