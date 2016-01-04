@@ -2012,6 +2012,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanMove()
         {
+            if (Fight?.State == FightState.Placement || Fight?.State == FightState.NotStarted)
+                return false;
+
             if (Inventory.Weight <= Inventory.WeightTotal)
                 return base.CanMove() && !IsDialoging();
 
