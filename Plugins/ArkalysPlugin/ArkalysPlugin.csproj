@@ -122,8 +122,7 @@
     <Compile Include="Prestige\PrestigeNpc.cs" />
     <Compile Include="PVPTitles.cs" />
     <Compile Include="SmithMagic\SmithMagicPotionItem.cs" />
-    <Compile Include="Votes\VoteNotificationHandler.cs" />
-    <Compile Include="Votes\VoteNotificationMessage.cs" />
+    <Compile Include="Votes\VoteChecker.cs" />
     <Compile Include="WelcomeMessage.cs" />
     <Compile Include="Npcs\NpcShops.cs" />
     <Compile Include="Plugin.cs" />

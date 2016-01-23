@@ -1509,6 +1509,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (CheckFightEnd())
                 return;
 
+            OnTurnStopped();
             ReadyChecker = ReadyChecker.RequestCheck(this, PassTurnAndCheck, LagAndPassTurn);
         }
 
@@ -1529,8 +1530,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
                 TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_END);
             }
-
-            FighterPlaying.ResetUsedPoints();
 
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
@@ -1569,7 +1568,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ReadyChecker = null;
 
-            OnTurnStopped();
+            FighterPlaying.ResetUsedPoints();
             PassTurn();
         }
 
