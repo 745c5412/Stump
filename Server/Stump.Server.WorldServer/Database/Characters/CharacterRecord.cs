@@ -334,6 +334,34 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        [Ignore]
+        public List<EmotesEnum> Emotes
+        {
+            get
+            {
+                return m_emotes;
+            }
+            set
+            {
+                m_emotes = value;
+                m_emotesCSV = m_emotes.Select(x => (short)x).ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string EmotesCSV
+        {
+            get
+            {
+                return m_emotesCSV;
+            }
+            set
+            {
+                m_emotesCSV = value;
+                m_emotes = !string.IsNullOrEmpty(m_emotesCSV) ? m_emotesCSV.FromCSV<short>(",").Select(x => (EmotesEnum)x).ToList() : new List<EmotesEnum>();
+            }
+        }
+
         public int MapId
         {
             get;
@@ -665,6 +693,8 @@ namespace Stump.Server.WorldServer.Database.Characters
 
             if (breed.StartLevel > 100)
                 AP++;
+
+            Emotes = new List<EmotesEnum> { EmotesEnum.EMOTE_S_ASSEOIR };
         }
 
 
@@ -700,6 +730,8 @@ namespace Stump.Server.WorldServer.Database.Characters
         private string m_titlesCSV;
         private List<short> m_ornaments = new List<short>();
         private string m_ornamentsCSV;
+        List<EmotesEnum> m_emotes = new List<EmotesEnum>();
+        string m_emotesCSV;
 
         [Ignore]
         public List<Map> KnownZaaps
@@ -790,6 +822,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             m_entityLookString = m_entityLook == null ? null : m_entityLook.ToString();
             m_titlesCSV = m_titles.ToCSV(",");
             m_ornamentsCSV = m_ornaments.ToCSV(",");
+            m_emotesCSV = m_emotes.Select(x => (short)x).ToCSV(",");
         }
     }
 }
