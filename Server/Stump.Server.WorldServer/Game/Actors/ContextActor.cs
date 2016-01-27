@@ -159,6 +159,9 @@ namespace Stump.Server.WorldServer.Game.Actors
             if (!CanMove())
                 return false;
 
+            if (movementPath.StartCell.Id != Cell.Id) //Verify Hack
+                return false;
+
             m_isMoving = true;
             MovementPath = movementPath;
 
