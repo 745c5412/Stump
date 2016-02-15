@@ -102,6 +102,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (PrestigeRank > 0 && PrestigeManager.Instance.PrestigeEnabled)
             {
+                AddTitle(PrestigeManager.GetPrestigeTitle(PrestigeRank));
+
+                if (PrestigeRank >= 5)
+                {
+                    AddOrnament(25);
+                    AddEmote(EmotesEnum.EMOTE_GONFLER_SES_MUSCLES);
+                }
+                if (PrestigeRank >= 10)
+                {
+                    AddOrnament(49);
+                    AddEmote(EmotesEnum.EMOTE_SUPER_HEROS);
+                }
+                if (PrestigeRank >= 15)
+                {
+                    AddOrnament(50);
+                    AddEmote(EmotesEnum.EMOTE_ATTITUDE_TÉMÉRAIRE);
+                }
+
                 var item = GetPrestigeItem();
                 if (item == null)
                     CreatePrestigeItem();
@@ -1622,20 +1640,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
 
             PrestigeRank++;
-            AddTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
-
-            switch (PrestigeRank)
-            {
-                case 5:
-                    AddOrnament(25);
-                    break;
-                case 10:
-                    AddOrnament(49);
-                    break;
-                case 15:
-                    AddOrnament(50);
-                    break;
-            }
 
             var item = GetPrestigeItem();
 
@@ -1668,7 +1672,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool DecrementPrestige()
         {
-            RemoveTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
+            RemoveTitle(PrestigeManager.GetPrestigeTitle(PrestigeRank));
             PrestigeRank--;
 
             var item = GetPrestigeItem();

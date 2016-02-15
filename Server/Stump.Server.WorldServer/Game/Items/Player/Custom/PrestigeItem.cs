@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             : base(owner, record)
         {
             IsTemporarily = true;            
-            var effects = PrestigeManager.Instance.GetPrestigeEffects(Owner.PrestigeRank);
+            var effects = PrestigeManager.GetPrestigeEffects(Owner.PrestigeRank);
             Effects = new List<EffectBase>(effects);
         }
 
@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         public void UpdateEffects()
         {
             ApplyBonus(ItemEffectHandler.HandlerOperation.UNAPPLY);
-            var effects = PrestigeManager.Instance.GetPrestigeEffects(Owner.PrestigeRank);
+            var effects = PrestigeManager.GetPrestigeEffects(Owner.PrestigeRank);
 
             Effects = new List<EffectBase>(effects);
             ApplyBonus(ItemEffectHandler.HandlerOperation.APPLY);
