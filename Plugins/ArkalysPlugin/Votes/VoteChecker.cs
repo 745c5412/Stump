@@ -43,10 +43,6 @@ namespace ArkalysPlugin.Votes
 
             client.Account.LastVote = message.Account.LastVote;
 
-            if (World.Instance.GetCharacters(x => x != character && x.Account.LastClientKey == message.Account.LastClientKey
-                && x.Account.LastVote >= VoteDateTime).Any())
-                return;
-
             client.Character.DisplayNotification(
                 "Plus de 3H se sont écoulées depuis votre dernier vote, vous pouvez à nouveau voter pour gagner des jetons en cliquant <u><b><a href='https://www.arkalys.com/vote' target='_blank'><font color='#0000FF'>ICI</font></a></b></u>",
                 NotificationEnum.ERREUR);

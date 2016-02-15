@@ -70,7 +70,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void InitializeHandlers()
         {
-            foreach (var method in GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (var method in GetType().GetMethods(BindingFlags.Instance| BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (method.Name == "HandleMessage")
                     continue;
@@ -89,9 +89,9 @@ namespace Stump.Server.AuthServer.IPC
             logger.Info("Opening Database connection for '{0}' server", WorldServer.Name);
             Database = new ORM.Database(AuthServer.DatabaseConfiguration.GetConnectionString(),
                                        AuthServer.DatabaseConfiguration.ProviderName)
-            {
-                KeepConnectionAlive = true
-            };
+                                       {
+                                           KeepConnectionAlive = true
+                                       };
             Database.OpenSharedConnection();
 
             AccountManager = new AccountManager();
@@ -128,7 +128,7 @@ namespace Stump.Server.AuthServer.IPC
             }
             else if (!string.IsNullOrEmpty(message.Nickname))
             {
-                var account = AccountManager.Instance.FindAccountByNickname(message.Nickname);
+                var account = AccountManager.FindAccountByNickname(message.Nickname);
 
                 if (account == null)
                 {
@@ -140,7 +140,7 @@ namespace Stump.Server.AuthServer.IPC
             }
             else if (!string.IsNullOrEmpty(message.Login))
             {
-                var account = AccountManager.Instance.FindAccountByLogin(message.Login);
+                var account = AccountManager.FindAccountByLogin(message.Login);
 
                 if (account == null)
                 {
@@ -152,8 +152,8 @@ namespace Stump.Server.AuthServer.IPC
             }
             else if (message.Id.HasValue)
             {
-                var account = AccountManager.Instance.FindAccountById(message.Id.Value);
-
+                var account = AccountManager.FindAccountById(message.Id.Value);
+                
                 if (account == null)
                 {
                     Client.SendError(string.Format("Account not found with id {0}", message.Id), message);
@@ -164,8 +164,8 @@ namespace Stump.Server.AuthServer.IPC
             }
             else if (message.CharacterId.HasValue)
             {
-                var account = AccountManager.Instance.FindAccountByCharacterId(message.CharacterId.Value);
-
+                var account = AccountManager.FindAccountByCharacterId(message.CharacterId.Value);
+                
                 if (account == null)
                 {
                     Client.SendError(string.Format("Account not found with character id {0}", message.CharacterId), message);
@@ -239,7 +239,7 @@ namespace Stump.Server.AuthServer.IPC
                 Email = accountData.Email
             };
 
-            if (AccountManager.Instance.CreateAccount(account))
+            if (AccountManager.CreateAccount(account))
                 Client.ReplyRequest(new CommonOKMessage(), message);
             else
                 Client.SendError(string.Format("Login {0} already exists", accountData.Login), message);
@@ -247,7 +247,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(UpdateAccountMessage message)
         {
-            var account = AccountManager.Instance.FindAccountById(message.Account.Id);
+            var account = AccountManager.FindAccountById(message.Account.Id);
 
             if (account == null)
             {
@@ -270,9 +270,9 @@ namespace Stump.Server.AuthServer.IPC
         {
             Account account;
             if (message.AccountId != null)
-                account = AccountManager.Instance.FindAccountById((int)message.AccountId);
+                account = AccountManager.FindAccountById((int) message.AccountId);
             else if (!string.IsNullOrEmpty(message.AccountName))
-                account = AccountManager.Instance.FindAccountByLogin(message.AccountName);
+                account = AccountManager.FindAccountByLogin(message.AccountName);
             else
             {
                 Client.SendError("AccoundId and AccountName are null or empty", message);
@@ -287,7 +287,7 @@ namespace Stump.Server.AuthServer.IPC
 
             AccountManager.Instance.DisconnectClientsUsingAccount(account);
 
-            if (AccountManager.Instance.DeleteAccount(account))
+            if (AccountManager.DeleteAccount(account))
                 Client.ReplyRequest(new CommonOKMessage(), message);
             else
                 Client.SendError(string.Format("Cannot delete {0}", account.Login), message);
@@ -295,7 +295,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(AddCharacterMessage message)
         {
-            var account = AccountManager.Instance.FindAccountById(message.AccountId);
+            var account = AccountManager.FindAccountById(message.AccountId);
 
             if (account == null)
             {
@@ -303,7 +303,7 @@ namespace Stump.Server.AuthServer.IPC
                 return;
             }
 
-            if (AccountManager.Instance.AddAccountCharacter(account, WorldServer, message.CharacterId))
+            if (AccountManager.AddAccountCharacter(account, WorldServer, message.CharacterId))
                 Client.ReplyRequest(new CommonOKMessage(), message);
             else
                 Client.SendError(string.Format("Cannot add {0} character to {1} account", message.CharacterId, message.AccountId), message);
@@ -311,7 +311,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(DeleteCharacterMessage message)
         {
-            var account = AccountManager.Instance.FindAccountById(message.AccountId);
+            var account = AccountManager.FindAccountById(message.AccountId);
 
             if (account == null)
             {
@@ -319,7 +319,7 @@ namespace Stump.Server.AuthServer.IPC
                 return;
             }
 
-            if (AccountManager.Instance.DeleteAccountCharacter(account, WorldServer, message.CharacterId))
+            if (AccountManager.DeleteAccountCharacter(account, WorldServer, message.CharacterId))
                 Client.ReplyRequest(new CommonOKMessage(), message);
             else
                 Client.SendError(string.Format("Cannot delete {0} character from {1} account", message.CharacterId, message.AccountId), message);
@@ -329,9 +329,9 @@ namespace Stump.Server.AuthServer.IPC
         {
             Account victimAccount;
             if (message.AccountId != null)
-                victimAccount = AccountManager.Instance.FindAccountById((int)message.AccountId);
+                victimAccount = AccountManager.FindAccountById((int)message.AccountId);
             else if (!string.IsNullOrEmpty(message.AccountName))
-                victimAccount = AccountManager.Instance.FindAccountByLogin(message.AccountName);
+                victimAccount = AccountManager.FindAccountByLogin(message.AccountName);
             else
             {
                 Client.SendError("AccoundId and AccountName are null or empty", message);
@@ -359,9 +359,9 @@ namespace Stump.Server.AuthServer.IPC
         {
             Account victimAccount;
             if (message.AccountId != null)
-                victimAccount = AccountManager.Instance.FindAccountById((int)message.AccountId);
+                victimAccount = AccountManager.FindAccountById((int)message.AccountId);
             else if (!string.IsNullOrEmpty(message.AccountName))
-                victimAccount = AccountManager.Instance.FindAccountByLogin(message.AccountName);
+                victimAccount = AccountManager.FindAccountByLogin(message.AccountName);
             else
             {
                 Client.SendError("AccoundId and AccountName are null or empty", message);
@@ -386,7 +386,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(BanIPMessage message)
         {
-            var ipBan = AccountManager.Instance.FindIpBan(message.IPRange);
+            var ipBan = AccountManager.FindIpBan(message.IPRange);
             var ip = IPAddressRange.Parse(message.IPRange);
             if (ipBan != null)
             {
@@ -404,12 +404,12 @@ namespace Stump.Server.AuthServer.IPC
                     IP = ip,
                     BanReason = message.BanReason,
                     BannedBy = message.BannerAccountId,
-                    Duration = message.BanEndDate.HasValue ? (int?)(message.BanEndDate - DateTime.Now).Value.TotalMinutes : null,
+                    Duration = message.BanEndDate.HasValue ? (int?)( message.BanEndDate - DateTime.Now ).Value.TotalMinutes : null,
                     Date = DateTime.Now
                 };
 
                 Database.Insert(record);
-                AccountManager.Instance.AddIPBan(record);
+                AccountManager.AddIPBan(record);
             }
 
             Client.ReplyRequest(new CommonOKMessage(), message);
@@ -417,7 +417,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(UnBanIPMessage message)
         {
-            var ipBan = AccountManager.Instance.FindIpBan(message.IPRange);
+            var ipBan = AccountManager.FindIpBan(message.IPRange);
             if (ipBan == null)
             {
                 Client.SendError(string.Format("IP ban {0} not found", message.IPRange), message);
@@ -431,7 +431,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(BanClientKeyMessage message)
         {
-            var key = AccountManager.Instance.FindClientKeyBan(message.ClientKey);
+            var key = AccountManager.FindClientKeyBan(message.ClientKey);
             if (key != null)
             {
                 key.BanReason = message.BanReason;
@@ -453,7 +453,7 @@ namespace Stump.Server.AuthServer.IPC
                 };
 
                 Database.Insert(record);
-                AccountManager.Instance.AddClientKeyBan(record);
+                AccountManager.AddClientKeyBan(record);
             }
 
             Client.ReplyRequest(new CommonOKMessage(), message);
@@ -461,7 +461,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(UnBanClientKeyMessage message)
         {
-            var keyBan = AccountManager.Instance.FindClientKeyBan(message.ClientKey);
+            var keyBan = AccountManager.FindClientKeyBan(message.ClientKey);
             if (keyBan == null)
             {
                 Client.SendError(string.Format("ClientKey ban {0} not found", message.ClientKey), message);
@@ -475,9 +475,9 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(BanClientKeyRequestMessage message)
         {
-            var key = AccountManager.Instance.FindMatchingClientKeyBan(message.ClientKey);
+            var key = AccountManager.FindMatchingClientKeyBan(message.ClientKey);
             if (key != null && key.GetRemainingTime() > TimeSpan.Zero)
-            {
+            {              
                 Client.ReplyRequest(new BanClientKeyAnswerMessage(true, key.GetEndDate()), message);
                 return;
             }
@@ -488,9 +488,9 @@ namespace Stump.Server.AuthServer.IPC
         private void Handle(GroupsRequestMessage message)
         {
             Client.ReplyRequest(
-            new GroupsListMessage(
-                Database.Query<UserGroupRecord>(UserGroupRelator.FetchQuery).Select(x => x.GetGroupData()).ToList()),
-            message);
+                new GroupsListMessage(
+                    Database.Query<UserGroupRecord>(UserGroupRelator.FetchQuery).Select(x => x.GetGroupData()).ToList()),
+                message);
         }
 
         private void Handle(GroupAddMessage message)
