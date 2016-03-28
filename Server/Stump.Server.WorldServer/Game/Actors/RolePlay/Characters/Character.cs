@@ -84,8 +84,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Client = client;
             SaveSync = new object();
             LoggoutSync = new object();
-
-            LoadRecord();
         }
 
         #region Events
@@ -387,6 +385,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SetDialoger(IDialoger dialoger)
         {
+            if (Dialog != null)
+                Dialog.Close();
+
             Dialoger = dialoger;
         }
 
@@ -3171,7 +3172,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        private void LoadRecord()
+        public void LoadRecord()
         {
             Breed = BreedManager.Instance.GetBreed(BreedId);
             Head = BreedManager.Instance.GetHead(Record.Head);

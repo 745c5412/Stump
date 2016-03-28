@@ -69,6 +69,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
+            var triggerDmg = token as Fights.Damage;
+
+            if (triggerDmg == null)
+                return;
+
+            if (triggerDmg.ReflectedDamages)
+                return;
+
             var integerEffect = buff.GenerateEffect();
 
             if (integerEffect == null)
@@ -77,11 +85,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell)
             {
                 Buff = buff,
-                
+                ReflectedDamages = true,
+                IgnoreDamageBoost = true
             };
             damage.GenerateDamages();
             damage.Amount = (int)((buff.Target.MaxLifePoints * (damage.Amount / 100d)));
-            damage.IgnoreDamageBoost = true;
 
             buff.Target.InflictDamage(damage);
         }

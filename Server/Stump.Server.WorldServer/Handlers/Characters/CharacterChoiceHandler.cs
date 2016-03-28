@@ -186,6 +186,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             client.Character = new Character(character, client);
+            client.Character.LoadRecord();
 
             SendCharacterSelectedSuccessMessage(client);
 

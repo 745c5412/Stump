@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
         {
             get
             {
-                return DialogTypeEnum.DIALOG_PURCHASABLE;
+                return DialogTypeEnum.DIALOG_EXCHANGE;
             }
         }
 
@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         public void Close()
         {
-            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
+            InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
         }
 

@@ -39,6 +39,9 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             var oldKamas = Kamas;
 
+            if (amount < 0)
+                amount = 0;
+
             Kamas = amount;
             NotifyKamasAmountChanged(amount - oldKamas);
         }
