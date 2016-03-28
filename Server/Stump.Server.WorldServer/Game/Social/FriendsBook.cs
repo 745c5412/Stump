@@ -69,6 +69,18 @@ namespace Stump.Server.WorldServer.Game.Social
         public void Dispose()
         {
             World.Instance.CharacterJoined -= OnCharacterLogIn;
+
+            foreach (var friend in Friends)
+            {
+                if (friend.IsOnline())
+                {
+                    friend.Character.LoggedOut -= OnFriendLogout;
+                    friend.Character.LevelChanged -= OnLevelChanged;
+                    friend.Character.ContextChanged -= OnContextChanged;
+
+                    friend.SetOffline();
+                }
+            }
         }
 
         public ListAddFailureEnum? CanAddFriend(WorldAccount friendAccount)

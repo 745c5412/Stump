@@ -83,13 +83,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell)
+            var damages = token as Fights.Damage;
+
+            if (damages != null && (damages.Spell == null || damages.ReflectedDamages))
+                return;
+
+            var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell)
             {
-                Buff = buff
+                Buff = buff,
+                ReflectedDamages = true
             };
 
-            buff.Target.InflictDamage(damages);
-
+            buff.Target.InflictDamage(damage);
         }
 
         private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
