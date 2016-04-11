@@ -175,6 +175,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
+            var creationDate = (DateTime.Now - client.Account.CreationDate).TotalMilliseconds;
+
             client.Send(new IdentificationSuccessMessage(
                 client.UserGroup.Role >= RoleEnum.Moderator,
                 wasAlreadyConnected,
@@ -184,7 +186,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                 client.Account.SecretQuestion,
                 client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStampLong() : 0,
-                (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
+                creationDate < 0 ? 0 : creationDate));
 
             client.LookingOfServers = true;
         }
