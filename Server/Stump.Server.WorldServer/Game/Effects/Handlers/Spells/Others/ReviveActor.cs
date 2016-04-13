@@ -22,12 +22,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             private set;
         }
 
-        public override bool CanApply()
-        {
-            return base.CanApply();
-            //return Caster.Team.GetLastDeadFighter() != null;
-        }
-
         public override bool Apply()
         {
             var integerEffect = GenerateEffect();
@@ -50,6 +44,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             var cell = TargetedCell;
             if (!Fight.IsCellFree(cell))
                 cell = Map.GetRandomAdjacentFreeCell(TargetedPoint, true);
+
+            actor.RemoveAndDispellAllBuffs();
 
             HealHpPercent(actor, heal);
             actor.Position.Cell = cell;
