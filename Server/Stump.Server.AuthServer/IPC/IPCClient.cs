@@ -180,13 +180,13 @@ namespace Stump.Server.AuthServer.IPC
                 else
                 {
                     // the handshake is managed by the IO thread, the other messages by an other DB connection
-                    AuthServer.Instance.IOTaskPool.AddMessage(() =>
+                    AuthServer.Instance.IOTaskPool.AddMessage(async () =>
                     {
                         var handshake = message as HandshakeMessage;
                         WorldServer server;
                         try
                         {
-                            server = WorldServerManager.Instance.RequestConnection(this, handshake.World);
+                            server = await WorldServerManager.Instance.RequestConnection(this, handshake.World);
                         }
                         catch (Exception ex)
                         {

@@ -11,9 +11,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
     {
 
         [AuthHandler(AcquaintanceSearchMessage.Id)]
-        public static void HandleAcquaintanceSearchMessage(AuthClient client, AcquaintanceSearchMessage message)
+        public static async void HandleAcquaintanceSearchMessage(AuthClient client, AcquaintanceSearchMessage message)
         {
-            var account = AccountManager.Instance.FindAccountByNickname(message.nickname);
+            var account = await AccountManager.Instance.FindAccountByNickname(message.nickname);
 
             if (account == null)
             {

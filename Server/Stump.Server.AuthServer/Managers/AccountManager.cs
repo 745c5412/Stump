@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using Dapper;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
+using Stump.ORM;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Database.Accounts;
 using Stump.Server.AuthServer.Network;
@@ -58,13 +61,13 @@ namespace Stump.Server.AuthServer.Managers
             
         }
 
-        public override void Initialize()
+        public override async void Initialize()
         {
             base.Initialize();
             m_timer = AuthServer.Instance.IOTaskPool.CallPeriodically(CacheTimeout * 60 / 4, TimerTick);
             m_bansTimer = AuthServer.Instance.IOTaskPool.CallPeriodically(BansRefreshTime * 1000, RefreshBans);
-            m_ipBans = Database.Fetch<IpBan>(IpBanRelator.FetchQuery);
-            m_keyBans = Database.Fetch<ClientKeyBan>(ClientKeyBanRelator.FetchQuery);
+            m_ipBans = new List<IpBan>(await IpBan.Table.QueryAsync(IpBanRelator.FetchQuery));
+            m_keyBans = new List<ClientKeyBan>(await ClientKeyBan.Table.QueryAsync(ClientKeyBanRelator.FetchQuery));
         }
 
         public override void TearDown()
@@ -91,8 +94,8 @@ namespace Stump.Server.AuthServer.Managers
                 m_ipBans.Clear();
                 m_keyBans.Clear();
 
-                m_ipBans.AddRange(Database.Query<IpBan>(IpBanRelator.FetchQuery));
-                m_keyBans.AddRange(Database.Query<ClientKeyBan>(ClientKeyBanRelator.FetchQuery));
+                m_ipBans.AddRange(IpBan.Table.Query(IpBanRelator.FetchQuery));
+                m_keyBans.AddRange(ClientKeyBan.Table.Query(ClientKeyBanRelator.FetchQuery));
             }
         }
 
@@ -112,28 +115,33 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
-        public Account FindAccountById(int id)
+        public async Task<Account> FindAccountById(int id)
         {
-            return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
-                string.Format(AccountRelator.FindAccountById, id)).SingleOrDefault();
+            return await FindAccount(string.Format(AccountRelator.FindAccountById, id));
         }
 
-        public Account FindAccountByLogin(string login)
+        public async Task<Account> FindAccountByLogin(string login)
         {
-            return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
-                AccountRelator.FindAccountByLogin, login).SingleOrDefault();
+            return await  FindAccount(string.Format(AccountRelator.FindAccountByLogin, login));
         }
 
-        public Account FindAccountByNickname(string nickname)
+        public async Task<Account> FindAccountByNickname(string nickname)
         {
-            return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
-                AccountRelator.FindAccountByNickname, nickname).SingleOrDefault();
+            return await FindAccount(string.Format(AccountRelator.FindAccountByNickname, nickname));
         }
 
-        public Account FindAccountByCharacterId(int characterId)
+        public async Task<Account> FindAccountByCharacterId(int characterId)
         {
-            return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
-                string.Format(AccountRelator.FindAccountByCharacterId, characterId)).SingleOrDefault();
+            return await FindAccount(string.Format(AccountRelator.FindAccountByCharacterId, characterId));
+        }
+
+        private static async Task<Account> FindAccount(string query)
+        {
+            return (await Account.Table.WrapExecution(con => con.QueryAsync<Account, WorldCharacter, Account>
+                (
+                    query,
+                    new AccountRelator().Map
+                ))).SingleOrDefault();
         }
 
         public IpBan FindIpBan(string ip)
@@ -173,9 +181,9 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
-        public UserGroupRecord FindUserGroup(int id)
+        public async Task<UserGroupRecord> FindUserGroup(int id)
         {
-            return Database.Query<UserGroupRecord>(string.Format(UserGroupRelator.FindUserById, id)).SingleOrDefault();
+            return (await UserGroupRecord.Table.QueryAsync(string.Format(UserGroupRelator.FindUserById, id))).SingleOrDefault();
         }
 
         public void CacheAccount(Account account)
@@ -207,34 +215,31 @@ namespace Stump.Server.AuthServer.Managers
             return m_accountsCache.TryGetValue(ticket, out tuple) ? tuple.Item2 : null;
         }
 
-        public bool LoginExists(string login)
+        public async Task<bool> LoginExists(string login)
         {
-            return Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM accounts WHERE Login=@0)", login);
+            return (await Account.Table.ExecuteAsync("SELECT EXISTS(SELECT 1 FROM accounts WHERE Login=@0)", login)) == 1;
         }
 
-        public bool NicknameExists(string nickname)
+        public async Task<bool> NicknameExists(string nickname)
         {
-            return Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM accounts WHERE Nickname=@0)", nickname);
+            return await Account.Table.ExecuteAsync("SELECT EXISTS(SELECT 1 FROM accounts WHERE Nickname=@0)", nickname) == 1;
         }
 
-        public bool CreateAccount(Account account)
+        public async Task<bool> CreateAccount(Account account)
         {
-            if (LoginExists(account.Login))
+            if (await LoginExists(account.Login))
                 return false;
 
-            Database.Insert(account);
-
+            await Account.Table.InsertAsync(account);
             return true;
         }
 
-        public bool DeleteAccount(Account account)
+        public async Task<bool> DeleteAccount(Account account)
         {
-            Database.Delete(account);
-
-            return true;
+            return await Account.Table.DeleteAsync(account);
         }
 
-        public WorldCharacter CreateAccountCharacter(Account account, WorldServer world, int characterId)
+        public async Task<WorldCharacter> CreateAccountCharacter(Account account, WorldServer world, int characterId)
         {
             if (account.WorldCharacters.Any(entry => entry.CharacterId == characterId))
                 return null;
@@ -247,19 +252,22 @@ namespace Stump.Server.AuthServer.Managers
                                 };
 
             account.WorldCharacters.Add(character);
-            Database.Insert(character);
+
+            // Try to insert the new world character
+            if (!await WorldCharacter.Table.InsertAsync(character))
+                return null;
 
             return character;
         }
 
-        public bool DeleteAccountCharacter(Account account, WorldServer world, int characterId)
+        public async Task<bool> DeleteAccountCharacter(Account account, WorldServer world, int characterId)
         {
-            var success = Database.Execute(string.Format("DELETE FROM worlds_characters WHERE AccountId={0} AND CharacterId={1} AND WorldId={2}", account.Id, characterId, world.Id)) > 0;
+            var success = await Account.Table.ExecuteAsync(string.Format("DELETE FROM worlds_characters WHERE AccountId={0} AND CharacterId={1} AND WorldId={2}", account.Id, characterId, world.Id)) > 0;
 
             if (!success)
                 return false;
 
-            CreateDeletedCharacter(account, world, characterId);
+            await CreateDeletedCharacter(account, world, characterId);
             account.WorldCharacters.RemoveAll(x => x.CharacterId == characterId && x.WorldId == world.Id);
 
             return true;
@@ -273,7 +281,7 @@ namespace Stump.Server.AuthServer.Managers
             return true;
         }
 
-        public WorldCharacterDeleted CreateDeletedCharacter(Account account, WorldServer world, int characterId)
+        public async Task<WorldCharacterDeleted> CreateDeletedCharacter(Account account, WorldServer world, int characterId)
         {
             var character = new WorldCharacterDeleted
                                 {
@@ -283,19 +291,17 @@ namespace Stump.Server.AuthServer.Managers
                                     DeletionDate = DateTime.Now
                                 };
 
-            Database.Insert(character);
-
+            await WorldCharacterDeleted.Table.InsertAsync(character);
+            
             return character;
         }
 
-        public bool DeleteDeletedCharacter(WorldCharacterDeleted deletedCharacter)
+        public async Task<bool> DeleteDeletedCharacter(WorldCharacterDeleted deletedCharacter)
         {
             if (deletedCharacter == null)
                 return false;
 
-            Database.Delete(deletedCharacter);
-
-            return true;
+            return await WorldCharacterDeleted.Table.DeleteAsync(deletedCharacter);
         }
 
         public void DisconnectClientsUsingAccount(Account account, AuthClient except = null)
@@ -305,7 +311,15 @@ namespace Stump.Server.AuthServer.Managers
 
         public void DisconnectClientsUsingAccount(Account account, AuthClient except, Action<bool> callback)
         {
-            var clients = AuthServer.Instance.FindClients(entry => entry != except && entry.Account != null && entry.Account.Id == account.Id).ToArray();
+            var clients = AuthServer
+                .Instance
+                .FindClients
+                (
+                    entry => 
+                    entry != except && 
+                    entry.Account != null && 
+                    entry.Account.Id == account.Id
+                ).ToArray();
 
             // disconnect clients from auth server
             foreach (var client in clients)

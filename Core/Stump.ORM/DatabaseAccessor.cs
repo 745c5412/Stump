@@ -64,12 +64,6 @@ namespace Stump.ORM
             private set;
         }
 
-        public Database Database
-        {
-            get;
-            private set;
-        }
-
         public void RegisterMappingAssembly(Assembly assembly)
         {
             m_assemblies.Add(assembly);
@@ -98,12 +92,9 @@ namespace Stump.ORM
             }
         }
 
-        public void OpenConnection(Database database)
+        public void CreateTables()
         {
             DataProvider = ProviderFactory.GetProvider(Configuration.GetConnectionString(), Configuration.ProviderName);
-            Database = database;
-
-            Database.OpenSharedConnection();
 
             foreach (var map in m_mapping)
             {
@@ -111,9 +102,9 @@ namespace Stump.ORM
                     continue;
 
                 ITable table;
+                var instance = Activator.CreateInstance(map.Type, true);
                 if (map.Type.GetInterface(typeof(IManualGeneratedRecord).FullName) != null)
                 {
-                    var instance = Activator.CreateInstance(map.Type, true);
                     table = ( (IManualGeneratedRecord)instance ).GetTableInformation(DataProvider);
                 }
                 else
@@ -124,25 +115,9 @@ namespace Stump.ORM
                 map.Table = table;
 
                 var query = map.Table.CreateSql;
-
-                Database.Execute(query);
+                
+                ((IDbObject) instance).GenericTable.Execute(query);
             }
-        }
-
-        public void OpenConnection()
-        {
-            var db = new Database(Configuration.GetConnectionString(), Configuration.ProviderName)
-                {
-                    KeepConnectionAlive = true,
-                    CommandTimeout = (24 * 60 * 60)
-                };
-
-            OpenConnection(db);
-        }
-
-        public void CloseConnection()
-        {
-           Database.CloseSharedConnection();
         }
 
         private static bool HasInterface(Type type, Type interfaceType)

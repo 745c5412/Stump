@@ -385,5 +385,5 @@
   <Target Name="AfterCompile">
     <NotifyPropertyWeaverMsBuildTask.WeavingTask />
   </Target>
-  <UsingTask TaskName="NotifyPropertyWeaverMsBuildTask.WeavingTask" AssemblyFile="$([MSBuild]::Unescape($(ProjectDir)))NotifyPropertyWeaverMsBuildTask.dll" />
+  <UsingTask TaskName="NotifyPropertyWeaverMsBuildTask.WeavingTask" AssemblyFile="$(ProjectDir)\NotifyPropertyWeaverMsBuildTask.dll" />
 </Project>

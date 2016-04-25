@@ -10,7 +10,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
     {
 
         [AuthHandler(NicknameChoiceRequestMessage.Id)]
-        public static void HandleNicknameChoiceRequestMessage(AuthClient client, NicknameChoiceRequestMessage message)
+        public static async void HandleNicknameChoiceRequestMessage(AuthClient client, NicknameChoiceRequestMessage message)
         {
             var nickname = message.nickname;
 
@@ -36,7 +36,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* Already Used */
-            if (AccountManager.Instance.NicknameExists(nickname))
+            if (await AccountManager.Instance.NicknameExists(nickname))
             {
                 client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.ALREADY_USED));
                 return;

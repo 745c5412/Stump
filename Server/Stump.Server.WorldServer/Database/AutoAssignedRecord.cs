@@ -2,6 +2,7 @@
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using Dapper.Contrib.Extensions;
 using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.Reflection;
@@ -35,13 +36,15 @@ namespace Stump.Server.WorldServer.Database
         }
 
         [PrimaryKey("Id", false)]
+        [Key]
+        [Write(true)]
         public int Id
         {
             get;
             set;
         }
 
-        [Ignore]
+        [Computed]
         public bool IsNew
         {
             get;

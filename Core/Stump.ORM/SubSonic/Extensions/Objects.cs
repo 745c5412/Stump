@@ -18,6 +18,7 @@ using System.Data;
 using System.Reflection;
 using System.Linq;
 using System.ComponentModel;
+using Dapper.Contrib.Extensions;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.ORM.SubSonic.Schema;
@@ -313,7 +314,7 @@ namespace Stump.ORM.SubSonic.Extensions
 
         private static bool ColumnIsIgnored(object[] attributes)
         {
-            return attributes.Any(x => x is IgnoreAttribute);
+            return attributes.Any(x => x is ComputedAttribute);
         }
 
 		private static DbType IdentifyColumnDataType(Type type, bool isNullable)

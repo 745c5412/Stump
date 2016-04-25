@@ -16,10 +16,10 @@ namespace ArkalysAuthPlugin.Votes
             AuthServer.Instance.IOTaskPool.CallPeriodically(10000, CheckVotes);
         }
 
-        private static void CheckVotes()
+        private static async void CheckVotes()
         {
             var votes =
-                AuthServer.Instance.DBAccessor.Database.Query<Account>(
+                await Account.Table.QueryAsync(
                     string.Format(
                         "SELECT Id,LastConnectionWorld FROM `accounts` WHERE `LastConnectionWorld` IS NOT NULL AND `LastVote` IS NULL OR `LastVote` < '{0}'",
                         (DateTime.Now - TimeSpan.FromHours(3)).ToString("yyyy-MM-dd HH:mm:ss")));

@@ -82,7 +82,11 @@ namespace Stump.Server.AuthServer.Managers
                 var username = reader.ReadUTF();
                 var password = reader.ReadUTF();
 
-                account = AccountManager.Instance.FindAccountByLogin(username);
+                // Since we can't mark our method as 'async' because of the 'out' parameter, 
+                // we have to manually wait the task to be completed
+                var task = AccountManager.Instance.FindAccountByLogin(username);
+                task.Wait();
+                account = task.Result;
 
                 if (account == null)
                     return false;

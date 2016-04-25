@@ -96,7 +96,7 @@ namespace Stump.Server.AuthServer.Network
             AuthServer.Instance.IOTaskPool.AddMessage(SaveNow);
         }
 
-        public void SaveNow()
+        public async void SaveNow()
         {
             AuthServer.Instance.IOTaskPool.EnsureContext();
 
@@ -107,7 +107,7 @@ namespace Stump.Server.AuthServer.Network
             
             Account.NewTokens = 0;
 
-            AuthServer.Instance.DBAccessor.Database.Save(Account);
+            await Account.Table.UpdateAsync(Account);
         }
 
 

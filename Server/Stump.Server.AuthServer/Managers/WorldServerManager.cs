@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
@@ -94,15 +95,15 @@ namespace Stump.Server.AuthServer.Managers
         ///   world registered in our database in
         ///   "world list".
         /// </summary>
-        public override void Initialize()
+        public override async void Initialize()
         {
-            var servers = Database.Query<WorldServer>(WorldServerRelator.FetchQuery);
+            var servers = await WorldServer.Table.QueryAsync(WorldServerRelator.FetchQuery);
             m_realmlist = new ConcurrentDictionary<int, WorldServer>(servers.ToDictionary(entry => entry.Id));
 
             foreach (var worldServer in m_realmlist)
             {
                 worldServer.Value.SetOffline();
-                Database.Update(worldServer.Value);
+                await WorldServer.Table.UpdateAsync(worldServer.Value);
             }
         }
 
@@ -110,7 +111,7 @@ namespace Stump.Server.AuthServer.Managers
         ///   Create a new world record and save it
         ///   directly in database.
         /// </summary>
-        public WorldServer CreateWorld(WorldServerData worldServerData)
+        public async Task<WorldServer> CreateWorld(WorldServerData worldServerData)
         {
             var record = new WorldServer
                               {
@@ -127,14 +128,14 @@ namespace Stump.Server.AuthServer.Managers
             if (!m_realmlist.TryAdd(record.Id, record))
                 throw new Exception("Server already registered");
 
-            Database.Insert(record);
+            await WorldServer.Table.InsertAsync(record);
 
             logger.Info(string.Format("World {0} created", worldServerData.Name));
 
             return record;
         }
 
-        public void UpdateWorld(WorldServer record, WorldServerData worldServerData, bool save = true)
+        public async void UpdateWorld(WorldServer record, WorldServerData worldServerData, bool save = true)
         {
             if (record.Id != worldServerData.Id)
                 throw new Exception("Ids don't match");
@@ -147,10 +148,10 @@ namespace Stump.Server.AuthServer.Managers
             record.RequireSubscription = worldServerData.RequireSubscription;
 
             if (save)
-                Database.Update(record);
+                await WorldServer.Table.UpdateAsync(record);
         }
 
-        public WorldServer RequestConnection(IPCClient client, WorldServerData world)
+        public async Task<WorldServer> RequestConnection(IPCClient client, WorldServerData world)
         {
             //check ip
             if (!IsIPAllowed(client.Address))
@@ -162,7 +163,7 @@ namespace Stump.Server.AuthServer.Managers
 
             WorldServer server;
             if (!m_realmlist.ContainsKey(world.Id))
-                server = CreateWorld(world);
+                server = await CreateWorld(world);
             else
             {
                 server = m_realmlist[world.Id];
@@ -170,7 +171,7 @@ namespace Stump.Server.AuthServer.Managers
             }
 
             server.SetOnline(client);
-            Database.Update(server);
+            await WorldServer.Table.UpdateAsync(server);
 
             logger.Info("Registered World : \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
 
@@ -214,13 +215,13 @@ namespace Stump.Server.AuthServer.Managers
             return CanAccessToWorld(client, world);
         }
 
-        public void ChangeWorldState(WorldServer server, ServerStatusEnum state, bool save = true)
+        public async void ChangeWorldState(WorldServer server, ServerStatusEnum state, bool save = true)
         {
             server.Status = state;
             OnServerStateChanged(server);
 
             if (save)
-                Database.Update(server);
+                await WorldServer.Table.UpdateAsync(server);
         }
 
         public GameServerInformations[] GetServersInformationArray(AuthClient client)
@@ -254,14 +255,14 @@ namespace Stump.Server.AuthServer.Managers
         ///   and set it offline.
         /// </summary>
         /// <param name = "world"></param>
-        public void RemoveWorld(WorldServerData world)
+        public async void RemoveWorld(WorldServerData world)
         {
             var server = GetServerById(world.Id);
 
             if (server != null && server.Connected)
             {
                 server.SetOffline();
-                Database.Update(server);
+                await WorldServer.Table.UpdateAsync(server);
 
                 OnServerRemoved(m_realmlist[world.Id]);
 
@@ -275,13 +276,13 @@ namespace Stump.Server.AuthServer.Managers
         ///   and set it offline.
         /// </summary>
         /// <param name = "world"></param>
-        public void RemoveWorld(WorldServer world)
+        public async void RemoveWorld(WorldServer world)
         {
             var server = GetServerById(world.Id);
 
             if (server == null || !server.Connected) return;
             server.SetOffline();
-            Database.Update(server);
+            await WorldServer.Table.UpdateAsync(server);
 
             OnServerRemoved(m_realmlist[world.Id]);
 

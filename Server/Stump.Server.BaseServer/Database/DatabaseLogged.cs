@@ -21,53 +21,57 @@ using NLog;
 
 namespace Stump.Server.BaseServer.Database
 {
-    public class DatabaseLogged : ORM.Database
-    {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    // TODO: removed on 23/04/2016
+    // author : Smarken
+    // reason : implementation of the new ORM system
 
-        public DatabaseLogged(IDbConnection connection) : base(connection)
-        {
-        }
+//    public class DatabaseLogged : ORM.Database
+//    {
+//        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public DatabaseLogged(string connectionString, string providerName) : base(connectionString, providerName)
-        {
-        }
+//        public DatabaseLogged(IDbConnection connection) : base(connection)
+//        {
+//        }
 
-        public DatabaseLogged(string connectionString, DbProviderFactory provider) : base(connectionString, provider)
-        {
-        }
+//        public DatabaseLogged(string connectionString, string providerName) : base(connectionString, providerName)
+//        {
+//        }
 
-        public DatabaseLogged(string connectionStringName) : base(connectionStringName)
-        {
-        }
+//        public DatabaseLogged(string connectionString, DbProviderFactory provider) : base(connectionString, provider)
+//        {
+//        }
 
-        public override IDbConnection OnConnectionOpened(IDbConnection conn)
-        {
-            return base.OnConnectionOpened(conn);
-        }
+//        public DatabaseLogged(string connectionStringName) : base(connectionStringName)
+//        {
+//        }
 
-        public override void OnConnectionClosing(IDbConnection conn)
-        {
-            logger.Warn("Database connection closed !");
+//        public override IDbConnection OnConnectionOpened(IDbConnection conn)
+//        {
+//            return base.OnConnectionOpened(conn);
+//        }
 
-            base.OnConnectionClosing(conn);
-        }
+//        public override void OnConnectionClosing(IDbConnection conn)
+//        {
+//            logger.Warn("Database connection closed !");
 
-        public override void OnExecutingCommand(IDbCommand cmd)
-        {
-            base.OnExecutingCommand(cmd);
-        }
+//            base.OnConnectionClosing(conn);
+//        }
 
-        public override void OnExecutedCommand(IDbCommand cmd)
-        {
-            base.OnExecutedCommand(cmd);
-        }
+//        public override void OnExecutingCommand(IDbCommand cmd)
+//        {
+//            base.OnExecutingCommand(cmd);
+//        }
 
-        public override void OnException(Exception x)
-        {
-            logger.Error("DB error : {0}", x);
-            base.OnException(x);
-        }
+//        public override void OnExecutedCommand(IDbCommand cmd)
+//        {
+//            base.OnExecutedCommand(cmd);
+//        }
 
-    }
+//        public override void OnException(Exception x)
+//        {
+//            logger.Error("DB error : {0}", x);
+//            base.OnException(x);
+//        }
+
+//    }
 }

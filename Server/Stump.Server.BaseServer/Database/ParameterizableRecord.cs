@@ -16,6 +16,7 @@
 
 using System;
 using System.Text;
+using Dapper.Contrib.Extensions;
 using Stump.Core.Extensions;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -29,7 +30,7 @@ namespace Stump.Server.BaseServer.Database
             ParameterSeparatorChar = '|';
         }
 
-        [Ignore]
+        [Computed]
         public char ParameterSeparatorChar
         {
             get;

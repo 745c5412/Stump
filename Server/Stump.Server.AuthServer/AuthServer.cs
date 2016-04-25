@@ -96,10 +96,7 @@ namespace Stump.Server.AuthServer
                 DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
                 InitializationManager.Initialize(InitializationPass.Database);
                 DBAccessor.Initialize();
-
-                logger.Info("Opening Database...");
-                DBAccessor.OpenConnection();
-                DataManager.DefaultDatabase = DBAccessor.Database;
+                
                 DataManagerAllocator.Assembly = Assembly.GetExecutingAssembly();
 
                 logger.Info("Register Messages...");
@@ -167,7 +164,6 @@ namespace Stump.Server.AuthServer
 
         protected override void OnShutdown()
         {
-            DBAccessor.CloseConnection();
         }
 
         protected override BaseClient CreateClient(Socket s)

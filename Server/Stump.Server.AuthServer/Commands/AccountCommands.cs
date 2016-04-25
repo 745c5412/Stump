@@ -32,7 +32,7 @@ namespace Stump.Server.AuthServer.Commands
             AddParameter("answer", "answer", "Answer to the secret question", "dummy!");
         }
 
-        public override void Execute(TriggerBase trigger)
+        public override async void Execute(TriggerBase trigger)
         {
             var accname = trigger.Get<string>("accountname");
 
@@ -50,7 +50,7 @@ namespace Stump.Server.AuthServer.Commands
                     // todo manage lang
                 };
 
-            if (AccountManager.Instance.CreateAccount(acc))
+            if (await AccountManager.Instance.CreateAccount(acc))
                 trigger.Reply("Created Account \"{0}\". Group : {1}.", accname, acc.UserGroupId);
             else
                 trigger.Reply("Couldn't create account. Account may already exists.");

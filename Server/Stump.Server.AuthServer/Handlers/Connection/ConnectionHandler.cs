@@ -134,15 +134,15 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
             }
 
-            AccountManager.Instance.DisconnectClientsUsingAccount(account, client, success => AuthServer.Instance.IOTaskPool.AddMessage(() =>
+            AccountManager.Instance.DisconnectClientsUsingAccount(account, client, success => AuthServer.Instance.IOTaskPool.AddMessage(async () =>
             {
                 // we must reload the record since it may have been modified
                 if (success)
-                    account = AccountManager.Instance.FindAccountById(account.Id);
+                    account = await AccountManager.Instance.FindAccountById(account.Id);
 
                 /* Bind Account to Client */
                 client.Account = account;
-                client.UserGroup = AccountManager.Instance.FindUserGroup(account.UserGroupId);
+                client.UserGroup = await AccountManager.Instance.FindUserGroup(account.UserGroupId);
 
                 if (client.UserGroup == null)
                 {
