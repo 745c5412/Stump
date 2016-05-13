@@ -159,9 +159,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             {
                 effect.Targets =
                     SpellTargetType.ALLY_STATIC_SUMMONS |
-                    SpellTargetType.ALLY_SUMMONS |
-                    SpellTargetType.ENEMY_STATIC_SUMMONS |
-                    SpellTargetType.ENEMY_SUMMONS;
+                    SpellTargetType.ALLY_SUMMONS | (critical ?
+                    (SpellTargetType.ENEMY_STATIC_SUMMONS |
+                    SpellTargetType.ENEMY_SUMMONS) : 0);
             });
 
             #endregion
