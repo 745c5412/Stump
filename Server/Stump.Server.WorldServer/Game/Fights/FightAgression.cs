@@ -7,6 +7,8 @@ using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
+using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -108,8 +110,42 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * ( losersLevel / winnersLevel ));
 
+            var pvpSeek = character.Character.Inventory.GetItems(x => x.Template.Id == (int)ItemIdEnum.OrderofExecution).FirstOrDefault();
+
+            if (pvpSeek != null && ChallengersTeam.Fighters.Contains(character))
+            {
+                var seekEffect = pvpSeek.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek) as EffectString;
+
+                if (seekEffect != null)
+                {
+                    var target = character.OpposedTeam.GetAllFightersWithLeavers<CharacterFighter>().FirstOrDefault(x => x.Name == seekEffect.Text);
+
+                    if (target != null)
+                    {
+                        character.Character.Inventory.RemoveItem(pvpSeek);
+
+                        var peveton = ItemManager.Instance.TryGetTemplate(ItemIdEnum.Stroken);
+
+                        if (Winners == character.Team)
+                        {
+                            character.Character.Inventory.AddItem(peveton, 2);
+                            character.Character.SendServerMessage("Vous avez abattu votre cible avec succès, vous avez gagné 2 Pévétons !");
+                        }
+                        else
+                        {
+                            target.Character.Inventory.AddItem(peveton, 2);
+                            target.Character.SendServerMessage("Vous avez vaincu votre traqueur, vous avez gagné 2 Pévétons !");
+                        }
+                    }
+                }
+                else
+                {
+                    character.Character.Inventory.RemoveItem(pvpSeek);
+                }
+            }
+
             if (Losers == character.Team)
-                delta = -delta;
+                delta = -(character.Character.Honor * 0.10);
 
             return (short) delta;
         }

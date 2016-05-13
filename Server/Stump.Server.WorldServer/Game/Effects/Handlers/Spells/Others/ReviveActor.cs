@@ -45,7 +45,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             if (!Fight.IsCellFree(cell))
                 cell = Map.GetRandomAdjacentFreeCell(TargetedPoint, true);
 
-            actor.RemoveAndDispellAllBuffs();
+            foreach (var stat in actor.Stats.Fields)
+                stat.Value.Context = 0;
 
             HealHpPercent(actor, heal);
             actor.Position.Cell = cell;
@@ -64,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             Caster.Dead -= OnCasterDead;
         }
 
-        private void HealHpPercent(FightActor actor, int percent)
+        void HealHpPercent(FightActor actor, int percent)
         {
             var healAmount = (int)(actor.MaxLifePoints * (percent / 100d));
 

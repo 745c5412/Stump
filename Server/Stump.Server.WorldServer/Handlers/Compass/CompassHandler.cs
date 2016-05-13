@@ -12,6 +12,11 @@ namespace Stump.Server.WorldServer.Handlers.Compass
             client.Send(new CompassUpdatePartyMemberMessage((int)CompassTypeEnum.COMPASS_TYPE_PARTY, (short)character.Map.Position.X, (short)character.Map.Position.Y, character.Id));
         }
 
+        public static void SendCompassUpdatePvpSeekMessage(WorldClient client, Character character)
+        {
+            client.Send(new CompassUpdatePvpSeekMessage((sbyte)CompassTypeEnum.COMPASS_TYPE_PVP_SEEK, (short)character.Map.Position.X, (short)character.Map.Position.Y, character.Id, character.Name));
+        }
+
         public static void SendCompassResetMessage(WorldClient client, CompassTypeEnum type)
         {
             client.Send(new CompassResetMessage((sbyte)type));
