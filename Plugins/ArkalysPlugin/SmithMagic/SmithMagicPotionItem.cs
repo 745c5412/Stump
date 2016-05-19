@@ -59,7 +59,7 @@ namespace ArkalysPlugin.SmithMagic
             {
                 var newEffect = new EffectDice(effectDice) { EffectId = tuple.Item1 };
                 newEffect.DiceFace = (short) (newEffect.DiceFace*boost);
-                newEffect.DiceNum = (short) (newEffect.DiceNum*boost);
+                newEffect.DiceNum = (short) Math.Ceiling((newEffect.DiceNum*boost));
 
                 weapon.Effects.Add(newEffect);
             }

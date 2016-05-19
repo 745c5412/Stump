@@ -258,6 +258,7 @@
     <Compile Include="Database\Npcs\Replies\EndDialogReply.cs" />
     <Compile Include="Database\Npcs\Replies\LightRestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\NpcReply.cs" />
+    <Compile Include="Database\Npcs\Replies\PvPSeekReply.cs" />
     <Compile Include="Database\Npcs\Replies\RestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\SpellResetReply.cs" />
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
@@ -363,6 +364,8 @@
     <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnEmote.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\SeekPlayer.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\SwitchAlignment.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />

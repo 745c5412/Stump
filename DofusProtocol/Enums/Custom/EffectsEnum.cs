@@ -453,7 +453,7 @@
         /// <summary>
         /// Switches alignment
         /// </summary>
-        Effect_188 = 188,
+        Effect_SwitchAlignment = 188,
         /// <summary>
         /// Gain #1{~1~2 to }#2 Kamas
         /// </summary>
