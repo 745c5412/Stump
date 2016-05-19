@@ -232,6 +232,7 @@
     <Compile Include="Collections\LimitedStack.cs" />
     <Compile Include="Collections\LockFreeQueue.cs" />
     <Compile Include="Collections\PriorityQueueB.cs" />
+    <Compile Include="Collections\TimedStack.cs" />
     <Compile Include="Cryptography\Cryptography.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Extensions\FileSizeFormatProvider.cs" />
