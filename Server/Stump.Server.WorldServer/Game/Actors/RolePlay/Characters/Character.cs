@@ -1426,7 +1426,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event GradeChangedHandler GradeChanged;
 
-        private void OnGradeChanged(sbyte currentLevel, int difference)
+        void OnGradeChanged(sbyte currentLevel, int difference)
         {
             Map.Refresh(this);
             RefreshStats();
@@ -1439,11 +1439,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event Action<Character, bool> PvPToggled;
 
-        private void OnPvPToggled()
+        void OnPvPToggled()
         {
             foreach (var item in Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD).Where(item => !item.AreConditionFilled(this)))
             {
                 Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+            }
+
+            if (!PvPEnabled)
+            {
+                var amount = (ushort)Math.Round(Honor * 0.05);
+                SubHonor(amount);
+
+                SendServerMessage($"La désactivation du mode PVP vous a fait perdre <b>{amount}</b> points d'honneur.");
             }
 
             Map.Refresh(this);
@@ -1457,7 +1465,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event Action<Character, AlignmentSideEnum> AligmenentSideChanged;
 
-        private void OnAligmenentSideChanged()
+        void OnAligmenentSideChanged()
         {
             TogglePvPMode(false);
             Map.Refresh(this);

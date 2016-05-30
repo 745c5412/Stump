@@ -29,12 +29,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private void AdjustStats()
         {
             // +1% bonus per level
-            m_stats.Health.Base += (short)( m_stats.Health.Base * ( 1 + ( Summoner.Level / 100d ) ) );
-            m_stats.Intelligence.Base += (short)( m_stats.Intelligence.Base * ( 1 + ( Summoner.Level / 100d ) ) );
-            m_stats.Chance.Base += (short)( m_stats.Chance.Base * ( 1 + ( Summoner.Level / 100d ) ) );
-            m_stats.Strength.Base += (short)( m_stats.Strength.Base * ( 1 + ( Summoner.Level / 100d ) ) );
-            m_stats.Agility.Base += (short)( m_stats.Agility.Base * ( 1 + ( Summoner.Level / 100d ) ) );
-            m_stats.Wisdom.Base += (short)( m_stats.Wisdom.Base * ( 1 + ( Summoner.Level / 100d ) ) );
+            m_stats.Health.Base = (short)( m_stats.Health.Base * ( 1 + ( Summoner.Level / 100d ) ) );
+            m_stats.Intelligence.Base = (short)( m_stats.Intelligence.Base * ( 1 + ( Summoner.Level / 100d ) ) );
+            m_stats.Chance.Base = (short)( m_stats.Chance.Base * ( 1 + ( Summoner.Level / 100d ) ) );
+            m_stats.Strength.Base = (short)( m_stats.Strength.Base * ( 1 + ( Summoner.Level / 100d ) ) );
+            m_stats.Agility.Base = (short)( m_stats.Agility.Base * ( 1 + ( Summoner.Level / 100d ) ) );
+            m_stats.Wisdom.Base = (short)( m_stats.Wisdom.Base * ( 1 + ( Summoner.Level / 100d ) ) );
         }
 
         public override int CalculateArmorValue(int reduction)
