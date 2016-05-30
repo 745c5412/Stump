@@ -90,7 +90,8 @@ namespace Stump.Server.AuthServer.IPC
             Database = new ORM.Database(AuthServer.DatabaseConfiguration.GetConnectionString(),
                                        AuthServer.DatabaseConfiguration.ProviderName)
                                        {
-                                           KeepConnectionAlive = true
+                                           KeepConnectionAlive = true,
+                                           CommandTimeout = (24 * 60 * 60)
                                        };
             Database.OpenSharedConnection();
 
