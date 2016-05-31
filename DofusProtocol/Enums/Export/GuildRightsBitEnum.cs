@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Stump.DofusProtocol.Enums
 {
+    [Flags]
     public enum GuildRightsBitEnum
     {
         GUILD_RIGHT_NONE = 0,

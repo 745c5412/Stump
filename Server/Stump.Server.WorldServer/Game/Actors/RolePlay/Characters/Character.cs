@@ -3134,9 +3134,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         Shortcuts.Save();
                         FriendsBook.Save();
 
-                        if (GuildMember != null && GuildMember.IsDirty)
-                            GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
-
                         if (Mount != null)
                             Mount.Save(WorldServer.Instance.DBAccessor.Database);
 

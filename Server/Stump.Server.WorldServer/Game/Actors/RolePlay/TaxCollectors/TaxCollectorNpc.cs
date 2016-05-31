@@ -389,10 +389,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             return member.Guild.Id == m_record.GuildId;
         }
 
-        public bool IsBusy()
-        {
-            return OpenDialogs.Any(x => x is TaxCollectorExchange);
-        }
+        public bool IsBusy() => OpenDialogs.Any(x => x is TaxCollectorExchange);
 
         protected override void OnDisposed()
         {

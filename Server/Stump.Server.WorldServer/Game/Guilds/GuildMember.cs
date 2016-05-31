@@ -30,18 +30,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Guild = guild;
             Character = character;
             IsDirty = true;
+            IsNew = true;
         }
 
         public GuildMemberRecord Record
         {
             get;
-            private set;
         }
 
-        public int Id
-        {
-            get { return Record.CharacterId; }
-        }
+        public int Id => Record.CharacterId;
 
         /// <summary>
         ///     Null if the character isn't connected.
@@ -52,10 +49,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             private set;
         }
 
-        public bool IsConnected
-        {
-            get { return Character != null; }
-        }
+        public bool IsConnected => Character != null;
 
         public Guild Guild
         {
@@ -103,51 +97,21 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
-        public bool IsBoss
-        {
-            get { return RankId == 1; }
-        }
+        public bool IsBoss => RankId == 1;
 
-        public string Name
-        {
-            get
-            {
-                return Record.Name;
-            }
-        }
+        public string Name => Record.Name;
 
-        public long Experience
-        {
-            get
-            {
-                return Record.Experience;
-            }
-        }
+        public long Experience => Record.Experience;
 
-        public int PrestigeRank
-        {
-            get { return Record.PrestigeRank; }
-        }
+        public int PrestigeRank => Record.PrestigeRank;
 
-        public PlayableBreedEnum Breed
-        {
-            get { return Record.Breed; }
-        }
+        public PlayableBreedEnum Breed => Record.Breed;
 
-        public SexTypeEnum Sex
-        {
-            get { return Record.Sex; }
-        }
+        public SexTypeEnum Sex => Record.Sex;
 
-        public AlignmentSideEnum AlignementSide
-        {
-            get { return Record.AlignementSide; }
-        }
+        public AlignmentSideEnum AlignementSide => Record.AlignementSide;
 
-        public DateTime? LastConnection
-        {
-            get { return Record.LastConnection; }
-        }
+        public DateTime? LastConnection => Record.LastConnection;
 
         /// <summary>
         /// True if must be saved
@@ -158,27 +122,31 @@ namespace Stump.Server.WorldServer.Game.Guilds
             protected set;
         }
 
+        public bool IsNew
+        {
+            get;
+            protected set;
+        }
+
         public NetworkGuildMember GetNetworkGuildMember()
         {
             if (IsConnected)
             {
                 return new NetworkGuildMember(Id, Character.Level, Character.Name, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
-                                              GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
+                                              GivenExperience, (sbyte)GivenPercent, (uint)Rights, 1,
                                               (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, 0,
                                               Record.AccountId, 0);
             }
 
             return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),
                 Name, (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
-                GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
+                GivenExperience, (sbyte)GivenPercent, (uint)Rights, 0,
                 (sbyte)AlignementSide, LastConnection!= null ? (ushort)(DateTime.Now - LastConnection.Value).TotalHours : (ushort)0, 0,
                 Record.AccountId, 0);
         }
 
-        public bool HasRight(GuildRightsBitEnum right)
-        {
-            return Rights == GuildRightsBitEnum.GUILD_RIGHT_BOSS || Rights.HasFlag(right);
-        }
+        public bool HasRight(GuildRightsBitEnum right) => Rights.HasFlag(GuildRightsBitEnum.GUILD_RIGHT_BOSS) ||
+            (Rights.HasFlag(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS) && right != GuildRightsBitEnum.GUILD_RIGHT_BOSS) || Rights.HasFlag(right);
 
         public event Action<GuildMember> Connected;
         public event Action<GuildMember, Character> Disconnected;
@@ -225,8 +193,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public void Save(ORM.Database database)
         {
             WorldServer.Instance.IOTaskPool.ExecuteInContext(() => {
-                database.Update(Record);
+                if (IsNew)
+                    database.Insert(Record);
+                else
+                    database.Update(Record);
+
                 IsDirty = false;
+                IsNew = false;
             });
             
         }
