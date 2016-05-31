@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             return record == null ? "(no name)" : TextManager.Instance.GetText(record.NameId);
         }
 
-        public void AddTaxCollectorSpawn(Character character, bool lazySave = true)
+        public void AddTaxCollectorSpawn(Character character)
         {
             if (!character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_HIRE_TAX_COLLECTOR))
             {
@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return;
             }
 
-            if (character.Guild.TaxCollectors.Count() >= character.Guild.MaxTaxCollectors)
+            if (character.Guild.TaxCollectors.Count >= character.Guild.MaxTaxCollectors)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_MAX_REACHED));
                 return;
@@ -124,10 +124,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), position.Map.GetNextContextualId(), position, character.Guild, character.Name);
 
-            if (lazySave)
-                WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(taxCollectorNpc.Record));
-            else
-                Database.Insert(taxCollectorNpc.Record);
+            WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(taxCollectorNpc.Record));
 
             m_taxCollectorSpawns.Add(taxCollectorNpc.GlobalId, taxCollectorNpc.Record);
             m_activeTaxCollectors.Add(taxCollectorNpc);
@@ -138,14 +135,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, true, taxCollectorNpc, character.Name);
         }
 
-        public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector, bool lazySave = true)
+        public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector)
         {
-            if (lazySave)
-                WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Delete(taxCollector.Record));
-            else
-                Database.Delete(taxCollector.Record);
+            WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Delete(taxCollector.Record));
 
-            taxCollector.Bag.DeleteBag(lazySave);
+            taxCollector.Bag.DeleteBag();
 
             m_taxCollectorSpawns.Remove(taxCollector.GlobalId);
             m_activeTaxCollectors.Remove(taxCollector);

@@ -14,18 +14,11 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         public TaxCollectorNpc Owner
         {
             get;
-            private set;
         }
 
-        public int BagWeight
-        {
-            get { return (int) this.Sum(x => x.Template.RealWeight*x.Stack); }
-        }
+        public int BagWeight => (int)this.Sum(x => x.Template.RealWeight * x.Stack);
 
-        public int BagValue
-        {
-            get { return (int) this.Sum(x => x.Template.Price*x.Stack); }
-        }
+        public int BagValue => (int)this.Sum(x => x.Template.Price * x.Stack);
 
         /// <summary>
         /// Must be saved 
@@ -40,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         {
             IsDirty = true;
 
-            base.OnItemStackChanged(item, difference);
+            base.OnItemStackChanged(item, difference, removeMsg);
         }
 
         protected override void OnItemAdded(TaxCollectorItem item, bool addItemMsg)
@@ -60,10 +53,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             base.OnItemRemoved(item, removeItemMsg);
         }
 
-        public bool MoveToInventory(TaxCollectorItem item, Character character)
-        {
-            return MoveToInventory(item, character, (int)item.Stack);
-        }
+        public bool MoveToInventory(TaxCollectorItem item, Character character) => MoveToInventory(item, character, (int)item.Stack);
 
         public bool MoveToInventory(TaxCollectorItem item, Character character, int quantity)
         {
@@ -91,14 +81,11 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             Items = records.Select(entry => new TaxCollectorItem(entry)).ToDictionary(entry => entry.Guid);
         }
 
-        public void DeleteBag(bool lazySave = true)
+        public void DeleteBag()
         {
             DeleteAll(false);
 
-            if (lazySave)
-                WorldServer.Instance.IOTaskPool.AddMessage(Save);
-            else
-                Save();
+            WorldServer.Instance.IOTaskPool.AddMessage(Save);
         }
 
         public override void Save()

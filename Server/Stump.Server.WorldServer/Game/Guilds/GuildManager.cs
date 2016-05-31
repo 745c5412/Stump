@@ -12,19 +12,19 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
-using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
     public class GuildManager : DataManager<GuildManager>, ISaveable
     {
-        private UniqueIdProvider m_idProvider;
-        private Dictionary<int, Guild> m_guilds;
-        private Dictionary<int, EmblemRecord> m_emblems;
-        private Dictionary<int, GuildMember> m_guildsMembers;
-        private readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
+        UniqueIdProvider m_idProvider;
+        Dictionary<int, Guild> m_guilds;
+        Dictionary<int, EmblemRecord> m_emblems;
+        Dictionary<int, GuildMember> m_guildsMembers;
+        readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
+        readonly Stack<GuildMember> m_membersToDelete = new Stack<GuildMember>();
 
-        private readonly object m_lock = new object();
+        readonly object m_lock = new object();
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
@@ -34,16 +34,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     GuildMemberRelator.FetchQuery).ToDictionary(x => x.CharacterId, x => new GuildMember(x));
 
             var membersByGuilds = m_guildsMembers.Values.GroupBy(x => x.Record.GuildId).ToDictionary(x => x.Key);
-            m_guilds =
-                Database.Query<GuildRecord>(GuildRelator.FetchQuery)
-                        .ToList()
-                        .Select(
-                            x =>
-                                new Guild(x,
-                                    membersByGuilds.ContainsKey(x.Id)
-                                        ? membersByGuilds[x.Id]
-                                        : Enumerable.Empty<GuildMember>()))
-                        .ToDictionary(x => x.Id);
+            m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery)
+                            .Select(x => new Guild(x, membersByGuilds.ContainsKey(x.Id) ? membersByGuilds[x.Id] : Enumerable.Empty<GuildMember>())).ToDictionary(x => x.Id);
+
             m_idProvider = m_guilds.Any()
                 ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max())
                 : new UniqueIdProvider(1);
@@ -51,20 +44,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             World.Instance.RegisterSaveableInstance(this);
         }
 
-        public bool DoesNameExist(string name)
-        {
-            return m_guilds.Any(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase));
-        }
+        public bool DoesNameExist(string name) => m_guilds.Any(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase));
 
-        public bool DoesEmblemExist(NetworkGuildEmblem emblem)
-        {
-            return m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
-        }
+        public bool DoesEmblemExist(NetworkGuildEmblem emblem) => m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
 
-        public bool DoesEmblemExist(GuildEmblem emblem)
-        {
-            return m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
-        }
+        public bool DoesEmblemExist(GuildEmblem emblem) => m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
 
         public Guild TryGetGuild(int id)
         {
@@ -167,9 +151,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void RegisterGuildMember(GuildMember member)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () => Database.Insert(member.Record));
-
             lock (m_lock)
             {
                 m_guildsMembers.Add(member.Id, member);
@@ -178,12 +159,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DeleteGuildMember(GuildMember member)
         {
-            WorldServer.Instance.IOTaskPool.ExecuteInContext(
-                () => Database.Delete(member.Record));
-
             lock (m_lock)
             {
                 m_guildsMembers.Remove(member.Id);
+                m_membersToDelete.Push(member);
+
                 return true;
             }
         }
@@ -202,6 +182,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     var guild = m_guildsToDelete.Pop();
 
                     Database.Delete(guild.Record);
+                }
+
+                while (m_membersToDelete.Count > 0)
+                {
+                    var member = m_membersToDelete.Pop();
+
+                    Database.Delete(member.Record);
                 }
             }
         }
