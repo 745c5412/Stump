@@ -15,6 +15,9 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
+using Stump.Server.BaseServer.Logging;
+using System.Globalization;
+using MongoDB.Bson;
 
 namespace Stump.Server.WorldServer.Game.Social
 {
@@ -154,9 +157,24 @@ namespace Stump.Server.WorldServer.Game.Social
                         ChatHandlers[channel](client, message, objectItems);
                 }
             }
+
+            var document = new BsonDocument
+                    {
+                        { "SenderId", client.Character.Id },
+                        { "SenderName", client.Character.Name },
+                        { "SenderAccountId", client.Account.Id },
+                        { "ReceiverId", 0 },
+                        { "ReceiverName", "" },
+                        { "ReceiverAccountId", 0 },
+                        { "Message", message },
+                        { "Channel", (int)channel },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+            MongoLogger.Instance.Insert("Chats", document);
         }
 
-        private static string UnescapeChatCommand(string command)
+        static string UnescapeChatCommand(string command)
         {
             var sb = new StringBuilder();
 

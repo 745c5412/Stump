@@ -33,11 +33,8 @@ using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using WorldEditor.Helpers;
 using WorldEditor.Helpers.Converters;
-using Binding = System.Windows.Data.Binding;
 using CheckBox = System.Windows.Controls.CheckBox;
-using DataGrid = System.Windows.Controls.DataGrid;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using TextBox = System.Windows.Controls.TextBox;
 
 namespace WorldEditor.Editors.Files.D2O
 {

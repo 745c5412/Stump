@@ -57,7 +57,9 @@ namespace Stump.Server.WorldServer.Commands.Trigger
             var document = new BsonDocument
             {
                 { "AcctId", Character.Account.Id },
+                { "AcctName", Character.Account.Login },
                 { "CharacterId", Character.Id },
+                { "CharacterName", Character.Name },
                 { "Command", BoundCommand.Aliases[0] },
                 { "Parameters", Args.String },
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }

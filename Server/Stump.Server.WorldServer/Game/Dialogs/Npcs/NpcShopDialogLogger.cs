@@ -40,11 +40,13 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             var document = new BsonDocument
             {
                 { "AcctId", Character.Account.Id },
+                { "AcctName", Character.Account.Login },
                 { "CharacterId", Character.Id },
+                { "CharacterName", Character.Name },
                 { "ItemId", itemToSell.ItemId },
+                { "ItemName", itemToSell.Item.Name },
                 { "Amount", amount },
                 { "FinalPrice", (itemToSell.Price * amount) },
-                { "IsToken", Token != null },
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
             };
 
