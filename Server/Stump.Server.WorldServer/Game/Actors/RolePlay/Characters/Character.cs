@@ -135,6 +135,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     Inventory.RemoveItem(item, true, false);
             }
 
+            var document = new BsonDocument
+            {
+                { "AcctId", Account.Id },
+                { "AcctName", Account.Login },
+                { "CharacterId", Id },
+                { "CharacterName", Name },
+                { "IPAddress", Client.IP },
+                { "Action", "Login" },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            MongoLogger.Instance.Insert("characters_connections", document);
+
             var handler = LoggedIn;
             if (handler != null) handler(this);
         }
@@ -168,7 +181,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var document = new BsonDocument
             {
                 { "AcctId", Client.Account.Id },
+                { "AcctName", Client.Account.Login },
                 { "CharacterId", Id },
+                { "CharacterName", Name },
                 { "IPAddress", Client.IP },
                 { "Action", "Loggout" },
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }

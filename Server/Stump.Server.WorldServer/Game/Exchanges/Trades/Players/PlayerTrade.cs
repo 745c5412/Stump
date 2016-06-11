@@ -103,8 +103,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
 
             var document = new BsonDocument
                     {
-                        { "FirstTraderId", FirstTrader.Id },
-                        { "SecondTraderId", SecondTrader.Id },
+                        { "FirstTraderId", FirstTrader.Character.Id },
+                        { "FirstTraderName", FirstTrader.Character.Name },
+                        { "SecondTraderId", SecondTrader.Character.Id },
+                        { "SecondTraderName", SecondTrader.Character.Name },
                         { "FirstTraderKamas", FirstTrader.Kamas },
                         { "SecondTraderKamas", SecondTrader.Kamas },
                         { "FirstTraderItems", FirstTrader.ItemsString },

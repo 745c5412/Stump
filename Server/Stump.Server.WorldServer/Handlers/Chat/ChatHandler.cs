@@ -10,6 +10,9 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Social;
+using MongoDB.Bson;
+using Stump.Server.BaseServer.Logging;
+using System.Globalization;
 
 namespace Stump.Server.WorldServer.Handlers.Chat
 {
@@ -40,6 +43,21 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                             {
                                 if (client.Character.IsAway)
                                     client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
+
+                                var document = new BsonDocument
+                                        {
+                                            { "SenderId", client.Character.Id },
+                                            { "SenderName", client.Character.Name },
+                                            { "SenderAccountId", client.Account.Id },
+                                            { "ReceiverId", chr.Id },
+                                            { "ReceiverName", chr.Name },
+                                            { "ReceiverAccountId", chr.Account.Id },
+                                            { "Message", message.content },
+                                            { "Channel", (int)ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE },
+                                            { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                                        };
+
+                                MongoLogger.Instance.Insert("Chats", document);
 
                                 // send a copy to sender
                                 SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
@@ -99,6 +117,21 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                             {
                                 if (client.Character.IsAway)
                                     client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
+
+                                var document = new BsonDocument
+                                        {
+                                            { "SenderId", client.Character.Id },
+                                            { "SenderName", client.Character.Name },
+                                            { "SenderAccountId", client.Account.Id },
+                                            { "ReceiverId", chr.Id },
+                                            { "ReceiverName", chr.Name },
+                                            { "ReceiverAccountId", chr.Account.Id },
+                                            { "Message", message.content },
+                                            { "Channel", (int)ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE },
+                                            { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                                        };
+
+                                MongoLogger.Instance.Insert("Chats", document);
 
                                 // send a copy to sender
                                 SendChatServerCopyWithObjectMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
