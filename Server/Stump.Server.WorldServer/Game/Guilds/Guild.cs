@@ -306,12 +306,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             TaxCollectorHandler.SendTaxCollectorMovementRemoveMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
-        public void RemoveGuildMember(GuildMember member)
-        {
-            m_members.Remove(member);
-            GuildManager.Instance.DeleteGuildMember(member);
-        }
-
         public void RemoveTaxCollectors()
         {
             foreach (var taxCollector in m_taxCollectors.ToArray())
@@ -324,7 +318,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             foreach (var member in m_members.ToArray())
             {
-                RemoveGuildMember(member);
+                RemoveMember(member);
             }
         }
 
