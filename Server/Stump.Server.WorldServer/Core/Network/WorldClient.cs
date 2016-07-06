@@ -134,6 +134,8 @@ namespace Stump.Server.WorldServer.Core.Network
                     return;
 
                 WorldAccount.ConnectedCharacter = null;
+
+
                 WorldServer.Instance.DBAccessor.Database.Update(WorldAccount);
             });
 

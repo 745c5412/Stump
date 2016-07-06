@@ -260,7 +260,6 @@ namespace Stump.Server.AuthServer.IPC
             account.SecretQuestion = message.Account.SecretQuestion;
             account.SecretAnswer = message.Account.SecretAnswer;
             account.UserGroupId = message.Account.UserGroupId;
-            account.Tokens = message.Account.Tokens;
             account.LastClientKey = message.Account.LastClientKey;
 
             Database.Update(account);

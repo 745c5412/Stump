@@ -244,10 +244,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 ApplyItemSetEffects(itemSet, CountItemSetEquiped(itemSet), true, false);
             }
 
-            if (TokenTemplate == null || !ActiveTokens || Owner.Account.Tokens <= 0)
+            if (TokenTemplate == null || !ActiveTokens || Owner.WorldAccount.Tokens <= 0)
                 return;
 
-            CreateTokenItem(Owner.Account.Tokens);
+            CreateTokenItem(Owner.WorldAccount.Tokens);
         }
 
         internal void LoadPresets()
@@ -324,24 +324,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     database.Delete(preset);
                 }
 
-                // update tokens amount
-                if ((Tokens != null || Owner.Account.Tokens <= 0) && (Tokens == null || Owner.Account.Tokens == Tokens.Stack))
-                {
-                    Owner.IsAuthSynced = true;
-                }
-                else
-                {
-                    Owner.IsAuthSynced = false;
-                    Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
-                    if (updateAccount)
-                    {
-                        IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Owner.Account),
-                            msg =>
-                            {
-                                Owner.OnSaved();
-                            });
-                    }
-                }
+                Owner.WorldAccount.Tokens = Tokens == null ? 0 : (int)Tokens.Stack;
+                if (updateAccount)
+                    database.Update(Owner.WorldAccount);
             }
         }
 
@@ -422,9 +407,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return item.OnRemoveItem() && base.RemoveItem(item, delete, removeItemMsg);
         }
 
-        public void CreateTokenItem(uint amount)
+        public void CreateTokenItem(int amount)
         {
-            Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, (int)amount);
+            Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, amount);
             Items.Add(Tokens.Guid, Tokens); // cannot stack
         }
 
