@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             }
             else
             {
-                Owner.Inventory.CreateTokenItem(wonTokens);
+                Owner.Inventory.CreateTokenItem((int)wonTokens);
             }
 
             WorldServer.Instance.IOTaskPool.AddMessage(() => Owner.Inventory.Save());
