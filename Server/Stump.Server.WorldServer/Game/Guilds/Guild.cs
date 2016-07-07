@@ -593,12 +593,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool KickMember(GuildMember from, GuildMember kickedMember)
         {
-            if (m_members.Count == 1)
-            {
-                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
-                return true;
-            }
-
             var leave = from.Id == kickedMember.Id;
 
             if (!from.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) && !leave)
@@ -758,17 +752,33 @@ namespace Stump.Server.WorldServer.Game.Guilds
             GuildManager.Instance.DeleteGuildMember(member);
             UnBindMemberEvents(member);
 
+            if (Members.Count == 0)
+            {
+                GuildManager.Instance.DeleteGuild(this);
+            }
+            else if (member.IsBoss)
+            {
+                var newBoss = Members.OrderBy(x => x.RankId).FirstOrDefault();
+                if (newBoss != null)
+                {
+                    SetBoss(newBoss);
+
+                    // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
+                    BasicHandler.SendTextInformationMessage(m_clients,
+                        TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199,
+                        newBoss.Name, member.Name, Name);
+                }
+            }
+
             if (!member.IsConnected)
                 return;
 
-            var character = member.Character;
-
-            character.GuildMember = null;
-            character.RefreshActor();
+            member.Character.GuildMember = null;
+            member.Character.RefreshActor();
 
             // Vous avez quitté la guilde.
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
-            GuildHandler.SendGuildLeftMessage(character.Client);
+            member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
+            GuildHandler.SendGuildLeftMessage(member.Character.Client);
         }
 
         protected virtual void OnLevelChanged()
