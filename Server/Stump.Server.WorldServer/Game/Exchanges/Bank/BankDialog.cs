@@ -34,12 +34,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
 
         public void Open()
         {
-            if (Character.CheckBankIsLoaded(() => Character.Area.AddMessage(OpenCallBack)))
-                OpenCallBack();
-        }
-
-        private void OpenCallBack()
-        {
             InventoryHandler.SendExchangeStartedMessage(Character.Client, ExchangeType);
             InventoryHandler.SendStorageInventoryContentMessage(Character.Client, Customer.Character.Bank);
             Character.SetDialoger(Customer);

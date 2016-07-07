@@ -2882,19 +2882,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        public bool CheckBankIsLoaded(Action callBack)
-        {
-            if (Bank.IsLoaded)
-                return true;
-
-            WorldServer.Instance.IOTaskPool.AddMessage(() => { 
-                Bank.LoadRecord();
-                callBack();
-            });
-
-            return false;
-        }
-
         #endregion
 
         #region Drop Items
@@ -3142,8 +3129,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     using (var transaction = WorldServer.Instance.DBAccessor.Database.GetTransaction())
                     {
                         Inventory.Save(false);
-                        if (Bank.IsLoaded)
-                            Bank.Save();
+                        Bank.Save();
                         MerchantBag.Save();
                         Spells.Save();
                         Shortcuts.Save();
@@ -3224,7 +3210,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory.LoadInventory();
             Inventory.LoadPresets();
 
-            Bank = new Bank(this); // lazy loading here !
+            Bank = new Bank(this);
+            Bank.LoadRecord();
 
             MerchantBag = new CharacterMerchantBag(this);
             CheckMerchantModeReconnection();

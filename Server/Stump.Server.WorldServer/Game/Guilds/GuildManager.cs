@@ -34,12 +34,22 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     GuildMemberRelator.FetchQuery).ToDictionary(x => x.CharacterId, x => new GuildMember(x));
 
             var membersByGuilds = m_guildsMembers.Values.GroupBy(x => x.Record.GuildId).ToDictionary(x => x.Key);
-            m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery)
-                            .Select(x => new Guild(x, membersByGuilds.ContainsKey(x.Id) ? membersByGuilds[x.Id] : Enumerable.Empty<GuildMember>())).ToDictionary(x => x.Id);
-
+            m_guilds =
+                Database.Query<GuildRecord>(GuildRelator.FetchQuery)
+                        .Select(
+                            x =>
+                                new Guild(x,
+                                    membersByGuilds.ContainsKey(x.Id)
+                                        ? membersByGuilds[x.Id]
+                                        : Enumerable.Empty<GuildMember>()))
+                        .ToDictionary(x => x.Id);
             m_idProvider = m_guilds.Any()
                 ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max())
                 : new UniqueIdProvider(1);
+
+
+            foreach (var guild in m_guilds.Where(x => x.Value.Members.Count == 0).ToList())
+                DeleteGuild(guild.Value);
 
             World.Instance.RegisterSaveableInstance(this);
         }
