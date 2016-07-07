@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(CharacterSelectionMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionMessage(WorldClient client, CharacterSelectionMessage message)
         {
-            var character = client.Characters.First(entry => entry.Id == message.id);
+            var character = client.Characters.Where(x => !x.IsDeleted).First(entry => entry.Id == message.id);
 
             /* Check null */
             if (character == null)
@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(CharacterSelectionWithRecolorMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionWithRecolorMessage(WorldClient client, CharacterSelectionWithRecolorMessage message)
         {
-            var character = client.Characters.First(entry => entry.Id == message.id);
+            var character = client.Characters.Where(x => !x.IsDeleted).First(entry => entry.Id == message.id);
 
             /* Check null */
             if (character == null)
@@ -177,6 +177,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void CommonCharacterSelection(WorldClient client, CharacterRecord character)
         {
+            if (character.IsDeleted)
+                return;
+
             // Check if we also have a world account
             if (client.WorldAccount == null)
             {
@@ -296,20 +299,18 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 CommonCharacterSelection(client, client.ForceCharacterSelection);
         }
 
-        private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
-        {
-            return (from characterInFight in client.Characters.Where(x => x.LeftFightId != null)
-                    let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value)
-                    where fight != null
-                    let fighter = fight.GetLeaver(characterInFight.Id)
-                    where fighter != null
-                    select characterInFight).FirstOrDefault();
-        }
+        static CharacterRecord FindCharacterFightReconnection(WorldClient client)
+            => (from characterInFight in client.Characters.Where(x => !x.IsDeleted).Where(x => x.LeftFightId != null)
+                let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value)
+                where fight != null
+                let fighter = fight.GetLeaver(characterInFight.Id)
+                where fighter != null
+                select characterInFight).FirstOrDefault();
 
 
         public static void SendCharactersListMessage(WorldClient client)
         {
-            var characters = client.Characters.OrderByDescending(x => x.LastUsage).Select(
+            var characters = client.Characters.Where(x => !x.IsDeleted).OrderByDescending(x => x.LastUsage).Select(
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
@@ -333,7 +334,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             var charactersToRename = new List<int>();
             var unusableCharacters = new List<int>();
 
-            foreach (var characterRecord in client.Characters.OrderByDescending(x => x.LastUsage))
+            foreach (var characterRecord in client.Characters.Where(x => !x.IsDeleted).OrderByDescending(x => x.LastUsage))
             {
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
