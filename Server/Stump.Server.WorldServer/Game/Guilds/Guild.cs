@@ -263,6 +263,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public ReadOnlyCollection<Paddock> Paddocks => m_paddocks.AsReadOnly(); 
 
+        public ReadOnlyCollection<Paddock> Paddocks => m_paddocks.AsReadOnly(); 
+
         public bool IsDirty
         {
             get { return m_isDirty || Emblem.IsDirty; }

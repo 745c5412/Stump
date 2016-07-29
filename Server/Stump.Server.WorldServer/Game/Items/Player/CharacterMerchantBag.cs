@@ -103,6 +103,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (quantity > 0 && quantity < item.Stack)
                 TakeBack(item, (int) (item.Stack - quantity));
 
+            InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.Client, item);
+
             return true;
         }
 
