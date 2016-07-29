@@ -3464,6 +3464,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private readonly List<KeyValuePair<string, Exception>> m_commandsError =
             new List<KeyValuePair<string, Exception>>();
         private Mount m_equippedMount;
+        private Mount m_equippedMount;
 
         public List<KeyValuePair<string, Exception>> CommandsErrors
         {
