@@ -64,6 +64,17 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Moderation;
 using Stump.Server.WorldServer.Handlers.Titles;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using Stump.Server.WorldServer.Database.Mounts;
+using Stump.Server.WorldServer.Game.Interactives;
+using Stump.Server.WorldServer.Game.Interactives.Skills;
+using Stump.Server.WorldServer.Game.Maps.Spawns;
+using Stump.Server.WorldServer.Handlers.Mounts;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
@@ -787,7 +798,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 var playerLook = CustomLookActivated && CustomLook != null ? CustomLook.Clone() : RealLook.Clone();
 
-                var equipedMount = GetEquipedMount();
+                var equipedMount = GetEquippedMountSkin();
                 if (equipedMount != -1)
                 {
                     var mountLook = new ActorLook { BonesID = (short)equipedMount };
@@ -810,11 +821,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                     playerLook = mountLook;
                 }
-                else if (IsRiding())
+                else if (IsRiding)
                 {
-                    var mountLook = Mount.Model.EntityLook.Clone();
+                    var mountLook = EquippedMount.Template.EntityLook.Clone();
 
-                    if (Mount.Behaviors.Contains(MountBehaviorEnum.Caméléone))
+                    if (EquippedMount.Behaviors.Contains((int)MountBehaviorEnum.Caméléone))
                     {
                         Color color1;
                         Color color2;
@@ -1276,29 +1287,206 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Mount
 
-        public Mount Mount
+        private List<Mount> m_stabledMounts = new List<Mount>();
+        private List<Mount> m_publicPaddockedMounts = new List<Mount>();
+        private Queue<Mount> m_releaseMounts = new Queue<Mount>(); 
+
+        public Mount EquippedMount
         {
-            get;
-            set;
+            get { return m_equippedMount; }
+            private set { m_equippedMount = value;
+                Record.EquippedMount = value?.Id;
+
+                if (value == null)
+                    IsRiding = false;
+            }
         }
 
-        public int GetEquipedMount()
+        public bool IsRiding
+        {
+            get { return EquippedMount != null && Record.IsRiding; }
+            private set { Record.IsRiding = value; }
+        }
+
+        public ReadOnlyCollection<Mount> PublicPaddockedMounts => m_publicPaddockedMounts.AsReadOnly();
+        public ReadOnlyCollection<Mount> StabledMounts => m_stabledMounts.AsReadOnly();
+
+        public Mount GetStabledMount(int mountId)
+        {
+            return m_stabledMounts.FirstOrDefault(x => x.Id == mountId);
+        }
+
+        public Mount GetPublicPaddockedMount(int mountId)
+        {
+            return m_publicPaddockedMounts.FirstOrDefault(x => x.Id == mountId);
+        }
+
+        private void LoadMounts()
+        {
+            var database = MountManager.Instance.Database;
+
+            m_stabledMounts = database.Query<MountRecord>(string.Format(MountRecordRelator.FindByOwnerStabled, Id)).Select(x => new Mount(this, x)).ToList();
+            m_publicPaddockedMounts = database.Query<MountRecord>(string.Format(MountRecordRelator.FindByOwnerPublicPaddocked, Id)).Select(x => new Mount(this, x)).ToList();
+
+            if (Record.EquippedMount.HasValue)
+                EquippedMount = new Mount(this, database.Single<MountRecord>(string.Format(MountRecordRelator.FindById, Record.EquippedMount.Value)));
+        }
+
+        private void SaveMounts()
+        {
+            if (EquippedMount != null && (EquippedMount.IsDirty || EquippedMount.Record.IsNew))
+                MountManager.Instance.SaveMount(EquippedMount.Record);
+
+            foreach (var mount in m_publicPaddockedMounts.Where(x => x.IsDirty || x.Record.IsNew))
+                MountManager.Instance.SaveMount(mount.Record);
+
+            foreach (var mount in m_stabledMounts.Where(x => x.IsDirty || x.Record.IsNew))
+                MountManager.Instance.SaveMount(mount.Record);
+
+            while (m_releaseMounts.Count > 0)
+            {
+                var deletedMount = m_releaseMounts.Dequeue();
+                MountManager.Instance.DeleteMount(deletedMount.Record);
+            }
+        }
+
+        public void AddStabledMount(Mount mount)
+        {
+            mount.Owner = this;
+            m_stabledMounts.Add(mount);
+        }
+
+        public void RemoveStabledMount(Mount mount)
+        {
+            m_stabledMounts.Remove(mount);
+        }
+
+        public void AddPublicPaddockedMount(Mount mount)
+        {
+            m_publicPaddockedMounts.Add(mount);
+        }
+
+        public void RemovePublicPaddockedMount(Mount mount)
+        {
+            m_publicPaddockedMounts.Remove(mount);
+        }
+
+        public void SetOwnedMount(Mount mount)
+        {
+            mount.Owner = this;
+        }
+
+        public int GetEquippedMountSkin()
         {
             var petSkin = Inventory.GetPetSkin();
-            return (petSkin != null && petSkin.Item1.HasValue && !petSkin.Item2) ? petSkin.Item1.Value : -1;
+            return (petSkin?.Item1 != null && !petSkin.Item2) ? petSkin.Item1.Value : -1;
         }
 
-        public bool HasEquipedMount()
+        public bool HasEquippedMount()
         {
-            return Mount != null;
+            return EquippedMount != null;
         }
-
-        public bool IsRiding()
+        
+        public bool EquipMount(Mount mount)
         {
-            return HasEquipedMount() && Mount.IsRiding;
+            if (mount.Owner != this)
+                return false;
+
+            EquippedMount = mount;
+
+            MountHandler.SendMountSetMessage(Client, mount.GetMountClientData());
+            MountHandler.SendMountXpRatioMessage(Client, mount.GivenExperience);
+            return true;
         }
 
-        #endregion
+        public void UnEquipMount()
+        {
+            if (EquippedMount != null)
+            {
+                Dismount();
+                EquippedMount = null;
+
+                MountHandler.SendMountUnSetMessage(Client);
+                //MountHandler.SendMountReleaseMessage(Client, EquippedMount.Id);
+
+            }
+        }
+
+        public bool ReleaseMount()
+        {
+            if (EquippedMount == null)
+                return false;
+
+            var mount = EquippedMount;
+            UnEquipMount();
+
+            MountHandler.SendMountReleaseMessage(Client, mount.Id);
+            m_releaseMounts.Enqueue(mount);
+            return true;
+        }
+
+        public bool RideMount()
+        {
+            return !IsRiding && ToggleRiding();
+        }
+
+        public bool Dismount()
+        {
+            return IsRiding && ToggleRiding();
+        }
+
+        public bool ToggleRiding()
+        {
+            if (EquippedMount == null)
+                return false;
+
+            if (Level < Mount.RequiredLevel)
+            {
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 227, Mount.RequiredLevel);
+                return false;
+            }
+
+             if (IsBusy() || IsInFight())
+            {
+                //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
+                BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
+                return false;
+            }
+
+            if (!IsRiding && !Map.Outdoor && !Map.SpawningPools.Any(x => x is DungeonSpawningPool))
+            {
+                //Impossible d'être sur une monture à l'intérieur d'une maison.
+                BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 117);
+
+                return false;
+            }
+
+            IsRiding = !IsRiding;
+
+            RefreshActor();
+
+            MountHandler.SendMountRidingMessage(Client, IsRiding);
+
+            if (IsRiding)
+            {
+                var pet = Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
+                if (pet != null)
+                    Inventory.MoveItem(pet, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
+                EquippedMount.ApplyMountEffects();
+            }            
+            else
+            {
+                //Vous descendez de votre monture.
+                BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+
+                EquippedMount.UnApplyMountEffects();
+            }
+
+            return true;
+        }
+
+        #endregion Mount
 
         #region Guild
 
@@ -2038,8 +2226,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             else if (!MustBeJailed() && IsInJail() && !IsGameMaster())
                 Teleport(Breed.GetStartPosition());
 
-            if (IsRiding() && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
-                Mount.Dismount(this);
+            if (IsRiding && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
+                Dismount();
 
             base.OnEnterMap(map);
         }
@@ -2860,7 +3048,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
            foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
             {
-                merchant.Save();
+                merchant.Save(WorldServer.Instance.DBAccessor.Database);
 
                 if (merchant.Record.CharacterId != Id)
                     continue;
@@ -3129,20 +3317,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             try
             {
                 WorldServer.Instance.IOTaskPool.EnsureContext();
+                var database = WorldServer.Instance.DBAccessor.Database;
 
                 lock (SaveSync)
                 {
-                    using (var transaction = WorldServer.Instance.DBAccessor.Database.GetTransaction())
+                    using (var transaction = database.GetTransaction())
                     {
-                        Inventory.Save(false);
-                        Bank.Save();
-                        MerchantBag.Save();
+                        Inventory.Save(database, false);
+                        Bank.Save(database);
+                        MerchantBag.Save(database);
                         Spells.Save();
                         Shortcuts.Save();
                         FriendsBook.Save();
 
-                        if (Mount != null)
-                            Mount.Save(WorldServer.Instance.DBAccessor.Database);
+                        SaveMounts();
 
                         m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
                         m_record.CellId = Cell.Id;
@@ -3160,8 +3348,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         m_record.DamageTaken = Stats.Health.DamageTaken;
 
 
-                        WorldServer.Instance.DBAccessor.Database.Update(m_record);
-                        WorldServer.Instance.DBAccessor.Database.Update(Client.WorldAccount);
+                        database.Update(m_record);
+                        database.Update(Client.WorldAccount);
 
                         transaction.Complete();
                     }
@@ -3228,7 +3416,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             UpdateLook(false);
 
-            Mount = MountManager.Instance.TryGetMountByCharacterId(Id) != null ? new Mount(this) : null;
+            LoadMounts();
 
             Spells = new SpellInventory(this);
             Spells.LoadSpells();
@@ -3275,6 +3463,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private readonly List<KeyValuePair<string, Exception>> m_commandsError =
             new List<KeyValuePair<string, Exception>>();
+        private Mount m_equippedMount;
 
         public List<KeyValuePair<string, Exception>> CommandsErrors
         {
