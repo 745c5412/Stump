@@ -44,6 +44,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
+            if (Record.PaddockId != null)
+                Paddock = PaddockManager.Instance.GetPaddock(Record.PaddockId.Value);
             m_effects = MountManager.Instance.GetMountEffects(this);
 
             Owner = character;
@@ -55,6 +57,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
+            
+            if (Record.PaddockId != null)
+                Paddock = PaddockManager.Instance.GetPaddock(Record.PaddockId.Value);
             m_effects = MountManager.Instance.GetMountEffects(this);
         }
 
