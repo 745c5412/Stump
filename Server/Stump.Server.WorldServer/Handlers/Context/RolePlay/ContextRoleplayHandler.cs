@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 SendObjectGroundAddedMessage(client, objectItem);
             }
 
-            var paddock = PaddockManager.Instance.GetPaddock(message.mapId);
+            var paddock = PaddockManager.Instance.GetPaddockByMap(message.mapId);
             if (paddock != null)
                 client.Send(paddock.GetPaddockPropertiesMessage());
         }
