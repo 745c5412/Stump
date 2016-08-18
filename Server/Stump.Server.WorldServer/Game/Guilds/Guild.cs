@@ -67,6 +67,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private readonly List<GuildMember> m_members = new List<GuildMember>();
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>();
+        private readonly List<Paddock> m_paddocks = new List<Paddock>();
         private readonly Spell[] m_spells = new Spell[TAX_COLLECTOR_SPELLS.Length];
         private bool m_isDirty;
 

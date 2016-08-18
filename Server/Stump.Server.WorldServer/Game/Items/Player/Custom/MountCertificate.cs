@@ -11,7 +11,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemType(ItemTypeEnum.CERTIFICAT_DE_MONTURE)]
+    [ItemType(ItemTypeEnum.MOUNT_CERTIFICATE)]
     public class MountCertificate : BasePlayerItem
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
