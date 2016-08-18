@@ -3329,7 +3329,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         Spells.Save();
                         Shortcuts.Save();
                         FriendsBook.Save();
-                        Jobs.Save(database);
 
                         SaveMounts();
 
