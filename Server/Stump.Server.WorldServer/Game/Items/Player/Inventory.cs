@@ -274,27 +274,26 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }*/
         }
 
-        public override void Save(ORM.Database database)
+        public override void Save()
         {
-            Save(database, true);
+            Save(true);
         }
 
-        public void Save(ORM.Database database, bool updateAccount)
+        public void Save(bool updateAccount)
         {
             lock (Locker)
             {
+                var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items.Where(item => Tokens == null || item.Value != Tokens).Where(item => !item.Value.IsTemporarily))
                 {
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);
-                        item.Value.OnPersistantItemAdded();
                         item.Value.Record.IsNew = false;
                     }
                     else if (item.Value.Record.IsDirty)
                     {
                         database.Update(item.Value.Record);
-                        item.Value.OnPersistantItemUpdated();
                     }
                 }
 
@@ -316,7 +315,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     var item = ItemsToDelete.Dequeue();
 
                     database.Delete(item.Record);
-                    item.OnPersistantItemDeleted();
                 }
 
                 while (PresetsToDelete.Count > 0)

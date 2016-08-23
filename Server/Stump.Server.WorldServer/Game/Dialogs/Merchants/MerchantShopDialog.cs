@@ -92,7 +92,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
 
             Character.Client.Send(new ExchangeBuyOkMessage());
 
-            Merchant.Save(MerchantManager.Instance.Database);
+            Merchant.Save();
             Character.SaveLater();
 
             return true;

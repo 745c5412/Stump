@@ -28,6 +28,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 Owner.Inventory.CreateTokenItem((int)wonTokens);
             }
 
+            WorldServer.Instance.IOTaskPool.AddMessage(() => Owner.Inventory.Save());
             Owner.SendServerMessage(string.Format("Vous avez reçu {0} Jetons en utilisant votre {1}", wonTokens, Template.Name));
 
             return 1;

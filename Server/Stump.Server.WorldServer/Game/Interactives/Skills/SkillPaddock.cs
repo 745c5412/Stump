@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             if (character.IsBusy())
                 return;
 
-            var paddock = PaddockManager.Instance.GetPaddockByMap(InteractiveObject.Map.Id);
+            var paddock = PaddockManager.Instance.GetPaddock(InteractiveObject.Map.Id);
             if (paddock == null)
                 return;
 

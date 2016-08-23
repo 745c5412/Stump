@@ -479,7 +479,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             merchantBag.Where(x => x.Stack > 0).Select(x => x.GetObjectItemToSell())));
         }
 
-        public static void SendExchangeStartOkMountMessage(IPacketReceiver client, IEnumerable<Mount> stabledMounts, IEnumerable<Mount> paddockedMounts)
+        public static void SendExchangeStartOkMountMessage(IPacketReceiver client, List<Mount> stabledMounts, List<Mount> paddockedMounts)
         {
             client.Send(new ExchangeStartOkMountMessage(stabledMounts.Select(x => x.GetMountClientData()), paddockedMounts.Select(x => x.GetMountClientData())));
         }

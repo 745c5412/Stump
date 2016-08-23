@@ -17,10 +17,6 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             get;
         }
-
-        void OnPersistantItemAdded();
-        void OnPersistantItemUpdated();
-        void OnPersistantItemDeleted();
     }
 
     public interface IItem
@@ -133,18 +129,6 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         public abstract ObjectItem GetObjectItem();
-
-        public virtual void OnPersistantItemAdded()
-        {
-        }
-
-        public virtual void OnPersistantItemUpdated()
-        {
-        }
-
-        public virtual void OnPersistantItemDeleted()
-        {
-        }
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()
         {

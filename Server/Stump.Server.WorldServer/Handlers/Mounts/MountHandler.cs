@@ -1,5 +1,4 @@
-﻿using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
@@ -13,52 +12,51 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
         [WorldHandler(MountToggleRidingRequestMessage.Id)]
         public static void HandleMountToggleRidingRequestMessage(WorldClient client, MountToggleRidingRequestMessage message)
         {
-            if (client.Character.HasEquippedMount())
-                client.Character.ToggleRiding();
+            if (client.Character.HasEquipedMount())
+                client.Character.Mount.ToggleRiding(client.Character);
         }
 
         [WorldHandler(MountRenameRequestMessage.Id)]
         public static void HandleMountRenameRequestMessage(WorldClient client, MountRenameRequestMessage message)
         {
-            if (client.Character.HasEquippedMount())
-                client.Character.EquippedMount.RenameMount(message.name);
+            if (client.Character.HasEquipedMount())
+                client.Character.Mount.RenameMount(client.Character, message.name);
         }
 
         [WorldHandler(MountReleaseRequestMessage.Id)]
         public static void HandleMountReleaseRequestMessage(WorldClient client, MountReleaseRequestMessage message)
         {
-            if (client.Character.HasEquippedMount())
-                client.Character.ReleaseMount();
+            if (client.Character.HasEquipedMount())
+                client.Character.Mount.Release(client.Character);
         }
 
         [WorldHandler(MountSterilizeRequestMessage.Id)]
         public static void HandleMountSterilizeRequestMessage(WorldClient client, MountSterilizeRequestMessage message)
         {
-            if (client.Character.HasEquippedMount())
-                client.Character.EquippedMount.Sterelize(client.Character);
+            if (client.Character.HasEquipedMount())
+                client.Character.Mount.Sterelize(client.Character);
         }
 
         [WorldHandler(MountSetXpRatioRequestMessage.Id)]
         public static void HandleMountSetXpRatioRequestMessage(WorldClient client, MountSetXpRatioRequestMessage message)
         {
-            if (client.Character.HasEquippedMount())
-                client.Character.EquippedMount.SetGivenExperience(client.Character, message.xpRatio);
+            if (client.Character.HasEquipedMount())
+                client.Character.Mount.SetGivenExperience(client.Character, message.xpRatio);
         }
 
         [WorldHandler(MountInformationRequestMessage.Id)]
         public static void HandleMountInformationRequestMessage(WorldClient client, MountInformationRequestMessage message)
         {
-            var record = MountManager.Instance.GetMount((int) message.id);
-
-            if (record == null)
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                client.Send(new MountDataErrorMessage(-1));
-                return;
-            }
+                var record = MountManager.Instance.TryGetMount((int) message.id);
+                if (record == null)
+                    return;
 
-            var mount = new Mount(record);
-            
-            SendMountDataMessage(client, mount.GetMountClientData());
+                var mount = new Mount(record);
+
+                SendMountDataMessage(client, mount.GetMountClientData());
+            });
         }
 
         public static void SendMountDataMessage(IPacketReceiver client, MountClientData mountClientData)
@@ -83,7 +81,7 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
 
         public static void SendMountRenamedMessage(WorldClient client, int mountId, string name)
         {
-            if (client.Character.HasEquippedMount())
+            if (client.Character.HasEquipedMount())
                 client.Send(new MountRenamedMessage(mountId, name));
         }
 
@@ -99,8 +97,13 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
 
         public static void SendMountXpRatioMessage(WorldClient client, sbyte xp)
         {
-            if (client.Character.HasEquippedMount())
+            if (client.Character.HasEquipedMount())
                 client.Send(new MountXpRatioMessage(xp));
+        }
+
+        public static void SendMountReleasedMessage(IPacketReceiver client, int mountId)
+        {
+            client.Send(new MountReleasedMessage());
         }
     }
 }

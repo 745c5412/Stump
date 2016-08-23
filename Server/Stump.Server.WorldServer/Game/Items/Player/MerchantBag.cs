@@ -131,9 +131,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Items = records.Select(entry => new MerchantItem(entry)).ToDictionary(entry => entry.Guid);
         }
 
-        public override void Save(ORM.Database database)
+        public override void Save()
         {
-            base.Save(database);
+            base.Save();
 
             IsDirty = false;
         }

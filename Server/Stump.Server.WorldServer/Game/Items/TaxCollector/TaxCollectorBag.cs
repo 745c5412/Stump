@@ -84,15 +84,16 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         public void DeleteBag()
         {
             DeleteAll(false);
-            WorldServer.Instance.IOTaskPool.AddMessage(() => Save(WorldServer.Instance.DBAccessor.Database));
+
+            WorldServer.Instance.IOTaskPool.AddMessage(Save);
         }
 
-        public override void Save(ORM.Database database)
+        public override void Save()
         {        
             if (WorldServer.Instance.IsInitialized)    
                 WorldServer.Instance.IOTaskPool.EnsureContext();
 
-            base.Save(database);
+            base.Save();
 
             IsDirty = false;
         }

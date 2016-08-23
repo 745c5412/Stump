@@ -206,15 +206,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
-            if (!Owner.HasEquippedMount())
+            if (!Owner.HasEquipedMount())
                 return 0;
 
-            if (Owner.EquippedMount.Behaviors.Contains((int)MountBehaviorEnum.Caméléone))
+            if (Owner.Mount.Behaviors.Contains(MountBehaviorEnum.Caméléone))
                 return 0;
 
-            Owner.EquippedMount.AddBehavior(MountBehaviorEnum.Caméléone);
+            Owner.Mount.AddBehavior(MountBehaviorEnum.Caméléone);
 
-            MountHandler.SendMountSetMessage(Owner.Client, Owner.EquippedMount.GetMountClientData());
+            MountHandler.SendMountSetMessage(Owner.Client, Owner.Mount.GetMountClientData());
 
             return 1;
         }

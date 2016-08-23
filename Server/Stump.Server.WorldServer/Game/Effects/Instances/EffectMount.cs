@@ -1,8 +1,5 @@
 ﻿using System;
-using ServiceStack.Text;
-using Stump.Core.Extensions;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
@@ -11,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
     public class EffectMount : EffectBase
     {
         protected double m_date;
-        protected int m_modelId;
+        protected short m_modelId;
         protected int m_mountId;
 
         public EffectMount()
@@ -33,12 +30,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_modelId = (short) modelid;
         }
 
-        public EffectMount(EffectsEnum effect, int mountid, DateTime date, int modelId)
-            : this((short)effect, mountid, date.GetUnixTimeStampLong(), modelId, new EffectBase())
-        {
-            
-        }
-
         public EffectMount(EffectInstanceMount effect)
             : base(effect)
         {
@@ -46,31 +37,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
            m_date = effect.date;
            m_modelId = (short) effect.modelId;
         }
-        
-        public int MountId
+
+        public override int ProtocoleId
         {
-            get { return m_mountId; }
-            set { m_mountId = value; }
+            get { return 179; }
         }
 
-        public DateTime Date
+        public override byte SerializationIdenfitier
         {
-            get { return ((long)m_date).FromUnixTimeMs(); }
-            set { m_date = value.GetUnixTimeStampLong(); }
-        }
-
-        public int ModelId
-        {
-            get { return m_modelId; }
-            set
+            get
             {
-                m_modelId = value;
+                return 9;
             }
         }
-
-        public override int ProtocoleId => 179;
-
-        public override byte SerializationIdenfitier => 9;
 
         public override object[] GetValues()
         {
@@ -79,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override ObjectEffect GetObjectEffect()
         {
-            return new ObjectEffectMount(Id, m_mountId, m_date, (short)m_modelId);
+            return new ObjectEffectMount(Id, m_mountId, m_date, m_modelId);
         }
         public override EffectInstance GetEffectInstance()
         {
@@ -119,9 +98,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             base.InternalDeserialize(ref reader);
 
-            m_mountId = reader.ReadInt32();
+            m_mountId = reader.ReadInt16();
             m_date = reader.ReadDouble();
-            m_modelId = reader.ReadInt32();
+            m_modelId = reader.ReadInt16();
+            m_modelId = reader.ReadInt16();//TODO: Ugly fix (Position mismatch)
         }
 
         public override bool Equals(object obj)
