@@ -4,6 +4,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Misc;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -30,6 +31,43 @@ namespace Stump.Server.WorldServer.Commands.Commands
                                 : string.Format("(ANNOUNCE) {0}", msg);
 
             World.Instance.SendAnnounce(formatMsg, color);
+        }
+    }
+
+    public class AutoAnnounceCommand : CommandBase
+    {
+        public AutoAnnounceCommand()
+        {
+            Aliases = new[] {"autoannounce"};
+            Description = "Add an auto announce";
+            RequiredRole = RoleEnum.GameMaster;
+            AddParameter<string>("message", "msg");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var msg = trigger.Get<string>("msg");
+
+            trigger.Reply($"Announce {AutoAnnounceManager.Instance.AddAnnounce(msg)} added");
+        }
+    }
+
+    public class AutoAnnounceRemoveCommand : CommandBase
+    {
+        public AutoAnnounceRemoveCommand()
+        {
+            Aliases = new[] {"autoannounceremove"};
+            Description = "Remove an auto announce";
+            RequiredRole  = RoleEnum.GameMaster;
+            AddParameter<int>("id", "id");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var id = trigger.Get<int>("id");
+
+            if (AutoAnnounceManager.Instance.RemoveAnnounce(id))
+                trigger.Reply($"Announce {id} removed");
         }
     }
 }
