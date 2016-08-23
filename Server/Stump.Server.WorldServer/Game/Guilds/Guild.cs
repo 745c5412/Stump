@@ -14,7 +14,6 @@ using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
@@ -55,10 +54,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             (short) SpellIdEnum.ARMURE_INCANDESCENTE_452,
             (short) SpellIdEnum.COMPULSION_DE_MASSE,
         };
-        public const int TAX_COLLECTOR_MAX_PODS = 5000;
-        public const int TAX_COLLECTOR_MAX_PROSPECTING = 500;
-        public const int TAX_COLLECTOR_MAX_TAX = 50;
-        public const int TAX_COLLECTOR_MAX_WISDOM = 400;
 
         [Variable(true)] public static int MaxMembersNumber = 50;
 
@@ -67,9 +62,34 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private readonly List<GuildMember> m_members = new List<GuildMember>();
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>();
-        private readonly List<Paddock> m_paddocks = new List<Paddock>();
         private readonly Spell[] m_spells = new Spell[TAX_COLLECTOR_SPELLS.Length];
         private bool m_isDirty;
+
+        public Guild(int id, string name)
+        {
+            Record = new GuildRecord();
+
+            Id = id;
+            Name = name;
+            Level = 1;
+            Boost = 0;
+            TaxCollectorProspecting = 100;
+            TaxCollectorWisdom = 0;
+            TaxCollectorPods = 1000;
+            MaxTaxCollectors = 1;
+            ExperienceLevelFloor = 0;
+            ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
+            Record.CreationDate = DateTime.Now;
+            Record.IsNew = true;
+            Emblem = new GuildEmblem(Record)
+            {
+                BackgroundColor = Color.White,
+                BackgroundShape = 1,
+                SymbolColor = Color.Black,
+                SymbolShape = 1,
+            };
+            IsDirty = true;
+        }
 
         public Guild(GuildRecord record, IEnumerable<GuildMember> members)
         {
@@ -80,7 +100,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
             Emblem = new GuildEmblem(Record);
 
-            if (m_members.Count == 0 && !record.IsNew)
+            if (m_members.Count == 0)
             {
                 logger.Error("Guild {0} ({1}) is empty", Id, Name);
                 return;
@@ -92,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 member.BindGuild(this);
             }
 
-            if (Boss == null && !record.IsNew)
+            if (Boss == null)
             {
                 logger.Error("There is at no boss in guild {0} ({1}) -> Promote new Boss", Id, Name);
                 var newBoss = Members.OrderBy(x => x.RankId).FirstOrDefault();
@@ -261,8 +281,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             get { return (short) (1000 + (Level*100)); }
         }
 
-        public ReadOnlyCollection<Paddock> Paddocks => m_paddocks.AsReadOnly(); 
-
         public bool IsDirty
         {
             get { return m_isDirty || Emblem.IsDirty; }
@@ -347,7 +365,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool UpgradeTaxCollectorPods()
         {
-            if (TaxCollectorPods >= TAX_COLLECTOR_MAX_PODS)
+            if (TaxCollectorPods >= 5000)
                 return false;
 
             if (Boost <= 0)
@@ -356,15 +374,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Boost -= 1;
             TaxCollectorPods += 20;
 
-            if (TaxCollectorPods > TAX_COLLECTOR_MAX_PODS)
-                TaxCollectorPods = TAX_COLLECTOR_MAX_PODS;
+            if (TaxCollectorPods > 5000)
+                TaxCollectorPods = 5000;
 
             return true;
         }
 
         public bool UpgradeTaxCollectorProspecting()
         {
-            if (TaxCollectorProspecting >= TAX_COLLECTOR_MAX_PROSPECTING)
+            if (TaxCollectorProspecting >= 500)
                 return false;
 
             if (Boost <= 0)
@@ -373,15 +391,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Boost -= 1;
             TaxCollectorProspecting += 1;
 
-            if (TaxCollectorProspecting > TAX_COLLECTOR_MAX_PROSPECTING)
-                TaxCollectorProspecting = TAX_COLLECTOR_MAX_PROSPECTING;
+            if (TaxCollectorProspecting > 500)
+                TaxCollectorProspecting = 500;
 
             return true;
         }
 
         public bool UpgradeTaxCollectorWisdom()
         {
-            if (TaxCollectorWisdom >= TAX_COLLECTOR_MAX_WISDOM)
+            if (TaxCollectorWisdom >= 400)
                 return false;
 
             if (Boost <= 0)
@@ -390,15 +408,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Boost -= 1;
             TaxCollectorWisdom += 1;
 
-            if (TaxCollectorWisdom > TAX_COLLECTOR_MAX_WISDOM)
-                TaxCollectorWisdom = TAX_COLLECTOR_MAX_WISDOM;
+            if (TaxCollectorWisdom > 400)
+                TaxCollectorWisdom = 400;
 
             return true;
         }
 
         public bool UpgradeMaxTaxCollectors()
         {
-            if (MaxTaxCollectors >= TAX_COLLECTOR_MAX_TAX)
+            if (MaxTaxCollectors >= 50)
                 return false;
 
             if (Boost < 10)
@@ -407,8 +425,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Boost -= 10;
             MaxTaxCollectors += 1;
 
-            if (MaxTaxCollectors > TAX_COLLECTOR_MAX_TAX)
-                MaxTaxCollectors = TAX_COLLECTOR_MAX_TAX;
+            if (MaxTaxCollectors > 50)
+                MaxTaxCollectors = 50;
 
             return true;
         }
@@ -653,9 +671,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
                 foreach (var member in Members.Where(x => x.IsDirty || x.IsNew))
                     member.Save(database);
-
-                foreach (var paddock in Paddocks)
-                    paddock.Save(database);
             });
         }
 

@@ -661,24 +661,6 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public int? EquippedMount
-        {
-            get;
-            set;
-        }
-
-        public bool IsRiding
-        {
-            get;
-            set;
-        }
-
-        public PlayerLifeStatusEnum PlayerLifeStatus
-        {
-            get;
-            set;
-        }
-
         public DateTime? DeletedDate
         {
             get;

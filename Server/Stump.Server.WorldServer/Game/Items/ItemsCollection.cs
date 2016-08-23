@@ -11,22 +11,21 @@ namespace Stump.Server.WorldServer.Game.Items
 {
     public class PersistantItemsCollection<T> : ItemsCollection<T> where T : IPersistantItem
     {
-        public virtual void Save(ORM.Database database)
+        public virtual void Save()
         {
             lock (Locker)
             {
+                var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items.Where(item => !item.Value.IsTemporarily))
                 {
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);
-                        item.Value.OnPersistantItemAdded();
                         item.Value.Record.IsNew = false;
                     }
                     else if (item.Value.Record.IsDirty)
                     {
                         database.Update(item.Value.Record);
-                        item.Value.OnPersistantItemUpdated();
                     }
                 }
 
@@ -35,7 +34,6 @@ namespace Stump.Server.WorldServer.Game.Items
                     var item = ItemsToDelete.Dequeue();
 
                     database.Delete(item.Record);
-                    item.OnPersistantItemDeleted();
                 }
             }
         }

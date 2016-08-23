@@ -372,7 +372,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             WorldServer.Instance.IOTaskPool.EnsureContext();
 
             if (Bag.IsDirty)
-                Bag.Save(GuildManager.Instance.Database);
+                Bag.Save();
 
             WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Update(m_record));
         }
