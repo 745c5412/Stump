@@ -1096,6 +1096,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return Items.Values.Where(entry => entry.Position == position).ToArray();
         }
 
+        public BasePlayerItem[] GetItems() => Items.Values.ToArray();
+
         public BasePlayerItem[] GetItems(Predicate<BasePlayerItem> predicate) => Items.Values.Where(entry => predicate(entry)).ToArray();
 
         public BasePlayerItem[] GetEquipedItems()
