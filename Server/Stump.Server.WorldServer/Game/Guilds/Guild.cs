@@ -261,7 +261,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             get { return (short) (1000 + (Level*100)); }
         }
 
-        public ReadOnlyCollection<Paddock> Paddocks => m_paddocks.AsReadOnly(); 
 
         public ReadOnlyCollection<Paddock> Paddocks => m_paddocks.AsReadOnly(); 
 

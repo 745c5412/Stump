@@ -11,7 +11,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemType(ItemTypeEnum.CERTIFICAT_DE_MONTURE)]
+    [ItemType(ItemTypeEnum.MOUNT_CERTIFICATE)]
     public class MountCertificate : BasePlayerItem
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -67,7 +67,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
                 var record = MountManager.Instance.GetMount(m_mountEffect.MountId);
 
-                if (Record == null)
+                if (record != null)
+                    Mount = new Mount(Owner, record);
+
+                if (Mount == null)
                 {
                     logger.Error($"Invalid certificate mount id {m_mountEffect.MountId} doesn't exist");
                     CreateMount();
