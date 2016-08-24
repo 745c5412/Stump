@@ -20,12 +20,12 @@ namespace Stump.Server.WorldServer.Game.Misc
         public override void Initialize()
         {
             m_announces = Database.Query<AutoAnnounceMessage>(AutoAnnounceMessageRelator.FecthQuery).ToDictionary(x => x.Id);
-            WorldServer.Instance.IOTaskPool.CallPeriodically(AnnouncesDelaySeconds*1000, PromptNextAnnounce);
+            WorldServer.Instance.IOTaskPool.CallPeriodically(AnnouncesDelaySeconds * 1000, PromptNextAnnounce);
         }
 
         public int AddAnnounce(string message, Color? color = null)
         {
-            var announce = new AutoAnnounceMessage {Color = color?.ToArgb(), Message = message};
+            var announce = new AutoAnnounceMessage { Color = color?.ToArgb(), Message = message };
             announce.AssignIdentifier();
 
 
@@ -48,7 +48,12 @@ namespace Stump.Server.WorldServer.Game.Misc
 
         public void PromptNextAnnounce()
         {
-            var announce = m_announces.Values.FirstOrDefault(x => x.Id > m_lastId);
+            AutoAnnounceMessage announce = null;
+
+            if (m_lastId >= m_announces.Keys.Max())
+                announce = m_announces.Values.OrderBy(x => x.Id).FirstOrDefault();
+            else
+                announce = m_announces.Values.FirstOrDefault(x => x.Id > m_lastId);
 
             if (announce == null)
                 return;
@@ -65,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Misc
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
                 World.Instance.ForEachCharacter(character =>
                 {
-                    var msg = character.IsGameMaster() ? announce.Message : $"(ID = {announce.Id}) {announce.Message}";
+                    var msg = character.IsGameMaster() ? $"(ANNOUNCE)[ID = {announce.Id}] {announce.Message}" : $"(ANNOUNCE) {announce.Message}";
 
                     if (color != null)
                         character.SendServerMessage(msg, color.Value);
