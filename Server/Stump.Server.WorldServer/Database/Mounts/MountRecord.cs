@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FindById = "SELECT * FROM mounts WHERE Id={0}";
+        public static string FindById = "SELECT * FROM mounts WHERE Id = {0}";
 
         public static string FindByOwner = "SELECT * FROM mounts WHERE OwnerId = {0}";
         

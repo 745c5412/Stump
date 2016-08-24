@@ -406,9 +406,12 @@ namespace Stump.Server.WorldServer.Core.IPC
                 }
                 catch (Exception ex)
                 {
-                    reader.Seek(dataPos, SeekOrigin.Begin);
                     logger.Debug("Message = {0}", m_messagePart.Data.ToString(" "));
                     logger.Error("Error while deserializing IPC Message : " + ex);
+                    
+                    m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
+                    m_writeOffset = m_readOffset = (int)reader.Position - buffer.Offset;
+                    m_messagePart = null;
 
                    return m_remainingLength <= 0 || BuildMessage(buffer);
                 }
