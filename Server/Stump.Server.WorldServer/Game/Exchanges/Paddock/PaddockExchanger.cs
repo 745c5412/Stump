@@ -207,7 +207,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (!HasMountRight(mount))
                 return false;
 
-            Paddock.RemoveMountFromStable(mount);
+            Paddock.RemoveMountFromPaddock(mount);
             Character.SetOwnedMount(mount);
             MountManager.Instance.StoreMount(Character, mount);
             InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
