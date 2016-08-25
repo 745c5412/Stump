@@ -101,7 +101,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 var xp = (int)(experience * (Character.EquippedMount.GivenExperience * 0.01));
                 var mountXp = (int)Character.EquippedMount.AdjustGivenExperience(Character, xp);
 
-                experience -= mountXp;
+                experience -= xp;
 
                 if (mountXp > 0)
                 {
@@ -116,7 +116,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 var guildXp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
 
                 guildXp = guildXp > Guild.MaxGuildXP ? Guild.MaxGuildXP : guildXp;
-                experience -= xp;
 
                 if (guildXp > 0)
                 {
