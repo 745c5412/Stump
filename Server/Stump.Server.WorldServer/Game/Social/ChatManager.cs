@@ -133,9 +133,6 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public void HandleChat(WorldClient client, ChatActivableChannelsEnum channel, string message, IEnumerable<ObjectItem> objectItems = null)
         {
-            if (!CanUseChannel(client.Character, channel))
-                return;
-
             if (!ChatHandlers.ContainsKey(channel))
                 return;
 
@@ -148,6 +145,9 @@ namespace Stump.Server.WorldServer.Game.Social
             }
             else
             {
+                if (!CanUseChannel(client.Character, channel))
+                    return;
+
                 if (client.Character.IsMuted())
                     client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 124,
                                                             (int) client.Character.GetMuteRemainingTime().TotalSeconds);
