@@ -46,14 +46,28 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             }
             else
             {
-                var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
+                if (Caster is CharacterFighter && monster.Template.CanPlay)
+                {
+                    var slave = new SlaveFighter(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
 
-                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
+                    ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, slave);
 
-                Caster.AddSummon(summon);
-                Caster.Team.AddFighter(summon);
+                    Caster.AddSlave(slave);
+                    Caster.Team.AddFighter(slave);
 
-                Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
+                    Fight.TriggerMarks(slave.Cell, slave, TriggerType.MOVE);
+                }
+                else
+                {
+                    var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
+
+                    ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
+
+                    Caster.AddSummon(summon);
+                    Caster.Team.AddFighter(summon);
+
+                    Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
+                }
             }
 
 

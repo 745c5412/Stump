@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void OnTurnStopped(IFight fight, FightActor player)
         {
-            if (player == this && IsAlive())
+            if (player == this && IsAlive() && Monster.Id == 3120) //Roublabot
                     Die();
 
             if (player != Summoner)
@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnTurnPassed()
         {
-            if (IsAlive())
+            if (IsAlive() && Monster.Id == 3120) //Roublabot
                 Die();
         }
 

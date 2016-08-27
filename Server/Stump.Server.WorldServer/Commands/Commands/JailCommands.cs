@@ -6,7 +6,6 @@ using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -14,7 +13,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public JailCommand()
         {
-            Aliases = new[] {"jail"};
+            Aliases = new[] { "jail" };
             RequiredRole = RoleEnum.Moderator;
             Description = "Jail a character";
             AddTargetParameter();
@@ -44,27 +43,29 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 if (source != null)
                     message.BannerAccountId = source.Account.Id;
 
-                if (trigger.IsArgumentDefined("time"))
-                {
-                    var time = trigger.Get<int>("time");
-                    message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(time);
-                }
-                else if (trigger.IsArgumentDefined("life"))
-                    message.BanEndDate = null;
-                else
+                if (!trigger.IsArgumentDefined("time"))
                 {
                     trigger.ReplyError("No ban duration given");
                     return;
                 }
 
-                target.TeleportToJail();
-                target.Account.IsJailed = true;
+                var time = trigger.Get<int>("time");
+
+                message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(time);
                 message.Jailed = true;
 
                 IPCAccessor.Instance.SendRequest(message,
                     ok =>
+                    {
+                        target.Area.ExecuteInContext(() => target.TeleportToJail());
+                        target.Account.IsJailed = true;
+
+                        target.Mute(TimeSpan.FromMinutes(time), source.Character);
+                        target.OpenPopup(string.Format("Vous avez été emprisonné et muté pendant {0} minutes par {1}", time, source.Character.Name));
+
                         trigger.Reply("Account {0} jailed for {1} minutes. Reason : {2}", target.Account.Login,
-                            trigger.Get<int>("time"), reason),
+                            trigger.Get<int>("time"), reason);
+                    },
                     error => trigger.ReplyError("Account {0} not jailed : {1}", target.Account.Login, error.Message));
             }
         }
@@ -74,7 +75,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public UnJailCommand()
         {
-            Aliases = new[] {"unjail"};
+            Aliases = new[] { "unjail" };
             RequiredRole = RoleEnum.Moderator;
             Description = "Unjail a player";
             AddTargetParameter();
@@ -100,6 +101,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 target.Account.IsJailed = false;
                 target.Account.BanEndDate = null;
+                target.UnMute();
 
                 var target2 = target;
                 target.Area.ExecuteInContext(() => target2.Teleport(target2.Breed.GetStartPosition()));

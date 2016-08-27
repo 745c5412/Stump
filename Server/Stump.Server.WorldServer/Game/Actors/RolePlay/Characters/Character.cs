@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using MongoDB.Bson;
 using NLog;
 using Stump.Core.Attributes;
@@ -37,7 +36,6 @@ using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
-using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
@@ -64,15 +62,7 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Moderation;
 using Stump.Server.WorldServer.Handlers.Titles;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
 using Stump.Server.WorldServer.Database.Mounts;
-using Stump.Server.WorldServer.Game.Interactives;
-using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Mounts;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
@@ -82,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
     public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
         [Variable]
-        private const ushort HonorLimit = 16000;
+        public static ushort HonorLimit = 20000;
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -1807,6 +1797,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void UnMute()
         {
             MuteUntil = null;
+            SendServerMessage("Vous avez été démuté.");
         }
 
         public bool IsMuted()
