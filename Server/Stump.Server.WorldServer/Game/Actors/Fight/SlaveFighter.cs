@@ -48,6 +48,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (characterFighter == null)
                 return;
 
+            ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
+
             var slotIndex = 0;
             ShortcutHandler.SendShortcutBarContentMessage(characterFighter.Character.Client,
                 Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id)), ShortcutBarEnum.SPELL_SHORTCUT_BAR);
@@ -57,15 +59,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             if (player == this && IsAlive() && Monster.Id == 3120) //Roublabot
                     Die();
-
-            if (player != Summoner)
-                return;
-
-            var characterFighter = Summoner as CharacterFighter;
-            if (characterFighter == null)
-                return;
-
-            ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
         }
 
         protected override void OnTurnPassed()
