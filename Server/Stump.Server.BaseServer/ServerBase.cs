@@ -1,8 +1,4 @@
 ﻿using NLog;
-using NLog.Config;
-using NLog.Targets;
-using SharpRaven;
-using SharpRaven.Data;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Threading;

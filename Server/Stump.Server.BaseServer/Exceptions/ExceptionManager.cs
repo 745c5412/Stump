@@ -1,5 +1,4 @@
-﻿using SharpRaven.Data;
-using Stump.Core.Reflection;
+﻿using Stump.Core.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,10 +9,7 @@ namespace Stump.Server.BaseServer.Exceptions
     {
         private readonly List<Exception> m_exceptions = new List<Exception>();
 
-        public ReadOnlyCollection<Exception> Exceptions
-        {
-            get { return m_exceptions.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<Exception> Exceptions => m_exceptions.AsReadOnly();
 
         public void RegisterException(Exception ex)
         {
