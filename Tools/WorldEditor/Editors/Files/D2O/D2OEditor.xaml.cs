@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
 using IDataObject = Stump.DofusProtocol.D2oClasses.IDataObject;
@@ -59,7 +58,7 @@ namespace WorldEditor.Editors.Files.D2O
         {
             ModelView.RemoveCommand.RaiseCanExecuteChanged();
             ObjectEditor.EditorDefinitions.Clear();
-            
+
             if (ObjectsGrid.SelectedItem == null)
                 return;
 
@@ -71,7 +70,7 @@ namespace WorldEditor.Editors.Files.D2O
             {
                 var listType = property.PropertyType.GetInterfaces().FirstOrDefault(
                     (i) => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IList<>));
-                
+
                 // it's a list
                 if (listType != null)
                 {
@@ -79,7 +78,7 @@ namespace WorldEditor.Editors.Files.D2O
 
                     // it's a list of a list
                     if (elementType.IsGenericType &&
-                        elementType.GetGenericTypeDefinition() == typeof (List<>))
+                        elementType.GetGenericTypeDefinition() == typeof(List<>))
                     {
                         List<Type> newTypes;
                         m_subTypes.TryGetValue(elementType.GetGenericArguments()[0], out newTypes);
@@ -89,15 +88,15 @@ namespace WorldEditor.Editors.Files.D2O
                         newTypes.Add(elementType.GetGenericArguments()[0]);
 
                         ObjectEditor.EditorDefinitions.Add(new EditorDefinition()
-                            {
-                                Editor =
+                        {
+                            Editor =
                                     new CollectionEditorResolver(this,
                                     elementType.GetGenericArguments()[0])
-                                        {
-                                            NewTypes = newTypes,
-                                        },
-                                TargetType = property.PropertyType,
-                            });
+                                    {
+                                        NewTypes = newTypes,
+                                    },
+                            TargetType = property.PropertyType,
+                        });
                     }
                     else if (!elementType.IsPrimitive && elementType != typeof(string))
                     {
@@ -105,17 +104,17 @@ namespace WorldEditor.Editors.Files.D2O
                         m_subTypes.TryGetValue(elementType, out newTypes);
 
                         // copy to not change it
-                        newTypes = newTypes != null ? newTypes.ToList() : new List<Type>(); 
+                        newTypes = newTypes != null ? newTypes.ToList() : new List<Type>();
                         newTypes.Add(elementType);
 
                         ObjectEditor.EditorDefinitions.Add(new EditorDefinition()
+                        {
+                            Editor = new CollectionEditor()
                             {
-                                Editor = new CollectionEditor()
-                                {
-                                    NewItemsTypes = newTypes
-                                },
-                                TargetType = property.PropertyType,
-                            });
+                                NewItemsTypes = newTypes
+                            },
+                            TargetType = property.PropertyType,
+                        });
                     }
                 }
             }
@@ -159,7 +158,7 @@ namespace WorldEditor.Editors.Files.D2O
                 if (m_listType.IsPrimitive || m_listType == typeof(string))
                 {
                     var editor = new DoublePrimitiveCollectionEditor(m_listType);
-                    var dialog = new EditorDialog( editor);
+                    var dialog = new EditorDialog(editor);
                     dialog.Width = 600;
                     dialog.Height = 400;
 
@@ -168,7 +167,7 @@ namespace WorldEditor.Editors.Files.D2O
                         Source = propertyItem,
                         Mode = BindingMode.OneWay
                     };
-                    
+
                     BindingOperations.SetBinding(editor, DoublePrimitiveCollectionEditor.ItemsSourceProperty, binding);
                     dialog.ShowDialog();
                 }

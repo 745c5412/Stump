@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:47
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -19,10 +16,13 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "Emoticons";
         public uint id;
+
         [I18NField]
         public uint nameId;
+
         [I18NField]
         public uint shortcutId;
+
         public uint order;
         public String defaultAnim;
         public Boolean persistancy;
@@ -37,7 +37,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -112,6 +111,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_animsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -149,7 +149,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Emoticon)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             ShortcutId = castedObj.shortcutId;
@@ -163,7 +163,7 @@ namespace DBSynchroniser.Records
             Duration = castedObj.duration;
             Weight = castedObj.weight;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Emoticon)parent : new Emoticon();
@@ -181,11 +181,10 @@ namespace DBSynchroniser.Records
             obj.weight = Weight;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_animsBin = anims == null ? null : anims.ToBinary();
-        
         }
     }
 }

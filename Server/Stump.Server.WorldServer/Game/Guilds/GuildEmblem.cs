@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Stump.Server.WorldServer.Database.Guilds;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Stump.Server.WorldServer.Database.Guilds;
 using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
 
 namespace Stump.Server.WorldServer.Game.Guilds

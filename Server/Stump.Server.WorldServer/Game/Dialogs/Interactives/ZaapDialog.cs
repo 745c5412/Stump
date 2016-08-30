@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Database.World;
@@ -9,6 +6,9 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Dialogs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
 {
@@ -114,7 +114,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
             var pos = map.Position;
             var pos2 = Zaap.Map.Position;
 
-            return (short)Math.Floor(Math.Sqrt(( pos2.X - pos.X ) * ( pos2.X - pos.X ) + ( pos2.Y - pos.Y ) * ( pos2.Y - pos.Y )) * 10);
+            return (short)Math.Floor(Math.Sqrt((pos2.X - pos.X) * (pos2.X - pos.X) + (pos2.Y - pos.Y) * (pos2.Y - pos.Y)) * 10);
         }
     }
 }

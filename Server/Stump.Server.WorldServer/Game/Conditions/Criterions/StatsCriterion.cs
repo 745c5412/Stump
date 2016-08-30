@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
@@ -85,8 +85,10 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             {
                 case "Ce":
                     return Compare(character.Energy, (short)Comparand);
+
                 case "CE":
                     return Compare(character.EnergyMax, (short)Comparand);
+
                 case "CD":
                     return true; // dishonor
                 case "CH":

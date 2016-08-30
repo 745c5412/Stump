@@ -1,11 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Actors.Stats
 {
@@ -18,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         [Variable]
         public static int APLimit = 12;
-        
+
         [Variable]
         public static int ResistanceLimit = 50;
 
@@ -29,18 +28,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         private static readonly StatsFormulasHandler FormulasChanceDependant =
             owner =>
-            (short) (owner.Stats[PlayerFields.Chance]/10d);
+            (short)(owner.Stats[PlayerFields.Chance] / 10d);
 
         private static readonly StatsFormulasHandler FormulasWisdomDependant =
              owner =>
-                 (short) ( owner.Stats[PlayerFields.Wisdom] / 10d );
-
+                 (short)(owner.Stats[PlayerFields.Wisdom] / 10d);
 
         private static readonly StatsFormulasHandler FormulasAgilityDependant =
              owner =>
-                 (short) ( owner.Stats[PlayerFields.Agility] / 10d );
+                 (short)(owner.Stats[PlayerFields.Agility] / 10d);
 
-        #endregion
+        #endregion Formulas
 
         public StatsFields(IStatsOwner owner)
         {
@@ -221,11 +219,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
             Fields.Add(PlayerFields.Initiative, new StatsInitiative(Owner, 0));
             Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, 100, FormulasChanceDependant));
-            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short) record.ActionPoints));
-            Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short) record.MovementPoints));
-            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength));            
-            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));             
-            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, (short) record.LifePoints, 0));    
+            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short)record.ActionPoints));
+            Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short)record.MovementPoints));
+            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength));
+            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));
+            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, (short)record.LifePoints, 0));
             Fields.Add(PlayerFields.Wisdom, new StatsData(Owner, PlayerFields.Wisdom, record.Wisdom));
             Fields.Add(PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, record.Chance));
             Fields.Add(PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, record.Agility));
@@ -253,13 +251,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.WaterDamageBonus, new StatsData(Owner, PlayerFields.WaterDamageBonus, 0));
             Fields.Add(PlayerFields.AirDamageBonus, new StatsData(Owner, PlayerFields.AirDamageBonus, 0));
             Fields.Add(PlayerFields.FireDamageBonus, new StatsData(Owner, PlayerFields.FireDamageBonus, 0));
-            Fields.Add(PlayerFields.DodgeAPProbability, new StatsData(Owner, PlayerFields.DodgeAPProbability, (short) record.PaDodge, FormulasWisdomDependant));
-            Fields.Add(PlayerFields.DodgeMPProbability, new StatsData(Owner, PlayerFields.DodgeMPProbability, (short) record.PmDodge, FormulasWisdomDependant));
-            Fields.Add(PlayerFields.NeutralResistPercent, new StatsData(Owner, PlayerFields.NeutralResistPercent, (short) record.NeutralResistance));
-            Fields.Add(PlayerFields.EarthResistPercent, new StatsData(Owner, PlayerFields.EarthResistPercent, (short) record.EarthResistance));
-            Fields.Add(PlayerFields.WaterResistPercent, new StatsData(Owner, PlayerFields.WaterResistPercent, (short) record.WaterResistance));
-            Fields.Add(PlayerFields.AirResistPercent, new StatsData(Owner, PlayerFields.AirResistPercent, (short) record.AirResistance));
-            Fields.Add(PlayerFields.FireResistPercent, new StatsData(Owner, PlayerFields.FireResistPercent, (short) record.FireResistance));
+            Fields.Add(PlayerFields.DodgeAPProbability, new StatsData(Owner, PlayerFields.DodgeAPProbability, (short)record.PaDodge, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.DodgeMPProbability, new StatsData(Owner, PlayerFields.DodgeMPProbability, (short)record.PmDodge, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.NeutralResistPercent, new StatsData(Owner, PlayerFields.NeutralResistPercent, (short)record.NeutralResistance));
+            Fields.Add(PlayerFields.EarthResistPercent, new StatsData(Owner, PlayerFields.EarthResistPercent, (short)record.EarthResistance));
+            Fields.Add(PlayerFields.WaterResistPercent, new StatsData(Owner, PlayerFields.WaterResistPercent, (short)record.WaterResistance));
+            Fields.Add(PlayerFields.AirResistPercent, new StatsData(Owner, PlayerFields.AirResistPercent, (short)record.AirResistance));
+            Fields.Add(PlayerFields.FireResistPercent, new StatsData(Owner, PlayerFields.FireResistPercent, (short)record.FireResistance));
             Fields.Add(PlayerFields.NeutralElementReduction, new StatsData(Owner, PlayerFields.NeutralElementReduction, 0));
             Fields.Add(PlayerFields.EarthElementReduction, new StatsData(Owner, PlayerFields.EarthElementReduction, 0));
             Fields.Add(PlayerFields.WaterElementReduction, new StatsData(Owner, PlayerFields.WaterElementReduction, 0));
@@ -310,9 +308,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, taxCollector.Guild.TaxCollectorProspecting, FormulasChanceDependant));
             Fields.Add(PlayerFields.AP, new StatsAP(Owner, TaxCollectorNpc.BaseAP));
             Fields.Add(PlayerFields.MP, new StatsMP(Owner, TaxCollectorNpc.BaseMP));
-            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, 0));         
-            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, 0));                
-            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, taxCollector.Guild.TaxCollectorHealth, 0));    
+            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, 0));
+            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, 0));
+            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, taxCollector.Guild.TaxCollectorHealth, 0));
             Fields.Add(PlayerFields.Wisdom, new StatsData(Owner, PlayerFields.Wisdom, taxCollector.Guild.TaxCollectorWisdom));
             Fields.Add(PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, 0));
             Fields.Add(PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, 0));
@@ -389,7 +387,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                 Fields.Add(field.Key, field.Value.CloneAndChangeOwner(Owner));
             }
         }
-
 
         public void CopyContext(StatsFields fields)
         {

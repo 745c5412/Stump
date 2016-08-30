@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+﻿using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Actors.Interfaces
 {
@@ -10,6 +10,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Interfaces
             get;
             set;
         }
+
         DateTime LastMoveDate
         {
             get;

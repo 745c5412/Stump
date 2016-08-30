@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
     public class SkillPaddock : Skill
     {
         public SkillPaddock(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
-            : base (id, record, interactiveObject)
+            : base(id, record, interactiveObject)
         {
         }
 

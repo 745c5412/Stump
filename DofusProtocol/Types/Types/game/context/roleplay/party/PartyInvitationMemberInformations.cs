@@ -1,31 +1,27 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class PartyInvitationMemberInformations : CharacterBaseInformations
     {
         public const short Id = 376;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public short worldX;
         public short worldY;
         public int mapId;
         public short subAreaId;
-        
+
         public PartyInvitationMemberInformations()
         {
         }
-        
+
         public PartyInvitationMemberInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, short worldX, short worldY, int mapId, short subAreaId)
          : base(id, level, name, entityLook, breed, sex)
         {
@@ -34,7 +30,7 @@ namespace Stump.DofusProtocol.Types
             this.mapId = mapId;
             this.subAreaId = subAreaId;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -43,7 +39,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -58,12 +54,10 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
         }
-        
     }
-    
 }

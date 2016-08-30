@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TextTemplating;
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TextTemplating;
 
 namespace DofusProtocolBuilder.Templates
 {
@@ -13,9 +13,9 @@ namespace DofusProtocolBuilder.Templates
         //The path and file name of the text template that is being processed.
         //---------------------------------------------------------------------
         private readonly string m_templateFileValue;
+
         private CompilerErrorCollection m_errorsValue = new CompilerErrorCollection();
         private Encoding m_fileEncodingValue = Encoding.UTF8;
-
 
         //This will be the extension of the generated text output file.
         //The host can provide a default by setting the value of the field here.
@@ -23,6 +23,7 @@ namespace DofusProtocolBuilder.Templates
         //if the user specifies it in the text template.
         //---------------------------------------------------------------------
         private string m_fileExtensionValue = ".cs";
+
         private ITextTemplatingSession m_session = new TextTemplatingSession();
 
         public TemplateHost(string templateFileValue)
@@ -35,7 +36,6 @@ namespace DofusProtocolBuilder.Templates
             get { return m_fileExtensionValue; }
             set { m_fileExtensionValue = value; }
         }
-
 
         //This will be the encoding of the generated text output file.
         //The host can provide a default by setting the value of the field here.
@@ -55,10 +55,9 @@ namespace DofusProtocolBuilder.Templates
             }
         }
 
-
         //These are the errors that occur when the engine processes a template.
         //The engine passes the errors to the host when it is done processing
-        //and the host can decide how to display them. For example, the host 
+        //and the host can decide how to display them. For example, the host
         //can display the errors in the UI or write them to a file.
         //---------------------------------------------------------------------
 
@@ -74,7 +73,6 @@ namespace DofusProtocolBuilder.Templates
             get { return m_templateFileValue; }
         }
 
-
         //The host can provide standard assembly references.
         //The engine will use these references when compiling and
         //executing the generated transformation class.
@@ -87,6 +85,7 @@ namespace DofusProtocolBuilder.Templates
                 case "CacheAssemblies":
                     returnObject = true;
                     break;
+
                 default:
                     returnObject = null;
                     break;
@@ -105,7 +104,7 @@ namespace DofusProtocolBuilder.Templates
                                //---------------------------------------------------------
                                //"System"
 
-                               //Since this host only resolves assemblies from the 
+                               //Since this host only resolves assemblies from the
                                //fully qualified path and name of the assembly,
                                //this is a quick way to get the code to give us the
                                //fully qualified path and name of the System assembly.
@@ -117,9 +116,8 @@ namespace DofusProtocolBuilder.Templates
             }
         }
 
-
         //The host can provide standard imports or using statements.
-        //The engine will add these statements to the generated 
+        //The engine will add these statements to the generated
         //transformation class.
         //--------------------------------------------------------------
         public IList<string> StandardImports
@@ -132,7 +130,6 @@ namespace DofusProtocolBuilder.Templates
                            };
             }
         }
-
 
         //The engine calls this method based on the optional include directive
         //if the user has specified it in the text template.
@@ -157,19 +154,18 @@ namespace DofusProtocolBuilder.Templates
                 return true;
             }
 
-                //This can be customized to search specific paths for the file.
-                //This can be customized to accept paths to search as command line
-                //arguments.
-                //----------------------------------------------------------------
+            //This can be customized to search specific paths for the file.
+            //This can be customized to accept paths to search as command line
+            //arguments.
+            //----------------------------------------------------------------
             else
             {
                 return false;
             }
         }
 
-
         //The engine calls this method to resolve assembly references used in
-        //the generated transformation class project, and for the optional 
+        //the generated transformation class project, and for the optional
         //assembly directive if the user has specified it in the text template.
         //This method can be called 0, 1, or more times.
         //---------------------------------------------------------------------
@@ -183,7 +179,7 @@ namespace DofusProtocolBuilder.Templates
                 return assemblyReference;
             }
 
-            //Maybe the assembly is in the same folder as the text template that 
+            //Maybe the assembly is in the same folder as the text template that
             //called the directive.
             //----------------------------------------------------------------
             string candidate = Path.Combine(Path.GetDirectoryName(TemplateFile), assemblyReference);
@@ -204,8 +200,7 @@ namespace DofusProtocolBuilder.Templates
             return "";
         }
 
-
-        //The engine calls this method based on the directives the user has 
+        //The engine calls this method based on the directives the user has
         //specified in the text template.
         //This method can be called 0, 1, or more times.
         //---------------------------------------------------------------------
@@ -213,7 +208,7 @@ namespace DofusProtocolBuilder.Templates
         {
             //This host will not resolve any specific processors.
 
-            //Check the processor name, and if it is the name of a processor the 
+            //Check the processor name, and if it is the name of a processor the
             //host wants to support, return the type of the processor.
             //---------------------------------------------------------------------
 
@@ -237,7 +232,7 @@ namespace DofusProtocolBuilder.Templates
             {
                 return fileName;
             }
-            //Maybe the file is in the same folder as the text template that 
+            //Maybe the file is in the same folder as the text template that
             //called the directive.
             //----------------------------------------------------------------
             string candidate = Path.Combine(Path.GetDirectoryName(TemplateFile), fileName);
@@ -251,7 +246,6 @@ namespace DofusProtocolBuilder.Templates
             //If we cannot do better, return the original file name.
             return fileName;
         }
-
 
         //If a call to a directive in a text template does not provide a value
         //for a required parameter, the directive processor can try to get it
@@ -280,9 +274,8 @@ namespace DofusProtocolBuilder.Templates
             return String.Empty;
         }
 
-
-        //The engine calls this method to change the extension of the 
-        //generated text output file based on the optional output directive 
+        //The engine calls this method to change the extension of the
+        //generated text output file based on the optional output directive
         //if the user specifies it in the text template.
         //---------------------------------------------------------------------
         public void SetFileExtension(string extension)
@@ -292,16 +285,14 @@ namespace DofusProtocolBuilder.Templates
             m_fileExtensionValue = extension;
         }
 
-
-        //The engine calls this method to change the encoding of the 
-        //generated text output file based on the optional output directive 
+        //The engine calls this method to change the encoding of the
+        //generated text output file based on the optional output directive
         //if the user specifies it in the text template.
         //----------------------------------------------------------------------
         public void SetOutputEncoding(Encoding encoding, bool fromOutputDirective)
         {
             m_fileEncodingValue = encoding;
         }
-
 
         //The engine calls this method when it is done processing a text
         //template to pass any errors that occurred to the host.
@@ -312,30 +303,29 @@ namespace DofusProtocolBuilder.Templates
             m_errorsValue = errors;
         }
 
-
         //This is the application domain that is used to compile and execute
         //the generated transformation class to create the generated text output.
         //----------------------------------------------------------------------
         public AppDomain ProvideTemplatingAppDomain(string content)
         {
-            //This host will provide a new application domain each time the 
+            //This host will provide a new application domain each time the
             //engine processes a text template.
             //-------------------------------------------------------------
             //return AppDomain.CreateDomain(string.Format("{0} App Domain", Path.GetFileName(TemplateFile)));
             return AppDomain.CurrentDomain;
-            //This could be changed to return the current appdomain, but new 
+            //This could be changed to return the current appdomain, but new
             //assemblies are loaded into this AppDomain on a regular basis.
-            //If the AppDomain lasts too long, it will grow indefintely, 
+            //If the AppDomain lasts too long, it will grow indefintely,
             //which might be regarded as a leak.
 
-            //This could be customized to cache the application domain for 
+            //This could be customized to cache the application domain for
             //a certain number of text template generations (for example, 10).
 
-            //This could be customized based on the contents of the text 
+            //This could be customized based on the contents of the text
             //template, which are provided as a parameter for that purpose.
         }
 
-        #endregion
+        #endregion ITextTemplatingEngineHost Members
 
         #region ITextTemplatingSessionHost Members
 
@@ -350,6 +340,6 @@ namespace DofusProtocolBuilder.Templates
             set { m_session = value; }
         }
 
-        #endregion
+        #endregion ITextTemplatingSessionHost Members
     }
 }

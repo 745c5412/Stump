@@ -1,27 +1,26 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.Extensions;
+using Stump.ORM.SubSonic.Schema;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using System.Data;
 using System.Linq;
 using System.Text;
-using Stump.ORM.SubSonic.Extensions;
-using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.DataProviders.MySQL
 {
-    
     public class MySqlSchema : ANSISchemaGenerator
     {
         public MySqlSchema()
@@ -52,40 +51,55 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
                 case DbType.String:
                 case DbType.StringFixedLength:
                     return "mediumtext";
+
                 case DbType.Boolean:
                     return "tinyint";
+
                 case DbType.SByte:
                 case DbType.Byte:
                     return "tinyint";
+
                 case DbType.Binary:
                     return "longblob";
+
                 case DbType.Currency:
                     return "money";
+
                 case DbType.Time:
                 case DbType.Date:
                 case DbType.DateTime:
                     return "datetime";
+
                 case DbType.Decimal:
                     return "decimal";
+
                 case DbType.Double:
                     return "float";
+
                 case DbType.Guid:
                     return "binary";
+
                 case DbType.UInt32:
                 case DbType.Int32:
                     return "int";
+
                 case DbType.UInt16:
                 case DbType.Int16:
                     return "smallint";
+
                 case DbType.UInt64:
                 case DbType.Int64:
                     return "bigint";
+
                 case DbType.Single:
                     return "real";
+
                 case DbType.VarNumeric:
                     return "numeric";
+
                 case DbType.Xml:
                     return "xml";
+
                 default:
                     return "nvarchar";
             }
@@ -182,9 +196,11 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
                 case "varchar":
                 case "nvarchar":
                     return DbType.String;
+
                 case "bit":
                 case "tinyint":
                     return DbType.Boolean;
+
                 case "decimal":
                 case "float":
                 case "newdecimal":
@@ -192,40 +208,52 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
                 case "double":
                 case "real":
                     return DbType.Decimal;
+
                 case "bigint":
                     return DbType.Int64;
+
                 case "int":
                 case "int32":
                 case "integer":
                     return DbType.Int32;
+
                 case "int16":
                 case "smallint":
                     return DbType.Int16;
+
                 case "date":
                 case "time":
                 case "datetime":
                 case "smalldatetime":
                     return DbType.DateTime;
+
                 case "image":
                 case "varbinary":
                 case "binary":
                 case "blob":
                 case "longblob":
                     return DbType.Binary;
+
                 case "char":
                     return DbType.AnsiStringFixedLength;
+
                 case "currency":
                 case "money":
                 case "smallmoney":
                     return DbType.Currency;
+
                 case "timestamp":
                     return DbType.DateTime;
+
                 case "uniqueidentifier":
                     return DbType.Binary;
+
                 case "uint16":
                     return DbType.UInt16;
+
                 case "uint32":
                     return DbType.UInt32;
+
                 default:
                     return DbType.String;
             }

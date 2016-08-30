@@ -1,22 +1,19 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
+using System.Text;
 
 namespace Stump.DofusProtocol.Types
 {
     public class FriendOnlineInformations : FriendInformations
     {
         public const short Id = 92;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public string playerName;
         public short level;
         public sbyte alignmentSide;
@@ -24,11 +21,11 @@ namespace Stump.DofusProtocol.Types
         public bool sex;
         public Types.BasicGuildInformations guildInfo;
         public sbyte moodSmileyId;
-        
+
         public FriendOnlineInformations()
         {
         }
-        
+
         public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, int lastConnection, int achievementPoints, string playerName, short level, sbyte alignmentSide, sbyte breed, bool sex, Types.BasicGuildInformations guildInfo, sbyte moodSmileyId)
          : base(accountId, accountName, playerState, lastConnection, achievementPoints)
         {
@@ -40,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             this.guildInfo = guildInfo;
             this.moodSmileyId = moodSmileyId;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -52,7 +49,7 @@ namespace Stump.DofusProtocol.Types
             guildInfo.Serialize(writer);
             writer.WriteSByte(moodSmileyId);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -69,12 +66,10 @@ namespace Stump.DofusProtocol.Types
             guildInfo.Deserialize(reader);
             moodSmileyId = reader.ReadSByte();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + guildInfo.GetSerializationSize() + sizeof(sbyte);
         }
-        
     }
-    
 }

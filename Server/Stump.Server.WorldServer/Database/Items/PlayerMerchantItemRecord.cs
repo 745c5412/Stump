@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Database.Items
         }
 
         private uint m_stackSold;
- 
+
         public uint StackSold
         {
             get { return m_stackSold; }

@@ -1,12 +1,12 @@
-﻿using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Commands.Commands.Patterns;
+﻿using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Network;
 using Stump.DofusProtocol.Messages;
-using Stump.Core.Reflection;
-using System.IO;
+using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Core.Network;
 using System;
+using System.IO;
 
 namespace MessagesLogger
 {

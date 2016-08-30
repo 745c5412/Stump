@@ -7,16 +7,15 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using System;
-using System.Linq;
 
 namespace ArkalysPlugin.Votes
 {
     public static class VoteChecker
     {
         [Variable]
-        static int VoteTimer = 300;
+        private static int VoteTimer = 300;
 
-        static DateTime VoteDateTime => (DateTime.Now - TimeSpan.FromHours(3));
+        private static DateTime VoteDateTime => (DateTime.Now - TimeSpan.FromHours(3));
 
         [Initialization(InitializationPass.Last, Silent = true)]
         public static void Initialize()
@@ -24,7 +23,7 @@ namespace ArkalysPlugin.Votes
             WorldServer.Instance.IOTaskPool.CallPeriodically((VoteTimer * 1000), CheckVotes);
         }
 
-        static void CheckVotes()
+        private static void CheckVotes()
         {
             foreach (var character in World.Instance.GetCharacters(character => character.UserGroup.Role == RoleEnum.Player
                 && (character.Account.LastVote == null || character.Account.LastVote < VoteDateTime)))
@@ -34,7 +33,7 @@ namespace ArkalysPlugin.Votes
             }
         }
 
-        static void OnAccountReceived(AccountAnswerMessage message, WorldClient client)
+        private static void OnAccountReceived(AccountAnswerMessage message, WorldClient client)
         {
             var character = client.Character;
 

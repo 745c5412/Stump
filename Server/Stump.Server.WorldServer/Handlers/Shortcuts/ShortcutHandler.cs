@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using System.Collections.Generic;
+using System.Linq;
 using Shortcut = Stump.Server.WorldServer.Database.Shortcuts.Shortcut;
 
 namespace Stump.Server.WorldServer.Handlers.Shortcuts
@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Handlers.Shortcuts
         [WorldHandler(ShortcutBarAddRequestMessage.Id)]
         public static void HandleShortcutBarAddRequestMessage(WorldClient client, ShortcutBarAddRequestMessage message)
         {
-            client.Character.Shortcuts.AddShortcut((ShortcutBarEnum) message.barType, message.shortcut);
+            client.Character.Shortcuts.AddShortcut((ShortcutBarEnum)message.barType, message.shortcut);
         }
 
         [WorldHandler(ShortcutBarRemoveRequestMessage.Id)]

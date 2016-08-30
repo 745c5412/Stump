@@ -1,16 +1,18 @@
-using System;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Accounts
 {
     public class WorldAccountRelator
     {
         public static string FetchQuery = "SELECT * FROM accounts";
+
         /// <summary>
         /// Use string.Format
         /// </summary>
         public static string FetchById = "SELECT * FROM accounts WHERE Id={0}";
+
         /// <summary>
         /// Use parameters
         /// </summary>
@@ -75,10 +77,9 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
-
         public int LastConnectionTimeStamp
         {
-            get { return LastConnection.HasValue ? (int) (DateTime.Now - LastConnection.Value).TotalHours : 0; }
+            get { return LastConnection.HasValue ? (int)(DateTime.Now - LastConnection.Value).TotalHours : 0; }
         }
     }
 }

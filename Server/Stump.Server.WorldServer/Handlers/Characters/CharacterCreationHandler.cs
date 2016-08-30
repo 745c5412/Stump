@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharacterCreationResultMessage(IPacketReceiver client, CharacterCreationResultEnum result)
         {
-            client.Send(new CharacterCreationResultMessage((sbyte) result));
+            client.Send(new CharacterCreationResultMessage((sbyte)result));
         }
     }
 }

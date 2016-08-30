@@ -1,8 +1,8 @@
-﻿using System;
-using Stump.DofusProtocol.D2oClasses;
+﻿using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Guilds
 {
@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
 
         public void AssignFields(object d2oObject)
         {
-            var emblem = (EmblemSymbol) d2oObject;
+            var emblem = (EmblemSymbol)d2oObject;
             Id = emblem.Id;
             IconId = emblem.IconId;
             SkinId = emblem.SkinId;

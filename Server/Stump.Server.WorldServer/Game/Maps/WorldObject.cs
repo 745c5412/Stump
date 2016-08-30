@@ -1,10 +1,10 @@
-﻿using System;
-using NLog;
+﻿using NLog;
 using Stump.Core.Collections;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {
@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Area Area
         {
-            get { return Position != null && Position.Map != null? Position.Map.Area : null; }
+            get { return Position != null && Position.Map != null ? Position.Map.Area : null; }
         }
 
         public SuperArea SuperArea
@@ -129,8 +129,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return Area; }
         }
 
-      
-
         #region IDisposable Members
 
         public void Dispose()
@@ -148,7 +146,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             //Position = null;
         }
 
-        #endregion
+        #endregion IDisposable Members
 
         public void Delete()
         {

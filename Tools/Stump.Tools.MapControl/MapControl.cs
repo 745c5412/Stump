@@ -37,6 +37,7 @@ namespace Stump.Tools.MapControl
     public partial class MapControl : UserControl
     {
         public delegate void CellClickedHandler(MapControl control, MapCell cell, MouseButtons buttons, bool hold);
+
         public event CellClickedHandler CellClicked;
 
         protected void OnCellClicked(MapCell cell, MouseButtons buttons, bool hold)
@@ -93,7 +94,7 @@ namespace Stump.Tools.MapControl
             get { return m_mapHeight; }
             set
             {
-                m_mapHeight = value; 
+                m_mapHeight = value;
                 SetCellNumber();
             }
         }
@@ -105,7 +106,7 @@ namespace Stump.Tools.MapControl
             get { return m_mapWidth; }
             set
             {
-                m_mapWidth = value; 
+                m_mapWidth = value;
                 SetCellNumber();
             }
         }
@@ -178,14 +179,14 @@ namespace Stump.Tools.MapControl
         {
             get;
             set;
-        } 
+        }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Browsable(false)]
         public Dictionary<CellState, Color> StatesColors
         {
             get;
-            set;    
+            set;
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -241,9 +242,9 @@ namespace Stump.Tools.MapControl
 
         private double GetMaxScaling()
         {
-            double cellWidth = Width/(double) (MapWidth + 1);
-            double cellHeight = Height/(double) (MapHeight + 1);
-            cellWidth = Math.Min(cellHeight*2, cellWidth);
+            double cellWidth = Width / (double)(MapWidth + 1);
+            double cellHeight = Height / (double)(MapHeight + 1);
+            cellWidth = Math.Min(cellHeight * 2, cellWidth);
             return cellWidth;
         }
 
@@ -251,33 +252,33 @@ namespace Stump.Tools.MapControl
         {
             int cellId = 0;
             double cellWidth = GetMaxScaling();
-            double cellHeight = Math.Ceiling(cellWidth/2);
+            double cellHeight = Math.Ceiling(cellWidth / 2);
 
-            var offsetX = (int) ((Width - ((MapWidth + 0.5) * cellWidth))/2);
-            var offsetY = (int) ((Height - ((MapHeight + 0.5) * cellHeight))/2);
+            var offsetX = (int)((Width - ((MapWidth + 0.5) * cellWidth)) / 2);
+            var offsetY = (int)((Height - ((MapHeight + 0.5) * cellHeight)) / 2);
 
-            double midCellHeight = cellHeight/2;
-            double midCellWidth = cellWidth/2;
+            double midCellHeight = cellHeight / 2;
+            double midCellWidth = cellWidth / 2;
 
-            for (int y = 0; y < 2*MapHeight; y++)
+            for (int y = 0; y < 2 * MapHeight; y++)
             {
-                if (y%2 == 0)
+                if (y % 2 == 0)
                     for (int x = 0; x < MapWidth; x++)
                     {
-                        var left = new Point((int) (offsetX + x*cellWidth), (int) (offsetY + y*midCellHeight + midCellHeight));
-                        var top = new Point((int) (offsetX + x*cellWidth + midCellWidth), (int) (offsetY + y*midCellHeight));
-                        var right = new Point((int) (offsetX + x*cellWidth + cellWidth), (int) (offsetY + y*midCellHeight + midCellHeight));
-                        var down = new Point((int) (offsetX + x*cellWidth + midCellWidth), (int) (offsetY + y*midCellHeight + cellHeight));
-                        Cells[cellId++].Points = new[] {left, top, right, down};
+                        var left = new Point((int)(offsetX + x * cellWidth), (int)(offsetY + y * midCellHeight + midCellHeight));
+                        var top = new Point((int)(offsetX + x * cellWidth + midCellWidth), (int)(offsetY + y * midCellHeight));
+                        var right = new Point((int)(offsetX + x * cellWidth + cellWidth), (int)(offsetY + y * midCellHeight + midCellHeight));
+                        var down = new Point((int)(offsetX + x * cellWidth + midCellWidth), (int)(offsetY + y * midCellHeight + cellHeight));
+                        Cells[cellId++].Points = new[] { left, top, right, down };
                     }
                 else
                     for (int x = 0; x < MapWidth; x++)
                     {
-                        var left = new Point((int) (offsetX + x*cellWidth + midCellWidth), (int) (offsetY + y*midCellHeight + midCellHeight));
-                        var top = new Point((int) (offsetX + x*cellWidth + cellWidth), (int) (offsetY + y*midCellHeight));
-                        var right = new Point((int) (offsetX + x*cellWidth + cellWidth + midCellWidth), (int) (offsetY + y*midCellHeight + midCellHeight));
-                        var down = new Point((int) (offsetX + x*cellWidth + cellWidth), (int) (offsetY + y*midCellHeight + cellHeight));
-                        Cells[cellId++].Points = new[] {left, top, right, down};
+                        var left = new Point((int)(offsetX + x * cellWidth + midCellWidth), (int)(offsetY + y * midCellHeight + midCellHeight));
+                        var top = new Point((int)(offsetX + x * cellWidth + cellWidth), (int)(offsetY + y * midCellHeight));
+                        var right = new Point((int)(offsetX + x * cellWidth + cellWidth + midCellWidth), (int)(offsetY + y * midCellHeight + midCellHeight));
+                        var down = new Point((int)(offsetX + x * cellWidth + cellWidth), (int)(offsetY + y * midCellHeight + cellHeight));
+                        Cells[cellId++].Points = new[] { left, top, right, down };
                     }
             }
 
@@ -464,7 +465,7 @@ namespace Stump.Tools.MapControl
                     y2 = yold;
                 }
 
-                if ((xnew < p.X) == (p.X <= xold) && (p.Y - (long) y1)*(x2 - x1) < (y2 - (long) y1)*(p.X - x1))
+                if ((xnew < p.X) == (p.X <= xold) && (p.Y - (long)y1) * (x2 - x1) < (y2 - (long)y1) * (p.X - x1))
                 {
                     inside = !inside;
                 }
@@ -556,7 +557,7 @@ namespace Stump.Tools.MapControl
 
         public Point Center
         {
-            get { return new Point((Points[0].X + Points[2].X)/2, (Points[1].Y + Points[3].Y)/2); }
+            get { return new Point((Points[0].X + Points[2].X) / 2, (Points[1].Y + Points[3].Y) / 2); }
         }
 
         public int Height
@@ -621,7 +622,7 @@ namespace Stump.Tools.MapControl
             else
             {
                 // draw the less important states first
-                for (CellState state = HighestState; state > CellState.None; state = (CellState)( (int)state >> 1 ))
+                for (CellState state = HighestState; state > CellState.None; state = (CellState)((int)state >> 1))
                 {
                     if (State.HasFlag(state) && IsStateValid(state, mode) && parent.StatesColors.ContainsKey(state))
                         brush = new SolidBrush(parent.StatesColors[state]);
@@ -642,7 +643,7 @@ namespace Stump.Tools.MapControl
                 }
             }
 
-            var format = new StringFormat {Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center};
+            var format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
             g.DrawString(Text, parent.Font, TextBrush ?? Brushes.Black, new RectangleF(Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height), format);
         }
 

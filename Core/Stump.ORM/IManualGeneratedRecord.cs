@@ -5,6 +5,6 @@ namespace Stump.ORM
 {
     public interface IManualGeneratedRecord
     {
-        ITable GetTableInformation(IDataProvider provider); 
+        ITable GetTableInformation(IDataProvider provider);
     }
 }

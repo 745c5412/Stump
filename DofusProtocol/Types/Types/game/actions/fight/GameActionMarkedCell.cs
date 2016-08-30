@@ -1,31 +1,27 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GameActionMarkedCell
     {
         public const short Id = 85;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public short cellId;
         public sbyte zoneSize;
         public int cellColor;
         public sbyte cellsType;
-        
+
         public GameActionMarkedCell()
         {
         }
-        
+
         public GameActionMarkedCell(short cellId, sbyte zoneSize, int cellColor, sbyte cellsType)
         {
             this.cellId = cellId;
@@ -33,7 +29,7 @@ namespace Stump.DofusProtocol.Types
             this.cellColor = cellColor;
             this.cellsType = cellsType;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(cellId);
@@ -41,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(cellColor);
             writer.WriteSByte(cellsType);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             cellId = reader.ReadShort();
@@ -51,12 +47,10 @@ namespace Stump.DofusProtocol.Types
             cellColor = reader.ReadInt();
             cellsType = reader.ReadSByte();
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + sizeof(sbyte) + sizeof(int) + sizeof(sbyte);
         }
-        
     }
-    
 }

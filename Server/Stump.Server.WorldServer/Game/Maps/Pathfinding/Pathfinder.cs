@@ -1,12 +1,11 @@
-using System;
-using System.Drawing;
-using System.Linq;
-using System.Collections.Generic;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 {
@@ -47,14 +46,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
                 DirectionsEnum.DIRECTION_EAST
             };
 
-
         private static double GetHeuristic(MapPoint pointA, MapPoint pointB)
         {
             var dxy = new Point(Math.Abs(pointB.X - pointA.X), Math.Abs(pointB.Y - pointA.Y));
             var orthogonalValue = Math.Abs(dxy.X - dxy.Y);
-            var diagonalValue = Math.Abs(((dxy.X + dxy.Y) -  orthogonalValue) / 2);
+            var diagonalValue = Math.Abs(((dxy.X + dxy.Y) - orthogonalValue) / 2);
 
-            return EstimateHeuristic * ( diagonalValue + orthogonalValue + dxy.X + dxy.Y );
+            return EstimateHeuristic * (diagonalValue + orthogonalValue + dxy.X + dxy.Y);
         }
 
         public Pathfinder(ICellsInformationProvider cellsInformationProvider)
@@ -68,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             private set;
         }
 
-        public Path FindPath(short startCell, short endCell, bool diagonal, int movementPoints = (short) -1)
+        public Path FindPath(short startCell, short endCell, bool diagonal, int movementPoints = (short)-1)
         {
             return FindPath(new MapPoint(startCell), new MapPoint(endCell), diagonal, movementPoints);
         }
@@ -146,7 +144,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
                     openList.Push(newLocation);
                     matrix[newLocation].Status = NodeState.Open;
-            }
+                }
 
                 counter++;
                 matrix[location].Status = NodeState.Closed;
@@ -167,7 +165,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
             closedList.Reverse();
 
-            if (movementPoints > 0 && closedList.Count + 1> movementPoints)
+            if (movementPoints > 0 && closedList.Count + 1 > movementPoints)
                 return new Path(CellsInformationProvider.Map, closedList.Take(movementPoints + 1).Select(entry => CellsInformationProvider.Map.Cells[entry.Cell]));
 
             return new Path(CellsInformationProvider.Map, closedList.Select(entry => CellsInformationProvider.Map.Cells[entry.Cell]));
@@ -182,7 +180,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             var counter = 0;
 
             if (distance == 0)
-                return new [] {new MapPoint(from.CellId)};
+                return new[] { new MapPoint(from.CellId) };
 
             matrix[location].Cell = location;
             matrix[location].Parent = -1;
@@ -246,7 +244,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             }
 
             return result.ToArray();
-
         }
 
         #region Nested type: ComparePfNodeMatrix
@@ -276,10 +273,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
                 return 0;
             }
 
-            #endregion
+            #endregion IComparer<ushort> Members
         }
 
-        #endregion
+        #endregion Nested type: ComparePfNodeMatrix
     }
-
 }

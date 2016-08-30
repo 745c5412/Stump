@@ -61,6 +61,6 @@ namespace Stump.Core.Threading
             }
         }
 
-        #endregion
+        #endregion Nested type: TaskSchedulerSynchronizationContext
     }
 }

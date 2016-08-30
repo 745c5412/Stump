@@ -1,6 +1,3 @@
-using System;
-using System.Drawing;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
@@ -9,6 +6,9 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
+using System.Drawing;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -16,15 +16,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public GoPosCommand()
         {
-            Aliases = new[] {"gopos", "teleporto"};
+            Aliases = new[] { "gopos", "teleporto" };
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Teleport the target to the given map position (x/y)";
             AddParameter<int>("x");
             AddParameter<int>("y");
             AddTargetParameter(true);
             AddParameter<short>("cellid", "cell", "Cell destination", isOptional: true);
-            AddParameter("superarea", "area", "Super area containing the map (e.g 0 is continent, 3 is incarnam)", isOptional: true, converter:ParametersConverter.SuperAreaConverter);
-            AddParameter<int>("outdoor", "out", isOptional:true);
+            AddParameter("superarea", "area", "Super area containing the map (e.g 0 is continent, 3 is incarnam)", isOptional: true, converter: ParametersConverter.SuperAreaConverter);
+            AddParameter<int>("outdoor", "out", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var outdoor = trigger.Get<int>("outdoor");
 
             foreach (var target in GetTargets(trigger))
-            {                
+            {
                 var reference = target.Map;
 
                 Map map;
@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] { "go", "teleport" };
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Teleport the target given map id";
-            AddParameter("map", "map", "Map destination", converter:ParametersConverter.MapConverter);
+            AddParameter("map", "map", "Map destination", converter: ParametersConverter.MapConverter);
             AddTargetParameter(true);
             AddParameter<short>("cellid", "cell", "Cell destination", isOptional: true);
         }
@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.Moderator;
             Description = "Teleport to the target";
             AddParameter("to", "to", "The character to rejoin", converter: ParametersConverter.CharacterConverter);
-            AddParameter("from", "from", "The character that teleport", isOptional:true, converter: ParametersConverter.CharacterConverter);
+            AddParameter("from", "from", "The character that teleport", isOptional: true, converter: ParametersConverter.CharacterConverter);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -124,7 +124,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             if (trigger.IsArgumentDefined("from"))
                 from = trigger.Get<Character>("from");
             else if (trigger is GameTrigger)
-                from = ( trigger as GameTrigger ).Character;
+                from = (trigger as GameTrigger).Character;
             else
             {
                 throw new Exception("Character to teleport not defined !");
@@ -148,7 +148,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-                var to = ((GameTrigger) trigger).Character;
+                var to = ((GameTrigger)trigger).Character;
 
                 Character target1 = target;
                 target.Area.ExecuteInContext(() =>

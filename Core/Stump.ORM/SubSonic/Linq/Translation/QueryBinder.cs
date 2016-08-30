@@ -2,7 +2,7 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -43,7 +42,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
         {
             while (e.NodeType == ExpressionType.Quote)
             {
-                e = ((UnaryExpression) e).Operand;
+                e = ((UnaryExpression)e).Operand;
             }
             return e;
         }
@@ -62,20 +61,22 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Method.DeclaringType == typeof (Queryable) || m.Method.DeclaringType == typeof (Enumerable))
+            if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
             {
                 switch (m.Method.Name)
                 {
                     case "Where":
-                        return BindWhere(m.Type, m.Arguments[0], (LambdaExpression) StripQuotes(m.Arguments[1]));
+                        return BindWhere(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
+
                     case "Select":
-                        return BindSelect(m.Type, m.Arguments[0], (LambdaExpression) StripQuotes(m.Arguments[1]));
+                        return BindSelect(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
+
                     case "SelectMany":
                         if (m.Arguments.Count == 2)
                         {
                             return BindSelectMany(
                                 m.Type, m.Arguments[0],
-                                (LambdaExpression) StripQuotes(m.Arguments[1]),
+                                (LambdaExpression)StripQuotes(m.Arguments[1]),
                                 null
                                 );
                         }
@@ -83,44 +84,50 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                         {
                             return BindSelectMany(
                                 m.Type, m.Arguments[0],
-                                (LambdaExpression) StripQuotes(m.Arguments[1]),
-                                (LambdaExpression) StripQuotes(m.Arguments[2])
+                                (LambdaExpression)StripQuotes(m.Arguments[1]),
+                                (LambdaExpression)StripQuotes(m.Arguments[2])
                                 );
                         }
                         break;
+
                     case "Join":
                         return BindJoin(
                             m.Type, m.Arguments[0], m.Arguments[1],
-                            (LambdaExpression) StripQuotes(m.Arguments[2]),
-                            (LambdaExpression) StripQuotes(m.Arguments[3]),
-                            (LambdaExpression) StripQuotes(m.Arguments[4])
+                            (LambdaExpression)StripQuotes(m.Arguments[2]),
+                            (LambdaExpression)StripQuotes(m.Arguments[3]),
+                            (LambdaExpression)StripQuotes(m.Arguments[4])
                             );
+
                     case "OrderBy":
-                        return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression) StripQuotes(m.Arguments[1]),
+                        return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]),
                                            OrderType.Ascending);
+
                     case "OrderByDescending":
-                        return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression) StripQuotes(m.Arguments[1]),
+                        return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]),
                                            OrderType.Descending);
+
                     case "ThenBy":
-                        return BindThenBy(m.Arguments[0], (LambdaExpression) StripQuotes(m.Arguments[1]),
+                        return BindThenBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]),
                                           OrderType.Ascending);
+
                     case "ThenByDescending":
-                        return BindThenBy(m.Arguments[0], (LambdaExpression) StripQuotes(m.Arguments[1]),
+                        return BindThenBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]),
                                           OrderType.Descending);
+
                     case "GroupBy":
                         if (m.Arguments.Count == 2)
                         {
                             return BindGroupBy(
                                 m.Arguments[0],
-                                (LambdaExpression) StripQuotes(m.Arguments[1]),
+                                (LambdaExpression)StripQuotes(m.Arguments[1]),
                                 null,
                                 null
                                 );
                         }
                         else if (m.Arguments.Count == 3)
                         {
-                            LambdaExpression lambda1 = (LambdaExpression) StripQuotes(m.Arguments[1]);
-                            LambdaExpression lambda2 = (LambdaExpression) StripQuotes(m.Arguments[2]);
+                            LambdaExpression lambda1 = (LambdaExpression)StripQuotes(m.Arguments[1]);
+                            LambdaExpression lambda2 = (LambdaExpression)StripQuotes(m.Arguments[2]);
                             if (lambda2.Parameters.Count == 1)
                             {
                                 // second lambda is element selector
@@ -136,12 +143,13 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                         {
                             return BindGroupBy(
                                 m.Arguments[0],
-                                (LambdaExpression) StripQuotes(m.Arguments[1]),
-                                (LambdaExpression) StripQuotes(m.Arguments[2]),
-                                (LambdaExpression) StripQuotes(m.Arguments[3])
+                                (LambdaExpression)StripQuotes(m.Arguments[1]),
+                                (LambdaExpression)StripQuotes(m.Arguments[2]),
+                                (LambdaExpression)StripQuotes(m.Arguments[3])
                                 );
                         }
                         break;
+
                     case "Count":
                     case "Min":
                     case "Max":
@@ -153,28 +161,32 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                         }
                         else if (m.Arguments.Count == 2)
                         {
-                            LambdaExpression selector = (LambdaExpression) StripQuotes(m.Arguments[1]);
+                            LambdaExpression selector = (LambdaExpression)StripQuotes(m.Arguments[1]);
                             return BindAggregate(m.Arguments[0], m.Method, selector, m == root);
                         }
                         break;
+
                     case "Distinct":
                         if (m.Arguments.Count == 1)
                         {
                             return BindDistinct(m.Arguments[0]);
                         }
                         break;
+
                     case "Skip":
                         if (m.Arguments.Count == 2)
                         {
                             return BindSkip(m.Arguments[0], m.Arguments[1]);
                         }
                         break;
+
                     case "Take":
                         if (m.Arguments.Count == 2)
                         {
                             return BindTake(m.Arguments[0], m.Arguments[1]);
                         }
                         break;
+
                     case "First":
                     case "FirstOrDefault":
                     case "Single":
@@ -185,10 +197,11 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                         }
                         else if (m.Arguments.Count == 2)
                         {
-                            LambdaExpression predicate = (LambdaExpression) StripQuotes(m.Arguments[1]);
+                            LambdaExpression predicate = (LambdaExpression)StripQuotes(m.Arguments[1]);
                             return BindFirst(m.Arguments[0], predicate, m.Method.Name, m == root);
                         }
                         break;
+
                     case "Any":
                         if (m.Arguments.Count == 1)
                         {
@@ -196,17 +209,19 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                         }
                         else if (m.Arguments.Count == 2)
                         {
-                            LambdaExpression predicate = (LambdaExpression) StripQuotes(m.Arguments[1]);
+                            LambdaExpression predicate = (LambdaExpression)StripQuotes(m.Arguments[1]);
                             return BindAnyAll(m.Arguments[0], m.Method, predicate, m == root);
                         }
                         break;
+
                     case "All":
                         if (m.Arguments.Count == 2)
                         {
-                            LambdaExpression predicate = (LambdaExpression) StripQuotes(m.Arguments[1]);
+                            LambdaExpression predicate = (LambdaExpression)StripQuotes(m.Arguments[1]);
                             return BindAnyAll(m.Arguments[0], m.Method, predicate, m == root);
                         }
                         break;
+
                     case "Contains":
                         if (m.Arguments.Count == 2)
                         {
@@ -228,17 +243,19 @@ namespace Stump.ORM.SubSonic.Linq.Translation
         {
             switch (expr.NodeType)
             {
-                case (ExpressionType) DbExpressionType.Projection:
-                    return (ProjectionExpression) expr;
+                case (ExpressionType)DbExpressionType.Projection:
+                    return (ProjectionExpression)expr;
+
                 case ExpressionType.New:
-                    NewExpression nex = (NewExpression) expr;
-                    if (expr.Type.IsGenericType && expr.Type.GetGenericTypeDefinition() == typeof (Grouping<,>))
+                    NewExpression nex = (NewExpression)expr;
+                    if (expr.Type.IsGenericType && expr.Type.GetGenericTypeDefinition() == typeof(Grouping<,>))
                     {
-                        return (ProjectionExpression) nex.Arguments[1];
+                        return (ProjectionExpression)nex.Arguments[1];
                     }
                     goto default;
                 case ExpressionType.MemberAccess:
-                    return ConvertToSequence(BindRelationshipProperty((MemberExpression) expr));
+                    return ConvertToSequence(BindRelationshipProperty((MemberExpression)expr));
+
                 default:
                     throw new Exception(string.Format("The expression of type '{0}' is not a sequence", expr.Type));
             }
@@ -315,7 +332,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             bool defaultIfEmpty = false;
             MethodCallExpression mcs = collection as MethodCallExpression;
             if (mcs != null && mcs.Method.Name == "DefaultIfEmpty" && mcs.Arguments.Count == 1 &&
-                (mcs.Method.DeclaringType == typeof (Queryable) || mcs.Method.DeclaringType == typeof (Enumerable)))
+                (mcs.Method.DeclaringType == typeof(Queryable) || mcs.Method.DeclaringType == typeof(Enumerable)))
             {
                 collection = mcs.Arguments[0];
                 defaultIfEmpty = true;
@@ -392,7 +409,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                 for (int i = myThenBys.Count - 1; i >= 0; i--)
                 {
                     OrderExpression tb = myThenBys[i];
-                    LambdaExpression lambda = (LambdaExpression) tb.Expression;
+                    LambdaExpression lambda = (LambdaExpression)tb.Expression;
                     map[lambda.Parameters[0]] = projection.Projector;
                     orderings.Add(new OrderExpression(tb.OrderType, Visit(lambda.Body)));
                 }
@@ -487,15 +504,15 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                 // result must be IGrouping<K,E>
                 resultExpr =
                     Expression.New(
-                        typeof (Grouping<,>).MakeGenericType(keyExpr.Type, subqueryElemExpr.Type).GetConstructors()[0],
-                        new[] {keyExpr, elementSubquery}
+                        typeof(Grouping<,>).MakeGenericType(keyExpr.Type, subqueryElemExpr.Type).GetConstructors()[0],
+                        new[] { keyExpr, elementSubquery }
                         );
             }
 
             ProjectedColumns pc = ProjectColumns(resultExpr, alias, projection.Source.Alias);
 
             // make it possible to tie aggregates back to this group-by
-            Expression projectedElementSubquery = ((NewExpression) pc.Projector).Arguments[1];
+            Expression projectedElementSubquery = ((NewExpression)pc.Projector).Arguments[1];
             groupByMap.Add(projectedElementSubquery, info);
 
             return new ProjectionExpression(
@@ -527,14 +544,19 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             {
                 case "Count":
                     return AggregateType.Count;
+
                 case "Min":
                     return AggregateType.Min;
+
                 case "Max":
                     return AggregateType.Max;
+
                 case "Sum":
                     return AggregateType.Sum;
+
                 case "Average":
                     return AggregateType.Average;
+
                 default:
                     throw new Exception(string.Format("Unknown aggregate type: {0}", methodName));
             }
@@ -559,7 +581,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             if (mcs != null && !hasPredicateArg && argument == null)
             {
                 if (mcs.Method.Name == "Distinct" && mcs.Arguments.Count == 1 &&
-                    (mcs.Method.DeclaringType == typeof (Queryable) || mcs.Method.DeclaringType == typeof (Enumerable)))
+                    (mcs.Method.DeclaringType == typeof(Queryable) || mcs.Method.DeclaringType == typeof(Enumerable)))
                 {
                     source = mcs.Arguments[0];
                     isDistinct = true;
@@ -569,7 +591,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             if (argument != null && hasPredicateArg)
             {
                 // convert query.Count(predicate) into query.Where(predicate).Count()
-                source = Expression.Call(typeof (Queryable), "Where", method.GetGenericArguments(), source, argument);
+                source = Expression.Call(typeof(Queryable), "Where", method.GetGenericArguments(), source, argument);
                 argument = null;
                 argumentWasPredicate = true;
             }
@@ -590,25 +612,25 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             var alias = GetNextAlias();
             var pc = ProjectColumns(projection.Projector, alias, projection.Source.Alias);
             Expression aggExpr = new AggregateExpression(returnType, aggType, argExpr, isDistinct);
-            SelectExpression select = new SelectExpression(alias, new[] {new ColumnDeclaration("", aggExpr)},
+            SelectExpression select = new SelectExpression(alias, new[] { new ColumnDeclaration("", aggExpr) },
                                                            projection.Source, null);
 
             if (isRoot)
             {
-                ParameterExpression p = Expression.Parameter(typeof (IEnumerable<>).MakeGenericType(aggExpr.Type), "p");
+                ParameterExpression p = Expression.Parameter(typeof(IEnumerable<>).MakeGenericType(aggExpr.Type), "p");
                 LambdaExpression gator =
-                    Expression.Lambda(Expression.Call(typeof (Enumerable), "Single", new[] {returnType}, p), p);
+                    Expression.Lambda(Expression.Call(typeof(Enumerable), "Single", new[] { returnType }, p), p);
                 return new ProjectionExpression(select, new ColumnExpression(returnType, alias, ""), gator);
             }
 
             ScalarExpression subquery = new ScalarExpression(returnType, select);
 
-            // if we can find the corresponding group-info we can build a special AggregateSubquery node that will enable us to 
+            // if we can find the corresponding group-info we can build a special AggregateSubquery node that will enable us to
             // optimize the aggregate expression later using AggregateRewriter
             GroupByInfo info;
             if (!argumentWasPredicate && groupByMap.TryGetValue(projection, out info))
             {
-                // use the element expression from the group-by info to rebind the argument so the resulting expression is one that 
+                // use the element expression from the group-by info to rebind the argument so the resulting expression is one that
                 // would be legal to add to the columns in the select expression that has the corresponding group-by clause.
                 if (argument != null)
                 {
@@ -693,9 +715,9 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             if (isRoot)
             {
                 Type elementType = projection.Projector.Type;
-                ParameterExpression p = Expression.Parameter(typeof (IEnumerable<>).MakeGenericType(elementType), "p");
+                ParameterExpression p = Expression.Parameter(typeof(IEnumerable<>).MakeGenericType(elementType), "p");
                 LambdaExpression gator =
-                    Expression.Lambda(Expression.Call(typeof (Enumerable), kind, new[] {elementType}, p), p);
+                    Expression.Lambda(Expression.Call(typeof(Enumerable), kind, new[] { elementType }, p), p);
                 return new ProjectionExpression(projection.Source, projection.Projector, gator);
             }
             return projection;
@@ -709,7 +731,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             {
                 Debug.Assert(!isRoot);
                 Expression where = null;
-                foreach (object value in (IEnumerable) constSource.Value)
+                foreach (object value in (IEnumerable)constSource.Value)
                 {
                     Expression expr = Expression.Invoke(predicate,
                                                         Expression.Constant(value, predicate.Parameters[0].Type));
@@ -736,7 +758,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                 }
                 if (predicate != null)
                 {
-                    source = Expression.Call(typeof (Queryable), "Where", method.GetGenericArguments(), source,
+                    source = Expression.Call(typeof(Queryable), "Where", method.GetGenericArguments(), source,
                                              predicate);
                 }
                 ProjectionExpression projection = VisitSequence(source);
@@ -760,7 +782,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             {
                 Debug.Assert(!isRoot);
                 List<Expression> values = new List<Expression>();
-                foreach (object value in (IEnumerable) constSource.Value)
+                foreach (object value in (IEnumerable)constSource.Value)
                 {
                     values.Add(Expression.Constant(Convert.ChangeType(value, match.Type), match.Type));
                 }
@@ -782,14 +804,14 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
         private Expression GetSingletonSequence(Expression expr, string aggregator)
         {
-            ParameterExpression p = Expression.Parameter(typeof (IEnumerable<>).MakeGenericType(expr.Type), "p");
+            ParameterExpression p = Expression.Parameter(typeof(IEnumerable<>).MakeGenericType(expr.Type), "p");
             LambdaExpression gator = null;
             if (aggregator != null)
             {
-                gator = Expression.Lambda(Expression.Call(typeof (Enumerable), aggregator, new[] {expr.Type}, p), p);
+                gator = Expression.Lambda(Expression.Call(typeof(Enumerable), aggregator, new[] { expr.Type }, p), p);
             }
             var alias = GetNextAlias();
-            SelectExpression select = new SelectExpression(alias, new[] {new ColumnDeclaration("value", expr)}, null,
+            SelectExpression select = new SelectExpression(alias, new[] { new ColumnDeclaration("value", expr) }, null,
                                                            null);
             return new ProjectionExpression(select, new ColumnExpression(expr.Type, alias, "value"), gator);
         }
@@ -860,7 +882,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             switch (source.NodeType)
             {
                 case ExpressionType.MemberInit:
-                    MemberInitExpression min = (MemberInitExpression) source;
+                    MemberInitExpression min = (MemberInitExpression)source;
                     for (int i = 0, n = min.Bindings.Count; i < n; i++)
                     {
                         MemberAssignment assign = min.Bindings[i] as MemberAssignment;
@@ -872,7 +894,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                     break;
 
                 case ExpressionType.New:
-                    NewExpression nex = (NewExpression) source;
+                    NewExpression nex = (NewExpression)source;
                     if (nex.Members != null)
                     {
                         for (int i = 0, n = nex.Members.Count; i < n; i++)
@@ -883,7 +905,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                             }
                         }
                     }
-                    else if (nex.Type.IsGenericType && nex.Type.GetGenericTypeDefinition() == typeof (Grouping<,>))
+                    else if (nex.Type.IsGenericType && nex.Type.GetGenericTypeDefinition() == typeof(Grouping<,>))
                     {
                         if (member.Name == "Key")
                         {
@@ -892,14 +914,14 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                     }
                     break;
 
-                case (ExpressionType) DbExpressionType.Projection:
+                case (ExpressionType)DbExpressionType.Projection:
                     // member access on a projection turns into a new projection w/ member access applied
-                    ProjectionExpression proj = (ProjectionExpression) source;
+                    ProjectionExpression proj = (ProjectionExpression)source;
                     Expression newProjector = BindMember(proj.Projector, member);
                     return new ProjectionExpression(proj.Source, newProjector);
 
-                case (ExpressionType) DbExpressionType.OuterJoined:
-                    OuterJoinedExpression oj = (OuterJoinedExpression) source;
+                case (ExpressionType)DbExpressionType.OuterJoined:
+                    OuterJoinedExpression oj = (OuterJoinedExpression)source;
                     Expression em = BindMember(oj.Expression, member);
                     if (em is ColumnExpression)
                     {
@@ -908,12 +930,12 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                     return new OuterJoinedExpression(oj.Test, em);
 
                 case ExpressionType.Conditional:
-                    ConditionalExpression cex = (ConditionalExpression) source;
+                    ConditionalExpression cex = (ConditionalExpression)source;
                     return Expression.Condition(cex.Test, BindMember(cex.IfTrue, member),
                                                 BindMember(cex.IfFalse, member));
 
                 case ExpressionType.Constant:
-                    ConstantExpression con = (ConstantExpression) source;
+                    ConstantExpression con = (ConstantExpression)source;
                     if (con.Value == null)
                     {
                         Type memberType = TypeHelper.GetMemberType(member);
@@ -938,19 +960,23 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
         private static bool MembersMatch(MemberInfo a, MemberInfo b)
         {
-            if (a == b) {
+            if (a == b)
+            {
                 return true;
             }
 
             if ((a.DeclaringType.IsAssignableFrom(b.DeclaringType) || b.DeclaringType.IsAssignableFrom(a.DeclaringType)) &&
-                a.Name == b.Name) {
+                a.Name == b.Name)
+            {
                 return true;
             }
 
-            if (a is MethodInfo && b is PropertyInfo) {
+            if (a is MethodInfo && b is PropertyInfo)
+            {
                 return a == ((PropertyInfo)b).GetGetMethod();
             }
-            if (a is PropertyInfo && b is MethodInfo) {
+            if (a is PropertyInfo && b is MethodInfo)
+            {
                 return ((PropertyInfo)a).GetGetMethod() == b;
             }
             return false;
@@ -970,6 +996,6 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             internal Expression Element { get; private set; }
         }
 
-        #endregion
+        #endregion Nested type: GroupByInfo
     }
 }

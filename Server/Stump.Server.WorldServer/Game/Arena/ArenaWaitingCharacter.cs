@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
@@ -44,7 +44,6 @@ namespace Stump.Server.WorldServer.Game.Arena
             Action<ArenaWaitingCharacter> handler = FightDenied;
             if (handler != null) handler(this);
         }
-
 
         public void ToggleReady(bool rdy)
         {

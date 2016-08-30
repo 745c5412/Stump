@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Stump.Core.Sql;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Stump.Core.Sql;
-using WorldEditor.Annotations;
 using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Search
@@ -12,8 +11,8 @@ namespace WorldEditor.Search
     {
         private IComparable m_comparedToValue;
         private string m_comparedToValueString;
-        public event PropertyChangedEventHandler PropertyChanged;
 
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public CriteriaOperator Operator
         {
@@ -44,7 +43,7 @@ namespace WorldEditor.Search
             get { return m_comparedToValueString; }
             set
             {
-                m_comparedToValue = (IComparable) Convert.ChangeType(value, ValueType);
+                m_comparedToValue = (IComparable)Convert.ChangeType(value, ValueType);
                 m_comparedToValueString = value;
             }
         }
@@ -104,16 +103,22 @@ namespace WorldEditor.Search
             {
                 case CriteriaOperator.EQ:
                     return "=";
+
                 case CriteriaOperator.DIFFERENT:
                     return "!=";
+
                 case CriteriaOperator.GREATER:
                     return ">";
+
                 case CriteriaOperator.GREATER_OR_EQ:
                     return ">=";
+
                 case CriteriaOperator.LESSER:
                     return "<";
+
                 case CriteriaOperator.LESSER_OR_EQ:
                     return "<=";
+
                 default:
                     throw new Exception(string.Format("{0} cannot be converted to string", op));
             }
@@ -121,23 +126,22 @@ namespace WorldEditor.Search
 
         private static string GetSQLOperand(Type type, string value)
         {
-            if (type == typeof (string))
+            if (type == typeof(string))
                 return "\"" + value + "\"";
-            if (type == typeof (int) || type == typeof (uint) ||
-                type == typeof (short) || type == typeof (ushort) ||
-                type == typeof (long) || type == typeof (ulong) ||
-                type == typeof (decimal) ||
-                type == typeof (byte) || type == typeof (sbyte) ||
-                type == typeof (float) || type == typeof (double))
+            if (type == typeof(int) || type == typeof(uint) ||
+                type == typeof(short) || type == typeof(ushort) ||
+                type == typeof(long) || type == typeof(ulong) ||
+                type == typeof(decimal) ||
+                type == typeof(byte) || type == typeof(sbyte) ||
+                type == typeof(float) || type == typeof(double))
                 return value;
 
-            if (type == typeof (bool))
+            if (type == typeof(bool))
                 return bool.Parse(value) ? "1" : "0";
 
             return "\"" + value + "\"";
         }
 
-        
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

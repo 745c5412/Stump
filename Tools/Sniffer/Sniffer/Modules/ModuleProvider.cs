@@ -31,7 +31,6 @@ namespace Sniffer.Modules
             }
         }
 
-
         private void LoadModule(string fileUri)
         {
             var asm = Assembly.LoadFrom(fileUri);

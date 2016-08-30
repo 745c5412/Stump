@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:49
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -19,8 +16,10 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "Skills";
         public int id;
+
         [I18NField]
         public uint nameId;
+
         public int parentJobId;
         public Boolean isForgemagus;
         public int modifiableItemType;
@@ -37,7 +36,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -96,6 +94,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_craftableItemIdsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -155,7 +154,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Skill)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             ParentJobId = castedObj.parentJobId;
@@ -170,7 +169,7 @@ namespace DBSynchroniser.Records
             AvailableInHouse = castedObj.availableInHouse;
             LevelMin = castedObj.levelMin;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Skill)parent : new Skill();
@@ -189,11 +188,10 @@ namespace DBSynchroniser.Records
             obj.levelMin = LevelMin;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_craftableItemIdsBin = craftableItemIds == null ? null : craftableItemIds.ToBinary();
-        
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Stump.ORM.Relator
 {
     public class OneToManyRelator<T1, T2>
-        where T1 : class, IOneToManyRecord1 <T2>
+        where T1 : class, IOneToManyRecord1<T2>
         where T2 : IJoined
     {
         private T1 m_current;

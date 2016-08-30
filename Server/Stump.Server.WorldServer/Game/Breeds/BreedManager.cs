@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Breeds;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Breeds
 {
@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
         {
             get
             {
-                return (uint)AvailableBreeds.Aggregate(0, (current, breedEnum) => current | ( 1 << ((int)breedEnum - 1) ));
+                return (uint)AvailableBreeds.Aggregate(0, (current, breedEnum) => current | (1 << ((int)breedEnum - 1)));
             }
         }
 
@@ -98,7 +98,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
         /// <param name="defineId">When set to true the breed id will be auto generated</param>
         public void AddBreed(Breed breed, bool defineId = false)
         {
-            if(defineId)
+            if (defineId)
             {
                 var id = m_breeds.Keys.Max() + 1;
                 breed.Id = id;

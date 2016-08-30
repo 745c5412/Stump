@@ -2,7 +2,7 @@
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
-    // usage ??? 
+    // usage ???
     public class StaticCriterion : Criterion
     {
         public const string Identifier = "Sc";
@@ -14,7 +14,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override void Build()
         {
-
         }
 
         public override string ToString()

@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:50
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -19,8 +16,10 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "Npcs";
         public int id;
+
         [I18NField]
         public uint nameId;
+
         public List<List<int>> dialogMessages;
         public List<List<int>> dialogReplies;
         public List<uint> actions;
@@ -33,7 +32,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -64,6 +62,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_dialogMessagesBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -90,6 +89,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_dialogRepliesBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -116,6 +116,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_actionsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -164,6 +165,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_animFunListBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -180,7 +182,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Npc)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             DialogMessages = castedObj.dialogMessages;
@@ -191,7 +193,7 @@ namespace DBSynchroniser.Records
             TokenShop = castedObj.tokenShop;
             AnimFunList = castedObj.animFunList;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Npc)parent : new Npc();
@@ -206,14 +208,13 @@ namespace DBSynchroniser.Records
             obj.animFunList = AnimFunList;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_dialogMessagesBin = dialogMessages == null ? null : dialogMessages.ToBinary();
             m_dialogRepliesBin = dialogReplies == null ? null : dialogReplies.ToBinary();
             m_actionsBin = actions == null ? null : actions.ToBinary();
             m_animFunListBin = animFunList == null ? null : animFunList.ToBinary();
-        
         }
     }
 }

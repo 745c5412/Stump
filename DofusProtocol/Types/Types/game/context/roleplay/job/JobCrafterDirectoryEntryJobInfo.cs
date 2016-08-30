@@ -1,31 +1,27 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class JobCrafterDirectoryEntryJobInfo
     {
         public const short Id = 195;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte jobId;
         public sbyte jobLevel;
         public sbyte userDefinedParams;
         public sbyte minSlots;
-        
+
         public JobCrafterDirectoryEntryJobInfo()
         {
         }
-        
+
         public JobCrafterDirectoryEntryJobInfo(sbyte jobId, sbyte jobLevel, sbyte userDefinedParams, sbyte minSlots)
         {
             this.jobId = jobId;
@@ -33,7 +29,7 @@ namespace Stump.DofusProtocol.Types
             this.userDefinedParams = userDefinedParams;
             this.minSlots = minSlots;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
@@ -41,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(userDefinedParams);
             writer.WriteSByte(minSlots);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             jobId = reader.ReadSByte();
@@ -57,12 +53,10 @@ namespace Stump.DofusProtocol.Types
             if (minSlots < 0 || minSlots > 9)
                 throw new Exception("Forbidden value on minSlots = " + minSlots + ", it doesn't respect the following condition : minSlots < 0 || minSlots > 9");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte);
         }
-        
     }
-    
 }

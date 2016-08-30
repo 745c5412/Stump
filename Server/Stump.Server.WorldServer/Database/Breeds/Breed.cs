@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.Enums;
@@ -9,6 +6,9 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Breeds
 {
@@ -347,7 +347,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        #endregion
+        #endregion Record Properties
 
         private uint[] m_breedSpellsId;
         private uint[] m_femaleColors;
@@ -364,7 +364,6 @@ namespace Stump.Server.WorldServer.Database.Breeds
         private uint[][] m_statsPointsForStrength;
         private uint[][] m_statsPointsForVitality;
         private uint[][] m_statsPointsForWisdom;
-
 
         [Ignore]
         public string ShortName
@@ -394,7 +393,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
         {
             get
             {
-                return m_femaleLook ?? ( m_femaleLook = ActorLook.Parse(FemaleLookString) );
+                return m_femaleLook ?? (m_femaleLook = ActorLook.Parse(FemaleLookString));
             }
             set
             {
@@ -516,7 +515,6 @@ namespace Stump.Server.WorldServer.Database.Breeds
             }
         }
 
-
         [Ignore]
         public uint[] BreedSpellsId
         {
@@ -532,12 +530,12 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
         public void AssignFields(object d2oObject)
         {
-            var breed = (DofusProtocol.D2oClasses.Breed) d2oObject;
+            var breed = (DofusProtocol.D2oClasses.Breed)d2oObject;
             Id = breed.id;
-            GameplayDescriptionId = (int) breed.gameplayDescriptionId;
-            ShortNameId = (int) breed.shortNameId;
-            LongNameId = (int) breed.longNameId;
-            DescriptionId = (int) breed.descriptionId;
+            GameplayDescriptionId = (int)breed.gameplayDescriptionId;
+            ShortNameId = (int)breed.shortNameId;
+            LongNameId = (int)breed.longNameId;
+            DescriptionId = (int)breed.descriptionId;
             MaleLookString = breed.maleLook;
             FemaleLookString = breed.femaleLook;
             CreatureBonesId = breed.creatureBonesId;
@@ -554,7 +552,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             FemaleColors = breed.femaleColors.ToArray();
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -576,7 +574,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             BreedSpellsIdCSV = m_breedSpellsId.ToCSV(",");
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
 
         public ObjectPosition GetStartPosition()
         {
@@ -591,16 +589,22 @@ namespace Stump.Server.WorldServer.Database.Breeds
             {
                 case StatsBoostTypeEnum.Agility:
                     return StatsPointsForAgility;
+
                 case StatsBoostTypeEnum.Chance:
                     return StatsPointsForChance;
+
                 case StatsBoostTypeEnum.Intelligence:
                     return StatsPointsForIntelligence;
+
                 case StatsBoostTypeEnum.Strength:
                     return StatsPointsForStrength;
+
                 case StatsBoostTypeEnum.Wisdom:
                     return StatsPointsForWisdom;
+
                 case StatsBoostTypeEnum.Vitality:
                     return StatsPointsForVitality;
+
                 default:
                     throw new ArgumentException("statsid");
             }

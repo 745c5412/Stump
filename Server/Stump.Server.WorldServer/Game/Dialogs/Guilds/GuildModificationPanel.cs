@@ -39,9 +39,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
             }
         }
 
-
         public void Open()
-        {                        
+        {
             Character.SetDialog(this);
             GuildHandler.SendGuildModificationStartedMessage(Character.Client, ChangeName, ChangeEmblem);
         }
@@ -49,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
         public void Close()
         {
             Character.CloseDialog(this);
-            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);        
+            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
         }
 
         public void ModifyGuildName(string guildName)

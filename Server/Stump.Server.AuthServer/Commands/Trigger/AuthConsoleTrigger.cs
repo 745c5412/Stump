@@ -1,10 +1,9 @@
-using System;
-using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.IO;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Network;
+using System;
 
 namespace Stump.Server.AuthServer.Commands.Trigger
 {

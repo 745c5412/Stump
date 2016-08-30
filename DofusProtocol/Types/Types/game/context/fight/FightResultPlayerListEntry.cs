@@ -1,36 +1,34 @@
-
-
 // Generated on 03/02/2014 20:42:59
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class FightResultPlayerListEntry : FightResultFighterListEntry
     {
         public const short Id = 24;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public byte level;
         public IEnumerable<Types.FightResultAdditionalData> additional;
-        
+
         public FightResultPlayerListEntry()
         {
         }
-        
+
         public FightResultPlayerListEntry(short outcome, Types.FightLoot rewards, int id, bool alive, byte level, IEnumerable<Types.FightResultAdditionalData> additional)
          : base(outcome, rewards, id, alive)
         {
             this.level = level;
             this.additional = additional;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -40,17 +38,16 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in additional)
             {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-                 additional_count++;
+                writer.WriteShort(entry.TypeId);
+                entry.Serialize(writer);
+                additional_count++;
             }
             var additional_after = writer.Position;
             writer.Seek((int)additional_before);
             writer.WriteUShort((ushort)additional_count);
             writer.Seek((int)additional_after);
-
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -61,17 +58,15 @@ namespace Stump.DofusProtocol.Types
             var additional_ = new Types.FightResultAdditionalData[limit];
             for (int i = 0; i < limit; i++)
             {
-                 additional_[i] = Types.ProtocolTypeManager.GetInstance<Types.FightResultAdditionalData>(reader.ReadShort());
-                 additional_[i].Deserialize(reader);
+                additional_[i] = Types.ProtocolTypeManager.GetInstance<Types.FightResultAdditionalData>(reader.ReadShort());
+                additional_[i].Deserialize(reader);
             }
             additional = additional_;
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(byte) + sizeof(short) + additional.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
-        
     }
-    
 }

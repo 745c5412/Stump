@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -18,7 +17,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ObjectSetPositionMessage.Id)]
         public static void HandleObjectSetPositionMessage(WorldClient client, ObjectSetPositionMessage message)
         {
-            if (!Enum.IsDefined(typeof(CharacterInventoryPositionEnum), (int) message.position))
+            if (!Enum.IsDefined(typeof(CharacterInventoryPositionEnum), (int)message.position))
                 return;
 
             var item = client.Character.Inventory.TryGetItem(message.objectUID);
@@ -26,7 +25,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (item == null)
                 return;
 
-            client.Character.Inventory.MoveItem(item, (CharacterInventoryPositionEnum) message.position);
+            client.Character.Inventory.MoveItem(item, (CharacterInventoryPositionEnum)message.position);
         }
 
         [WorldHandler(ObjectDeleteMessage.Id)]
@@ -59,7 +58,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (item == null)
                 return;
 
-            client.Character.Inventory.UseItem(item,  message.quantity);
+            client.Character.Inventory.UseItem(item, message.quantity);
         }
 
         [WorldHandler(ObjectUseOnCellMessage.Id)]
@@ -104,7 +103,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
 
             if (food.Stack < message.foodQuantity)
-                message.foodQuantity = (short) food.Stack;
+                message.foodQuantity = (short)food.Stack;
 
             var i = 0;
             for (; i < message.foodQuantity; i++)
@@ -124,7 +123,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!(item is CommonLivingObject))
                 return;
 
-            ((CommonLivingObject) item).SelectedLevel = (short)message.skinId;
+            ((CommonLivingObject)item).SelectedLevel = (short)message.skinId;
         }
 
         [WorldHandler(LivingObjectDissociateMessage.Id)]
@@ -135,7 +134,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!(item is BoundLivingObjectItem))
                 return;
 
-            ((BoundLivingObjectItem) item).Dissociate();
+            ((BoundLivingObjectItem)item).Dissociate();
         }
 
         [WorldHandler(ObjectDropMessage.Id)]
@@ -167,7 +166,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendInventoryWeightMessage(WorldClient client)
         {
             client.Send(new InventoryWeightMessage(client.Character.Inventory.Weight,
-                                                   (int) client.Character.Inventory.WeightTotal));
+                                                   (int)client.Character.Inventory.WeightTotal));
         }
 
         public static void SendExchangeKamaModifiedMessage(IPacketReceiver client, bool remote, int kamasAmount)
@@ -202,22 +201,22 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendObjectMovementMessage(IPacketReceiver client, BasePlayerItem movedItem)
         {
-            client.Send(new ObjectMovementMessage(movedItem.Guid, (byte) movedItem.Position));
+            client.Send(new ObjectMovementMessage(movedItem.Guid, (byte)movedItem.Position));
         }
 
         public static void SendObjectQuantityMessage(IPacketReceiver client, BasePlayerItem item)
         {
-            client.Send(new ObjectQuantityMessage(item.Guid, (int) item.Stack));
+            client.Send(new ObjectQuantityMessage(item.Guid, (int)item.Stack));
         }
 
         public static void SendObjectErrorMessage(IPacketReceiver client, ObjectErrorEnum error)
         {
-            client.Send(new ObjectErrorMessage((sbyte) error));
+            client.Send(new ObjectErrorMessage((sbyte)error));
         }
 
         public static void SendSetUpdateMessage(WorldClient client, ItemSetTemplate itemSet)
         {
-            client.Send(new SetUpdateMessage((short) itemSet.Id,
+            client.Send(new SetUpdateMessage((short)itemSet.Id,
                 client.Character.Inventory.GetItemSetEquipped(itemSet).Select(entry => (short)entry.Template.Id),
                 client.Character.Inventory.GetItemSetEffects(itemSet).Select(entry => entry.GetObjectEffect())));
         }

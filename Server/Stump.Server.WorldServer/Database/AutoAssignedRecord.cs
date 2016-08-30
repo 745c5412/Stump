@@ -1,13 +1,11 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-using NLog;
+﻿using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Initialization;
+using System;
+using System.Reflection;
 
 namespace Stump.Server.WorldServer.Database
 {
@@ -72,12 +70,12 @@ namespace Stump.Server.WorldServer.Database
         {
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
             {
-                if (!type.IsAbstract && type.IsSubclassOfGeneric(typeof (AutoAssignedRecord<>)) &&
-                    type != typeof (AutoAssignedRecord<>))
+                if (!type.IsAbstract && type.IsSubclassOfGeneric(typeof(AutoAssignedRecord<>)) &&
+                    type != typeof(AutoAssignedRecord<>))
                 {
                     Type baseType = type.BaseType;
 
-                    while (baseType != null && baseType.GetGenericTypeDefinition() != typeof (AutoAssignedRecord<>))
+                    while (baseType != null && baseType.GetGenericTypeDefinition() != typeof(AutoAssignedRecord<>))
                     {
                         baseType = baseType.BaseType;
                     }

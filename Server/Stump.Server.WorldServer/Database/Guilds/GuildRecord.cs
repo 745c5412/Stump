@@ -1,14 +1,15 @@
-﻿using System;
-using System.Linq;
-using Stump.Core.IO;
+﻿using Stump.Core.IO;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Guilds
 {
     public class GuildRelator
     {
         public static string FetchQuery = "SELECT * FROM guilds";
+
         /// <summary>
         /// Use string.Format
         /// </summary>

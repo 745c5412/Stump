@@ -1,44 +1,40 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class CharacterSpellModification
     {
         public const short Id = 215;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte modificationType;
         public short spellId;
         public Types.CharacterBaseCharacteristic value;
-        
+
         public CharacterSpellModification()
         {
         }
-        
+
         public CharacterSpellModification(sbyte modificationType, short spellId, Types.CharacterBaseCharacteristic value)
         {
             this.modificationType = modificationType;
             this.spellId = spellId;
             this.value = value;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(modificationType);
             writer.WriteShort(spellId);
             value.Serialize(writer);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             modificationType = reader.ReadSByte();
@@ -50,12 +46,10 @@ namespace Stump.DofusProtocol.Types
             value = new Types.CharacterBaseCharacteristic();
             value.Deserialize(reader);
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(sbyte) + sizeof(short) + value.GetSerializationSize();
         }
-        
     }
-    
 }

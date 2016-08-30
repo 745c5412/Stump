@@ -1,41 +1,37 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class EntityDispositionInformations
     {
         public const short Id = 60;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public short cellId;
         public sbyte direction;
-        
+
         public EntityDispositionInformations()
         {
         }
-        
+
         public EntityDispositionInformations(short cellId, sbyte direction)
         {
             this.cellId = cellId;
             this.direction = direction;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(cellId);
             writer.WriteSByte(direction);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             cellId = reader.ReadShort();
@@ -45,12 +41,10 @@ namespace Stump.DofusProtocol.Types
             if (direction < 0)
                 throw new Exception("Forbidden value on direction = " + direction + ", it doesn't respect the following condition : direction < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + sizeof(sbyte);
         }
-        
     }
-    
 }

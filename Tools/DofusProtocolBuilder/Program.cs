@@ -1,17 +1,11 @@
-﻿using System;
-using System.CodeDom.Compiler;
+﻿using DofusProtocolBuilder.Parsing;
+using DofusProtocolBuilder.Profiles;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Xml;
 using System.Xml.Serialization;
-using DofusProtocolBuilder.Parsing;
-using DofusProtocolBuilder.Profiles;
-using DofusProtocolBuilder.Templates;
-using Microsoft.VisualStudio.TextTemplating;
-
 
 namespace DofusProtocolBuilder
 {
@@ -37,6 +31,7 @@ namespace DofusProtocolBuilder
 
                         configPath = args[i + 1];
                         break;
+
                     case "-createconfig":
                         var writer = XmlWriter.Create(configPath, new XmlWriterSettings()
                         {
@@ -52,9 +47,9 @@ namespace DofusProtocolBuilder
             if (!File.Exists(configPath))
             {
                 var writer = XmlWriter.Create(configPath, new XmlWriterSettings()
-                                                              {
-                                                                  Indent = true
-                                                              });
+                {
+                    Indent = true
+                });
                 serializer.Serialize(writer, Configuration);
                 writer.Close();
                 Shutdown("Config created. Please restart");
@@ -101,7 +96,6 @@ namespace DofusProtocolBuilder
                 if (!Directory.Exists(Configuration.Output))
                     Directory.CreateDirectory(Configuration.Output);
 
-                
                 if (Directory.Exists(Path.Combine(Configuration.Output, parsingProfile.OutPutPath)))
                 {
                     DeleteDirectory(Path.Combine(Configuration.Output, parsingProfile.OutPutPath));
@@ -122,7 +116,7 @@ namespace DofusProtocolBuilder
 
                     var parser = new Parser(file, parsingProfile.BeforeParsingReplacementRules,
                                             parsingProfile.IgnoredLines)
-                        {IgnoreMethods = parsingProfile.IgnoreMethods};
+                    { IgnoreMethods = parsingProfile.IgnoreMethods };
 
                     try
                     {

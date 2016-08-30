@@ -8,6 +8,7 @@ namespace Stump.Core.Sql
         public readonly string Table;
 
         public readonly List<KeyValuePair<string, object>> Pairs;
+
         public KeyValueListBase(string table)
         {
             Table = table;
@@ -25,7 +26,6 @@ namespace Stump.Core.Sql
         {
             Pairs = pairs.ToList();
         }
-
 
         public void AddPair(string key, object value)
         {

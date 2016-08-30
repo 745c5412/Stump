@@ -1,22 +1,19 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
+using System.Text;
 
 namespace Stump.DofusProtocol.Types
 {
     public class FriendSpouseInformations
     {
         public const short Id = 77;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int spouseAccountId;
         public int spouseId;
         public string spouseName;
@@ -26,11 +23,11 @@ namespace Stump.DofusProtocol.Types
         public Types.EntityLook spouseEntityLook;
         public Types.BasicGuildInformations guildInfo;
         public sbyte alignmentSide;
-        
+
         public FriendSpouseInformations()
         {
         }
-        
+
         public FriendSpouseInformations(int spouseAccountId, int spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide)
         {
             this.spouseAccountId = spouseAccountId;
@@ -43,7 +40,7 @@ namespace Stump.DofusProtocol.Types
             this.guildInfo = guildInfo;
             this.alignmentSide = alignmentSide;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(spouseAccountId);
@@ -56,7 +53,7 @@ namespace Stump.DofusProtocol.Types
             guildInfo.Serialize(writer);
             writer.WriteSByte(alignmentSide);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             spouseAccountId = reader.ReadInt();
@@ -77,12 +74,10 @@ namespace Stump.DofusProtocol.Types
             guildInfo.Deserialize(reader);
             alignmentSide = reader.ReadSByte();
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(spouseName) + sizeof(byte) + sizeof(sbyte) + sizeof(sbyte) + spouseEntityLook.GetSerializationSize() + guildInfo.GetSerializationSize() + sizeof(sbyte);
         }
-        
     }
-    
 }

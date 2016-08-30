@@ -1,8 +1,8 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Guilds
 {
@@ -14,12 +14,12 @@ namespace Stump.Server.WorldServer.Database.Guilds
         /// Use string.Format
         /// </summary>
         public static string FetchByGuildId = "SELECT gm.*,ch.Id,ch.Name,ch.Experience,ch.Breed,ch.Sex,ch.AlignmentSide,ch.LastUsage,ch.PrestigeRank FROM guild_members gm LEFT JOIN characters ON characters.Id = gm.CharacterId WHERE GuildId={0}";
+
         /// <summary>
         /// Use string.Format
         /// </summary>
         public static string FindByCharacterId = "SELECT gm.*,ch.Id,ch.Name,ch.Experience,ch.Breed,ch.Sex,ch.AlignmentSide,ch.LastUsage,ch.PrestigeRank FROM guild_members gm LEFT JOIN characters ON characters.Id = gm.CharacterId WHERE CharacterId={0}";
 
-        
         private GuildMemberRecord m_current;
 
         public GuildMemberRecord Map(GuildMemberRecord record, CharacterRecord character)
@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             get;
             set;
         }
-        
+
         [Index]
         public int GuildId
         {
@@ -108,15 +108,15 @@ namespace Stump.Server.WorldServer.Database.Guilds
             get
             {
                 return Character.Experience;
-            }        
+            }
         }
 
         public PlayableBreedEnum Breed
-        {            
+        {
             get
             {
                 return Character.Breed;
-            } 
+            }
         }
 
         public SexTypeEnum Sex
@@ -124,7 +124,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             get
             {
                 return Character.Sex;
-            } 
+            }
         }
 
         public AlignmentSideEnum AlignementSide
@@ -132,7 +132,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             get
             {
                 return Character.AlignmentSide;
-            } 
+            }
         }
 
         public DateTime? LastConnection
@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             get
             {
                 return Character.LastUsage;
-            } 
+            }
         }
 
         public int PrestigeRank

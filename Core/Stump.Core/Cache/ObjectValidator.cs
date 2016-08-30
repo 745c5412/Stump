@@ -13,7 +13,6 @@ namespace Stump.Core.Cache
                 handler(this);
         }
 
-
         private readonly object m_sync = new object();
         private bool m_isValid;
         private T m_instance;
@@ -99,5 +98,4 @@ namespace Stump.Core.Cache
             return validator.m_instance;
         }
     }
-    
 }

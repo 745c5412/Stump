@@ -11,7 +11,7 @@ namespace Stump.Core.Threading
         private static int m_incrementer;
 
         public AsyncRandom()
-            : base (Environment.TickCount + Thread.CurrentThread.ManagedThreadId + m_incrementer)
+            : base(Environment.TickCount + Thread.CurrentThread.ManagedThreadId + m_incrementer)
         {
             unchecked
             {
@@ -22,12 +22,11 @@ namespace Stump.Core.Threading
         public AsyncRandom(int seed)
             : base(seed)
         {
-            
         }
 
         public double NextDouble(double min, double max)
         {
-            return NextDouble() * ( max - min ) + min;
+            return NextDouble() * (max - min) + min;
         }
     }
 }

@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 {
@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
                 return new ObjectPosition[0];
 
             if (m_cellsPath.Length <= 1)
-                return new [] { new ObjectPosition(Map, m_cellsPath[0]) };
+                return new[] { new ObjectPosition(Map, m_cellsPath[0]) };
 
             // build the path
             var path = new List<ObjectPosition>();
@@ -145,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
                 var l = 0;
                 var nextPoint = m_compressedPath[i].Point;
-                while (( nextPoint = nextPoint.GetNearestCellInDirection(m_compressedPath[i].Direction) ) != null &&
+                while ((nextPoint = nextPoint.GetNearestCellInDirection(m_compressedPath[i].Direction)) != null &&
                       nextPoint.CellId != m_compressedPath[i + 1].Cell.Id)
                 {
                     if (l > MapPoint.MapHeight * 2 + MapPoint.MapWidth)
@@ -171,7 +171,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
         {
             var path = (from key in keys
                         let cellId = key & 4095
-                        let direction = (DirectionsEnum) ((key >> 12) & 7)
+                        let direction = (DirectionsEnum)((key >> 12) & 7)
                         select new ObjectPosition(map, map.Cells[cellId], direction));
 
             return new Path(map, path);
@@ -179,7 +179,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
         public static Path GetEmptyPath(Map map, Cell startCell)
         {
-            return new Path(map, new [] { startCell });
+            return new Path(map, new[] { startCell });
         }
     }
 }

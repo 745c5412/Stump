@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
@@ -9,6 +7,8 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -199,7 +199,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 pool = new DungeonSpawningPool(map);
                 map.AddSpawningPool(pool);
             }
-
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {

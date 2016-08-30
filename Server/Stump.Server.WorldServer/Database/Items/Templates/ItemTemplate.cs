@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.IO;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+﻿using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
@@ -11,6 +8,9 @@ using Stump.Server.WorldServer.Game.Conditions;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Item = Stump.DofusProtocol.D2oClasses.Item;
 
 namespace Stump.Server.WorldServer.Database.Items.Templates
@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public ItemTypeRecord Type
         {
-            get { return m_type ?? (m_type = ItemManager.Instance.TryGetItemType((int) TypeId)); }
+            get { return m_type ?? (m_type = ItemManager.Instance.TryGetItemType((int)TypeId)); }
         }
 
         public uint DescriptionId
@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             {
                 return ItemSetId < 0
                            ? null
-                           : m_itemSet ?? (m_itemSet = ItemManager.Instance.TryGetItemSetTemplate((uint) ItemSetId));
+                           : m_itemSet ?? (m_itemSet = ItemManager.Instance.TryGetItemSetTemplate((uint)ItemSetId));
             }
         }
 
@@ -266,7 +266,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set
             {
                 m_possibleEffects = value;
-                m_possibleEffectsBin = value == null ? null : value.ToBinary(); 
+                m_possibleEffectsBin = value == null ? null : value.ToBinary();
                 m_effects = value == null ? new List<EffectBase>() : new List<EffectBase>(PossibleEffects.Select(EffectManager.Instance.ConvertExportedEffect));
             }
         }
@@ -305,7 +305,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public virtual void AssignFields(object d2oObject)
         {
-            var template = (Item) d2oObject;
+            var template = (Item)d2oObject;
             Id = template.id;
             Weight = template.weight;
             RealWeight = template.realWeight;
@@ -332,7 +332,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             FavoriteSubAreasBonus = template.favoriteSubAreasBonus;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -344,7 +344,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             m_recipeIdsCSV = m_recipeIds.ToCSV(",");
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
 
         public bool IsWeapon()
         {

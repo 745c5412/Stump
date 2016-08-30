@@ -62,7 +62,7 @@ namespace Stump.Core.Reflection
                     {
                         count++;
 
-                        if (item is IEnumerable && !( item is string ))
+                        if (item is IEnumerable && !(item is string))
                         {
                             m_level++;
                             DumpElement(item);
@@ -143,21 +143,21 @@ namespace Stump.Core.Reflection
         private string FormatValue(object o)
         {
             if (o == null)
-                return ( "null" );
+                return ("null");
 
             if (o is DateTime)
-                return ( ( (DateTime)o ).ToShortDateString() );
+                return (((DateTime)o).ToShortDateString());
 
             if (o is string)
                 return string.Format("\"{0}\"", o);
 
             if (o is ValueType)
-                return ( o.ToString() );
+                return (o.ToString());
 
             if (o is IEnumerable)
-                return ( "..." );
+                return ("...");
 
-            return ( "{ }" );
+            return ("{ }");
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
@@ -8,12 +8,12 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
     {
         public SpellCastHandlerAttribute(int spellId)
         {
-            Spell = spellId;            
+            Spell = spellId;
         }
 
         public SpellCastHandlerAttribute(SpellIdEnum spellId)
         {
-            Spell = (int) spellId;
+            Spell = (int)spellId;
         }
 
         public int Spell

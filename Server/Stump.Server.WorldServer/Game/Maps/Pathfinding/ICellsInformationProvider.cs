@@ -8,6 +8,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
         }
 
         bool IsCellWalkable(short cell);
+
         CellInformation GetCellInformation(short cell);
     }
 }

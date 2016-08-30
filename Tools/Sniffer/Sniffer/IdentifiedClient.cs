@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System;
-using PcapDotNet.Packets.Ethernet;
+﻿using PcapDotNet.Packets.Ethernet;
 using PcapDotNet.Packets.IpV4;
-using PcapDotNet.Packets.Transport;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Messages;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Stump.Tools.Sniffer
 {
@@ -15,7 +14,7 @@ namespace Stump.Tools.Sniffer
 
         public delegate void NewMessage(Message message, string sender);
 
-        #endregion
+        #endregion Delegates
 
         private const byte BIT_RIGHT_SHIFT_LEN_PACKET_ID = 2;
         private const byte BIT_MASK = 3;
@@ -27,11 +26,14 @@ namespace Stump.Tools.Sniffer
 
         //Indique si le Paquet est Tronqué
         private bool m_splittedPacket;
+
         //L'header du paquet
         // L'ID du Paquet tronqué
         private uint m_splittedPacketId;
+
         // La taille du paquet tronqué
         private uint m_splittedPacketLength;
+
         private int m_staticHeader;
 
         public IdentifiedClient(string name)

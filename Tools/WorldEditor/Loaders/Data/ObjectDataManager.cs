@@ -1,27 +1,29 @@
 ﻿#region License GNU GPL
+
 // ObjectDataManager.cs
-// 
+//
 // Copyright (C) 2012 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#endregion License GNU GPL
+
 using DBSynchroniser;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using WorldEditor.Config;
 using WorldEditor.Database;
 
@@ -103,7 +105,7 @@ namespace WorldEditor.Loaders.Data
 
         public void Insert<T>(T value)
             where T : class
-        {            
+        {
             if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
                 throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
@@ -112,7 +114,7 @@ namespace WorldEditor.Loaders.Data
 
         public void Update<T>(T value)
             where T : class
-        {            
+        {
             if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
                 throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
@@ -120,7 +122,7 @@ namespace WorldEditor.Loaders.Data
         }
 
         public void Delete<T>(T value)
-        {          
+        {
             if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
                 throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
@@ -128,11 +130,11 @@ namespace WorldEditor.Loaders.Data
         }
 
         public int FindFreeId<T>()
-        {          
+        {
             if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
                 throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
-            var table = m_tables[typeof (T)];
+            var table = m_tables[typeof(T)];
 
             var maxId = DatabaseManager.Instance.Database.ExecuteScalar<int>("SELECT MAX(Id) FROM " + table.TableName) + 1;
 
@@ -144,7 +146,7 @@ namespace WorldEditor.Loaders.Data
             if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
                 throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
-            var table = m_tables[typeof (T)];
+            var table = m_tables[typeof(T)];
 
             return DatabaseManager.Instance.Database.Query<T>("SELECT * FROM " + table.TableName);
         }

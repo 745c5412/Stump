@@ -1,32 +1,30 @@
-
-
 // Generated on 03/02/2014 20:43:01
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class BidExchangerObjectInfo
     {
         public const short Id = 122;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int objectUID;
         public short powerRate;
         public bool overMax;
         public IEnumerable<Types.ObjectEffect> effects;
         public IEnumerable<int> prices;
-        
+
         public BidExchangerObjectInfo()
         {
         }
-        
+
         public BidExchangerObjectInfo(int objectUID, short powerRate, bool overMax, IEnumerable<Types.ObjectEffect> effects, IEnumerable<int> prices)
         {
             this.objectUID = objectUID;
@@ -35,7 +33,7 @@ namespace Stump.DofusProtocol.Types
             this.effects = effects;
             this.prices = prices;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(objectUID);
@@ -46,9 +44,9 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in effects)
             {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-                 effects_count++;
+                writer.WriteShort(entry.TypeId);
+                entry.Serialize(writer);
+                effects_count++;
             }
             var effects_after = writer.Position;
             writer.Seek((int)effects_before);
@@ -60,16 +58,15 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in prices)
             {
-                 writer.WriteInt(entry);
-                 prices_count++;
+                writer.WriteInt(entry);
+                prices_count++;
             }
             var prices_after = writer.Position;
             writer.Seek((int)prices_before);
             writer.WriteUShort((ushort)prices_count);
             writer.Seek((int)prices_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             objectUID = reader.ReadInt();
@@ -81,24 +78,22 @@ namespace Stump.DofusProtocol.Types
             var effects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {
-                 effects_[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
-                 effects_[i].Deserialize(reader);
+                effects_[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
+                effects_[i].Deserialize(reader);
             }
             effects = effects_;
             limit = reader.ReadUShort();
             var prices_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 prices_[i] = reader.ReadInt();
+                prices_[i] = reader.ReadInt();
             }
             prices = prices_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + sizeof(bool) + sizeof(short) + effects.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + prices.Sum(x => sizeof(int));
         }
-        
     }
-    
 }

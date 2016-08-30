@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Stump.DofusProtocol.Enums;
+using System;
 using System.Xml.Serialization;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands
 {
@@ -9,7 +9,6 @@ namespace Stump.Server.BaseServer.Commands
     {
         public CommandInfo()
         {
-            
         }
 
         public CommandInfo(CommandBase command)
@@ -18,7 +17,6 @@ namespace Stump.Server.BaseServer.Commands
             RequiredRole = command.RequiredRole;
             Description = command.Description;
         }
-
 
         [XmlAttribute("name")]
         public string Name

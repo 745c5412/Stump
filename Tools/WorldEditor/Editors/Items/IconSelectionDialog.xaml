@@ -64,8 +64,8 @@
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="icons:Icon">
                     <StackPanel Orientation="Vertical">
-                        <Image Source="{Binding Image}" HorizontalAlignment="Center"/>
-                        <TextBlock Text="{Binding Id}" HorizontalAlignment="Center"/>
+                        <Image Source="{Binding Image}" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding Id}" HorizontalAlignment="Center" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

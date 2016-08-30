@@ -34,7 +34,7 @@ namespace ArkalysPlugin.Commands
             Aliases = new[] { "pnj" };
             RequiredRole = RoleEnum.Player;
             Description = "Téléporte à la zone d'achat d'équipements";
-            ParentCommandType = typeof (TPCommands);
+            ParentCommandType = typeof(TPCommands);
         }
 
         public override void Execute(GameTrigger trigger)
@@ -70,7 +70,7 @@ namespace ArkalysPlugin.Commands
             Aliases = new[] { "shop", "boutique" };
             RequiredRole = RoleEnum.Player;
             Description = "Téléporte à l'espace boutique";
-            ParentCommandType = typeof (TPCommands);
+            ParentCommandType = typeof(TPCommands);
         }
 
         public override void Execute(GameTrigger trigger)

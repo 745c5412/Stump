@@ -1,23 +1,25 @@
 ﻿#region License GNU GPL
+
 // FastBigEndianReader.cs
-// 
+//
 // Copyright (C) 2012 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using Stump.Core.Pool;
 using System;
 using System.IO;
 using System.Text;
-using Stump.Core.Pool;
 
 namespace Stump.Core.IO
 {
@@ -42,7 +44,7 @@ namespace Stump.Core.IO
             {
                 if (m_maxPosition > 0 && value > m_maxPosition)
                     throw new InvalidOperationException("Buffer overflow");
-                
+
                 m_position = value;
             }
         }
@@ -92,7 +94,7 @@ namespace Stump.Core.IO
             Position += 2;
             fixed (byte* pbyte = &m_buffer[position])
             {
-                return (short) ((*pbyte << 8) | (*(pbyte + 1)));
+                return (short)((*pbyte << 8) | (*(pbyte + 1)));
             }
         }
 
@@ -102,7 +104,7 @@ namespace Stump.Core.IO
             Position += 4;
             fixed (byte* pbyte = &m_buffer[position])
             {
-                return ( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
+                return (*pbyte << 24) | (*(pbyte + 1) << 16) | (*(pbyte + 2) << 8) | (*(pbyte + 3));
             }
         }
 
@@ -112,9 +114,9 @@ namespace Stump.Core.IO
             Position += 8;
             fixed (byte* pbyte = &m_buffer[position])
             {
-                int i1 = ( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
-                int i2  = ( *( pbyte + 4 ) << 24 ) | ( *( pbyte + 5 ) << 16 ) | ( *( pbyte + 6 ) << 8 ) | ( *( pbyte + 7 ) );
-                return (uint)i2 | ( (long)i1 << 32 );
+                int i1 = (*pbyte << 24) | (*(pbyte + 1) << 16) | (*(pbyte + 2) << 8) | (*(pbyte + 3));
+                int i2 = (*(pbyte + 4) << 24) | (*(pbyte + 5) << 16) | (*(pbyte + 6) << 8) | (*(pbyte + 7));
+                return (uint)i2 | ((long)i1 << 32);
             }
         }
 
@@ -147,7 +149,7 @@ namespace Stump.Core.IO
                 // Loop over the count in blocks of 4 bytes, copying an integer (4 bytes) at a time:
                 for (int i = 0; i < n / 4; i++)
                 {
-                    *( (int*)pd ) = *( (int*)ps );
+                    *((int*)pd) = *((int*)ps);
                     pd += 4;
                     ps += 4;
                 }
@@ -229,7 +231,6 @@ namespace Stump.Core.IO
 
         public void Dispose()
         {
-            
         }
     }
 }

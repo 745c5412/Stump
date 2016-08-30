@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using ProtoBuf;
+﻿using ProtoBuf;
 using Stump.DofusProtocol.Enums;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Stump.Server.BaseServer.IPC.Objects
 {
@@ -10,8 +10,8 @@ namespace Stump.Server.BaseServer.IPC.Objects
     {
         public UserGroupData()
         {
-            
         }
+
         [ProtoMember(1)]
         public int Id
         {
@@ -39,7 +39,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
             get;
             set;
         }
-        
+
         [ProtoMember(5)]
         public IList<int> Servers
         {

@@ -1,4 +1,3 @@
-using System;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
@@ -6,8 +5,8 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Handlers.Basic;
+using System;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
@@ -60,6 +59,5 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER));
             }
         }
-
     }
 }

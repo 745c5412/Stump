@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Runtime;
-using System.Threading;
-using System.Threading.Tasks;
-using NLog;
+﻿using NLog;
 using NLog.Config;
 using NLog.Targets;
 using SharpRaven;
@@ -26,6 +15,17 @@ using Stump.Server.BaseServer.Exceptions;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Runtime;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Stump.Server.BaseServer
 {
@@ -44,21 +44,10 @@ namespace Stump.Server.BaseServer
         /// In minutes
         /// </summary>
         [Variable]
-        public static int AutomaticShutdownTimer = 6*60;
+        public static int AutomaticShutdownTimer = 6 * 60;
 
-        [Variable] public static string CommandsInfoFilePath = "./commands.xml";
-
-        [Variable(Priority = 10, DefinableRunning = true)]
-        public static bool IsExceptionLoggerEnabled = false;
-
-        [Variable(Priority = 10)]
-        public static string ExceptionLoggerDSN = "";
-
-        public RavenClient ExceptionLogger
-        {
-            get;
-            protected set;
-        }
+        [Variable]
+        public static string CommandsInfoFilePath = "./commands.xml";
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -266,31 +255,6 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
-
-            if (IsExceptionLoggerEnabled)
-            {
-                ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
-                /*
-                MethodCallTarget target = new MethodCallTarget();
-                target.ClassName = typeof (ServerBase).AssemblyQualifiedName;
-                target.MethodName = "PushLogWithRaven";
-                target.Parameters.Add(new MethodCallParameter("${level}"));
-                target.Parameters.Add(new MethodCallParameter("${logger} : ${message}"));
-
-                var rule = new LoggingRule("*", LogLevel.Warn, target);
-                LogManager.Configuration.AddTarget("raven", target);
-                LogManager.Configuration.LoggingRules.Add(rule);
-
-                LogManager.ReconfigExistingLoggers();*/
-            }
-
-        }
-
-        public static void PushLogWithRaven(string levelStr, string message)
-        {
-            ErrorLevel level;
-            if (Enum.TryParse(levelStr, out level))
-                InstanceAsBase.ExceptionLogger.CaptureMessage(new SentryMessage(message), level);
         }
 
         public virtual void UpdateConfigFiles()
@@ -311,7 +275,7 @@ namespace Stump.Server.BaseServer
                 logger.Info("Create {0} file", ConfigFilePath);
 
                 Config = new XmlConfig(ConfigFilePath);
-                Config.AddAssemblies(LoadedAssemblies.Values.ToArray()); 
+                Config.AddAssemblies(LoadedAssemblies.Values.ToArray());
                 Config.Create();
             }
 
@@ -399,7 +363,7 @@ namespace Stump.Server.BaseServer
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
-            HandleCrashException((Exception) args.ExceptionObject);
+            HandleCrashException((Exception)args.ExceptionObject);
 
             if (args.IsTerminating)
                 Shutdown();
@@ -447,7 +411,6 @@ namespace Stump.Server.BaseServer
             if (evnt != null)
                 evnt();
         }
-
 
         /// <summary>
         /// Allow the server to ignore the next modification of the config file.
@@ -529,7 +492,7 @@ namespace Stump.Server.BaseServer
 
         protected virtual void CheckScheduledShutdown()
         {
-            if ((ScheduledAutomaticShutdown && UpTime.TotalMinutes > AutomaticShutdownTimer) || 
+            if ((ScheduledAutomaticShutdown && UpTime.TotalMinutes > AutomaticShutdownTimer) ||
                 (IsShutdownScheduled && ScheduledShutdownDate <= DateTime.Now))
             {
                 Shutdown();
@@ -544,7 +507,6 @@ namespace Stump.Server.BaseServer
 
                 OnShutdown();
 
-
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 
@@ -557,7 +519,6 @@ namespace Stump.Server.BaseServer
                     Console.ReadKey(true);
                     Thread.Sleep(500);
                     Console.WriteLine("Press now a key to exit...");
-                    
 
                     Console.ReadKey(true);
                 }
@@ -574,7 +535,6 @@ namespace Stump.Server.BaseServer
         ///   Class singleton
         /// </summary>
         public static T Instance;
-
 
         protected ServerBase(string configFile, string schemaFile)
             : base(configFile, schemaFile)

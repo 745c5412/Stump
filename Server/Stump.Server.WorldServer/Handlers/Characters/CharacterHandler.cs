@@ -4,7 +4,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
     {
         private CharacterHandler()
         {
-
         }
     }
 }

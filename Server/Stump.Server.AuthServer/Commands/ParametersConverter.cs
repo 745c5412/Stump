@@ -1,7 +1,6 @@
-
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using System;
 
 namespace Stump.Server.AuthServer.Commands
 {
@@ -17,7 +16,7 @@ namespace Stump.Server.AuthServer.Commands
 
             byte value;
             if (byte.TryParse(entry, out value))
-                return (RoleEnum) Enum.ToObject(typeof (RoleEnum), value);
+                return (RoleEnum)Enum.ToObject(typeof(RoleEnum), value);
 
             throw new ArgumentException("entry is not RoleEnum");
         };

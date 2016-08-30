@@ -1,30 +1,26 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class ObjectEffectMount : ObjectEffect
     {
         public const short Id = 179;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public int mountId;
         public double date;
         public short modelId;
-        
+
         public ObjectEffectMount()
         {
         }
-        
+
         public ObjectEffectMount(short actionId, int mountId, double date, short modelId)
          : base(actionId)
         {
@@ -32,7 +28,7 @@ namespace Stump.DofusProtocol.Types
             this.date = date;
             this.modelId = modelId;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -40,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteDouble(date);
             writer.WriteShort(modelId);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -52,12 +48,10 @@ namespace Stump.DofusProtocol.Types
             if (modelId < 0)
                 throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(int) + sizeof(double) + sizeof(short);
         }
-        
     }
-    
 }

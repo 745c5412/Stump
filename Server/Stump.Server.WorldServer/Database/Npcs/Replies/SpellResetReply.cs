@@ -10,7 +10,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         public SpellResetReply(NpcReplyRecord record)
             : base(record)
         {
-            
         }
 
         public override bool Execute(Npc npc, Character character)

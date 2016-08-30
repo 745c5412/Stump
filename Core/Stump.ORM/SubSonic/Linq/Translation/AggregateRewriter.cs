@@ -2,11 +2,10 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -15,8 +14,8 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class AggregateRewriter : DbExpressionVisitor
     {
-        ILookup<TableAlias, AggregateSubqueryExpression> lookup;
-        Dictionary<AggregateSubqueryExpression, Expression> map;
+        private ILookup<TableAlias, AggregateSubqueryExpression> lookup;
+        private Dictionary<AggregateSubqueryExpression, Expression> map;
 
         private AggregateRewriter(Expression expr)
         {
@@ -57,9 +56,10 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             return this.Visit(aggregate.AggregateAsSubquery);
         }
 
-        class AggregateGatherer : DbExpressionVisitor
+        private class AggregateGatherer : DbExpressionVisitor
         {
-            List<AggregateSubqueryExpression> aggregates = new List<AggregateSubqueryExpression>();
+            private List<AggregateSubqueryExpression> aggregates = new List<AggregateSubqueryExpression>();
+
             private AggregateGatherer()
             {
             }

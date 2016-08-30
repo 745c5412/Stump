@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Spells;
@@ -13,6 +10,9 @@ using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
@@ -86,7 +86,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             set;
         }
 
-
         public Cell CastCell
         {
             get { return m_customCastCell ?? (MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell); }
@@ -105,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             {
                 return m_effectZone ??
                        (m_effectZone =
-                        new Zone(Effect.ZoneShape, (byte) Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint)));
+                        new Zone(Effect.ZoneShape, (byte)Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint)));
             }
             set
             {
@@ -159,7 +158,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                     return true;
 
                 if (Targets.HasFlag(SpellTargetType.ALLY_SUMMONER) && Caster is SummonedFighter &&
-                    ((SummonedFighter) Caster).Summoner == actor)
+                    ((SummonedFighter)Caster).Summoner == actor)
                     return true;
 
                 if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
@@ -216,18 +215,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 return m_customAffectedActors;
 
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
-                return new[] {Caster};
+                return new[] { Caster };
 
             return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry) && !entry.IsCarried()).ToArray();
         }
 
-        
         public EffectInteger GenerateEffect()
         {
             var effect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
             if (effect != null)
-                effect.Value = (short)(effect.Value*Efficiency);
+                effect.Value = (short)(effect.Value * Efficiency);
 
             return effect;
         }
@@ -318,7 +316,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool RemoveStateBuff(FightActor target, SpellStatesEnum stateId)
         {
-            var state = target.GetBuffs(x => x is StateBuff && ((StateBuff) x).State.Id == (int)stateId).FirstOrDefault();
+            var state = target.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == (int)stateId).FirstOrDefault();
             if (state == null)
                 return false;
 

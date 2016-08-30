@@ -1,37 +1,33 @@
-
-
 // Generated on 03/02/2014 20:43:01
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class SpellItem : Item
     {
         public const short Id = 49;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public byte position;
         public int spellId;
         public sbyte spellLevel;
-        
+
         public SpellItem()
         {
         }
-        
+
         public SpellItem(byte position, int spellId, sbyte spellLevel)
         {
             this.position = position;
             this.spellId = spellId;
             this.spellLevel = spellLevel;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -39,7 +35,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(spellId);
             writer.WriteSByte(spellLevel);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -51,12 +47,10 @@ namespace Stump.DofusProtocol.Types
             if (spellLevel < 1 || spellLevel > 6)
                 throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 6");
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(byte) + sizeof(int) + sizeof(sbyte);
         }
-        
     }
-    
 }

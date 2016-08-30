@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
 {
     public class CrossSet : Set
     {
-        public CrossSet(MapPoint center, int maxRange, int minRange=0)
+        public CrossSet(MapPoint center, int maxRange, int minRange = 0)
         {
             Center = center;
             MinRange = minRange;
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
                     if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_WEST, i)) != null)
                         yield return point;
                     if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH, i)) != null)
-                        yield return point;                
+                        yield return point;
                 }
             }
         }
@@ -82,8 +82,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
                 return point.IsOnSameLine(Center) || point.IsOnSameDiagonal(Center) && dist >= MinRange && dist <= MaxRange;
 
             if (Diagonal) // dist/2 because we mesaure distances in diagonal
-                return point.IsOnSameDiagonal(Center) && dist/2 >= MinRange && dist/2 <= MaxRange;
-            
+                return point.IsOnSameDiagonal(Center) && dist / 2 >= MinRange && dist / 2 <= MaxRange;
+
             return point.IsOnSameLine(Center) && dist >= MinRange && dist <= MaxRange;
         }
     }

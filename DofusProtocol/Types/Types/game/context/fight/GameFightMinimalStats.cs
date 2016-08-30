@@ -1,22 +1,18 @@
-
-
 // Generated on 03/02/2014 20:42:59
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GameFightMinimalStats
     {
         public const short Id = 31;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int lifePoints;
         public int maxLifePoints;
         public int baseMaxLifePoints;
@@ -45,11 +41,11 @@ namespace Stump.DofusProtocol.Types
         public short tackleBlock;
         public short tackleEvade;
         public sbyte invisibilityState;
-        
+
         public GameFightMinimalStats()
         {
         }
-        
+
         public GameFightMinimalStats(int lifePoints, int maxLifePoints, int baseMaxLifePoints, int permanentDamagePercent, int shieldPoints, short actionPoints, short maxActionPoints, short movementPoints, short maxMovementPoints, int summoner, bool summoned, short neutralElementResistPercent, short earthElementResistPercent, short waterElementResistPercent, short airElementResistPercent, short fireElementResistPercent, short neutralElementReduction, short earthElementReduction, short waterElementReduction, short airElementReduction, short fireElementReduction, short criticalDamageFixedResist, short pushDamageFixedResist, short dodgePALostProbability, short dodgePMLostProbability, short tackleBlock, short tackleEvade, sbyte invisibilityState)
         {
             this.lifePoints = lifePoints;
@@ -81,7 +77,7 @@ namespace Stump.DofusProtocol.Types
             this.tackleEvade = tackleEvade;
             this.invisibilityState = invisibilityState;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(lifePoints);
@@ -113,7 +109,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(tackleEvade);
             writer.WriteSByte(invisibilityState);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             lifePoints = reader.ReadInt();
@@ -159,12 +155,10 @@ namespace Stump.DofusProtocol.Types
             tackleEvade = reader.ReadShort();
             invisibilityState = reader.ReadSByte();
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(bool) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte);
         }
-        
     }
-    
 }

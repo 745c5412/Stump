@@ -2,14 +2,13 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Schema;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -42,10 +41,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         public override bool IsIdentity(MemberInfo member)
         {
             // Customers has CustomerID, Orders has OrderID, etc
-            if (this.IsColumn(member)) 
+            if (this.IsColumn(member))
             {
                 string name = NameWithoutTrailingDigits(member.Name);
-                return member.Name.EndsWith("ID") && member.DeclaringType.Name.StartsWith(member.Name.Substring(0, member.Name.Length - 2)); 
+                return member.Name.EndsWith("ID") && member.DeclaringType.Name.StartsWith(member.Name.Substring(0, member.Name.Length - 2));
             }
             return false;
         }
@@ -82,16 +81,15 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
         public override string GetTableName(Type rowType)
         {
-            
             string tableName = rowType.Name;
             ITable tbl = this.Language.DataProvider.FindOrCreateTable(rowType);
 
             //lookup the schema and properly name this thing
-            if(tbl!=null)
+            if (tbl != null)
                 tableName = this.Language.DataProvider.QualifyTableName(tbl);
             else
-                tableName=this.Language.Quote(SplitWords(Plural(rowType.Name)));
-            
+                tableName = this.Language.Quote(SplitWords(Plural(rowType.Name)));
+
             return tableName;
         }
 
@@ -99,11 +97,13 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         {
             string propertyName = member.Name;
             string result = "";
-            try {
+            try
+            {
                 IColumn column = this.Language.DataProvider.FindTable(member.ReflectedType.Name).GetColumnByPropertyName(propertyName);
                 result = column == null ? "" : column.Name;
-            } catch {
-
+            }
+            catch
+            {
             }
             return result;
         }
@@ -157,13 +157,13 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
         public static string Plural(string name)
         {
-            if (name.EndsWith("x", StringComparison.InvariantCultureIgnoreCase) 
+            if (name.EndsWith("x", StringComparison.InvariantCultureIgnoreCase)
                 || name.EndsWith("ch", StringComparison.InvariantCultureIgnoreCase)
-                || name.EndsWith("ss", StringComparison.InvariantCultureIgnoreCase)) 
+                || name.EndsWith("ss", StringComparison.InvariantCultureIgnoreCase))
             {
                 return name + "es";
             }
-            else if (name.EndsWith("y", StringComparison.InvariantCultureIgnoreCase)) 
+            else if (name.EndsWith("y", StringComparison.InvariantCultureIgnoreCase))
             {
                 return name.Substring(0, name.Length - 1) + "ies";
             }

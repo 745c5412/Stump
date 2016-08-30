@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Stump.Core.Mathematics;
+using Stump.Core.Reflection;
+using Stump.Server.BaseServer.Initialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Stump.Core.Mathematics;
-using Stump.Core.Reflection;
-using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges
 {
@@ -36,8 +36,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
                 return;
 
             foreach (var identifier in from challengeIdentifierAttribute in challengeIdentifierAttributes
-                                       select challengeIdentifierAttribute.Identifiers into identifiers from identifier in identifiers
-                                       where !m_challenges.ContainsKey(identifier) select identifier)
+                                       select challengeIdentifierAttribute.Identifiers into identifiers
+                                       from identifier in identifiers
+                                       where !m_challenges.ContainsKey(identifier)
+                                       select identifier)
             {
                 m_challenges.Add(identifier, challenge);
             }

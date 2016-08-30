@@ -100,5 +100,4 @@
             </ItemsControl>
         </ZoomAndPan:ZoomAndPanControl>
     </StackPanel>
-
 </UserControl>

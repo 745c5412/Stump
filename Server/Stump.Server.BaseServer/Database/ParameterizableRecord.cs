@@ -1,24 +1,26 @@
 ﻿#region License GNU GPL
+
 // ParameterizableRecord.cs
-// 
+//
 // Copyright (C) 2012 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
-using System.Text;
+#endregion License GNU GPL
+
 using Stump.Core.Extensions;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Text;
 
 namespace Stump.Server.BaseServer.Database
 {
@@ -90,12 +92,16 @@ namespace Stump.Server.BaseServer.Database
                 {
                     case 0:
                         return GetParameterInteral<T>(parameter, Parameter0, defaultIfEmpty);
+
                     case 1:
                         return GetParameterInteral<T>(parameter, Parameter1, defaultIfEmpty);
+
                     case 2:
                         return GetParameterInteral<T>(parameter, Parameter2, defaultIfEmpty);
+
                     case 3:
                         return GetParameterInteral<T>(parameter, Parameter3, defaultIfEmpty);
+
                     case 4:
                         return GetParameterInteral<T>(parameter, Parameter4, defaultIfEmpty);
                 }
@@ -146,15 +152,19 @@ namespace Stump.Server.BaseServer.Database
                     case 0:
                         Parameter0 = valueStr;
                         break;
+
                     case 1:
                         Parameter1 = valueStr;
                         break;
+
                     case 2:
                         Parameter2 = valueStr;
                         break;
+
                     case 3:
                         Parameter3 = valueStr;
                         break;
+
                     case 4:
                         Parameter4 = valueStr;
                         break;
@@ -190,12 +200,11 @@ namespace Stump.Server.BaseServer.Database
                     var builder = new StringBuilder();
                     builder.Append(AdditionalParameters);
                     int nextIndex = AdditionalParameters.IndexOf(ParameterSeparatorChar, index);
-                    builder.Remove(index + 1, ( nextIndex == -1 ? AdditionalParameters.Length - ( index + 1 ) : nextIndex - ( index + 1 ) ));
+                    builder.Remove(index + 1, (nextIndex == -1 ? AdditionalParameters.Length - (index + 1) : nextIndex - (index + 1)));
                     builder.Insert(index + 1, valueStr);
                     AdditionalParameters = builder.ToString();
                 }
             }
         }
-
     }
 }

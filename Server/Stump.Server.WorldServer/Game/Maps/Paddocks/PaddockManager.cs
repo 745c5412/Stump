@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Server.BaseServer.Database;
+﻿using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 {
@@ -20,8 +19,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 
             World.Instance.RegisterSaveableInstance(this);
         }
-        
-        
+
         public Paddock GetPaddock(int id)
         {
             Paddock paddock;

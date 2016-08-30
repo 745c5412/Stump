@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Stump.ORM.SubSonic.Query;
-using Stump.Server.WorldServer.Game.Actors.Fight;
+﻿using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
+using System.Linq;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
@@ -47,7 +46,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (result == null)
                 return RunStatus.Failure;
 
-            var move = new MoveAction(Fighter, result) {AttemptOnly = true};
+            var move = new MoveAction(Fighter, result) { AttemptOnly = true };
             return move.YieldExecute(context);
         }
     }

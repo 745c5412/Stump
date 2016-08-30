@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -9,12 +8,12 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Bank;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using System.Linq;
 
 namespace Stump.Plugins.DefaultPlugin.Npcs
 {
-    class NpcBank
+    internal class NpcBank
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -84,7 +83,7 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
     {
         public override NpcActionTypeEnum[] ActionType
         {
-            get { return new []{ NpcActionTypeEnum.ACTION_TALK }; }
+            get { return new[] { NpcActionTypeEnum.ACTION_TALK }; }
         }
 
         public override void Execute(Npc npc, Character character)
@@ -96,10 +95,10 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
 
     public class NpcBankDialog : NpcDialog
     {
-         public NpcBankDialog(Character character, Npc npc) : base(character, npc)
-         {
-             CurrentMessage = character.Level >= 10 ? NpcBank.Message : NpcBank.WrongLevelMessage;
-         }
+        public NpcBankDialog(Character character, Npc npc) : base(character, npc)
+        {
+            CurrentMessage = character.Level >= 10 ? NpcBank.Message : NpcBank.WrongLevelMessage;
+        }
 
         public override void Open()
         {
@@ -124,7 +123,7 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
                     Character.Inventory.SubKamas(accessPrice);
 
                     var dialog = new BankDialog(Character);
-                    dialog.Open(); 
+                    dialog.Open();
                 }
 
                 Close();

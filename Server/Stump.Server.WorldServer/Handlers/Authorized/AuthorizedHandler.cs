@@ -21,21 +21,20 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
             switch (command)
             {
                 case ("look"):
-                {
-                    WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole("look " + data[2], client.Character));
-                    break;
-                }
+                    {
+                        WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole("look " + data[2], client.Character));
+                        break;
+                    }
                 case ("moveto"):
-                {
-                    var id = data[1];
+                    {
+                        var id = data[1];
 
-                    WorldServer.Instance.CommandManager.HandleCommand(
-                        new TriggerConsole(string.Format("go {0}", id), client.Character));
-                    break;
-                }
+                        WorldServer.Instance.CommandManager.HandleCommand(
+                            new TriggerConsole(string.Format("go {0}", id), client.Character));
+                        break;
+                    }
             }
         }
-
 
         [WorldHandler(AdminCommandMessage.Id)]
         public static void HandleAdminCommandMessage(WorldClient client, AdminCommandMessage message)
@@ -60,7 +59,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
 
         public static void SendConsoleMessage(IPacketReceiver client, ConsoleMessageTypeEnum type, string text)
         {
-            client.Send(new ConsoleMessage((sbyte) type, text));
+            client.Send(new ConsoleMessage((sbyte)type, text));
         }
     }
 }

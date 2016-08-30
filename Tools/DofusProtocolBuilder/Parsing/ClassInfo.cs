@@ -4,11 +4,11 @@ namespace DofusProtocolBuilder.Parsing
 {
     public class ClassInfo
     {
-    	public ClassInfo()
-    	{
-    		Implementations = new List<string>();
+        public ClassInfo()
+        {
+            Implementations = new List<string>();
             CustomAttribute = new List<string>();
-    	}
+        }
 
         #region ClassModifiers enum
 
@@ -16,9 +16,9 @@ namespace DofusProtocolBuilder.Parsing
         {
             None,
             Abstract
-        } ;
+        };
 
-        #endregion
+        #endregion ClassModifiers enum
 
         public AccessModifiers AccessModifier
         {
@@ -50,10 +50,10 @@ namespace DofusProtocolBuilder.Parsing
             set;
         }
 
-		public List<string> Implementations
-		{
-			get;
-            set; 
+        public List<string> Implementations
+        {
+            get;
+            set;
         }
 
         public List<string> CustomAttribute

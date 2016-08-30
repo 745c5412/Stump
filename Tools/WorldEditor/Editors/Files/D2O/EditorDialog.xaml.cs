@@ -20,7 +20,7 @@ namespace WorldEditor.Editors.Files.D2O
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            ( (IPersistableChanged)m_editor ).PersistChanges();
+            ((IPersistableChanged)m_editor).PersistChanges();
             Close();
         }
 

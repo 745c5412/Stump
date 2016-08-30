@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -15,6 +13,8 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
+using System.Linq;
 using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -33,7 +33,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             m_stats = new StatsFields(this);
             m_stats.Initialize(Monster.Grade);
-            
 
             Cell cell;
             Fight.FindRandomFreeCell(this, out cell, false);
@@ -62,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get
             {
-                return (byte) Monster.Grade.Level;
+                return (byte)Monster.Grade.Level;
             }
         }
 
@@ -86,14 +85,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var random = new AsyncRandom();
 
-            return (uint) random.Next(Monster.Template.MinDroppedKamas, Monster.Template.MaxDroppedKamas + 1);
+            return (uint)random.Next(Monster.Template.MinDroppedKamas, Monster.Template.MaxDroppedKamas + 1);
         }
 
         public override int GetGivenExperience()
         {
             return Monster.Grade.GradeXp;
         }
-        
+
         public override bool CanDrop()
         {
             return true;
@@ -124,7 +123,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     if (droppableItem.DropLimit > 0 && m_dropsCount.ContainsKey(droppableItem) && m_dropsCount[droppableItem] >= droppableItem.DropLimit)
                         break;
 
-                    var chance = ( random.Next(0, 100) + random.NextDouble() );
+                    var chance = (random.Next(0, 100) + random.NextDouble());
                     var dropRate = FightFormulas.AdjustDropChance(looter, droppableItem, Monster, Fight.AgeBonus);
 
                     if (!(dropRate >= chance))
@@ -141,7 +140,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         m_dropsCount[droppableItem]++;
                 }
             }
-
 
             return items;
         }
@@ -178,7 +176,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
         {
-            return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte) Monster.Grade.GradeId);
+            return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.Grade.GradeId);
         }
 
         public override string GetMapRunningFighterName()

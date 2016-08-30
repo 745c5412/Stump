@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
@@ -31,6 +31,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
         public override string ToString()
         {
             return FormatToString(Identifier);
-        } 
+        }
     }
 }

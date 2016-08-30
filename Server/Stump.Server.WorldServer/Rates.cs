@@ -1,5 +1,5 @@
-using System;
 using Stump.Core.Attributes;
+using System;
 
 namespace Stump.Server.WorldServer
 {
@@ -20,6 +20,5 @@ namespace Stump.Server.WorldServer
 
         [Variable(true)]
         public static float DropsRate = 1;
-
     }
 }

@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
@@ -54,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
             foreach (var effect in handler.GetEffectHandlers().OfType<DirectDamage>())
             {
-                effect.Efficiency = 1 + bonus/100d;
+                effect.Efficiency = 1 + bonus / 100d;
             }
 
             handler.Execute();
@@ -62,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override GameActionMark GetGameActionMark()
         {
-            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
+            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte)Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
         }
 
         public override GameActionMark GetHiddenGameActionMark()

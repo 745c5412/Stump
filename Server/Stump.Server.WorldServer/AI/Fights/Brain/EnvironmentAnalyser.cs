@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Threading;
 using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Spells;
@@ -12,6 +9,9 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
@@ -74,21 +74,21 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             Set castRange;
             if (spell.CurrentSpellLevel.CastInLine || spell.CurrentSpellLevel.CastInDiagonal)
                 castRange = new CrossSet(target.Point, Fighter.GetSpellRange(spell.CurrentSpellLevel),
-                    spell.CurrentSpellLevel.MinRange != 0 ? (int) spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Cell.Id) ? 0 : 1)
+                    spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Cell.Id) ? 0 : 1)
                 {
                     Diagonal = spell.CurrentSpellLevel.CastInDiagonal,
                     AllDirections = spell.CurrentSpellLevel.CastInLine && spell.CurrentSpellLevel.CastInDiagonal
                 };
             else
-             castRange = new LozengeSet(target.Point, Fighter.GetSpellRange(spell.CurrentSpellLevel), 
-                spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Cell.Id) ? 0 : 1);
+                castRange = new LozengeSet(target.Point, Fighter.GetSpellRange(spell.CurrentSpellLevel),
+                   spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Cell.Id) ? 0 : 1);
 
             var intersection = castRange.EnumerateValidPoints().Intersect(moveZone);
 
-            var closestPoint = intersection.Where(x => Fight.Cells[x.CellId].Walkable && 
+            var closestPoint = intersection.Where(x => Fight.Cells[x.CellId].Walkable &&
                 (target.Direction == DirectionFlagEnum.ALL_DIRECTIONS || target.Direction == DirectionFlagEnum.NONE || (x.OrientationTo(target.Point).GetFlag() & target.Direction) != 0) &&
                 (!LoS || Fight.CanBeSeen(x, MapPoint.GetPoint(target.Cell), false, Fighter))).
-                OrderBy(x => (nearFirst ? 1 : -1)*x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
+                OrderBy(x => (nearFirst ? 1 : -1) * x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
             return closestPoint != null ? Fighter.Fight.Cells[closestPoint.CellId] : null;
         }
@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         }
 
         public IEnumerable<Cell> GetCellsWithLoS(Cell target, Set searchZone)
-        {            
+        {
             foreach (var cell in searchZone.EnumerateValidPoints())
             {
                 if (Fight.CanBeSeen(cell, MapPoint.GetPoint(target)))
@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             var movementsCells = GetMovementCells();
             var fighters = Fight.GetAllFighters(entry => entry.IsEnnemyWith(Fighter));
 
-            var currentCellIndice = fighters.Sum(entry => entry.Position.Point.ManhattanDistanceTo(Fighter.Position.Point)); 
+            var currentCellIndice = fighters.Sum(entry => entry.Position.Point.ManhattanDistanceTo(Fighter.Position.Point));
             Cell betterCell = null;
             long betterCellIndice = 0;
             foreach (var c in movementsCells)
@@ -149,7 +149,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                     betterCell = c;
                 }
                 else if (betterCellIndice == indice && rand.Next(2) == 0)
-                    // random factory
+                // random factory
                 {
                     betterCellIndice = indice;
                     betterCell = c;
@@ -172,7 +172,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             if (mp > 63)
                 return Fight.Map.Cells;
 
-            var circle = new Lozenge(0, (byte) mp);
+            var circle = new Lozenge(0, (byte)mp);
 
             return circle.GetCells(Fighter.Cell, Fight.Map);
         }

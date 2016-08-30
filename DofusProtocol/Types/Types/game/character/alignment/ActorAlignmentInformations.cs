@@ -1,32 +1,28 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class ActorAlignmentInformations
     {
         public const short Id = 201;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte alignmentSide;
         public sbyte alignmentValue;
         public sbyte alignmentGrade;
         public ushort dishonor;
         public int characterPower;
-        
+
         public ActorAlignmentInformations()
         {
         }
-        
+
         public ActorAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, ushort dishonor, int characterPower)
         {
             this.alignmentSide = alignmentSide;
@@ -35,7 +31,7 @@ namespace Stump.DofusProtocol.Types
             this.dishonor = dishonor;
             this.characterPower = characterPower;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(alignmentSide);
@@ -44,7 +40,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(dishonor);
             writer.WriteInt(characterPower);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             alignmentSide = reader.ReadSByte();
@@ -61,12 +57,10 @@ namespace Stump.DofusProtocol.Types
             if (characterPower < 0)
                 throw new Exception("Forbidden value on characterPower = " + characterPower + ", it doesn't respect the following condition : characterPower < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(ushort) + sizeof(int);
         }
-        
     }
-    
 }

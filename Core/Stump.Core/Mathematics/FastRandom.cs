@@ -5,7 +5,7 @@ namespace Stump.Core.Mathematics
 {
     /// <summary>
     /// A fast random number generator.
-    /// 
+    ///
     /// This class is by magnitude faster than System.Random and is preferred.
     /// </summary>
     // This class was written by colgreen of the SharpNEAT project and is under GPL v2/LGPL.
@@ -85,7 +85,7 @@ namespace Stump.Core.Mathematics
             _z = _w;
             _w = (_w ^ (_w >> 19)) ^ (t ^ (t >> 8));
 
-            // Handle the special case where the value int.MaxValue is generated. This is outside of 
+            // Handle the special case where the value int.MaxValue is generated. This is outside of
             // the range of permitted values, so we therefore call Next() to try again.
             var rtn = _w & 0x7fffffff;
             if (rtn == 0x7fffffff)
@@ -112,7 +112,7 @@ namespace Stump.Core.Mathematics
 
         /// <summary>
         /// Generates a random int over the range minValue to maxValue - 1, and not including maxValue.
-        /// 
+        ///
         /// Note that maxValue must be >= minValue and minValue may be negative.
         /// </summary>
         /// <param name="minValue">The lower bound.</param>
@@ -152,19 +152,19 @@ namespace Stump.Core.Mathematics
             _y = _z;
             _z = _w;
 
-            // Here we can gain a 2x speed improvement by generating a value that can be casted to 
-            // an int instead of the more easily available uint. If we then explicitly cast to an 
-            // int the compiler will then cast the int to a double to perform the multiplication. 
+            // Here we can gain a 2x speed improvement by generating a value that can be casted to
+            // an int instead of the more easily available uint. If we then explicitly cast to an
+            // int the compiler will then cast the int to a double to perform the multiplication.
             // This final cast is a lot faster than casting from an uint to a double. The extra cast
-            // to an int is very fast (the allocated bits remain the same), and so the overall effect 
+            // to an int is very fast (the allocated bits remain the same), and so the overall effect
             // of the extra cast is a significant performance improvement.
             return (RealUnitInt32 * (int)(0x7fffffff & (_w = (_w ^ (_w >> 19)) ^ (t ^ (t >> 8)))));
         }
 
         /// <summary>
         /// Fills the provided byte array with random bytes.
-        /// 
-        /// This method is functionally equivalent to System.Random.NextBytes. 
+        ///
+        /// This method is functionally equivalent to System.Random.NextBytes.
         /// </summary>
         /// <param name="buffer">Buffer to fill.</param>
         public override unsafe void NextBytes(byte[] buffer)
@@ -205,11 +205,11 @@ namespace Stump.Core.Mathematics
         }
 
         /// <summary>
-        /// Generates a uint. Values returned are over the full range of a uint, 
+        /// Generates a uint. Values returned are over the full range of a uint,
         /// uint.MinValue to uint.MaxValue, inclusive.
-        /// 
+        ///
         /// This is the fastest method for generating a single random number because the underlying
-        /// random number generator algorithm generates 32 random bits that can be cast directly to 
+        /// random number generator algorithm generates 32 random bits that can be cast directly to
         /// a uint.
         /// </summary>
         public uint NextUInt32()
@@ -223,8 +223,8 @@ namespace Stump.Core.Mathematics
         }
 
         /// <summary>
-        /// Generates a random int over the range 0 to int.MaxValue, inclusive. 
-        /// 
+        /// Generates a random int over the range 0 to int.MaxValue, inclusive.
+        ///
         /// This method differs from Next only in that the range is 0 to int.MaxValue
         /// and not 0 to int.MaxValue - 1.
         /// </summary>

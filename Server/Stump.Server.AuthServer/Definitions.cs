@@ -1,5 +1,4 @@
-﻿
-namespace Stump.Server.AuthServer
+﻿namespace Stump.Server.AuthServer
 {
     /// <summary>
     ///   Contains hard-coded data

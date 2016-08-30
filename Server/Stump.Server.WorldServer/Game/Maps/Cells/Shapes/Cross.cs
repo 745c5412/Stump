@@ -1,8 +1,7 @@
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
@@ -113,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
             var centerPoint = new MapPoint(centerCell);
 
-            for (var i = (int) Radius; i > 0; i--)
+            for (var i = (int)Radius; i > 0; i--)
             {
                 if (i < MinRadius)
                     continue;
@@ -145,6 +144,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
             return result.ToArray();
         }
+
         private static void AddCellIfValid(int x, int y, Map map, IList<Cell> container)
         {
             if (!MapPoint.IsInMap(x, y))
@@ -152,6 +152,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
             container.Add(map.Cells[MapPoint.CoordToCellId(x, y)]);
         }
-        #endregion
+
+        #endregion IShape Members
     }
 }

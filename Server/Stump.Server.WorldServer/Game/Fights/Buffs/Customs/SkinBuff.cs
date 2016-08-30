@@ -9,7 +9,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class SkinBuff : Buff
     {
-
         public SkinBuff(int id, FightActor target, FightActor caster, EffectBase effect, ActorLook look, Spell spell, bool dispelable)
             : base(id, target, caster, effect, spell, false, dispelable)
         {
@@ -51,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)( Dispellable ? 1 : 0 ), (short) Spell.Id, 0, 0);
+            return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 1 : 0), (short)Spell.Id, 0, 0);
         }
     }
 }

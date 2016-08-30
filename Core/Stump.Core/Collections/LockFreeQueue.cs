@@ -8,7 +8,6 @@ using System.Threading;
 
 namespace Stump.Core.Collections
 {
-   
     internal class SingleLinkNode<T>
     {
         public SingleLinkNode<T> Next;
@@ -93,11 +92,11 @@ namespace Stump.Core.Collections
         /// Removes and returns the object at the beginning of the queue.
         /// </summary>
         /// <param name="item">
-        /// when the method returns, contains the object removed from the beginning of the queue, 
+        /// when the method returns, contains the object removed from the beginning of the queue,
         /// if the queue is not empty; otherwise it is the default value for the element type
         /// </param>
         /// <returns>
-        /// true if an object from removed from the beginning of the queue; 
+        /// true if an object from removed from the beginning of the queue;
         /// false if the queue is empty
         /// </returns>
         public bool TryDequeue(out T item)
@@ -121,7 +120,6 @@ namespace Stump.Core.Collections
 
                     Interlocked.CompareExchange(ref _tail, oldHeadNext, oldTail);
                 }
-
                 else
                 {
                     item = oldHeadNext.Item;
@@ -170,7 +168,7 @@ namespace Stump.Core.Collections
             } while ((currentNode = currentNode.Next) != null);
         }
 
-        #endregion
+        #endregion IEnumerable<T> Members
 
         #region IEnumerable Members
 
@@ -183,7 +181,7 @@ namespace Stump.Core.Collections
             return GetEnumerator();
         }
 
-        #endregion
+        #endregion IEnumerable Members
 
         /// <summary>
         /// Clears the queue.
@@ -206,6 +204,5 @@ namespace Stump.Core.Collections
             _tail = _head;
             _count = 0;
         }
-
     }
 }

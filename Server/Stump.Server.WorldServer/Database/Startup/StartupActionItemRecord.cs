@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
-using Stump.ORM;
+﻿using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System.ComponentModel;
 
 namespace Stump.Server.WorldServer.Database.Startup
 {

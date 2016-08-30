@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Patterns;
 using Stump.Server.WorldServer;
@@ -13,6 +9,9 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Maps;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Plugins.EditorPlugin.Commands
 {
@@ -30,7 +29,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
     {
         public MonsterSpawnCommand()
         {
-            Aliases = new [] { "spawn" };
+            Aliases = new[] { "spawn" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Add/Remove a monster spawn";
             ParentCommandType = typeof(MonsterEditorCommands);
@@ -41,15 +40,15 @@ namespace Stump.Plugins.EditorPlugin.Commands
             AddParameter("mingrade", "min", defaultValue: 1);
             AddParameter("maxgrade", "max", defaultValue: 5);
         }
+
         public override void ExecuteAdd(TriggerBase trigger)
         {
-            var spawn = new MonsterSpawn {MonsterId = trigger.Get<MonsterTemplate>("monster").Id};
-
+            var spawn = new MonsterSpawn { MonsterId = trigger.Get<MonsterTemplate>("monster").Id };
 
             if (trigger.IsArgumentDefined("map"))
                 spawn.Map = trigger.Get<Map>("map") ?? (trigger as GameTrigger).Character.Map;
             else if (trigger.IsArgumentDefined("subarea"))
-                spawn.SubArea = trigger.Get<SubArea>("subarea") ?? ( trigger as GameTrigger ).Character.SubArea;
+                spawn.SubArea = trigger.Get<SubArea>("subarea") ?? (trigger as GameTrigger).Character.SubArea;
             else
                 throw new Exception("SubArea neither Map is defined");
 
@@ -74,7 +73,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public override void ExecuteRemove(TriggerBase trigger)
         {
             Map map = null;
-            SubArea subarea = null; 
+            SubArea subarea = null;
 
             if (trigger.IsArgumentDefined("map"))
                 map = trigger.Get<Map>("map") ?? (trigger as GameTrigger).Character.Map;
@@ -85,9 +84,8 @@ namespace Stump.Plugins.EditorPlugin.Commands
 
             var spawns = MonsterManager.Instance.GetMonsterSpawns().Where(entry =>
                 entry.MonsterId == trigger.Get<MonsterTemplate>("monster").Id &&
-                ( map == null || entry.MapId == map.Id ) &&
-                ( subarea == null || entry.SubAreaId == subarea.Id )).ToArray();
-
+                (map == null || entry.MapId == map.Id) &&
+                (subarea == null || entry.SubAreaId == subarea.Id)).ToArray();
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
@@ -118,6 +116,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             AddParameter("monster", "m", "Monster to disable", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("subarea", "subarea", isOptional: true, converter: ParametersConverter.SubAreaConverter);
         }
+
         public override void Execute(TriggerBase trigger)
         {
             IEnumerable<MonsterSpawn> spawns;
@@ -157,7 +156,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                     foreach (var spawn in spawns)
                     {
                         if (!spawn.IsDisabled)
-                            count ++;
+                            count++;
 
                         spawn.IsDisabled = true;
                         WorldServer.Instance.DBAccessor.Database.Update(spawn);
@@ -180,9 +179,10 @@ namespace Stump.Plugins.EditorPlugin.Commands
             AddParameter("monster", "m", "Monster to enable", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("subarea", "subarea", isOptional: true, converter: ParametersConverter.SubAreaConverter);
         }
+
         public override void Execute(TriggerBase trigger)
         {
-             IEnumerable<MonsterSpawn> spawns;
+            IEnumerable<MonsterSpawn> spawns;
 
             var monster = trigger.Get<MonsterTemplate>("monster");
 
@@ -211,7 +211,6 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 }
             }
 
-
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
                 {
@@ -220,7 +219,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                     foreach (var spawn in spawns)
                     {
                         if (spawn.IsDisabled)
-                            count ++;
+                            count++;
 
                         spawn.IsDisabled = false;
                         WorldServer.Instance.DBAccessor.Database.Update(spawn);
@@ -246,7 +245,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             AddParameter("lock", "lock", "Prospecting lock", 100);
             AddParameter("limit", "limit", defaultValue: 0);
             AddParameter("rolls", "max", defaultValue: 1);
-            AddParameter("group", "group", "Only one item per group can be dropped (except for group 0)", defaultValue:  0);
+            AddParameter("group", "group", "Only one item per group can be dropped (except for group 0)", defaultValue: 0);
         }
 
         public override void ExecuteAdd(TriggerBase trigger)
@@ -254,7 +253,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             var monster = trigger.Get<MonsterTemplate>("monster");
             var drop = new DroppableItem
             {
-                ItemId = (short) trigger.Get<ItemTemplate>("item").Id,
+                ItemId = (short)trigger.Get<ItemTemplate>("item").Id,
                 ProspectingLock = trigger.Get<int>("lock"),
                 DropLimit = trigger.Get<int>("limit"),
                 RollsCounter = trigger.Get<int>("rolls"),
@@ -276,7 +275,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public override void ExecuteRemove(TriggerBase trigger)
         {
             var monster = trigger.Get<MonsterTemplate>("monster");
-            var itemid = (short) trigger.Get<ItemTemplate>("item").Id;
+            var itemid = (short)trigger.Get<ItemTemplate>("item").Id;
             var drops = monster.DroppableItems.Where(entry => entry.ItemId == itemid).ToArray();
 
             WorldServer.Instance.IOTaskPool.AddMessage(
@@ -317,7 +316,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                         var monsterSpell = new MonsterSpell()
                         {
                             SpellId = spell.Id,
-                            Level = (sbyte) grade.GradeId,
+                            Level = (sbyte)grade.GradeId,
                             MonsterGrade = grade,
                         };
 
@@ -364,7 +363,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Description = "Set dropped kamas";
             ParentCommandType = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to spawn", converter: ParametersConverter.MonsterTemplateConverter);
-            AddParameter<int>("minkamas", "min"); 
+            AddParameter<int>("minkamas", "min");
             AddParameter<int>("maxkamas", "max");
         }
 

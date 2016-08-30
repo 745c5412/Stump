@@ -1,20 +1,20 @@
 ﻿#region License GNU GPL
 
 // DoubleCollectionEditor.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#endregion
+#endregion License GNU GPL
 
 using System;
 using System.Collections;
@@ -34,11 +34,11 @@ namespace WorldEditor.Editors.Files.D2O
         #region Properties
 
         public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof (ObservableCollection<IList>), typeof (DoubleCollectionEditor),
+            DependencyProperty.Register("Items", typeof(ObservableCollection<IList>), typeof(DoubleCollectionEditor),
                                         new UIPropertyMetadata(null));
 
         public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.Register("ItemsSource", typeof (IList), typeof (DoubleCollectionEditor),
+            DependencyProperty.Register("ItemsSource", typeof(IList), typeof(DoubleCollectionEditor),
                                         new UIPropertyMetadata(null, OnItemsSourceChanged));
 
         public static readonly DependencyProperty SelectedSubListProperty =
@@ -46,40 +46,39 @@ namespace WorldEditor.Editors.Files.D2O
                                         new UIPropertyMetadata(null));
 
         public static readonly DependencyProperty SelectedSubListSourceProperty =
-            DependencyProperty.Register("SelectedSubListSource", typeof (IList), typeof (DoubleCollectionEditor),
+            DependencyProperty.Register("SelectedSubListSource", typeof(IList), typeof(DoubleCollectionEditor),
                                         new UIPropertyMetadata(null, OnSubListSourceChanged));
 
         public static readonly DependencyProperty NewItemTypesProperty =
-            DependencyProperty.Register("NewItemTypes", typeof (IList), typeof (DoubleCollectionEditor),
+            DependencyProperty.Register("NewItemTypes", typeof(IList), typeof(DoubleCollectionEditor),
                                         new UIPropertyMetadata(null));
 
         public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof (object), typeof (DoubleCollectionEditor),
+            DependencyProperty.Register("SelectedItem", typeof(object), typeof(DoubleCollectionEditor),
                                         new PropertyMetadata(default(object)));
 
         private Type m_listType;
 
-
         public IList<Type> NewItemTypes
         {
-            get { return (IList<Type>) GetValue(NewItemTypesProperty); }
+            get { return (IList<Type>)GetValue(NewItemTypesProperty); }
             set { SetValue(NewItemTypesProperty, value); }
         }
 
         public Type SubListType
         {
-            get { return m_listType != null ? typeof (List<>).MakeGenericType(m_listType) : null; }
+            get { return m_listType != null ? typeof(List<>).MakeGenericType(m_listType) : null; }
         }
 
         public ObservableCollection<IList> Items
         {
-            get { return (ObservableCollection<IList>) GetValue(ItemsProperty); }
+            get { return (ObservableCollection<IList>)GetValue(ItemsProperty); }
             set { SetValue(ItemsProperty, value); }
         }
 
         public IList ItemsSource
         {
-            get { return (IList) GetValue(ItemsSourceProperty); }
+            get { return (IList)GetValue(ItemsSourceProperty); }
             set { SetValue(ItemsSourceProperty, value); }
         }
 
@@ -115,15 +114,14 @@ namespace WorldEditor.Editors.Files.D2O
 
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var CollectionControl = (DoubleCollectionEditor) d;
+            var CollectionControl = (DoubleCollectionEditor)d;
             if (CollectionControl != null)
-                CollectionControl.OnItemSourceChanged((IList) e.OldValue, (IList) e.NewValue);
+                CollectionControl.OnItemSourceChanged((IList)e.OldValue, (IList)e.NewValue);
         }
 
         public void OnItemSourceChanged(IList oldValue, IList newValue)
         {
             m_listType = null;
-
 
             Type oldType = oldValue != null ? oldValue.GetType() : null;
             var oldListType = oldType != null ? oldType.GetGenericArguments()[0].GetGenericArguments()[0] : null;
@@ -132,7 +130,7 @@ namespace WorldEditor.Editors.Files.D2O
             {
                 Items.Clear();
                 foreach (IList item in newValue)
-                    Items.Add((IList) CreateClone(item));
+                    Items.Add((IList)CreateClone(item));
 
                 Type type = newValue.GetType();
                 m_listType = type.GetGenericArguments()[0].GetGenericArguments()[0];
@@ -144,7 +142,6 @@ namespace WorldEditor.Editors.Files.D2O
                     NewItemTypes.Remove(oldListType);
             }
         }
-
 
         private static void OnSubListSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -185,19 +182,18 @@ namespace WorldEditor.Editors.Files.D2O
                 SelectedSubListSource.Clear();
         }
 
-
-        #endregion //Properties
+        #endregion Properties
 
         #region Constructors
 
         static DoubleCollectionEditor()
         {
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary
-                {
-                    Source = new Uri("/WorldEditor;component/Editors/Files/D2O/Template.xaml", UriKind.Relative)
-                });
-            DefaultStyleKeyProperty.OverrideMetadata(typeof (DoubleCollectionEditor),
-                                                     new FrameworkPropertyMetadata(typeof (DoubleCollectionEditor)));
+            {
+                Source = new Uri("/WorldEditor;component/Editors/Files/D2O/Template.xaml", UriKind.Relative)
+            });
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DoubleCollectionEditor),
+                                                     new FrameworkPropertyMetadata(typeof(DoubleCollectionEditor)));
         }
 
         public DoubleCollectionEditor(Type listType)
@@ -211,13 +207,13 @@ namespace WorldEditor.Editors.Files.D2O
             CommandBindings.Add(new CommandBinding(ComponentCommands.MoveUp, MoveUp, CanMoveUp));
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Commands
 
         private void AddNew(object sender, ExecutedRoutedEventArgs e)
         {
-            var list = (IList) ((FrameworkElement)e.OriginalSource).Tag;
+            var list = (IList)((FrameworkElement)e.OriginalSource).Tag;
 
             var newItem = list == Items ? CreateNewItem((Type)e.Parameter) : CreateNewItem((Type)e.Parameter);
             list.Add(newItem);
@@ -239,7 +235,7 @@ namespace WorldEditor.Editors.Files.D2O
 
         private void Delete(object sender, ExecutedRoutedEventArgs e)
         {
-            var list = (IList)( (FrameworkElement)e.OriginalSource ).Tag;
+            var list = (IList)((FrameworkElement)e.OriginalSource).Tag;
 
             list.Remove(e.Parameter);
         }
@@ -251,7 +247,7 @@ namespace WorldEditor.Editors.Files.D2O
 
         private void MoveDown(object sender, ExecutedRoutedEventArgs e)
         {
-            var list = (IList)( (FrameworkElement)e.OriginalSource ).Tag;
+            var list = (IList)((FrameworkElement)e.OriginalSource).Tag;
 
             var selectedItem = e.Parameter;
             int index = list.IndexOf(selectedItem);
@@ -266,15 +262,15 @@ namespace WorldEditor.Editors.Files.D2O
 
         private void CanMoveDown(object sender, CanExecuteRoutedEventArgs e)
         {
-            var list = (IList)( (FrameworkElement)e.OriginalSource ).Tag;
+            var list = (IList)((FrameworkElement)e.OriginalSource).Tag;
 
-            if (e.Parameter != null && list.IndexOf(e.Parameter) < ( Items.Count - 1 ))
+            if (e.Parameter != null && list.IndexOf(e.Parameter) < (Items.Count - 1))
                 e.CanExecute = true;
         }
 
         private void MoveUp(object sender, ExecutedRoutedEventArgs e)
         {
-            var list = (IList)( (FrameworkElement)e.OriginalSource ).Tag;
+            var list = (IList)((FrameworkElement)e.OriginalSource).Tag;
 
             var selectedItem = e.Parameter;
             int index = list.IndexOf(selectedItem);
@@ -288,13 +284,13 @@ namespace WorldEditor.Editors.Files.D2O
 
         private void CanMoveUp(object sender, CanExecuteRoutedEventArgs e)
         {
-            var list = (IList)( (FrameworkElement)e.OriginalSource ).Tag;
+            var list = (IList)((FrameworkElement)e.OriginalSource).Tag;
 
             if (e.Parameter != null && list.IndexOf(e.Parameter) > 0)
                 e.CanExecute = true;
         }
 
-        #endregion //Commands
+        #endregion Commands
 
         #region Methods
 
@@ -342,7 +338,7 @@ namespace WorldEditor.Editors.Files.D2O
         internal static Type GetListItemType(Type listType)
         {
             Type iListOfT = listType.GetInterfaces().FirstOrDefault(
-                (i) => i.IsGenericType && i.GetGenericTypeDefinition() == typeof (IList<>));
+                (i) => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IList<>));
 
             return (iListOfT != null)
                        ? iListOfT.GetGenericArguments()[0]
@@ -354,6 +350,7 @@ namespace WorldEditor.Editors.Files.D2O
             return ItemsSource;
         }
 
-        #endregion //Methods 
+        #endregion Methods
+
     }
 }

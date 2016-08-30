@@ -24,7 +24,6 @@ namespace Stump.Core.Xml.Docs
 
         public DotNetDocumentation()
         {
-
         }
 
         static DotNetDocumentation()
@@ -71,5 +70,5 @@ namespace Stump.Core.Xml.Docs
                 set;
             }
         }
-	}
+    }
 }

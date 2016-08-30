@@ -1,7 +1,7 @@
-﻿using System;
-using Stump.ORM.SubSonic.Linq.Structure;
+﻿using Stump.ORM.SubSonic.Linq.Structure;
 using Stump.ORM.SubSonic.Query;
 using Stump.ORM.SubSonic.Schema;
+using System;
 
 namespace Stump.ORM.SubSonic.DataProviders.SqlServer
 {
@@ -11,16 +11,14 @@ namespace Stump.ORM.SubSonic.DataProviders.SqlServer
         public override string InsertionIdentityFetchString { get { return _insertionIdentityFetchString; } }
 
         public SqlServerProvider(string connectionString, string providerName) : base(connectionString, providerName)
-        {}
+        { }
 
         public override string QualifyTableName(ITable table)
         {
             string qualifiedTable;
 
-
             string qualifiedFormat = String.IsNullOrEmpty(table.SchemaName) ? "[{1}]" : "[{0}].[{1}]";
             qualifiedTable = String.Format(qualifiedFormat, table.SchemaName, table.Name);
-
 
             return qualifiedTable;
         }

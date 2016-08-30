@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Stump.Server.WorldServer.Game.Actors.Fight;
+using System.Collections.Generic;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -102,7 +101,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             var counter = 0;
-            var index = ( Index + 1 ) < Fighters.Count ? Index + 1 : 0;
+            var index = (Index + 1) < Fighters.Count ? Index + 1 : 0;
 
             if (index == 0)
             {
@@ -116,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             while (!Fighters[index].CanPlay() && counter < Fighters.Count)
             {
-                index = ( index + 1 ) < Fighters.Count ? index + 1 : 0;
+                index = (index + 1) < Fighters.Count ? index + 1 : 0;
 
                 if (index == 0)
                 {
@@ -156,7 +155,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             bool hasRed;
             bool hasBlue;
-            while (( hasRed = redEnumerator.MoveNext() ) | ( hasBlue = blueEnumerator.MoveNext() ))
+            while ((hasRed = redEnumerator.MoveNext()) | (hasBlue = blueEnumerator.MoveNext()))
             {
                 if (redFighterFirst)
                 {

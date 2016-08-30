@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using Stump.Core.Extensions;
-using Stump.Core.IO;
+﻿using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Game.Breeds;
+using System.Linq;
 
 namespace FakeClients.Handlers
 {
@@ -19,7 +17,7 @@ namespace FakeClients.Handlers
             writer.WriteUTF(FakeClientManager.AccountName + client.Id);
             writer.WriteUTF(FakeClientManager.AccountPassword);
 
-            client.Send(new IdentificationMessage(false, false, false, VersionExtension.ExpectedVersion.ToVersionExtended(0,0), "fr",
+            client.Send(new IdentificationMessage(false, false, false, VersionExtension.ExpectedVersion.ToVersionExtended(0, 0), "fr",
                 writer.Data.Select(x => (sbyte)x), (short)WorldServer.ServerInformation.Id));
         }
 
@@ -41,7 +39,7 @@ namespace FakeClients.Handlers
         public static void HandleServersListMessage(FakeClient client, ServersListMessage message)
         {
             client.ConnectingToWorld = true;
-            client.Send(new ServerSelectionMessage((short) WorldServer.ServerInformation.Id));
+            client.Send(new ServerSelectionMessage((short)WorldServer.ServerInformation.Id));
         }
 
         [FakeHandler(HelloGameMessage.Id)]
@@ -69,7 +67,7 @@ namespace FakeClients.Handlers
         {
             if (!message.characters.Any())
             {
-                var head = BreedManager.Instance.GetHead(x => x.Breed == (int) PlayableBreedEnum.Cra);
+                var head = BreedManager.Instance.GetHead(x => x.Breed == (int)PlayableBreedEnum.Cra);
                 client.Send(new CharacterCreationRequestMessage("FakeCharacter#" + client.Id, (sbyte)PlayableBreedEnum.Cra,
                     false, Enumerable.Repeat(-1, 5), head.Id));
             }
@@ -82,14 +80,14 @@ namespace FakeClients.Handlers
         [FakeHandler(CharacterCreationResultMessage.Id)]
         public static void HandleCharacterCreationResultMessage(FakeClient client, CharacterCreationResultMessage message)
         {
-            if ((CharacterCreationResultEnum) message.result != CharacterCreationResultEnum.OK)
-                client.Log("Cannot create character : " + (CharacterCreationResultEnum) message.result);
+            if ((CharacterCreationResultEnum)message.result != CharacterCreationResultEnum.OK)
+                client.Log("Cannot create character : " + (CharacterCreationResultEnum)message.result);
         }
 
-        [ FakeHandler(CharacterSelectedSuccessMessage.Id)]
-        public static void HandleCharacterSelectedSuccessMessage( FakeClient client, CharacterSelectedSuccessMessage message)
+        [FakeHandler(CharacterSelectedSuccessMessage.Id)]
+        public static void HandleCharacterSelectedSuccessMessage(FakeClient client, CharacterSelectedSuccessMessage message)
         {
             client.Send(new GameContextCreateRequestMessage());
-        }   
+        }
     }
 }

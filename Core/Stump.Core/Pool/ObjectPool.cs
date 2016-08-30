@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Stump.Core.Collections;
+using System;
 using System.Threading;
-using Stump.Core.Collections;
 
 // all credits goes to WCell dev team
 
@@ -63,7 +63,6 @@ namespace Stump.Core.Pool
         /// The number of weak references contained in the pool.
         /// </summary>
         public int WeakReferences;
-
 
         /// <summary>
         /// Constructor
@@ -191,7 +190,7 @@ namespace Stump.Core.Pool
             }
             else if (obj is IDisposable)
             {
-                ((IDisposable) obj).Dispose();
+                ((IDisposable)obj).Dispose();
             }
 
             if (m_hardReferences >= m_minSize)
@@ -284,6 +283,7 @@ namespace Stump.Core.Pool
                 return obj as T;
             }
         }
+
 #pragma warning restore 0693
 
         /// <summary>

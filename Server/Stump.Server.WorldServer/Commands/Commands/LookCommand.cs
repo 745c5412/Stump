@@ -9,10 +9,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public LookCommand()
         {
-            Aliases = new[] {"look"};
+            Aliases = new[] { "look" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Change the look of the target";
-            AddParameter<string>("look", "l", "The new look for the target", isOptional:true);
+            AddParameter<string>("look", "l", "The new look for the target", isOptional: true);
             AddTargetParameter(true);
             AddParameter<bool>("demorph", "demorph", "Regive the base skin to the target", isOptional: true);
         }

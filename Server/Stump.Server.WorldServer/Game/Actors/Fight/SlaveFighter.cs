@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -14,13 +11,16 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public class SlaveFighter : FightActor, INamedActor
     {
         private readonly StatsFields m_stats;
-        
+
         public SlaveFighter(int id, FightTeam team, FightActor summoner, MonsterGrade template, Cell cell)
             : base(team)
         {
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private void OnTurnStopped(IFight fight, FightActor player)
         {
             if (player == this && IsAlive() && Monster.Id == 3120) //Roublabot
-                    Die();
+                Die();
         }
 
         protected override void OnTurnPassed()
@@ -171,8 +171,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return new CharacterCharacteristicsInformations(
                         characterFighter.Character.Experience, // EXPERIENCE
-                        characterFighter.Character.LowerBoundExperience, // EXPERIENCE level floor 
-                        characterFighter.Character.UpperBoundExperience, // EXPERIENCE nextlevel floor 
+                        characterFighter.Character.LowerBoundExperience, // EXPERIENCE level floor
+                        characterFighter.Character.UpperBoundExperience, // EXPERIENCE nextlevel floor
 
                         characterFighter.Character.Kamas, // Amount of kamas.
 

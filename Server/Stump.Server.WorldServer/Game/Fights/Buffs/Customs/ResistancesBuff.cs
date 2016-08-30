@@ -1,9 +1,9 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte) (Dispellable ? 0 : 1), (short) Spell.Id, 0, Math.Abs(Value));
-        }    
+            return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 0 : 1), (short)Spell.Id, 0, Math.Abs(Value));
+        }
     }
 }

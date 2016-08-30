@@ -1,9 +1,9 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
@@ -49,14 +49,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             {
                 case EffectsEnum.Effect_DamageWaterPerHPLost:
                     return EffectSchoolEnum.Water;
+
                 case EffectsEnum.Effect_DamageEarthPerHPLost:
                     return EffectSchoolEnum.Earth;
+
                 case EffectsEnum.Effect_DamageAirPerHPLost:
                     return EffectSchoolEnum.Air;
+
                 case EffectsEnum.Effect_DamageFirePerHPLost:
                     return EffectSchoolEnum.Fire;
+
                 case EffectsEnum.Effect_DamageNeutralPerHPLost:
                     return EffectSchoolEnum.Neutral;
+
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));
             }

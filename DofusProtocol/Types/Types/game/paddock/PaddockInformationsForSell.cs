@@ -1,22 +1,19 @@
-
-
 // Generated on 03/02/2014 20:43:03
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
+using System.Text;
 
 namespace Stump.DofusProtocol.Types
 {
     public class PaddockInformationsForSell
     {
         public const short Id = 222;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public string guildOwner;
         public short worldX;
         public short worldY;
@@ -24,11 +21,11 @@ namespace Stump.DofusProtocol.Types
         public sbyte nbMount;
         public sbyte nbObject;
         public int price;
-        
+
         public PaddockInformationsForSell()
         {
         }
-        
+
         public PaddockInformationsForSell(string guildOwner, short worldX, short worldY, short subAreaId, sbyte nbMount, sbyte nbObject, int price)
         {
             this.guildOwner = guildOwner;
@@ -39,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             this.nbObject = nbObject;
             this.price = price;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteUTF(guildOwner);
@@ -50,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(nbObject);
             writer.WriteInt(price);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             guildOwner = reader.ReadUTF();
@@ -69,12 +66,10 @@ namespace Stump.DofusProtocol.Types
             if (price < 0)
                 throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + Encoding.UTF8.GetByteCount(guildOwner) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(int);
         }
-        
     }
-    
 }

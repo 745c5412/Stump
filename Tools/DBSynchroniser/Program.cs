@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using DBSynchroniser.Records;
+﻿using DBSynchroniser.Records;
 using DBSynchroniser.Records.Icons;
 using DBSynchroniser.Records.Langs;
 using Stump.Core.Attributes;
@@ -20,6 +13,13 @@ using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace DBSynchroniser
 {
@@ -30,7 +30,8 @@ namespace DBSynchroniser
 
         public static DatabaseAccessor Database;
 
-        [Variable] public static readonly DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
+        [Variable]
+        public static readonly DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
             DbName = "stump_data",
             Host = "localhost",
@@ -39,7 +40,8 @@ namespace DBSynchroniser
             ProviderName = "MySql.Data.MySqlClient",
         };
 
-        [Variable] public static readonly DatabaseConfiguration WorldDatabaseConfiguration = new DatabaseConfiguration
+        [Variable]
+        public static readonly DatabaseConfiguration WorldDatabaseConfiguration = new DatabaseConfiguration
         {
             DbName = "stump_world",
             Host = "localhost",
@@ -48,17 +50,21 @@ namespace DBSynchroniser
             ProviderName = "MySql.Data.MySqlClient",
         };
 
-        [Variable(true)] public static string SpecificLanguage = "fr,en";
+        [Variable(true)]
+        public static string SpecificLanguage = "fr,en";
 
-        [Variable(true)] public static string DofusCustomPath = "";
+        [Variable(true)]
+        public static string DofusCustomPath = "";
 
-        [Variable(true)] public static string D2OOutput = "./generate_d2o";
+        [Variable(true)]
+        public static string D2OOutput = "./generate_d2o";
 
-        [Variable(true)] public static string D2IOutput = "./generate_d2i";
+        [Variable(true)]
+        public static string D2IOutput = "./generate_d2i";
 
         private static readonly Dictionary<string, Languages> m_stringToLang = new Dictionary<string, Languages>
         {
-            {"fr", Languages.French},       
+            {"fr", Languages.French},
             {"en", Languages.English},
             {"es", Languages.Spanish},
             {"de", Languages.German},
@@ -68,7 +74,6 @@ namespace DBSynchroniser
             {"pt", Languages.Portugese},
             {"ru", Languages.Russish},
         };
-
 
         private static readonly Tuple<string, Action>[] m_menus =
         {
@@ -94,7 +99,6 @@ namespace DBSynchroniser
                 m_config.Create();
             else
                 m_config.Load();
-
 
             Console.WriteLine("Open database ...");
             Database = new DatabaseAccessor(DatabaseConfiguration);
@@ -141,13 +145,18 @@ namespace DBSynchroniser
 
         private static IEnumerable<D2OTable> EnumerateTables(Assembly assembly)
         {
-            return from type in assembly.GetTypes() let attr = type.GetCustomAttribute<D2OClassAttribute>() where attr != null let tableAttr = type.GetCustomAttribute<TableNameAttribute>() where tableAttr != null select new D2OTable
-            {
-                Type = type,
-                ClassName = attr.Name,
-                TableName = tableAttr.TableName,
-                Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
-            };
+            return from type in assembly.GetTypes()
+                   let attr = type.GetCustomAttribute<D2OClassAttribute>()
+                   where attr != null
+                   let tableAttr = type.GetCustomAttribute<TableNameAttribute>()
+                   where tableAttr != null
+                   select new D2OTable
+                   {
+                       Type = type,
+                       ClassName = attr.Name,
+                       TableName = tableAttr.TableName,
+                       Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
+                   };
         }
 
         private static void ShowMenus()
@@ -271,11 +280,11 @@ namespace DBSynchroniser
                     record.AssignFields(obj);
 
                     Database.Database.Insert(record);
-                    
+
                     i++;
                     Console.SetCursorPosition(cursorLeft, cursorTop);
                     Console.Write("{0}/{1} ({2}%)", i, d2oReader.IndexCount,
-                        (int) ((i/(double) d2oReader.IndexCount)*100d));
+                        (int)((i / (double)d2oReader.IndexCount) * 100d));
                 }
 
                 Console.WriteLine("");
@@ -290,7 +299,6 @@ namespace DBSynchroniser
             Database.Database.Execute("DELETE FROM langs");
             Database.Database.Execute("DELETE FROM langs_ui");
             Database.Database.Execute("ALTER TABLE langs_ui AUTO_INCREMENT=1");
-
 
             var d2iFiles = new Dictionary<string, D2IFile>();
             var d2iFolder = Path.Combine(FindDofusPath(), "data", "i18n");
@@ -314,7 +322,7 @@ namespace DBSynchroniser
                     LangText record;
                     if (!records.ContainsKey(text.Key))
                     {
-                        record = new LangText {Id = (uint) text.Key};
+                        record = new LangText { Id = (uint)text.Key };
                         records.Add(text.Key, record);
                     }
                     else record = records[text.Key];
@@ -327,7 +335,7 @@ namespace DBSynchroniser
                     LangTextUi record;
                     if (!uiRecords.ContainsKey(text.Key))
                     {
-                        record = new LangTextUi {Name = text.Key};
+                        record = new LangTextUi { Name = text.Key };
                         uiRecords.Add(text.Key, record);
                     }
                     else record = uiRecords[text.Key];
@@ -335,7 +343,6 @@ namespace DBSynchroniser
                     record.SetText(lang, text.Value);
                 }
             }
-
 
             var cursorLeft = Console.CursorLeft;
             var cursorTop = Console.CursorTop;
@@ -350,7 +357,7 @@ namespace DBSynchroniser
                 i++;
                 Console.SetCursorPosition(cursorLeft, cursorTop);
                 Console.Write("{0}/{1} ({2}%)", i, count,
-                    (int) ((i/(double) count)*100d));
+                    (int)((i / (double)count) * 100d));
             }
 
             Console.WriteLine("Save texts(2/2)...");
@@ -363,7 +370,7 @@ namespace DBSynchroniser
                 i++;
                 Console.SetCursorPosition(cursorLeft, cursorTop);
                 Console.Write("{0}/{1} ({2}%)", i, count,
-                    (int) ((i/(double) count)*100d));
+                    (int)((i / (double)count) * 100d));
             }
             Console.WriteLine();
         }
@@ -413,9 +420,11 @@ namespace DBSynchroniser
                     case "empty":
                         id = 0;
                         break;
+
                     case "error":
                         id = -1;
                         break;
+
                     default:
                         id = int.Parse(name);
                         break;
@@ -429,10 +438,9 @@ namespace DBSynchroniser
                 i++;
                 Console.SetCursorPosition(cursorLeft, cursorTop);
                 Console.Write("{0}/{1} ({2}%)", i, count,
-                    (int) ((i/(double) count)*100d));
+                    (int)((i / (double)count) * 100d));
             }
         }
-
 
         private static void GenerateFiles()
         {
@@ -445,7 +453,7 @@ namespace DBSynchroniser
             foreach (D2OTable table in m_tables.Values)
             {
                 D2OWriter writer;
-                if (table.Type.BaseType != typeof (object))
+                if (table.Type.BaseType != typeof(object))
                 {
                     var baseTable = table.Type.BaseType.GetCustomAttribute<D2OClassAttribute>().Name;
                     writer =
@@ -455,7 +463,6 @@ namespace DBSynchroniser
                     writer = new D2OWriter(Path.Combine(D2OOutput, table.TableName + ".d2o"));
 
                 Console.WriteLine("Generating {0} ...", Path.GetFileName(writer.Filename));
-
 
                 var rows = GetTableRows(table);
                 writer.StartWriting(false);
@@ -482,7 +489,7 @@ namespace DBSynchroniser
             {
                 var d2i = new D2IFile(Path.Combine(D2IOutput, "i18n_" + langStr + ".d2i"));
 
-                 Console.WriteLine("Generating {0} ...", Path.GetFileName(d2i.FilePath));
+                Console.WriteLine("Generating {0} ...", Path.GetFileName(d2i.FilePath));
 
                 var lang = m_stringToLang[langStr];
                 foreach (var record in langsUi)
@@ -500,7 +507,7 @@ namespace DBSynchroniser
         }
 
         public static void SyncDatabases()
-        { 
+        {
             Console.WriteLine("Enter the tables to build (separated by comma, empty = all)");
             var tables = Console.ReadLine().Split(',');
 
@@ -509,7 +516,7 @@ namespace DBSynchroniser
             Console.WriteLine("Connecting to {0}@{1}", WorldDatabaseConfiguration.DbName,
                 WorldDatabaseConfiguration.Host);
 
-            worldDatabase.RegisterMappingAssembly(typeof (WorldServer).Assembly);
+            worldDatabase.RegisterMappingAssembly(typeof(WorldServer).Assembly);
             worldDatabase.Initialize();
             try
             {
@@ -547,7 +554,7 @@ namespace DBSynchroniser
                         continue;
 
                     var table = line.Remove(0, "--EXECUTEON:".Length).ToLower();
-                    if (!patchs.ContainsKey(table)) 
+                    if (!patchs.ContainsKey(table))
                         patchs.Add(table, new List<string>());
                     patchs[table].Add(filePath);
                 }
@@ -615,7 +622,7 @@ namespace DBSynchroniser
                     ExecutePatch(filePath, worldDatabase.Database);
                 }
             }
-            
+
             var count = 0;
             if (tables.Length == 0 || tables.Any(x => "langs".Contains(x)))
             {
@@ -664,7 +671,7 @@ namespace DBSynchroniser
                 try
                 {
                     if (!string.IsNullOrWhiteSpace(line))
-                       database.Execute(line);
+                        database.Execute(line);
                 }
                 catch (Exception ex)
                 {
@@ -680,35 +687,36 @@ namespace DBSynchroniser
             EndCounter();
         }
 
-        #endregion
+        #endregion Menus actions
 
         #region Helpers
+
         private static IList GetTableRows(D2OTable table)
         {
-            var method = typeof (Database).GetMethodExt("Fetch", 1, new[] {typeof (Sql)});
+            var method = typeof(Database).GetMethodExt("Fetch", 1, new[] { typeof(Sql) });
             var generic = method.MakeGenericMethod(table.Type);
             var rows =
                 ((IList)
                     generic.Invoke(Database.Database,
-                        new object[] {new Sql("SELECT * FROM `" + table.TableName + "`")}));
+                        new object[] { new Sql("SELECT * FROM `" + table.TableName + "`") }));
 
             return rows;
         }
 
         private static int m_cursorLeft;
         private static int m_cursorTop;
+
         private static void InitializeCounter()
         {
             m_cursorLeft = Console.CursorLeft;
             m_cursorTop = Console.CursorTop;
         }
 
-
         private static void UpdateCounter(int i, int count)
         {
             Console.SetCursorPosition(m_cursorLeft, m_cursorTop);
             Console.Write("{0}/{1} ({2}%)", i, count,
-                (int) ((i/(double) count)*100d));
+                (int)((i / (double)count) * 100d));
         }
 
         private static void EndCounter()
@@ -718,6 +726,6 @@ namespace DBSynchroniser
             Console.SetCursorPosition(m_cursorLeft, m_cursorTop);
         }
 
-        #endregion
+        #endregion Helpers
     }
 }

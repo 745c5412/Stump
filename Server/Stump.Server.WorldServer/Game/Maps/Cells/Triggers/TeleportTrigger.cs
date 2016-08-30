@@ -1,9 +1,9 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 {
@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
         {
             get
             {
-                return m_destinationCellId ?? ( m_destinationCellId = Record.GetParameter<short>(0) ).Value;
+                return m_destinationCellId ?? (m_destinationCellId = Record.GetParameter<short>(0)).Value;
             }
             set
             {
@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
         {
             get
             {
-                return m_destinationMapId ?? ( m_destinationMapId = Record.GetParameter<int>(1) ).Value;
+                return m_destinationMapId ?? (m_destinationMapId = Record.GetParameter<int>(1)).Value;
             }
             set
             {
@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
             {
                 character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1); //Certaines conditions ne sont pas satisfaites
                 return;
-            }              
+            }
 
             var destination = GetDestinationPosition();
             character.Teleport(destination.Map, destination.Cell);

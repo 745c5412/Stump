@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Stump.DofusProtocol.Messages;
+using System;
 using System.Collections;
 using System.Text;
-using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Benchmark
 {
@@ -60,7 +60,7 @@ namespace Stump.Server.BaseServer.Benchmark
                 throw new ArgumentException("additionalProperties");
 
             var hashTable = new Hashtable();
-            for (int i = 0; i < additionalProperties.Length; i+=2)
+            for (int i = 0; i < additionalProperties.Length; i += 2)
             {
                 hashTable.Add(additionalProperties[i], additionalProperties[i + 1]);
             }

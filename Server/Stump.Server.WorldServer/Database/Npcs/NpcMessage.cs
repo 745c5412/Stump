@@ -1,10 +1,10 @@
-using System.Collections.Generic;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Npcs.Replies;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
@@ -64,12 +64,12 @@ namespace Stump.Server.WorldServer.Database.Npcs
 
         public void AssignFields(object d2oObject)
         {
-            var message = (DofusProtocol.D2oClasses.NpcMessage) d2oObject;
+            var message = (DofusProtocol.D2oClasses.NpcMessage)d2oObject;
             Id = message.id;
             MessageId = message.messageId;
             ParametersCSV = message.messageParams;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

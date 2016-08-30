@@ -19,8 +19,6 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using System.Threading.Tasks;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Message = Stump.DofusProtocol.Messages.Message;
@@ -37,12 +35,12 @@ namespace Stump.Tools.Sniffer
             classNode.Tag = "Class";
 
             ToTreeNode(classNode, message);
-           /* if (message.Error != null && !String.IsNullOrEmpty(message.Error.ToString())) // In case of error, add error description in the tree
-            {
-                var fieldNode = new TreeNode("_Error_");
-                fieldNode.Nodes.Add(new TreeNode(message.Error.ToString()));
-                classNode.Nodes.Add(fieldNode);
-            }*/
+            /* if (message.Error != null && !String.IsNullOrEmpty(message.Error.ToString())) // In case of error, add error description in the tree
+             {
+                 var fieldNode = new TreeNode("_Error_");
+                 fieldNode.Nodes.Add(new TreeNode(message.Error.ToString()));
+                 classNode.Nodes.Add(fieldNode);
+             }*/
         }
 
         private static void ToTreeNode(TreeNode node, object obj)
@@ -61,7 +59,6 @@ namespace Stump.Tools.Sniffer
                         {
                             ToTreeNode(collectionNode.Nodes.Add(field.FieldType.GetGenericArguments()[0].Name), element);
                         }
-
                         else
                         {
                             var lNode = new TreeNode(field.Name.Remove(field.Name.Length - 1));
@@ -91,7 +88,7 @@ namespace Stump.Tools.Sniffer
             }
         }
 
-        #endregion
+        #endregion Message To TreeView
 
         #region TreeNodeCollection To Xml
 
@@ -100,10 +97,10 @@ namespace Stump.Tools.Sniffer
         public static void TreeNodeToXml(TreeNode tn, string filename)
         {
             var settings = new XmlWriterSettings
-                {
-                    Indent = true,
-                    NewLineOnAttributes = true
-                };
+            {
+                Indent = true,
+                NewLineOnAttributes = true
+            };
 
             m_xr = XmlWriter.Create(filename, settings);
 
@@ -147,7 +144,7 @@ namespace Stump.Tools.Sniffer
             }
         }
 
-        #endregion
+        #endregion TreeNodeCollection To Xml
 
         public static TreeNode AddParentNode(TreeNode parent, TreeNodeCollection nodes)
         {

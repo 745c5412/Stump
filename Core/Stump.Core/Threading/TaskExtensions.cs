@@ -67,7 +67,7 @@ namespace Stump.Core.Threading
         }
 
         /// <summary>
-        ///   Creates a Task that represents the completion of another Task, and 
+        ///   Creates a Task that represents the completion of another Task, and
         ///   that schedules an AsyncCallback to run upon completion.
         /// </summary>
         /// <param name = "task">The antecedent Task.</param>
@@ -88,7 +88,7 @@ namespace Stump.Core.Threading
         }
 
         /// <summary>
-        ///   Creates a Task that represents the completion of another Task, and 
+        ///   Creates a Task that represents the completion of another Task, and
         ///   that schedules an AsyncCallback to run upon completion.
         /// </summary>
         /// <param name = "task">The antecedent Task.</param>
@@ -129,7 +129,7 @@ namespace Stump.Core.Threading
         /// <returns>The original Task.</returns>
         public static Task<T> IgnoreExceptions<T>(this Task<T> task)
         {
-            return (Task<T>) ((Task) task).IgnoreExceptions();
+            return (Task<T>)((Task)task).IgnoreExceptions();
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace Stump.Core.Threading
         /// <returns>The original Task.</returns>
         public static Task<T> FailFastOnException<T>(this Task<T> task)
         {
-            return (Task<T>) ((Task) task).FailFastOnException();
+            return (Task<T>)((Task)task).FailFastOnException();
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Stump.Core.Threading
         public static Task WithTimeout(this Task task, TimeSpan timeout)
         {
             var result = new TaskCompletionSource<object>(task.AsyncState);
-            var timer = new Timer(state => ((TaskCompletionSource<object>) state).TrySetCanceled(), result, timeout,
+            var timer = new Timer(state => ((TaskCompletionSource<object>)state).TrySetCanceled(), result, timeout,
                                   TimeSpan.FromMilliseconds(-1));
             task.ContinueWith(t =>
             {
@@ -220,7 +220,7 @@ namespace Stump.Core.Threading
         public static Task<TResult> WithTimeout<TResult>(this Task<TResult> task, TimeSpan timeout)
         {
             var result = new TaskCompletionSource<TResult>(task.AsyncState);
-            var timer = new Timer(state => ((TaskCompletionSource<TResult>) state).TrySetCanceled(), result, timeout,
+            var timer = new Timer(state => ((TaskCompletionSource<TResult>)state).TrySetCanceled(), result, timeout,
                                   TimeSpan.FromMilliseconds(-1));
             task.ContinueWith(t =>
             {
@@ -239,7 +239,7 @@ namespace Stump.Core.Threading
         public static IObservable<TResult> ToObservable<TResult>(this Task<TResult> task)
         {
             if (task == null) throw new ArgumentNullException("task");
-            return new TaskObservable<TResult> {Task = task};
+            return new TaskObservable<TResult> { Task = task };
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace Stump.Core.Threading
         public static TaskStatus WaitForCompletionStatus(this Task task)
         {
             if (task == null) throw new ArgumentNullException("task");
-            ((IAsyncResult) task).AsyncWaitHandle.WaitOne();
+            ((IAsyncResult)task).AsyncWaitHandle.WaitOne();
             return task.Status;
         }
 
@@ -273,10 +273,10 @@ namespace Stump.Core.Threading
                 Source.Cancel();
             }
 
-            #endregion
+            #endregion IDisposable Members
         }
 
-        #endregion
+        #endregion Nested type: CancelOnDispose
 
         #region Nested type: TaskObservable
 
@@ -319,12 +319,12 @@ namespace Stump.Core.Threading
                 }, cts.Token);
 
                 // Support unsubscribe simply by canceling the continuation if it hasn't yet run
-                return new CancelOnDispose {Source = cts};
+                return new CancelOnDispose { Source = cts };
             }
 
-            #endregion
+            #endregion IObservable<TResult> Members
         }
 
-        #endregion
+        #endregion Nested type: TaskObservable
     }
 }

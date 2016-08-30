@@ -1,32 +1,29 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
+using System.Text;
 
 namespace Stump.DofusProtocol.Types
 {
     public class DungeonPartyFinderPlayer
     {
         public const short Id = 373;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int playerId;
         public string playerName;
         public sbyte breed;
         public bool sex;
         public short level;
-        
+
         public DungeonPartyFinderPlayer()
         {
         }
-        
+
         public DungeonPartyFinderPlayer(int playerId, string playerName, sbyte breed, bool sex, short level)
         {
             this.playerId = playerId;
@@ -35,7 +32,7 @@ namespace Stump.DofusProtocol.Types
             this.sex = sex;
             this.level = level;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(playerId);
@@ -44,7 +41,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteBoolean(sex);
             writer.WriteShort(level);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             playerId = reader.ReadInt();
@@ -59,12 +56,10 @@ namespace Stump.DofusProtocol.Types
             if (level < 0)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(sbyte) + sizeof(bool) + sizeof(short);
         }
-        
     }
-    
 }

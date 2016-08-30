@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
+using System;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges
 {
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             var groupLevel = monsterTeam.Fighters.Sum(x => x.Level);
 
             var ratio = Math.Max(1, (groupLevel / (monsterTeam.OpposedTeam.Fighters.Sum(x => x.Level) * 2)));
-            Bonus = (int)(Math.Round((double)(BonusMin + (BonusMax - BonusMin)*ratio)));
+            Bonus = (int)(Math.Round((double)(BonusMin + (BonusMax - BonusMin) * ratio)));
 
             Fight.WinnersDetermined += OnWinnersDetermined;
         }

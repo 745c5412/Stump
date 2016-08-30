@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
         private short? m_cellId;
         private int? m_mapId;
         private string m_obstacles;
- 
+
         /// <summary>
         /// Parameter 0
         /// </summary>

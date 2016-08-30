@@ -8,7 +8,7 @@ namespace ArkalysPlugin.Commands
     {
         public WelcomeCommand()
         {
-            Aliases = new [] {"welcome"};
+            Aliases = new[] { "welcome" };
             RequiredRole = RoleEnum.Player;
             Description = "Affiche le message de bienvenue";
         }

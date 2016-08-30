@@ -10,7 +10,7 @@ namespace Stump.ORM.Relator
         }
     }
 
-    public interface IOneToManyRecord2<T1,T2> : IJoined
+    public interface IOneToManyRecord2<T1, T2> : IJoined
     {
         List<T1> ManyProperty1
         {

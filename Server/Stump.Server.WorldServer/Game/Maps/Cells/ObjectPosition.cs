@@ -1,6 +1,6 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells
 {

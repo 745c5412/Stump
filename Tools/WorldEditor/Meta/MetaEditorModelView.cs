@@ -1,24 +1,26 @@
 ﻿#region License GNU GPL
+
 // MetaEditorModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System.IO;
-using System.Linq;
+#endregion License GNU GPL
+
 using Microsoft.Win32;
 using Stump.Core.Cryptography;
 using Stump.Core.Extensions;
+using System.IO;
+using System.Linq;
 using WorldEditor.Helpers;
 
 namespace WorldEditor.Meta
@@ -38,7 +40,6 @@ namespace WorldEditor.Meta
         {
             get { return m_file; }
         }
-
 
         #region UpdateCommand
 
@@ -82,8 +83,7 @@ namespace WorldEditor.Meta
                                        count > 0 ? string.Format("{0} files modified !", count) : "No file modified");
         }
 
-        #endregion
-
+        #endregion UpdateCommand
 
         #region AddCommand
 
@@ -111,7 +111,7 @@ namespace WorldEditor.Meta
 
             if (dialog.ShowDialog() != true)
                 return;
-            
+
             foreach (var filePath in dialog.FileNames)
             {
                 AddFile(filePath);
@@ -127,8 +127,7 @@ namespace WorldEditor.Meta
             File.Entries.Add(new MetaFileEntry(Path.GetFileName(file), md5));
         }
 
-        #endregion
-
+        #endregion AddCommand
 
         #region RemoveCommand
 
@@ -152,8 +151,7 @@ namespace WorldEditor.Meta
             File.Entries.Remove(parameter as MetaFileEntry);
         }
 
-        #endregion
-
+        #endregion RemoveCommand
 
         #region SaveCommand
 
@@ -176,6 +174,6 @@ namespace WorldEditor.Meta
             MessageService.ShowMessage(m_editor, "File saved successfully !");
         }
 
-        #endregion
+        #endregion SaveCommand
     }
 }

@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using Org.BouncyCastle.Crypto.Parameters;
+﻿using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.OpenSsl;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.Server.AuthServer.Database;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Stump.Server.AuthServer.Managers
 {
@@ -42,7 +42,7 @@ namespace Stump.Server.AuthServer.Managers
         {
             var exportParameters = m_rsaProvider.ExportParameters(false);
             var keyParameters = new RsaKeyParameters(false, new BigInteger(1, exportParameters.Modulus), new BigInteger(1, exportParameters.Exponent));
-            
+
             var stringBuilder = new StringBuilder();
             var writer = new PemWriter(new StringWriter(stringBuilder));
             writer.WriteObject(keyParameters);

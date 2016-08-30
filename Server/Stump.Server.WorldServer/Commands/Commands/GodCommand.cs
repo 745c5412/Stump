@@ -5,7 +5,6 @@ using Stump.Server.WorldServer.Commands.Trigger;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
-
     public class GodCommand : SubCommandContainer
     {
         public GodCommand()
@@ -15,7 +14,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Just to be all powerful.";
         }
     }
-
 
     public class GodOnCommand : TargetSubCommand
     {
@@ -37,6 +35,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
         }
     }
+
     public class GodOffCommand : TargetSubCommand
     {
         public GodOffCommand()
@@ -66,6 +65,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.Moderator;
             Description = "Enable/disable admin chat mode";
         }
+
         public override void Execute(GameTrigger trigger)
         {
             trigger.Reply("Admin chat mode is : {0}", trigger.Bold(
@@ -95,17 +95,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var amount = trigger.Get<short>("amount");
                 if (amount > 0 && amount <= byte.MaxValue)
                 {
-                    delta = (byte) (amount);
+                    delta = (byte)(amount);
                     target.LevelUp(delta);
                     trigger.Reply("Added " + trigger.Bold("{0}") + " levels to '{1}'.", delta, target.Name);
-
                 }
                 else if (amount < 0 && -amount <= byte.MaxValue)
                 {
-                    delta = (byte) (-amount);
+                    delta = (byte)(-amount);
                     target.LevelDown(delta);
                     trigger.Reply("Removed " + trigger.Bold("{0}") + " levels from '{1}'.", delta, target.Name);
-
                 }
                 else
                 {
@@ -159,7 +157,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 target.RefreshStats();
                 trigger.Reply("{0} has now {1} stats points", target, statsPoints);
             }
-
         }
     }
 
@@ -177,7 +174,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-
                 trigger.Reply(target.ToggleInvisibility() ? "{0} is now invisible" : "{0} is now visible", target);
             }
         }

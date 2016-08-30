@@ -1,22 +1,18 @@
-
-
 // Generated on 03/02/2014 20:43:03
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class PrismSubAreaInformation
     {
         public const short Id = 142;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public short worldX;
         public short worldY;
         public int mapId;
@@ -24,11 +20,11 @@ namespace Stump.DofusProtocol.Types
         public sbyte alignment;
         public bool isInFight;
         public bool isFightable;
-        
+
         public PrismSubAreaInformation()
         {
         }
-        
+
         public PrismSubAreaInformation(short worldX, short worldY, int mapId, short subAreaId, sbyte alignment, bool isInFight, bool isFightable)
         {
             this.worldX = worldX;
@@ -39,7 +35,7 @@ namespace Stump.DofusProtocol.Types
             this.isInFight = isInFight;
             this.isFightable = isFightable;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(worldX);
@@ -50,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteBoolean(isInFight);
             writer.WriteBoolean(isFightable);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             worldX = reader.ReadShort();
@@ -69,12 +65,10 @@ namespace Stump.DofusProtocol.Types
             isInFight = reader.ReadBoolean();
             isFightable = reader.ReadBoolean();
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(bool) + sizeof(bool);
         }
-        
     }
-    
 }

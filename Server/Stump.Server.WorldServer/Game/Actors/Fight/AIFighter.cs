@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -9,13 +5,14 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Chat;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public abstract class AIFighter : FightActor, INamedActor
     {
-        protected static Logger logger = LogManager.GetCurrentClassLogger();
-
         protected AIFighter(FightTeam team, IEnumerable<Spell> spells)
             : base(team)
         {

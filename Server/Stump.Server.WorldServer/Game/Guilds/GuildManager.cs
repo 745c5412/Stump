@@ -1,31 +1,31 @@
-﻿using System;
+﻿using Stump.Core.Pool;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.Guilds;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Items;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Stump.Core.Pool;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Database.Guilds;
-using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Items;
 using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
     public class GuildManager : DataManager<GuildManager>, ISaveable
     {
-        UniqueIdProvider m_idProvider;
-        Dictionary<int, Guild> m_guilds;
-        Dictionary<int, EmblemRecord> m_emblems;
-        Dictionary<int, GuildMember> m_guildsMembers;
-        readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
-        readonly Stack<GuildMember> m_membersToDelete = new Stack<GuildMember>();
+        private UniqueIdProvider m_idProvider;
+        private Dictionary<int, Guild> m_guilds;
+        private Dictionary<int, EmblemRecord> m_emblems;
+        private Dictionary<int, GuildMember> m_guildsMembers;
+        private readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
+        private readonly Stack<GuildMember> m_membersToDelete = new Stack<GuildMember>();
 
-        readonly object m_lock = new object();
+        private readonly object m_lock = new object();
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
@@ -47,7 +47,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_idProvider = m_guilds.Any()
                 ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max())
                 : new UniqueIdProvider(1);
-
 
             foreach (var guild in m_guilds.Where(x => x.Value.Members.Count == 0).ToList())
                 DeleteGuild(guild.Value);
@@ -118,7 +117,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 };
 
                 var guild = new Guild(record, new GuildMember[0]);
-
 
                 m_guilds.Add(guild.Id, guild);
 

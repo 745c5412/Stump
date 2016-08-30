@@ -80,7 +80,6 @@
                 <TextBox TextWrapping="Wrap" Text="{Binding ElementName=TextsGrid, Path=SelectedItem.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="3"
                          Grid.Column="1"
                          Grid.Row="1" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" />
-
             </Grid>
         </Expander>
         <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" Height="5" Background="#FFA5C0EF" ResizeDirection="Rows" Opacity="0.5">

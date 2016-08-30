@@ -1,4 +1,3 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -7,6 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
@@ -62,7 +62,6 @@ namespace Stump.Server.WorldServer.Database.Npcs
             get;
             set;
         }
-
 
         private string LookAsString
         {

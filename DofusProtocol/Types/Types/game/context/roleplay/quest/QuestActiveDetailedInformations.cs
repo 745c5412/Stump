@@ -1,36 +1,34 @@
-
-
 // Generated on 03/02/2014 20:43:00
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class QuestActiveDetailedInformations : QuestActiveInformations
     {
         public const short Id = 382;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public short stepId;
         public IEnumerable<Types.QuestObjectiveInformations> objectives;
-        
+
         public QuestActiveDetailedInformations()
         {
         }
-        
+
         public QuestActiveDetailedInformations(short questId, short stepId, IEnumerable<Types.QuestObjectiveInformations> objectives)
          : base(questId)
         {
             this.stepId = stepId;
             this.objectives = objectives;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -40,17 +38,16 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in objectives)
             {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-                 objectives_count++;
+                writer.WriteShort(entry.TypeId);
+                entry.Serialize(writer);
+                objectives_count++;
             }
             var objectives_after = writer.Position;
             writer.Seek((int)objectives_before);
             writer.WriteUShort((ushort)objectives_count);
             writer.Seek((int)objectives_after);
-
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -61,17 +58,15 @@ namespace Stump.DofusProtocol.Types
             var objectives_ = new Types.QuestObjectiveInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 objectives_[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestObjectiveInformations>(reader.ReadShort());
-                 objectives_[i].Deserialize(reader);
+                objectives_[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestObjectiveInformations>(reader.ReadShort());
+                objectives_[i].Deserialize(reader);
             }
             objectives = objectives_;
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(short) + sizeof(short) + objectives.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
-        
     }
-    
 }

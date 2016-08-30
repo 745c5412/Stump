@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             Caster.Dead -= OnCasterDead;
         }
 
-        void HealHpPercent(FightActor actor, int percent)
+        private void HealHpPercent(FightActor actor, int percent)
         {
             var healAmount = (int)(actor.MaxLifePoints * (percent / 100d));
 

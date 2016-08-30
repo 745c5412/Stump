@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
             if (fighter == null)
                 return;
 
-            Handlers[0].SetAffectedActors(new[] {fighter});
+            Handlers[0].SetAffectedActors(new[] { fighter });
 
             base.Execute();
         }

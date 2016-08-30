@@ -1,17 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.Handlers.Dialogs;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 {
@@ -92,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             Character.CloseDialog(this);
         }
 
-        #endregion
+        #endregion IDialog Members
 
         public virtual bool BuyItem(int itemId, int amount)
         {
@@ -100,15 +98,15 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             if (itemToSell == null)
             {
-                Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.BUY_ERROR));
+                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.BUY_ERROR));
                 return false;
             }
 
-            var finalPrice = (int) (itemToSell.Price*amount);
+            var finalPrice = (int)(itemToSell.Price * amount);
 
             if (amount <= 0 || !CanBuy(itemToSell, amount))
             {
-                Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.BUY_ERROR));
+                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.BUY_ERROR));
                 return false;
             }
 
@@ -146,7 +144,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 if (token == null || token.Stack < item.Price * amount)
                     return false;
             }
-
             else
             {
                 if (Character.Inventory.Kamas < item.Price * amount)
@@ -160,7 +157,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
         {
             if (!CanSell || amount <= 0)
             {
-                Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.SELL_ERROR));
+                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.SELL_ERROR));
                 return false;
             }
 
@@ -168,7 +165,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             if (item == null)
             {
-                Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.SELL_ERROR));
+                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.SELL_ERROR));
                 return false;
             }
 
@@ -176,9 +173,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             {
                 Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.SELL_ERROR));
                 return false;
-            } 
-            
-            var price = (int) Math.Ceiling(item.Template.Price / 10) * amount;
+            }
+
+            var price = (int)Math.Ceiling(item.Template.Price / 10) * amount;
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     22, amount, item.Template.Id);

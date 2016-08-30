@@ -1,16 +1,16 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
@@ -166,12 +166,12 @@ namespace Stump.ORM.SubSonic.Extensions
         private static string ApplyRules(IList<InflectorRule> rules, string word)
         {
             string result = word;
-            if(!_uncountables.Contains(word.ToLower()))
+            if (!_uncountables.Contains(word.ToLower()))
             {
-                for(int i = rules.Count - 1; i >= 0; i--)
+                for (int i = rules.Count - 1; i >= 0; i--)
                 {
                     string currentPass = rules[i].Apply(word);
-                    if(currentPass != null)
+                    if (currentPass != null)
                     {
                         result = currentPass;
                         break;
@@ -231,22 +231,22 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <returns></returns>
         public static string ToPascalCase(this string text, bool removeUnderscores)
         {
-            if(String.IsNullOrEmpty(text))
+            if (String.IsNullOrEmpty(text))
                 return text;
 
             text = text.Replace("_", " ");
             string joinString = removeUnderscores ? String.Empty : "_";
             string[] words = text.Split(' ');
-            if(words.Length > 1 || words[0].IsUpperCase())
+            if (words.Length > 1 || words[0].IsUpperCase())
             {
-                for(int i = 0; i < words.Length; i++)
+                for (int i = 0; i < words.Length; i++)
                 {
-                    if(words[i].Length > 0)
+                    if (words[i].Length > 0)
                     {
                         string word = words[i];
                         string restOfWord = word.Substring(1);
 
-                        if(restOfWord.IsUpperCase())
+                        if (restOfWord.IsUpperCase())
                             restOfWord = restOfWord.ToLower(CultureInfo.CurrentUICulture);
 
                         char firstChar = char.ToUpper(word[0], CultureInfo.CurrentUICulture);
@@ -308,22 +308,25 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <returns></returns>
         public static string AddOrdinalSuffix(this string number)
         {
-            if(number.IsStringNumeric())
+            if (number.IsStringNumeric())
             {
                 int n = int.Parse(number);
                 int nMod100 = n % 100;
 
-                if(nMod100 >= 11 && nMod100 <= 13)
+                if (nMod100 >= 11 && nMod100 <= 13)
                     return String.Concat(number, "th");
 
-                switch(n % 10)
+                switch (n % 10)
                 {
                     case 1:
                         return String.Concat(number, "st");
+
                     case 2:
                         return String.Concat(number, "nd");
+
                     case 3:
                         return String.Concat(number, "rd");
+
                     default:
                         return String.Concat(number, "th");
                 }
@@ -341,7 +344,6 @@ namespace Stump.ORM.SubSonic.Extensions
             return underscoredWord.Replace('_', '-');
         }
 
-
         #region Nested type: InflectorRule
 
         /// <summary>
@@ -350,12 +352,12 @@ namespace Stump.ORM.SubSonic.Extensions
         private class InflectorRule
         {
             /// <summary>
-            /// 
+            ///
             /// </summary>
             public readonly Regex regex;
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             public readonly string replacement;
 
@@ -377,17 +379,17 @@ namespace Stump.ORM.SubSonic.Extensions
             /// <returns></returns>
             public string Apply(string word)
             {
-                if(!regex.IsMatch(word))
+                if (!regex.IsMatch(word))
                     return null;
 
                 string replace = regex.Replace(word, replacement);
-                if(word == word.ToUpper())
+                if (word == word.ToUpper())
                     replace = replace.ToUpper();
 
                 return replace;
             }
         }
 
-        #endregion
+        #endregion Nested type: InflectorRule
     }
 }

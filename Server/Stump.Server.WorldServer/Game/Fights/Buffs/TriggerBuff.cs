@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Spells;
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
     public delegate void TriggerBuffApplyHandler(TriggerBuff buff, BuffTriggerType trigger, object token);
+
     public delegate void TriggerBuffRemoveHandler(TriggerBuff buff);
 
     public class TriggerBuff : Buff
@@ -29,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             RemoveTrigger = removeTrigger;
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell,  Spell parentSpell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, short customActionId)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, short customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
         {
             Trigger = trigger;
@@ -112,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         {
             var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)( Dispellable ? 0 : 1 ), (short)ParentSpell.Id, 0, (short)values[0], (short)values[1], (short)values[2], 0);
+            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 0 : 1), (short)ParentSpell.Id, 0, (short)values[0], (short)values[1], (short)values[2], 0);
         }
     }
 }

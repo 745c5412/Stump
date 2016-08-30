@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Arena;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -48,8 +48,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
             }
             else
                 ArenaManager.Instance.RemoveFromQueue(client.Character);
-        }   
-        
+        }
+
         public static void SendGameRolePlayArenaFightPropositionMessage(IPacketReceiver client, ArenaPopup popup, int delay)
         {
             var members = popup.Team.Members.Select(x => x.Character.Id);

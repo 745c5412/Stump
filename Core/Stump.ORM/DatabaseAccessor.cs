@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Stump.ORM.SubSonic.DataProviders;
+﻿using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Extensions;
 using Stump.ORM.SubSonic.Schema;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Stump.ORM
 {
@@ -46,7 +46,7 @@ namespace Stump.ORM
         {
             Configuration = new DatabaseConfiguration();
         }
-        
+
         public DatabaseAccessor(DatabaseConfiguration configuration)
         {
             Configuration = configuration;
@@ -114,7 +114,7 @@ namespace Stump.ORM
                 if (map.Type.GetInterface(typeof(IManualGeneratedRecord).FullName) != null)
                 {
                     var instance = Activator.CreateInstance(map.Type, true);
-                    table = ( (IManualGeneratedRecord)instance ).GetTableInformation(DataProvider);
+                    table = ((IManualGeneratedRecord)instance).GetTableInformation(DataProvider);
                 }
                 else
                 {
@@ -132,17 +132,17 @@ namespace Stump.ORM
         public void OpenConnection()
         {
             var db = new Database(Configuration.GetConnectionString(), Configuration.ProviderName)
-                {
-                    KeepConnectionAlive = true,
-                    CommandTimeout = (24 * 60 * 60)
-                };
+            {
+                KeepConnectionAlive = true,
+                CommandTimeout = (24 * 60 * 60)
+            };
 
             OpenConnection(db);
         }
 
         public void CloseConnection()
         {
-           Database.CloseSharedConnection();
+            Database.CloseSharedConnection();
         }
 
         private static bool HasInterface(Type type, Type interfaceType)

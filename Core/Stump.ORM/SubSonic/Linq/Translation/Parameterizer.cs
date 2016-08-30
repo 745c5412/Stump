@@ -2,13 +2,12 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -17,8 +16,8 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class Parameterizer : DbExpressionVisitor
     {
-        Dictionary<object, NamedValueExpression> map = new Dictionary<object, NamedValueExpression>();
-        Dictionary<Expression, NamedValueExpression> pmap = new Dictionary<Expression,NamedValueExpression>();
+        private Dictionary<object, NamedValueExpression> map = new Dictionary<object, NamedValueExpression>();
+        private Dictionary<Expression, NamedValueExpression> pmap = new Dictionary<Expression, NamedValueExpression>();
 
         private Parameterizer()
         {
@@ -33,18 +32,22 @@ namespace Stump.ORM.SubSonic.Linq.Translation
         {
             // don't parameterize the projector or aggregator!
             SelectExpression select = (SelectExpression)this.Visit(proj.Source);
-            if (select != proj.Source) {
+            if (select != proj.Source)
+            {
                 return new ProjectionExpression(select, proj.Projector, proj.Aggregator);
             }
             return proj;
         }
 
-        int iParam = 0;
+        private int iParam = 0;
+
         protected override Expression VisitConstant(ConstantExpression c)
         {
-            if (c.Value != null && !IsNumeric(c.Value.GetType())) {
+            if (c.Value != null && !IsNumeric(c.Value.GetType()))
+            {
                 NamedValueExpression nv;
-                if (!this.map.TryGetValue(c.Value, out nv)) { // re-use same name-value if same value
+                if (!this.map.TryGetValue(c.Value, out nv))
+                { // re-use same name-value if same value
                     string name = "p" + (iParam++);
                     nv = new NamedValueExpression(name, c);
                     this.map.Add(c.Value, nv);
@@ -54,7 +57,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             return c;
         }
 
-        protected override Expression VisitParameter(ParameterExpression p) 
+        protected override Expression VisitParameter(ParameterExpression p)
         {
             return this.GetNamedValue(p);
         }
@@ -73,7 +76,8 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
         private bool IsNumeric(Type type)
         {
-            switch (Type.GetTypeCode(type)) {
+            switch (Type.GetTypeCode(type))
+            {
                 case TypeCode.Boolean:
                 case TypeCode.Byte:
                 case TypeCode.Decimal:
@@ -87,6 +91,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                 case TypeCode.UInt32:
                 case TypeCode.UInt64:
                     return true;
+
                 default:
                     return false;
             }
@@ -95,7 +100,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
     internal class NamedValueGatherer : DbExpressionVisitor
     {
-        HashSet<NamedValueExpression> namedValues = new HashSet<NamedValueExpression>();
+        private HashSet<NamedValueExpression> namedValues = new HashSet<NamedValueExpression>();
 
         private NamedValueGatherer()
         {

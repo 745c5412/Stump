@@ -1,3 +1,7 @@
+using NLog;
+using Stump.Core.Attributes;
+using Stump.Core.Pool;
+using Stump.Core.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -5,10 +9,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using NLog;
-using Stump.Core.Attributes;
-using Stump.Core.Pool;
-using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Network
 {
@@ -17,6 +17,7 @@ namespace Stump.Server.BaseServer.Network
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         #region Config Variables
+
         /// <summary>
         /// Max number of clients connected
         /// </summary>
@@ -45,8 +46,9 @@ namespace Stump.Server.BaseServer.Network
         /// Buffer size /!\ Advanced users only /!\
         /// </summary>
         [Variable]
-        public static int BufferSize = 8192; 
-        #endregion
+        public static int BufferSize = 8192;
+
+        #endregion Config Variables
 
         #region Events
 
@@ -64,9 +66,9 @@ namespace Stump.Server.BaseServer.Network
         {
             var handler = ClientDisconnected;
             if (handler != null) handler(client);
-        } 
+        }
 
-        #endregion
+        #endregion Events
 
         public delegate BaseClient CreateClientHandler(Socket clientSocket);
 
@@ -261,7 +263,7 @@ namespace Stump.Server.BaseServer.Network
                         return;
                     }
 
-                    var IP = ((IPEndPoint) e.AcceptSocket.RemoteEndPoint).Address;
+                    var IP = ((IPEndPoint)e.AcceptSocket.RemoteEndPoint).Address;
 
                     if (MaxIPConnexions.HasValue && CountClientWithSameIp(IP) > MaxIPConnexions.Value)
                     {
@@ -372,7 +374,7 @@ namespace Stump.Server.BaseServer.Network
                 {
                     if (t.Socket != null && t.Socket.Connected && t.Socket.RemoteEndPoint != null)
                     {
-                        var ip = ((IPEndPoint) t.Socket.RemoteEndPoint).Address;
+                        var ip = ((IPEndPoint)t.Socket.RemoteEndPoint).Address;
                         if (ip.Equals(ipAddress) && ip.AddressFamily != AddressFamily.InterNetwork) // not a fake client
                             count++;
                     }

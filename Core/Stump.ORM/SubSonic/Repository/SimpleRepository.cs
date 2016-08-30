@@ -1,27 +1,27 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-//  
+//
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Extensions;
 using Stump.ORM.SubSonic.Linq.Structure;
 using Stump.ORM.SubSonic.Query;
 using Stump.ORM.SubSonic.Schema;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Stump.ORM.SubSonic.Repository
 {
@@ -29,20 +29,25 @@ namespace Stump.ORM.SubSonic.Repository
     {
         private readonly IDataProvider _provider;
         private readonly List<Type> migrated;
-        private readonly SimpleRepositoryOptions _options=SimpleRepositoryOptions.Default;
-        
-        public SimpleRepository() : this(ProviderFactory.GetProvider(),SimpleRepositoryOptions.Default) {}
+        private readonly SimpleRepositoryOptions _options = SimpleRepositoryOptions.Default;
+
+        public SimpleRepository() : this(ProviderFactory.GetProvider(), SimpleRepositoryOptions.Default)
+        {
+        }
 
         public SimpleRepository(string connectionStringName)
-            : this(connectionStringName,SimpleRepositoryOptions.Default) { }
+            : this(connectionStringName, SimpleRepositoryOptions.Default) { }
 
         public SimpleRepository(string connectionStringName, SimpleRepositoryOptions options)
             : this(ProviderFactory.GetProvider(connectionStringName), options) { }
 
+        public SimpleRepository(SimpleRepositoryOptions options) : this(ProviderFactory.GetProvider(), options)
+        {
+        }
 
-        public SimpleRepository(SimpleRepositoryOptions options) : this(ProviderFactory.GetProvider(), options) { }
-
-        public SimpleRepository(IDataProvider provider) : this(provider, SimpleRepositoryOptions.Default) {}
+        public SimpleRepository(IDataProvider provider) : this(provider, SimpleRepositoryOptions.Default)
+        {
+        }
 
         public SimpleRepository(IDataProvider provider, SimpleRepositoryOptions options)
         {
@@ -52,9 +57,7 @@ namespace Stump.ORM.SubSonic.Repository
                 migrated = new List<Type>();
         }
 
-
         #region IRepository Members
-
 
         public bool Exists<T>(Expression<Func<T, bool>> expression) where T : class, new()
         {
@@ -69,7 +72,6 @@ namespace Stump.ORM.SubSonic.Repository
             var qry = new Query<T>(_provider);
             return qry;
         }
-
 
         /// <summary>
         /// Singles the specified expression.
@@ -88,7 +90,7 @@ namespace Stump.ORM.SubSonic.Repository
             var constraints = expression.ParseConstraints().ToList();
             qry.Constraints = constraints;
             var list = qry.ToList<T>();
-            if(list.Count > 0)
+            if (list.Count > 0)
                 result = list[0];
             return result;
         }
@@ -185,22 +187,26 @@ namespace Stump.ORM.SubSonic.Repository
                 Migrate<T>();
 
             object result = null;
-            using(var rdr = item.ToInsertQuery(_provider).ExecuteReader())
+            using (var rdr = item.ToInsertQuery(_provider).ExecuteReader())
             {
-                if(rdr.Read())
+                if (rdr.Read())
                     result = rdr[0];
             }
 
             //for Rick :)
-            if (result != null && result != DBNull.Value) {
-                try {
-                    var tbl =  _provider.FindOrCreateTable(typeof(T));
+            if (result != null && result != DBNull.Value)
+            {
+                try
+                {
+                    var tbl = _provider.FindOrCreateTable(typeof(T));
                     var prop = item.GetType().GetProperty(tbl.PrimaryKey.Name);
                     var settable = result.ChangeTypeTo(prop.PropertyType);
                     prop.SetValue(item, settable, null);
 
-                	return settable;
-                } catch(Exception) {
+                    return settable;
+                }
+                catch (Exception)
+                {
                     //swallow it - I don't like this per se but this is a convenience and we
                     //don't want to throw the whole thing just because we can't auto-set the value
                 }
@@ -220,7 +226,7 @@ namespace Stump.ORM.SubSonic.Repository
                 Migrate<T>();
 
             BatchQuery batch = new BatchQuery(_provider);
-            foreach(var item in items)
+            foreach (var item in items)
                 batch.QueueForTransaction(item.ToInsertQuery(_provider));
             batch.ExecuteTransaction();
         }
@@ -250,7 +256,7 @@ namespace Stump.ORM.SubSonic.Repository
                 Migrate<T>();
             BatchQuery batch = new BatchQuery(_provider);
             int result = 0;
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 batch.QueueForTransaction(item.ToUpdateQuery(_provider));
                 result++;
@@ -307,7 +313,7 @@ namespace Stump.ORM.SubSonic.Repository
 
             BatchQuery batch = new BatchQuery(_provider);
             int result = 0;
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 batch.QueueForTransaction(item.ToDeleteQuery(_provider));
                 result++;
@@ -316,8 +322,7 @@ namespace Stump.ORM.SubSonic.Repository
             return result;
         }
 
-        #endregion
-
+        #endregion IRepository Members
 
         /// <summary>
         /// Migrates this instance.
@@ -326,12 +331,12 @@ namespace Stump.ORM.SubSonic.Repository
         private void Migrate<T>() where T : class, new()
         {
             Type type = typeof(T);
-            if(!migrated.Contains(type))
+            if (!migrated.Contains(type))
             {
                 BatchQuery batch = new BatchQuery(_provider);
                 Migrator m = new Migrator(Assembly.GetExecutingAssembly());
                 var commands = m.MigrateFromModel(type, _provider);
-                foreach(var s in commands)
+                foreach (var s in commands)
                     batch.QueueForTransaction(new QueryCommand(s, _provider));
                 batch.ExecuteTransaction();
                 migrated.Add(type);

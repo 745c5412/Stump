@@ -2,11 +2,10 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -15,9 +14,9 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class OrderByRewriter : DbExpressionVisitor
     {
-        IList<OrderExpression> gatheredOrderings;
-        HashSet<string> uniqueColumns;
-        bool isOuterMostSelect;
+        private IList<OrderExpression> gatheredOrderings;
+        private HashSet<string> uniqueColumns;
+        private bool isOuterMostSelect;
 
         private OrderByRewriter()
         {
@@ -150,8 +149,9 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
         protected class BindResult
         {
-            ReadOnlyCollection<ColumnDeclaration> columns;
-            ReadOnlyCollection<OrderExpression> orderings;
+            private ReadOnlyCollection<ColumnDeclaration> columns;
+            private ReadOnlyCollection<OrderExpression> orderings;
+
             public BindResult(IEnumerable<ColumnDeclaration> columns, IEnumerable<OrderExpression> orderings)
             {
                 this.columns = columns as ReadOnlyCollection<ColumnDeclaration>;
@@ -165,10 +165,12 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                     this.orderings = new List<OrderExpression>(orderings).AsReadOnly();
                 }
             }
+
             public ReadOnlyCollection<ColumnDeclaration> Columns
             {
                 get { return this.columns; }
             }
+
             public ReadOnlyCollection<OrderExpression> Orderings
             {
                 get { return this.orderings; }

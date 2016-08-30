@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -12,6 +11,7 @@ using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using System.Linq;
 
 namespace ArkalysPlugin.Npcs
 {
@@ -29,6 +29,7 @@ namespace ArkalysPlugin.Npcs
          * 2 - Faire une collecte groupé afin d’acheter une Guildalogemme disponible à 50.000 Orbes.
          * 3 - Pour les personnes qui ne sont aucunement patient, un achat via des jetons est possible. Bien sur le prix est élevé pour vous obliger à choisir en 1er lieu les 2 premières possibilités.
         */
+
         [Variable]
         public static int MessageId = 20009;
 
@@ -43,7 +44,8 @@ namespace ArkalysPlugin.Npcs
         public static short ReplyGuildSuccessId = 20005;
 
         //Voulez-vous acheter une Guildalogemme pour XX orbes?
-        [Variable] public static short ReplyGuildBuyId = 20010;
+        [Variable]
+        public static short ReplyGuildBuyId = 20010;
 
         //Arf, une erreur inattendu t'as poussé à annulé la création de ta guilde. Je suppose que tu n'as pas encore l'étoffe d'un héros... Enfin je veux dire par la que tu préfères te faire diriger que de diriger les autres. C’est un choix et je l'accepte à bientôt si tu changes d'avis.
         [Variable]
@@ -56,7 +58,7 @@ namespace ArkalysPlugin.Npcs
         public static NpcMessage Message;
         private static bool m_scriptDisabled;
 
-        [Initialization(typeof (NpcManager), Silent = true)]
+        [Initialization(typeof(NpcManager), Silent = true)]
         public static void Initialize()
         {
             if (m_scriptDisabled)
@@ -110,7 +112,7 @@ namespace ArkalysPlugin.Npcs
     {
         public override NpcActionTypeEnum[] ActionType
         {
-            get { return new [] { NpcActionTypeEnum.ACTION_TALK }; }
+            get { return new[] { NpcActionTypeEnum.ACTION_TALK }; }
         }
 
         public override void Execute(Npc npc, Character character)
@@ -141,7 +143,7 @@ namespace ArkalysPlugin.Npcs
                 var guildalogemme = Character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(NpcGuilds.RequiredItemId));
                 ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage,
                                                                     guildalogemme != null
-                                                                        ? new[] {NpcGuilds.ReplyGuildSuccessId}
+                                                                        ? new[] { NpcGuilds.ReplyGuildSuccessId }
                                                                         : new[] { NpcGuilds.ReplyGuildBuyId }, m_requieredOrbs.ToString());
             }
         }

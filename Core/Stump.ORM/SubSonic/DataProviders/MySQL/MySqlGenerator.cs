@@ -1,32 +1,32 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.Extensions;
+using Stump.ORM.SubSonic.Query;
+using Stump.ORM.SubSonic.Schema;
+using Stump.ORM.SubSonic.SQLGeneration;
 using System;
 using System.Data;
 using System.Text;
-using Stump.ORM.SubSonic.Extensions;
-using Stump.ORM.SubSonic.Query;
-using Stump.ORM.SubSonic.SQLGeneration;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.DataProviders.MySQL
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    /// 
-    
+    ///
+
     public class MySqlGenerator : ANSISqlGenerator
     {
         private const string PAGING_SQL =
@@ -39,8 +39,9 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
         /// </summary>
         /// <param name="query">The query.</param>
         public MySqlGenerator(SqlQuery query)
-            : base(query) {
-                ClientName = "MySql.Data.MySqlClient";
+            : base(query)
+        {
+            ClientName = "MySql.Data.MySqlClient";
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
         /// <returns></returns>
         protected string GetNativeType(DbType dbType)
         {
-            switch(dbType)
+            switch (dbType)
             {
                 case DbType.Object:
                 case DbType.AnsiString:
@@ -58,38 +59,51 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
                 case DbType.String:
                 case DbType.StringFixedLength:
                     return "nvarchar";
+
                 case DbType.Boolean:
                     return "bit";
+
                 case DbType.SByte:
                 case DbType.Binary:
                 case DbType.Byte:
                     return "image";
+
                 case DbType.Currency:
                     return "money";
+
                 case DbType.Time:
                 case DbType.Date:
                 case DbType.DateTime:
                     return "datetime";
+
                 case DbType.Decimal:
                     return "decimal";
+
                 case DbType.Double:
                     return "float";
+
                 case DbType.Guid:
                     return "uniqueidentifier";
+
                 case DbType.UInt32:
                 case DbType.UInt16:
                 case DbType.Int16:
                 case DbType.Int32:
                     return "INTEGER";
+
                 case DbType.UInt64:
                 case DbType.Int64:
                     return "bigint";
+
                 case DbType.Single:
                     return "real";
+
                 case DbType.VarNumeric:
                     return "numeric";
+
                 case DbType.Xml:
                     return "xml";
+
                 default:
                     return "nvarchar";
             }
@@ -104,15 +118,15 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
         /// </returns>
         protected string GenerateColumns(ITable table)
         {
-            if(table.Columns.Count == 0)
+            if (table.Columns.Count == 0)
                 return String.Empty;
 
             StringBuilder columnsSql = new StringBuilder();
 
-            foreach(IColumn col in table.Columns)
+            foreach (IColumn col in table.Columns)
                 columnsSql.AppendFormat("\r\n  `{0}`{1},", col.Name, GenerateColumnAttributes(col));
 
-            if(table.HasPrimaryKey)
+            if (table.HasPrimaryKey)
                 columnsSql.AppendFormat("\r\n  PRIMARY KEY (`{0}`),", table.PrimaryKey.Name);
 
             string sql = columnsSql.ToString();
@@ -129,9 +143,9 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
             sb.Append(this.sqlFragment.FROM);
 
             bool isFirst = true;
-            foreach(ITable tbl in query.FromTables)
+            foreach (ITable tbl in query.FromTables)
             {
-                if(!isFirst)
+                if (!isFirst)
                     sb.Append(",");
                 sb.Append(tbl.Name);
                 isFirst = false;
@@ -148,7 +162,7 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
         protected string GenerateColumnAttributes(IColumn column)
         {
             StringBuilder sb = new StringBuilder();
-            if(column.DataType == DbType.DateTime && column.DefaultSetting.ToString() == "getdate()")
+            if (column.DataType == DbType.DateTime && column.DefaultSetting.ToString() == "getdate()")
             {
                 //there is no way to have two fields with a NOW or CURRENT_TIMESTAMP setting
                 //so need to rely on the code to help here
@@ -158,23 +172,23 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
             {
                 sb.Append(" " + GetNativeType(column.DataType));
 
-                if(column.IsPrimaryKey)
+                if (column.IsPrimaryKey)
                 {
                     sb.Append(" NOT NULL");
-                    if(column.IsNumeric)
+                    if (column.IsNumeric)
                         sb.Append(" AUTO_INCREMENT");
                 }
                 else
                 {
-                    if(column.MaxLength > 0 && column.MaxLength < 8000)
+                    if (column.MaxLength > 0 && column.MaxLength < 8000)
                         sb.Append("(" + column.MaxLength + ")");
 
-                    if(!column.IsNullable)
+                    if (!column.IsNullable)
                         sb.Append(" NOT NULL");
                     else
                         sb.Append(" NULL");
 
-                    if(column.DefaultSetting != null)
+                    if (column.DefaultSetting != null)
                         sb.Append(" DEFAULT " + column.DefaultSetting + " ");
                 }
             }
@@ -195,7 +209,7 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
             string havings = String.Empty;
             string groupby = String.Empty;
 
-            if(query.Aggregates.Count > 0)
+            if (query.Aggregates.Count > 0)
                 groupby = GenerateGroupBy();
 
             string sql = string.Format(PAGING_SQL,
@@ -206,23 +220,21 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
             return sql;
         }
 
-        
-
         public override string GenerateGroupBy()
         {
             string result = String.Empty;
 
-            if(query.Aggregates.Count > 0)
+            if (query.Aggregates.Count > 0)
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine();
 
                 bool isFirst = true;
-                foreach(Aggregate agg in query.Aggregates)
+                foreach (Aggregate agg in query.Aggregates)
                 {
-                    if(agg.AggregateType == AggregateFunction.GroupBy)
+                    if (agg.AggregateType == AggregateFunction.GroupBy)
                     {
-                        if(!isFirst)
+                        if (!isFirst)
                             sb.Append(", ");
                         else
                             sb.Append(this.sqlFragment.GROUP_BY);
@@ -252,9 +264,9 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
             sb.Append(this.sqlFragment.UPDATE);
             sb.Append(query.FromTables[0].QualifiedName);
 
-            for(int i = 0; i < query.SetStatements.Count; i++)
+            for (int i = 0; i < query.SetStatements.Count; i++)
             {
-                if(i == 0)
+                if (i == 0)
                 {
                     sb.AppendLine(" ");
                     sb.Append(this.sqlFragment.SET);
@@ -269,7 +281,7 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
 
                 sb.Append("=");
 
-                if(!query.SetStatements[i].IsExpression)
+                if (!query.SetStatements[i].IsExpression)
                     sb.Append(query.SetStatements[i].ParameterName);
                 else
                     sb.Append(query.SetStatements[i].Value.ToString());

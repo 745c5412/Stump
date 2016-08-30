@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -10,6 +7,9 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {
@@ -34,7 +34,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         {
             Spawn = spawn;
         }
-
 
         public NpcTemplate Template
         {
@@ -127,7 +126,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return new GameRolePlayNpcInformations(Id,
                                                    Look.GetEntityLook(),
                                                    GetEntityDispositionInformations(),
-                                                   (short) Template.Id,
+                                                   (short)Template.Id,
                                                    Template.Gender != 0,
                                                    Template.SpecialArtworkId);
         }
@@ -137,6 +136,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return m_gameContextActorInformations;
         }
 
-        #endregion
+        #endregion GameContextActorInformations
     }
 }

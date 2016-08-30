@@ -1,6 +1,6 @@
-﻿using System;
-using Stump.DofusProtocol.D2oClasses;
+﻿using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Types;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -11,13 +11,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public EffectCreature()
         {
-            
         }
 
         public EffectCreature(EffectCreature copy)
             : this(copy.Id, copy.MonsterFamily, copy)
         {
-            
         }
 
         public EffectCreature(short id, short monsterfamily, EffectBase effectBase)
@@ -29,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectCreature(EffectInstanceCreature effect)
             : base(effect)
         {
-            m_monsterfamily = (short) effect.monsterFamilyId;
+            m_monsterfamily = (short)effect.monsterFamilyId;
         }
 
         public override int ProtocoleId
@@ -52,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override object[] GetValues()
         {
-            return new object[] {m_monsterfamily};
+            return new object[] { m_monsterfamily };
         }
 
         public override ObjectEffect GetObjectEffect()
@@ -80,8 +78,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = (uint) ZoneShape,
-                monsterFamilyId = (uint) MonsterFamily,
+                zoneShape = (uint)ZoneShape,
+                monsterFamilyId = (uint)MonsterFamily,
             };
         }
 
@@ -111,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             if (ReferenceEquals(a, b))
                 return true;
 
-            if (((object) a == null) || ((object) b == null))
+            if (((object)a == null) || ((object)b == null))
                 return false;
 
             return a.Equals(b);
@@ -133,7 +131,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             unchecked
             {
-                return (base.GetHashCode()*397) ^ m_monsterfamily.GetHashCode();
+                return (base.GetHashCode() * 397) ^ m_monsterfamily.GetHashCode();
             }
         }
     }

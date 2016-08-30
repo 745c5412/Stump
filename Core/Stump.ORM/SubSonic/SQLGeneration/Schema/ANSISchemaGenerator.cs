@@ -1,25 +1,25 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Extensions;
+using Stump.ORM.SubSonic.Schema;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Text;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Extensions;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.SQLGeneration.Schema
 {
@@ -79,11 +79,11 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
             }
 
             sql.AppendFormat(ADD_COLUMN, tableName, column.Name, GenerateColumnAttributes(column));
-            
+
             //if the column isn't nullable and there are records already
             //the default setting won't be honored and a null value could be entered (in SQLite for instance)
             //enforce the default setting here
-            if(!column.IsNullable)
+            if (!column.IsNullable)
             {
                 sql.AppendLine();
 
@@ -96,7 +96,7 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
 
                 sql.AppendFormat(UPDATE_DEFAULTS, tableName, column.Name, defaultValue);
             }
-            
+
             return sql.ToString();
         }
 
@@ -142,7 +142,7 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
         {
             StringBuilder createSql = new StringBuilder();
 
-            foreach(IColumn col in table.Columns)
+            foreach (IColumn col in table.Columns)
                 createSql.AppendFormat("\r\n  [{0}]{1},", col.Name, GenerateColumnAttributes(col));
             string columnSql = createSql.ToString();
             return columnSql.Chop(",");
@@ -163,16 +163,16 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
             ITable result = null;
             DataTable schema;
 
-            using(var scope = new AutomaticConnectionScope(provider))
+            using (var scope = new AutomaticConnectionScope(provider))
             {
-                var restrictions = new string[4] {null, null, tableName, null};
+                var restrictions = new string[4] { null, null, tableName, null };
                 schema = scope.Connection.GetSchema("COLUMNS", restrictions);
             }
 
-            if(schema.Rows.Count > 0)
+            if (schema.Rows.Count > 0)
             {
                 result = new DatabaseTable(tableName, provider);
-                foreach(DataRow dr in schema.Rows)
+                foreach (DataRow dr in schema.Rows)
                 {
                     IColumn col = new DatabaseColumn(dr["COLUMN_NAME"].ToString(), result);
                     col.DataType = GetDbType(dr["DATA_TYPE"].ToString());
@@ -196,15 +196,15 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
         public virtual string[] GetTableList(IDataProvider provider)
         {
             List<string> result = new List<string>();
-            using(DbConnection conn = provider.CreateConnection())
+            using (DbConnection conn = provider.CreateConnection())
             {
                 conn.Open();
                 var schema = conn.GetSchema("TABLES");
                 conn.Close();
 
-                foreach(DataRow dr in schema.Rows)
+                foreach (DataRow dr in schema.Rows)
                 {
-                    if(dr["TABLE_TYPE"].ToString().Equals("BASE TABLE"))
+                    if (dr["TABLE_TYPE"].ToString().Equals("BASE TABLE"))
                         result.Add(dr["TABLE_NAME"].ToString());
                 }
             }
@@ -213,20 +213,17 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
 
         public abstract DbType GetDbType(string sqlType);
 
-        
-
-        #endregion
-
+        #endregion ISchemaGenerator Members
 
         public virtual void SetColumnDefaults(IColumn column)
         {
-            if(column.IsNumeric)
+            if (column.IsNumeric)
                 column.DefaultSetting = 0;
-            else if(column.IsDateTime)
+            else if (column.IsDateTime)
                 column.DefaultSetting = DateTime.Parse("1/1/1900");
-            else if(column.IsString)
+            else if (column.IsString)
                 column.DefaultSetting = "";
-            else if(column.DataType == DbType.Boolean)
+            else if (column.DataType == DbType.Boolean)
                 column.DefaultSetting = 0;
         }
     }

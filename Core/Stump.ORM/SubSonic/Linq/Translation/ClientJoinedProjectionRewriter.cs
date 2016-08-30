@@ -2,12 +2,11 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Linq.Structure;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -16,9 +15,9 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class ClientJoinedProjectionRewriter : DbExpressionVisitor
     {
-        IQueryLanguage language;
-        bool isTopLevel = true;
-        SelectExpression currentSelect;
+        private IQueryLanguage language;
+        private bool isTopLevel = true;
+        private SelectExpression currentSelect;
 
         private ClientJoinedProjectionRewriter(IQueryLanguage language)
         {
@@ -57,7 +56,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
                         // apply client-join treatment recursively
                         this.currentSelect = joinedSelect;
-                        newProjector = this.Visit(pc.Projector); 
+                        newProjector = this.Visit(pc.Projector);
 
                         // compute keys (this only works if join condition was a single column comparison)
                         List<Expression> outerKeys = new List<Expression>();
@@ -80,7 +79,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
                 return base.VisitProjection(proj);
             }
-            finally 
+            finally
             {
                 this.currentSelect = save;
             }
@@ -106,6 +105,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                     case ExpressionType.AndAlso:
                         return this.GetEquiJoinKeyExpressions(b.Left, outerAlias, outerExpressions, innerExpressions)
                             && this.GetEquiJoinKeyExpressions(b.Right, outerAlias, outerExpressions, innerExpressions);
+
                     case ExpressionType.Equal:
                         ColumnExpression left = b.Left as ColumnExpression;
                         ColumnExpression right = b.Right as ColumnExpression;

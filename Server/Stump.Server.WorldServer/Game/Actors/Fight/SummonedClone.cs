@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Types;
+﻿using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight

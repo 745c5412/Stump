@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Timers;
@@ -11,6 +7,10 @@ using Stump.Server.AuthServer.Database.Accounts;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Messages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 
 namespace Stump.Server.AuthServer.Managers
 {
@@ -39,7 +39,6 @@ namespace Stump.Server.AuthServer.Managers
             PlayableBreedEnum.Steamer
             };
 
-
         [Variable]
         public static int CacheTimeout = 300;
 
@@ -49,13 +48,12 @@ namespace Stump.Server.AuthServer.Managers
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<string, Tuple<DateTime, Account>>();
         private List<IpBan> m_ipBans = new List<IpBan>();
-        private List<ClientKeyBan> m_keyBans = new List<ClientKeyBan>(); 
+        private List<ClientKeyBan> m_keyBans = new List<ClientKeyBan>();
         private TimedTimerEntry m_timer;
         private TimedTimerEntry m_bansTimer;
 
         public AccountManager()
         {
-            
         }
 
         public override void Initialize()
@@ -238,11 +236,11 @@ namespace Stump.Server.AuthServer.Managers
                 return null;
 
             var character = new WorldCharacter
-                                {
-                                    AccountId = account.Id,
-                                    WorldId = world.Id,
-                                    CharacterId = characterId
-                                };
+            {
+                AccountId = account.Id,
+                WorldId = world.Id,
+                CharacterId = characterId
+            };
 
             account.WorldCharacters.Add(character);
             Database.Insert(character);
@@ -267,19 +265,18 @@ namespace Stump.Server.AuthServer.Managers
         {
             var character = CreateAccountCharacter(account, world, characterId);
 
-
             return true;
         }
 
         public WorldCharacterDeleted CreateDeletedCharacter(Account account, WorldServer world, int characterId)
         {
             var character = new WorldCharacterDeleted
-                                {
-                                    AccountId = account.Id,
-                                    WorldId = world.Id,
-                                    CharacterId = characterId,
-                                    DeletionDate = DateTime.Now
-                                };
+            {
+                AccountId = account.Id,
+                WorldId = world.Id,
+                CharacterId = characterId,
+                DeletionDate = DateTime.Now
+            };
 
             Database.Insert(character);
 

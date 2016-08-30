@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:51
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -21,12 +15,16 @@ namespace DBSynchroniser.Records
         public int id;
         public uint categoryId;
         public uint gfx;
+
         [I18NField]
         public uint nameId;
+
         public uint mapId;
         public uint realMapId;
+
         [I18NField]
         public int x;
+
         public int y;
         public Boolean outdoor;
         public int subareaId;
@@ -35,7 +33,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -113,7 +110,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Hint)obj;
-            
+
             Id = castedObj.id;
             CategoryId = castedObj.categoryId;
             Gfx = castedObj.gfx;
@@ -125,7 +122,7 @@ namespace DBSynchroniser.Records
             Outdoor = castedObj.outdoor;
             SubareaId = castedObj.subareaId;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Hint)parent : new Hint();
@@ -141,10 +138,9 @@ namespace DBSynchroniser.Records
             obj.subareaId = SubareaId;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

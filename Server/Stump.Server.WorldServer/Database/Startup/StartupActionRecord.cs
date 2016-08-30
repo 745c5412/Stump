@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Stump.ORM;
+﻿using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Database.Startup
 {

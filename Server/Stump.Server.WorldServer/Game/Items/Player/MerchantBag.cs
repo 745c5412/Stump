@@ -1,25 +1,27 @@
 ﻿#region License GNU GPL
+
 // MerchantBagOffline.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#endregion License GNU GPL
+
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -43,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
         /// <summary>
-        /// Must be saved 
+        /// Must be saved
         /// </summary>
         public bool IsDirty
         {
@@ -107,8 +109,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
             else
             {
-                item.Stack -= (uint) amount;
-                item.StackSold += (uint) amount;
+                item.Stack -= (uint)amount;
+                item.StackSold += (uint)amount;
 
                 NotifyItemStackChanged(item, -amount, stackMsg);
             }

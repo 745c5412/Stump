@@ -16,7 +16,7 @@ namespace Stump.Core.Collections
         private const string KeyNodeName = "Key";
         private const string ValueNodeName = "Value";
 
-        #endregion
+        #endregion Constants
 
         #region Constructors
 
@@ -49,7 +49,7 @@ namespace Stump.Core.Collections
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         private XmlSerializer keySerializer;
         private XmlSerializer valueSerializer;
@@ -61,7 +61,7 @@ namespace Stump.Core.Collections
             {
                 var kvp =
                     (KeyValuePair<TKey, TVal>)
-                    info.GetValue(String.Format("Item{0}", i), typeof (KeyValuePair<TKey, TVal>));
+                    info.GetValue(String.Format("Item{0}", i), typeof(KeyValuePair<TKey, TVal>));
                 Add(kvp.Key, kvp.Value);
             }
         }
@@ -74,12 +74,12 @@ namespace Stump.Core.Collections
             int itemIdx = 0;
             foreach (var kvp in this)
             {
-                info.AddValue(String.Format("Item{0}", itemIdx), kvp, typeof (KeyValuePair<TKey, TVal>));
+                info.AddValue(String.Format("Item{0}", itemIdx), kvp, typeof(KeyValuePair<TKey, TVal>));
                 itemIdx++;
             }
         }
 
-        #endregion
+        #endregion ISerializable Members
 
         #region IXmlSerializable Members
 
@@ -115,10 +115,10 @@ namespace Stump.Core.Collections
             {
                 reader.ReadStartElement(ItemNodeName);
                 reader.ReadStartElement(KeyNodeName);
-                var key = (TKey) KeySerializer.Deserialize(reader);
+                var key = (TKey)KeySerializer.Deserialize(reader);
                 reader.ReadEndElement();
                 reader.ReadStartElement(ValueNodeName);
-                var value = (TVal) ValueSerializer.Deserialize(reader);
+                var value = (TVal)ValueSerializer.Deserialize(reader);
                 reader.ReadEndElement();
                 reader.ReadEndElement();
                 Add(key, value);
@@ -133,7 +133,7 @@ namespace Stump.Core.Collections
             return null;
         }
 
-        #endregion
+        #endregion IXmlSerializable Members
 
         #region Private Properties
 
@@ -143,7 +143,7 @@ namespace Stump.Core.Collections
             {
                 if (valueSerializer == null)
                 {
-                    valueSerializer = new XmlSerializer(typeof (TVal));
+                    valueSerializer = new XmlSerializer(typeof(TVal));
                 }
                 return valueSerializer;
             }
@@ -155,12 +155,12 @@ namespace Stump.Core.Collections
             {
                 if (keySerializer == null)
                 {
-                    keySerializer = new XmlSerializer(typeof (TKey));
+                    keySerializer = new XmlSerializer(typeof(TKey));
                 }
                 return keySerializer;
             }
         }
 
-        #endregion
+        #endregion Private Properties
     }
 }

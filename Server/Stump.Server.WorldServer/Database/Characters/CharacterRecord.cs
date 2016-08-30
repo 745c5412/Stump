@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
@@ -8,6 +5,9 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Maps;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Characters
 {
@@ -24,6 +24,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         /// </summary>
         public static string FetchByName =
             "SELECT * FROM characters WHERE Name = @0";
+
         /// <summary>
         /// Use string.Format(ToCSV(","))
         /// </summary>
@@ -554,7 +555,6 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-
         public int? SpawnMapId
         {
             get { return m_spawnMapId; }
@@ -687,14 +687,14 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         public bool IsDeleted => DeletedDate != null;
 
-        #endregion
+        #endregion Record Properties
 
         public CharacterRecord(Breed breed)
             : this()
         {
-            Breed = (PlayableBreedEnum) breed.Id;
+            Breed = (PlayableBreedEnum)breed.Id;
 
-            BaseHealth = (ushort) (breed.StartHealthPoint + breed.StartLevel*5);
+            BaseHealth = (ushort)(breed.StartHealthPoint + breed.StartLevel * 5);
             AP = breed.StartActionPoints;
             MP = breed.StartMovementPoints;
             Prospection = breed.StartProspection;
@@ -711,8 +711,8 @@ namespace Stump.Server.WorldServer.Database.Characters
             CellId = breed.StartCell;
             Direction = breed.StartDirection;
 
-            SpellsPoints = (ushort) (breed.StartLevel - 1);
-            StatsPoints = (ushort) ((breed.StartLevel - 1) * 5);
+            SpellsPoints = (ushort)(breed.StartLevel - 1);
+            StatsPoints = (ushort)((breed.StartLevel - 1) * 5);
             Kamas = breed.StartKamas;
 
             CanRestat = true;
@@ -722,7 +722,6 @@ namespace Stump.Server.WorldServer.Database.Characters
 
             Emotes = new List<EmotesEnum> { EmotesEnum.EMOTE_S_ASSEOIR };
         }
-
 
         [Ignore]
         public ActorLook EntityLook
@@ -756,8 +755,8 @@ namespace Stump.Server.WorldServer.Database.Characters
         private string m_titlesCSV;
         private List<short> m_ornaments = new List<short>();
         private string m_ornamentsCSV;
-        List<EmotesEnum> m_emotes = new List<EmotesEnum>();
-        string m_emotesCSV;
+        private List<EmotesEnum> m_emotes = new List<EmotesEnum>();
+        private string m_emotesCSV;
 
         [Ignore]
         public List<Map> KnownZaaps
@@ -804,17 +803,16 @@ namespace Stump.Server.WorldServer.Database.Characters
             }
         }
 
-
         private static byte[] SerializeZaaps(IReadOnlyList<Map> knownZaaps)
         {
-            var result = new byte[knownZaaps.Count*4];
+            var result = new byte[knownZaaps.Count * 4];
 
             for (var i = 0; i < knownZaaps.Count; i++)
             {
-                result[i*4] = (byte) (knownZaaps[i].Id >> 24);
-                result[i*4 + 1] = (byte) ((knownZaaps[i].Id >> 16) & 0xFF);
-                result[i*4 + 2] = (byte) ((knownZaaps[i].Id >> 8) & 0xFF);
-                result[i*4 + 3] = (byte) (knownZaaps[i].Id & 0xFF);
+                result[i * 4] = (byte)(knownZaaps[i].Id >> 24);
+                result[i * 4 + 1] = (byte)((knownZaaps[i].Id >> 16) & 0xFF);
+                result[i * 4 + 2] = (byte)((knownZaaps[i].Id >> 8) & 0xFF);
+                result[i * 4 + 3] = (byte)(knownZaaps[i].Id & 0xFF);
             }
 
             return result;
@@ -839,7 +837,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             return result;
         }
 
-        #endregion
+        #endregion Zaaps
 
         public void BeforeSave(bool insert)
         {

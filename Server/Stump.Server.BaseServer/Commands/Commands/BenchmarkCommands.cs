@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CSScriptLibrary;
+﻿using CSScriptLibrary;
+using NLog;
 using Stump.Core.Extensions;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Messages.Custom;
 using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
-using Stump.DofusProtocol.Messages.Custom;
-using Stump.Core.IO;
 using System.Threading;
-using NLog;
-using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -31,8 +31,8 @@ namespace Stump.Server.BaseServer.Commands.Commands
             Aliases = new[] { "summary", "sum" };
             RequiredRole = RoleEnum.Administrator;
             ParentCommandType = typeof(BenchmarkCommands);
-            AddParameter<string>("type", "t", "Entry type", isOptional:true);
-            AddParameter<string>("msg", "m", "Specific message", isOptional:true);
+            AddParameter<string>("type", "t", "Entry type", isOptional: true);
+            AddParameter<string>("msg", "m", "Specific message", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -41,7 +41,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             {
                 var type = trigger.Get<string>("type");
 
-                var entries = BenchmarkManager.Instance.Entries.Where(x => x.AdditionalProperties.ContainsKey("type") 
+                var entries = BenchmarkManager.Instance.Entries.Where(x => x.AdditionalProperties.ContainsKey("type")
                     && x.AdditionalProperties["type"].Equals(type));
 
                 trigger.Reply(BenchmarkManager.Instance.GenerateReport(entries).HtmlEntities());
@@ -91,7 +91,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             BenchmarkManager.Enable = false;
         }
     }
-    
+
     public class BenchmarkLimitCommand : SubCommand
     {
         public BenchmarkLimitCommand()
@@ -110,7 +110,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
     public class BenchmarkIOInfoCommand : SubCommand
     {
-         public BenchmarkIOInfoCommand()
+        public BenchmarkIOInfoCommand()
         {
             Aliases = new[] { "ioinfo" };
             RequiredRole = RoleEnum.Administrator;
@@ -137,7 +137,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             int i = 0;
             int count = trigger.Get<int>("times");
-            PingIO(trigger, 0, trigger.Get<int>("times"), new List<DateTime>() { DateTime.Now});
+            PingIO(trigger, 0, trigger.Get<int>("times"), new List<DateTime>() { DateTime.Now });
         }
 
         private void PingIO(TriggerBase trigger, int i, int count, List<DateTime> dates)
@@ -151,7 +151,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
                     trigger.Reply("{0:F1} ms", (dates[j] - dates[j - 1]).TotalMilliseconds);
                 }
 
-                trigger.Reply("Average : {0} ms", sum/(dates.Count - 1));
+                trigger.Reply("Average : {0} ms", sum / (dates.Count - 1));
             }
             else
             {

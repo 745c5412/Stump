@@ -1,8 +1,8 @@
-﻿using System;
-using Stump.DofusProtocol.Types;
+﻿using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
@@ -15,12 +15,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Apply()
         {
-
         }
 
         public override void Dispell()
         {
-
         }
 
         public int GetDamages(int damage)

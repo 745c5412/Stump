@@ -24,46 +24,63 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             {
                 case DbExpressionType.Table:
                     return this.VisitTable((TableExpression)exp);
+
                 case DbExpressionType.Column:
                     return this.VisitColumn((ColumnExpression)exp);
+
                 case DbExpressionType.Select:
                     return this.VisitSelect((SelectExpression)exp);
+
                 case DbExpressionType.Join:
                     return this.VisitJoin((JoinExpression)exp);
+
                 case DbExpressionType.OuterJoined:
                     return this.VisitOuterJoined((OuterJoinedExpression)exp);
+
                 case DbExpressionType.Aggregate:
                     return this.VisitAggregate((AggregateExpression)exp);
+
                 case DbExpressionType.Scalar:
                 case DbExpressionType.Exists:
                 case DbExpressionType.In:
                     return this.VisitSubquery((SubqueryExpression)exp);
+
                 case DbExpressionType.AggregateSubquery:
                     return this.VisitAggregateSubquery((AggregateSubqueryExpression)exp);
+
                 case DbExpressionType.IsNull:
                     return this.VisitIsNull((IsNullExpression)exp);
+
                 case DbExpressionType.Between:
                     return this.VisitBetween((BetweenExpression)exp);
+
                 case DbExpressionType.RowCount:
                     return this.VisitRowNumber((RowNumberExpression)exp);
+
                 case DbExpressionType.Projection:
                     return this.VisitProjection((ProjectionExpression)exp);
+
                 case DbExpressionType.NamedValue:
                     return this.VisitNamedValue((NamedValueExpression)exp);
+
                 case DbExpressionType.ClientJoin:
                     return this.VisitClientJoin((ClientJoinExpression)exp);
+
                 default:
                     return base.Visit(exp);
             }
         }
+
         protected virtual Expression VisitTable(TableExpression table)
         {
             return table;
         }
+
         protected virtual Expression VisitColumn(ColumnExpression column)
         {
             return column;
         }
+
         protected virtual Expression VisitSelect(SelectExpression select)
         {
             Expression from = this.VisitSource(select.From);
@@ -86,6 +103,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
             return select;
         }
+
         protected virtual Expression VisitJoin(JoinExpression join)
         {
             Expression left = this.VisitSource(join.Left);
@@ -97,6 +115,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
             return join;
         }
+
         protected virtual Expression VisitOuterJoined(OuterJoinedExpression outer)
         {
             Expression test = this.Visit(outer.Test);
@@ -107,6 +126,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
             return outer;
         }
+
         protected virtual Expression VisitAggregate(AggregateExpression aggregate)
         {
             Expression arg = this.Visit(aggregate.Argument);
@@ -116,6 +136,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
             return aggregate;
         }
+
         protected virtual Expression VisitIsNull(IsNullExpression isnull)
         {
             Expression expr = this.Visit(isnull.Expression);
@@ -125,6 +146,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
             return isnull;
         }
+
         protected virtual Expression VisitBetween(BetweenExpression between)
         {
             Expression expr = this.Visit(between.Expression);
@@ -136,6 +158,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
             return between;
         }
+
         protected virtual Expression VisitRowNumber(RowNumberExpression rowNumber)
         {
             var orderby = this.VisitOrderBy(rowNumber.OrderBy);
@@ -145,18 +168,22 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
             return rowNumber;
         }
+
         protected virtual Expression VisitNamedValue(NamedValueExpression value)
         {
             return value;
         }
+
         protected virtual Expression VisitSubquery(SubqueryExpression subquery)
         {
             switch ((DbExpressionType)subquery.NodeType)
             {
                 case DbExpressionType.Scalar:
                     return this.VisitScalar((ScalarExpression)subquery);
+
                 case DbExpressionType.Exists:
                     return this.VisitExists((ExistsExpression)subquery);
+
                 case DbExpressionType.In:
                     return this.VisitIn((InExpression)subquery);
             }

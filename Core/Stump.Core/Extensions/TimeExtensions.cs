@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ServiceStack.Text;
+using System;
 using System.Text;
-using ServiceStack.Text;
 
 namespace Stump.Core.Extensions
 {

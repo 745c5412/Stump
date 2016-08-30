@@ -46,7 +46,7 @@ namespace WorldEditor.Helpers.Collections
             _synchronizationContext = SynchronizationContext.Current;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region SynchronizationContext
 
@@ -62,7 +62,7 @@ namespace WorldEditor.Helpers.Collections
             get { return _synchronizationContext; }
         }
 
-        #endregion
+        #endregion SynchronizationContext
 
         #region INotifyCollectionChanged
 
@@ -91,7 +91,7 @@ namespace WorldEditor.Helpers.Collections
             OnCollectionChanged(e);
         }
 
-        #endregion
+        #endregion INotifyCollectionChanged
 
         #region INotifyPropertyChanged
 
@@ -121,7 +121,7 @@ namespace WorldEditor.Helpers.Collections
             OnPropertyChanged(e);
         }
 
-        #endregion
+        #endregion INotifyPropertyChanged
 
         #region IsLoading
 
@@ -141,7 +141,7 @@ namespace WorldEditor.Helpers.Collections
             }
             set
             {
-                if ( value != _isLoading )
+                if (value != _isLoading)
                 {
                     _isLoading = value;
                 }
@@ -149,7 +149,7 @@ namespace WorldEditor.Helpers.Collections
             }
         }
 
-        #endregion
+        #endregion IsLoading
 
         #region Load overrides
 
@@ -202,7 +202,7 @@ namespace WorldEditor.Helpers.Collections
         {
             int pageIndex = (int)args;
             IList<T> page = FetchPage(pageIndex);
-            SynchronizationContext.Send(LoadPageCompleted, new object[]{ pageIndex, page });
+            SynchronizationContext.Send(LoadPageCompleted, new object[] { pageIndex, page });
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace WorldEditor.Helpers.Collections
         /// <param name="args">object[] { int pageIndex, IList(T) page }</param>
         private void LoadPageCompleted(object args)
         {
-            int pageIndex = (int)((object[]) args)[0];
+            int pageIndex = (int)((object[])args)[0];
             IList<T> page = (IList<T>)((object[])args)[1];
 
             PopulatePage(pageIndex, page);
@@ -219,6 +219,6 @@ namespace WorldEditor.Helpers.Collections
             FireCollectionReset();
         }
 
-        #endregion
+        #endregion Load overrides
     }
 }

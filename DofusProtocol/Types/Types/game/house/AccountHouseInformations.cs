@@ -1,33 +1,29 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class AccountHouseInformations
     {
         public const short Id = 390;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int houseId;
         public short modelId;
         public short worldX;
         public short worldY;
         public int mapId;
         public short subAreaId;
-        
+
         public AccountHouseInformations()
         {
         }
-        
+
         public AccountHouseInformations(int houseId, short modelId, short worldX, short worldY, int mapId, short subAreaId)
         {
             this.houseId = houseId;
@@ -37,7 +33,7 @@ namespace Stump.DofusProtocol.Types
             this.mapId = mapId;
             this.subAreaId = subAreaId;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(houseId);
@@ -47,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             houseId = reader.ReadInt();
@@ -67,12 +63,10 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
         }
-        
     }
-    
 }

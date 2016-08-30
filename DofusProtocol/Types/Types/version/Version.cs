@@ -1,33 +1,29 @@
-
-
 // Generated on 03/02/2014 20:43:03
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class Version
     {
         public const short Id = 11;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte major;
         public sbyte minor;
         public sbyte release;
         public int revision;
         public sbyte patch;
         public sbyte buildType;
-        
+
         public Version()
         {
         }
-        
+
         public Version(sbyte major, sbyte minor, sbyte release, int revision, sbyte patch, sbyte buildType)
         {
             this.major = major;
@@ -37,7 +33,7 @@ namespace Stump.DofusProtocol.Types
             this.patch = patch;
             this.buildType = buildType;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(major);
@@ -47,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(patch);
             writer.WriteSByte(buildType);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             major = reader.ReadSByte();
@@ -69,12 +65,10 @@ namespace Stump.DofusProtocol.Types
             if (buildType < 0)
                 throw new Exception("Forbidden value on buildType = " + buildType + ", it doesn't respect the following condition : buildType < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(sbyte);
         }
-        
     }
-    
 }

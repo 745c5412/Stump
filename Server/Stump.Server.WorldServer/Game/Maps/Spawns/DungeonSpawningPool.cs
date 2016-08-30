@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -10,6 +7,9 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 
 namespace Stump.Server.WorldServer.Game.Maps.Spawns
@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         private readonly object m_locker = new object();
         private readonly List<MonsterDungeonSpawn> m_spawns = new List<MonsterDungeonSpawn>();
         private Queue<MonsterDungeonSpawn> m_spawnsQueue = new Queue<MonsterDungeonSpawn>();
-        private readonly Dictionary<MonsterGroup, MonsterDungeonSpawn> m_groupsSpawn = new Dictionary<MonsterGroup, MonsterDungeonSpawn>(); 
+        private readonly Dictionary<MonsterGroup, MonsterDungeonSpawn> m_groupsSpawn = new Dictionary<MonsterGroup, MonsterDungeonSpawn>();
 
         public DungeonSpawningPool(Map map)
             : this(map, DungeonSpawnsInterval)
@@ -128,7 +128,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             if (!(winners is FightPlayerTeam) || !(losers is FightMonsterTeam))
                 return;
 
-            var group = ((MonsterFighter) losers.Leader).Monster.Group;
+            var group = ((MonsterFighter)losers.Leader).Monster.Group;
 
             if (!m_groupsSpawn.ContainsKey(@group))
             {
@@ -149,7 +149,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                 fighter.Character.Cell = pos.Cell;
                 fighter.Character.Direction = pos.Direction;
 
-                
                 m_groupsSpawn.Remove(group);
             }
         }

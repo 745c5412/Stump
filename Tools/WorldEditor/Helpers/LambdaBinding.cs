@@ -1,20 +1,20 @@
 ﻿#region License GNU GPL
 
 // LambdaBinding.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#endregion
+#endregion License GNU GPL
 
 using System;
 using System.Globalization;
@@ -36,18 +36,18 @@ namespace WorldEditor.Helpers
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!targetType.IsAssignableFrom(typeof (TResult)))
+            if (!targetType.IsAssignableFrom(typeof(TResult)))
                 throw new InvalidOperationException();
-            return _lambda((TSource) value);
+            return _lambda((TSource)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (_lambdaBack == null)
                 throw new NotImplementedException();
-            if (!targetType.IsAssignableFrom(typeof (TSource)))
+            if (!targetType.IsAssignableFrom(typeof(TSource)))
                 throw new InvalidOperationException();
-            return _lambdaBack((TResult) value);
+            return _lambdaBack((TResult)value);
         }
     }
 
@@ -65,9 +65,9 @@ namespace WorldEditor.Helpers
         {
             if (values.Length != 2)
                 throw new InvalidOperationException();
-            if (!targetType.IsAssignableFrom(typeof (TResult)))
+            if (!targetType.IsAssignableFrom(typeof(TResult)))
                 throw new InvalidOperationException();
-            return _lambda((T1) values[0], (T2) values[1]);
+            return _lambda((T1)values[0], (T2)values[1]);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -18,7 +18,6 @@ namespace Stump.Server.WorldServer.Handlers
             Predicates.Add(messageId, predicate);
         }
 
-
         public bool CanHandleMessage(IClient client, uint messageId)
         {
             if (!Predicates.ContainsKey(messageId))
@@ -30,6 +29,6 @@ namespace Stump.Server.WorldServer.Handlers
             return Predicates[messageId](client as WorldClient);
         }
 
-        #endregion
+        #endregion IHandlerContainer Members
     }
 }

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Guilds;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 {
@@ -209,18 +208,18 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
             PaddockInformations informations;
 
             if (Abandonned)
-                informations = new PaddockAbandonnedInformations((short) MaxOutdoorMount, (short) MaxItems, Price, Locked, Guild.Id);
+                informations = new PaddockAbandonnedInformations((short)MaxOutdoorMount, (short)MaxItems, Price, Locked, Guild.Id);
             else if (OnSale)
-                informations = new PaddockBuyableInformations((short) MaxOutdoorMount, (short) MaxItems, Price, Locked);
+                informations = new PaddockBuyableInformations((short)MaxOutdoorMount, (short)MaxItems, Price, Locked);
             else if (Guild != null)
-                informations = new PaddockPrivateInformations((short) MaxOutdoorMount, (short) MaxItems, Price, Locked, Guild.Id, Guild.GetGuildInformations());
+                informations = new PaddockPrivateInformations((short)MaxOutdoorMount, (short)MaxItems, Price, Locked, Guild.Id, Guild.GetGuildInformations());
             else
-                informations = new PaddockContentInformations((short) MaxOutdoorMount, (short) MaxItems, Id, (short) Map.Position.X, (short) Map.Position.Y,
-                    Map.Id, (short) Map.SubArea.Id, Abandonned, PaddockedMounts.Select(x => x.GetMountInformationsForPaddock()));
+                informations = new PaddockContentInformations((short)MaxOutdoorMount, (short)MaxItems, Id, (short)Map.Position.X, (short)Map.Position.Y,
+                    Map.Id, (short)Map.SubArea.Id, Abandonned, PaddockedMounts.Select(x => x.GetMountInformationsForPaddock()));
 
             return new PaddockPropertiesMessage(informations);
         }
 
-        #endregion
+        #endregion Network
     }
 }

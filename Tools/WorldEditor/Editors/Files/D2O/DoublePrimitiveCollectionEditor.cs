@@ -1,20 +1,20 @@
 ﻿#region License GNU GPL
 
 // DoublePrimitiveCollectionEditor.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#endregion
+#endregion License GNU GPL
 
 using System;
 using System.Collections;
@@ -57,7 +57,7 @@ namespace WorldEditor.Editors.Files.D2O
 
         public IList ItemsSource
         {
-            get { return (IList) GetValue(ItemsSourceProperty); }
+            get { return (IList)GetValue(ItemsSourceProperty); }
             set { SetValue(ItemsSourceProperty, value); }
         }
 
@@ -65,7 +65,7 @@ namespace WorldEditor.Editors.Files.D2O
         {
             get
             {
-                return (IList) GetValue(SelectedItemProperty);
+                return (IList)GetValue(SelectedItemProperty);
             }
             set { SetValue(SelectedItemProperty, value); }
         }
@@ -74,7 +74,7 @@ namespace WorldEditor.Editors.Files.D2O
         {
             var CollectionControl = (DoublePrimitiveCollectionEditor)d;
             if (CollectionControl != null)
-                CollectionControl.OnItemSourceChanged((IList) e.OldValue, (IList) e.NewValue);
+                CollectionControl.OnItemSourceChanged((IList)e.OldValue, (IList)e.NewValue);
         }
 
         public void OnItemSourceChanged(IList oldValue, IList newValue)
@@ -91,7 +91,7 @@ namespace WorldEditor.Editors.Files.D2O
             }
         }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Constructors
 
@@ -115,7 +115,7 @@ namespace WorldEditor.Editors.Files.D2O
             CommandBindings.Add(new CommandBinding(ComponentCommands.MoveUp, MoveUp, CanMoveUp));
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Commands
 
@@ -171,7 +171,7 @@ namespace WorldEditor.Editors.Files.D2O
                 e.CanExecute = true;
         }
 
-        #endregion //Commands
+        #endregion Commands
 
         #region Methods
 
@@ -204,7 +204,7 @@ namespace WorldEditor.Editors.Files.D2O
         internal static Type GetListItemType(Type listType)
         {
             Type iListOfT = listType.GetInterfaces().FirstOrDefault(
-                (i) => i.IsGenericType && i.GetGenericTypeDefinition() == typeof (IList<>));
+                (i) => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IList<>));
 
             return (iListOfT != null)
                        ? iListOfT.GetGenericArguments()[0]
@@ -234,7 +234,6 @@ namespace WorldEditor.Editors.Files.D2O
             return ItemsSource;
         }
 
-
         private IList CreateItemsSource()
         {
             IList list = null;
@@ -248,6 +247,6 @@ namespace WorldEditor.Editors.Files.D2O
             return list;
         }
 
-        #endregion //Methods
+        #endregion Methods
     }
 }

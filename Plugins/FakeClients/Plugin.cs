@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FakeClients.Handlers;
-using Stump.Server.BaseServer.Handler;
+﻿using FakeClients.Handlers;
 using Stump.Server.BaseServer.Plugins;
-using Stump.Server.WorldServer;
+using System;
 
 namespace FakeClients
 {
@@ -70,7 +64,6 @@ namespace FakeClients
 
         public override void Dispose()
         {
-
         }
 
         public static Plugin CurrentPlugin

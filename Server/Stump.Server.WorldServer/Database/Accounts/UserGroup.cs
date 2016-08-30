@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Accounts
 {

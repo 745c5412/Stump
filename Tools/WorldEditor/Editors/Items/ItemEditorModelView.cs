@@ -1,27 +1,29 @@
 ﻿#region License GNU GPL
+
 // ItemEditorModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using DBSynchroniser.Records;
+using Stump.DofusProtocol.D2oClasses;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DBSynchroniser.Records;
-using Stump.DofusProtocol.D2oClasses;
 using WorldEditor.Annotations;
 using WorldEditor.Editors.Items.Effects;
 using WorldEditor.Helpers;
@@ -76,7 +78,6 @@ namespace WorldEditor.Editors.Items
             get { return Item is WeaponWrapper; }
         }
 
-
         #region ResetItemSetCommand
 
         private DelegateCommand m_resetItemSetCommand;
@@ -93,11 +94,10 @@ namespace WorldEditor.Editors.Items
 
         private void OnResetItemSet(object parameter)
         {
-            Item.ItemSetId = unchecked ((uint) -1);
+            Item.ItemSetId = unchecked((uint)-1);
         }
 
-        #endregion
-
+        #endregion ResetItemSetCommand
 
         #region ChangeIconCommand
 
@@ -116,17 +116,16 @@ namespace WorldEditor.Editors.Items
         private void OnChangeIcon(object parameter)
         {
             var dialog = new IconSelectionDialog
-                {
-                    IconsSource = IconsManager.Instance.Icons,
-                    SelectedIcon = IconsManager.Instance.GetIcon(Item.IconId)
-                };
+            {
+                IconsSource = IconsManager.Instance.Icons,
+                SelectedIcon = IconsManager.Instance.GetIcon(Item.IconId)
+            };
 
             if (dialog.ShowDialog() == true)
                 Item.IconId = dialog.SelectedIcon.Id;
         }
 
-        #endregion
-
+        #endregion ChangeIconCommand
 
         #region EditEffectCommand
 
@@ -148,15 +147,15 @@ namespace WorldEditor.Editors.Items
             if (parameter == null || !CanEditEffect(parameter))
                 return;
 
-            var effect = (EffectWrapper) parameter;
+            var effect = (EffectWrapper)parameter;
 
             var dialog = new EffectEditorDialog
-                {
-                    EffectToEdit = (EffectWrapper) (effect).Clone(),
-                    EffectsSource =
+            {
+                EffectToEdit = (EffectWrapper)(effect).Clone(),
+                EffectsSource =
                         m_effects ??
                         (m_effects = ObjectDataManager.Instance.EnumerateObjects<EffectRecord>().ToList())
-                };
+            };
 
             if (dialog.ShowDialog() != true)
                 return;
@@ -166,8 +165,7 @@ namespace WorldEditor.Editors.Items
             Item.WrappedEffects.Insert(index, dialog.EffectToEdit);
         }
 
-        #endregion
-
+        #endregion EditEffectCommand
 
         #region RemoveEffectCommand
 
@@ -211,8 +209,7 @@ namespace WorldEditor.Editors.Items
             }
         }
 
-        #endregion
-
+        #endregion RemoveEffectCommand
 
         #region AddEffectCommand
 
@@ -231,16 +228,16 @@ namespace WorldEditor.Editors.Items
         private void OnAddEffect(object parameter)
         {
             var dialog = new EffectEditorDialog
-                {
-                    EffectsSource =
+            {
+                EffectsSource =
                         m_effects ??
                         (m_effects = ObjectDataManager.Instance.EnumerateObjects<EffectRecord>().ToList())
-                };
+            };
 
             var effect = new EffectDiceWrapper(new EffectInstanceDice()
-                {
-                    EffectId = (uint)m_effects.First().Id
-                });
+            {
+                EffectId = (uint)m_effects.First().Id
+            });
 
             dialog.EffectToEdit = effect;
 
@@ -250,8 +247,7 @@ namespace WorldEditor.Editors.Items
             }
         }
 
-        #endregion
-
+        #endregion AddEffectCommand
 
         #region SaveCommand
 
@@ -283,7 +279,7 @@ namespace WorldEditor.Editors.Items
             MessageService.ShowMessage(null, "File saved successfully");
         }
 
-        #endregion
+        #endregion SaveCommand
 
         public event PropertyChangedEventHandler PropertyChanged;
 

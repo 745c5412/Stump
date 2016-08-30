@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -14,30 +12,39 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaManager : DataManager<ArenaManager>
     {
-        [Variable] public static int MaxPlayersPerFights = 3;
+        [Variable]
+        public static int MaxPlayersPerFights = 3;
 
-        [Variable] public static int ArenaMinLevel = 50;
+        [Variable]
+        public static int ArenaMinLevel = 50;
 
-        [Variable] public static int ArenaMaxLevelDifference = 40;
+        [Variable]
+        public static int ArenaMaxLevelDifference = 40;
+
         /// <summary>
         /// in ms
         /// </summary>
-        [Variable] public static int ArenaUpdateInterval = 100;
+        [Variable]
+        public static int ArenaUpdateInterval = 100;
 
         /// <summary>
         /// is seconds
         /// </summary>
-        [Variable] public static int ArenaMatchmakingInterval = 30;
+        [Variable]
+        public static int ArenaMatchmakingInterval = 30;
 
         /// <summary>
         /// in minutes
         /// </summary>
-        [Variable] public static int ArenaPenalityTime = 30;
+        [Variable]
+        public static int ArenaPenalityTime = 30;
 
         /// <summary>
         /// in minutes
@@ -50,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             get
             {
                 return m_tokenTemplate ??
-                       (m_tokenTemplate = ItemManager.Instance.TryGetTemplate((int) ItemIdEnum.Kolizeton));
+                       (m_tokenTemplate = ItemManager.Instance.TryGetTemplate((int)ItemIdEnum.Kolizeton));
             }
         }
 
@@ -63,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         public override void Initialize()
         {
             m_arenas = Database.Query<ArenaRecord>(ArenaRelator.FetchQuery).ToDictionary(x => x.Id);
-            m_arenaTaskPool.CallPeriodically(ArenaMatchmakingInterval*1000, ComputeMatchmaking);
+            m_arenaTaskPool.CallPeriodically(ArenaMatchmakingInterval * 1000, ComputeMatchmaking);
             m_arenaTaskPool.Start();
         }
 
@@ -108,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             if (!CanJoinQueue(character))
                 return;
-            
+
             lock (m_queue)
                 m_queue.Add(new ArenaQueueMember(character));
 
@@ -121,7 +128,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             lock (m_queue)
                 m_queue.RemoveAll(x => x.Character == character);
 
-            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(character.Client, false, 
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(character.Client, false,
                 PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
 
@@ -129,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             if (!party.Members.All(CanJoinQueue))
                 return;
-            
+
             lock (m_queue)
                 m_queue.Add(new ArenaQueueMember(party));
 
@@ -148,9 +155,10 @@ namespace Stump.Server.WorldServer.Game.Arena
             lock (m_queue)
                 m_queue.RemoveAll(x => x.Party == party);
 
-            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, false, 
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, false,
                 PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
+
         public void ComputeMatchmaking()
         {
             List<ArenaQueueMember> queue;
@@ -165,7 +173,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                 queue.Remove(current);
 
                 var matchs = queue.Where(x => x.IsCompatibleWith(current)).ToList();
-                var allies = new List<ArenaQueueMember> {current};
+                var allies = new List<ArenaQueueMember> { current };
                 var enemies = new List<ArenaQueueMember>();
 
                 var missingAllies = MaxPlayersPerFights - current.MembersCount;
@@ -206,7 +214,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                 StartFight(allies, enemies);
 
                 queue.RemoveAll(x => allies.Contains(x) || enemies.Contains(x));
-                lock(m_queue)
+                lock (m_queue)
                     m_queue.RemoveAll(x => allies.Contains(x) || enemies.Contains(x));
             }
         }

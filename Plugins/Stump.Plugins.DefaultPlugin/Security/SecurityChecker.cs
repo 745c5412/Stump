@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Cryptography;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Handlers;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Plugins.DefaultPlugin.Security
 {

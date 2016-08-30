@@ -1,22 +1,21 @@
-
-
 // Generated on 03/02/2014 20:43:02
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class HouseInformationsForSell
     {
         public const short Id = 221;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int modelId;
         public string ownerName;
         public bool ownerConnected;
@@ -28,11 +27,11 @@ namespace Stump.DofusProtocol.Types
         public IEnumerable<int> skillListIds;
         public bool isLocked;
         public int price;
-        
+
         public HouseInformationsForSell()
         {
         }
-        
+
         public HouseInformationsForSell(int modelId, string ownerName, bool ownerConnected, short worldX, short worldY, short subAreaId, sbyte nbRoom, sbyte nbChest, IEnumerable<int> skillListIds, bool isLocked, int price)
         {
             this.modelId = modelId;
@@ -47,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             this.isLocked = isLocked;
             this.price = price;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(modelId);
@@ -63,8 +62,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in skillListIds)
             {
-                 writer.WriteInt(entry);
-                 skillListIds_count++;
+                writer.WriteInt(entry);
+                skillListIds_count++;
             }
             var skillListIds_after = writer.Position;
             writer.Seek((int)skillListIds_before);
@@ -74,7 +73,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteBoolean(isLocked);
             writer.WriteInt(price);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             modelId = reader.ReadInt();
@@ -97,7 +96,7 @@ namespace Stump.DofusProtocol.Types
             var skillListIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 skillListIds_[i] = reader.ReadInt();
+                skillListIds_[i] = reader.ReadInt();
             }
             skillListIds = skillListIds_;
             isLocked = reader.ReadBoolean();
@@ -105,12 +104,10 @@ namespace Stump.DofusProtocol.Types
             if (price < 0)
                 throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(bool) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(short) + skillListIds.Sum(x => sizeof(int)) + sizeof(bool) + sizeof(int);
         }
-        
     }
-    
 }

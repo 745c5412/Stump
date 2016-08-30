@@ -1,7 +1,7 @@
-﻿using System;
-using Stump.Server.BaseServer.Commands;
+﻿using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Commands.Commands.Patterns
 {
@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Commands.Commands.Patterns
             if (trigger.IsArgumentDefined("target"))
                 targets = trigger.Get<Character[]>("target");
             else if (trigger is GameTrigger)
-                targets = new []{(trigger as GameTrigger).Character};
+                targets = new[] { (trigger as GameTrigger).Character };
 
             if (targets == null)
                 throw new Exception("Target is not defined");
@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Commands.Commands.Patterns
             if (trigger.IsArgumentDefined("target"))
                 targets = trigger.Get<Character[]>("target");
             else if (trigger is GameTrigger)
-                targets = new []{(trigger as GameTrigger).Character};
+                targets = new[] { (trigger as GameTrigger).Character };
 
             if (targets == null)
                 throw new Exception("Target is not defined");

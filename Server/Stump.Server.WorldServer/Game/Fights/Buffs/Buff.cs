@@ -56,7 +56,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             private set;
         }
 
-
         public EffectBase Effect
         {
             get;
@@ -113,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
                     return Effect.Template.Active ? BuffType.CATEGORY_ACTIVE_MALUS : BuffType.CATEGORY_PASSIVE_MALUS;
 
                 if (Effect.Template.Operator == "+")
-                    return  Effect.Template.Active ? BuffType.CATEGORY_ACTIVE_BONUS : BuffType.CATEGORY_PASSIVE_BONUS;
+                    return Effect.Template.Active ? BuffType.CATEGORY_ACTIVE_BONUS : BuffType.CATEGORY_PASSIVE_BONUS;
 
                 return BuffType.CATEGORY_OTHER;
             }
@@ -129,6 +128,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         }
 
         public abstract void Apply();
+
         public abstract void Dispell();
 
         public virtual short GetActionId()
@@ -136,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             if (CustomActionId.HasValue)
                 return CustomActionId.Value;
 
-            return (short) Effect.EffectId;
+            return (short)Effect.EffectId;
         }
 
         public EffectInteger GenerateEffect()
@@ -144,7 +144,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             var effect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
             if (effect != null)
-                effect.Value = (short)( effect.Value * Efficiency );
+                effect.Value = (short)(effect.Value * Efficiency);
 
             return effect;
         }

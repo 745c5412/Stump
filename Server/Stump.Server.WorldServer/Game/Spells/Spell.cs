@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Types;
+﻿using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Spells;
+using System.Collections.Generic;
+using System.Linq;
 using SpellType = Stump.Server.WorldServer.Database.Spells.SpellType;
 
 namespace Stump.Server.WorldServer.Game.Spells
@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         {
             m_record = record;
             m_id = m_record.SpellId;
-            m_level = (byte) m_record.Level;
+            m_level = (byte)m_record.Level;
 
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
@@ -35,8 +35,8 @@ namespace Stump.Server.WorldServer.Game.Spells
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
             var counter = 1;
             ByLevel = SpellManager.Instance.GetSpellLevels(Template).ToDictionary(entry => counter++);
-        }        
-        
+        }
+
         public Spell(SpellTemplate template, byte level)
         {
             m_id = template.Id;
@@ -47,7 +47,6 @@ namespace Stump.Server.WorldServer.Game.Spells
             var counter = 1;
             ByLevel = SpellManager.Instance.GetSpellLevels(Template).ToDictionary(entry => counter++);
         }
-
 
         #region Properties
 
@@ -83,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return ByLevel.ContainsKey(m_level) ? m_level : (byte)MaxLevel;
             }
             set
-            {            
+            {
                 if (m_record != null)
                     m_record.Level = value;
 
@@ -114,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             private set;
         }
 
-        #endregion
+        #endregion Properties
 
         public bool CanBoostSpell()
         {
@@ -147,7 +146,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public SpellItem GetSpellItem()
         {
-            return new SpellItem(Position, Id, (sbyte) CurrentLevel);
+            return new SpellItem(Position, Id, (sbyte)CurrentLevel);
         }
 
         public override string ToString()

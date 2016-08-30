@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
@@ -8,6 +6,8 @@ using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using System.Collections.Generic;
+using System.Linq;
 using Npc = Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs.Npc;
 
 namespace Stump.Server.WorldServer.Database.Npcs
@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
 
         public delegate void NpcSpawnedEventHandler(NpcTemplate template, Npc npc);
 
-        #endregion
+        #endregion Delegates
 
         private List<NpcActionDatabase> m_actions;
         private string m_actionsIdsCSV;
@@ -165,7 +165,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
 
         public void AssignFields(object d2oObject)
         {
-            var npc = (DofusProtocol.D2oClasses.Npc) d2oObject;
+            var npc = (DofusProtocol.D2oClasses.Npc)d2oObject;
             Id = npc.id;
             NameId = npc.nameId;
             DialogMessagesId = npc.dialogMessages.Select(x => x.ToArray()).ToArray();
@@ -177,7 +177,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             TokenShop = npc.tokenShop;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -188,7 +188,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             m_actionsIdsCSV = ActionsIds.ToCSV(",");
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
 
         public event NpcSpawnedEventHandler NpcSpawned;
 

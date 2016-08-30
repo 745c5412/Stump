@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Monsters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
 using MonsterSpawn = Stump.Server.WorldServer.Database.Monsters.MonsterSpawn;
 using MonsterSpell = Stump.Server.WorldServer.Database.Monsters.MonsterSpell;
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         private Dictionary<int, MonsterGrade> m_monsterGrades;
         private Dictionary<int, MonsterSuperRace> m_monsterSuperRaces;
         private Dictionary<int, MonsterStaticSpawn> m_monsterStaticSpawns;
-        
+
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
         {

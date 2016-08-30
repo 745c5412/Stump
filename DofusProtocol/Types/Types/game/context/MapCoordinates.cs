@@ -1,41 +1,37 @@
-
-
 // Generated on 03/02/2014 20:42:59
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class MapCoordinates
     {
         public const short Id = 174;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public short worldX;
         public short worldY;
-        
+
         public MapCoordinates()
         {
         }
-        
+
         public MapCoordinates(short worldX, short worldY)
         {
             this.worldX = worldX;
             this.worldY = worldY;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             worldX = reader.ReadShort();
@@ -45,12 +41,10 @@ namespace Stump.DofusProtocol.Types
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + sizeof(short);
         }
-        
     }
-    
 }

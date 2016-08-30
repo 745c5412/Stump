@@ -1,6 +1,6 @@
 ﻿<Window x:Class="WorldEditor.Search.Items.ItemSearchDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:search="clr-namespace:WorldEditor.Search"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:d2OClasses="clr-namespace:Stump.DofusProtocol.D2oClasses;assembly=Stump.DofusProtocol.D2oClasses"
@@ -11,11 +11,11 @@
         Icon="pack://application:,,,/Images/magnifier_16xLG.png"
         Title="Search an item" Height="460" Width="700">
     <Window.Resources>
-        <converters:ItemTypeIdToTypeNameConverter x:Key="TypeToI18N"/>
-        <converters:IdToIconConverter x:Key="IdToIcon"/>
-        <converters:CurrentLangConverter x:Key="CurrentLang"/>
-        <items:ItemEffectStyleSelector x:Key="EffectStyleSelector" LineBrush="SeaShell"/>
-        <items:ColorByOperatorConverter x:Key="ColorByOperatorConverter"/>
+        <converters:ItemTypeIdToTypeNameConverter x:Key="TypeToI18N" />
+        <converters:IdToIconConverter x:Key="IdToIcon" />
+        <converters:CurrentLangConverter x:Key="CurrentLang" />
+        <items:ItemEffectStyleSelector x:Key="EffectStyleSelector" LineBrush="SeaShell" />
+        <items:ColorByOperatorConverter x:Key="ColorByOperatorConverter" />
         <DataTemplate x:Key="ItemDataTemplate" DataType="items2:ItemWrapper">
             <DataTemplate.Resources>
                 <CollectionViewSource x:Key="SortedEffects" Source="{Binding WrappedEffects}">
@@ -27,27 +27,27 @@
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding IconId, Converter={StaticResource IdToIcon}}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="3"/>
+                <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding IconId, Converter={StaticResource IdToIcon}}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="3" />
                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                     <TextBlock Text="{Binding Name}" FontSize="16" Foreground="SteelBlue" Margin="3,0,3,0" />
-                    <TextBlock Text="{Binding Id, StringFormat={}({0})}" FontSize="14" Foreground="DarkSlateGray" Margin="3,2,3,0"/>
+                    <TextBlock Text="{Binding Id, StringFormat={}({0})}" FontSize="14" Foreground="DarkSlateGray" Margin="3,2,3,0" />
                 </StackPanel>
                 <Grid Grid.Row="1" Grid.Column="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Level, StringFormat=Level : \{0\}}" FontSize="13" Foreground="SlateGray" />
                     <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding TypeId, Converter={StaticResource TypeToI18N}}" FontSize="13" Foreground="SlateGray" Margin="3,0" />
@@ -66,7 +66,7 @@
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding WrappedEffects.Count}" Value="0">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -80,5 +80,5 @@
             </Grid>
         </DataTemplate>
     </Window.Resources>
-    <search:SearchDialog ResultItemTemplate="{DynamicResource ItemDataTemplate}"/>
+    <search:SearchDialog ResultItemTemplate="{DynamicResource ItemDataTemplate}" />
 </Window>

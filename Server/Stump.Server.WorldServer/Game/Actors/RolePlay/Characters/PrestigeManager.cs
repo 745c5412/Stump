@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -7,22 +6,24 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public class PrestigeManager : Singleton<PrestigeManager>
     {
-        static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public const int ItemForBonus = 20214;
 
         public static ItemTemplate BonusItem;
 
-        [Variable] public static short[] PrestigeTitles =
+        [Variable]
+        public static short[] PrestigeTitles =
         {
             200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214
         };
 
-        static readonly EffectInteger[][] m_prestigesBonus =
+        private static readonly EffectInteger[][] m_prestigesBonus =
         {
             new[] { new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 2) },
             new[] { new EffectInteger(EffectsEnum.Effect_AddVitality, 25) },
@@ -65,14 +66,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             new[] {
                 new EffectInteger(EffectsEnum.Effect_AddMP_128, 1)
             },
-
         };
 
-        bool m_disabled;
+        private bool m_disabled;
 
         public bool PrestigeEnabled => !m_disabled;
 
-        [Initialization(typeof (ItemManager), Silent = true)]
+        [Initialization(typeof(ItemManager), Silent = true)]
         public void Initialize()
         {
             BonusItem = ItemManager.Instance.TryGetTemplate(ItemForBonus);

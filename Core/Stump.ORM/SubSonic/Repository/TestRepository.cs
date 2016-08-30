@@ -1,24 +1,24 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.Extensions;
+using Stump.ORM.SubSonic.Query;
+using Stump.ORM.SubSonic.Schema;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Extensions;
-using Stump.ORM.SubSonic.Query;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.Repository
 {
@@ -32,8 +32,6 @@ namespace Stump.ORM.SubSonic.Repository
             _db = db;
             _items = new List<T>();
         }
-
-
 
         public object Add(T item)
         {
@@ -50,8 +48,8 @@ namespace Stump.ORM.SubSonic.Repository
             }
             return 0;
         }
-		
-		public int Delete(object key)
+
+        public int Delete(object key)
         {
             _items.Remove(_items.SingleOrDefault(x => x.KeyValue() == key));
             return 0;
@@ -76,7 +74,7 @@ namespace Stump.ORM.SubSonic.Repository
         public T GetByKey(object key)
         {
             T result = new T();
-            if(_items.Count > 0)
+            if (_items.Count > 0)
                 result = _items.SingleOrDefault(x => x.KeyValue() == key);
 
             return result;
@@ -104,15 +102,15 @@ namespace Stump.ORM.SubSonic.Repository
 
         public bool Load<T>(T item, string column, object value) where T : class, new()
         {
-            if(item is IActiveRecord)
+            if (item is IActiveRecord)
             {
                 var activeItem = item as IActiveRecord;
-                if(_items.Count > 0)
+                if (_items.Count > 0)
                 {
                     //see if it's in there by key
                     activeItem = _items.SingleOrDefault(x => x.KeyValue() == value);
 
-                    if(activeItem != null)
+                    if (activeItem != null)
                     {
                         //ohhhhh this is ugly - but it's only for testing so I think we're OK
                         item = activeItem.CopyTo(item);
@@ -142,25 +140,23 @@ namespace Stump.ORM.SubSonic.Repository
 
         public void Add(IEnumerable<T> items)
         {
-            foreach(var item in items)
+            foreach (var item in items)
                 _items.Add(item);
         }
 
         public int Update(IEnumerable<T> items)
         {
-            foreach(var item in items)
+            foreach (var item in items)
                 Update(item);
             return items.Count();
         }
 
         public int Delete(IEnumerable<T> items)
         {
-            foreach(var item in items)
+            foreach (var item in items)
                 _items.Remove(item);
             return items.Count();
         }
-
-
 
         /// <summary>
         /// Builds the delete query.
@@ -192,37 +188,44 @@ namespace Stump.ORM.SubSonic.Repository
             return new Update<T>(_db.Provider);
         }
 
-        public object Add(T item, SubSonic.DataProviders.IDataProvider provider) {
+        public object Add(T item, SubSonic.DataProviders.IDataProvider provider)
+        {
             return Add(item);
         }
 
-        public void Add(IEnumerable<T> items, SubSonic.DataProviders.IDataProvider provider) {
+        public void Add(IEnumerable<T> items, SubSonic.DataProviders.IDataProvider provider)
+        {
             Add(items);
         }
 
-        public int Update(T item, SubSonic.DataProviders.IDataProvider provider) {
+        public int Update(T item, SubSonic.DataProviders.IDataProvider provider)
+        {
             return Update(item);
         }
 
-        public int Update(IEnumerable<T> items, SubSonic.DataProviders.IDataProvider provider) {
+        public int Update(IEnumerable<T> items, SubSonic.DataProviders.IDataProvider provider)
+        {
             return Update(items);
         }
 
-        public int Delete(T item, SubSonic.DataProviders.IDataProvider provider) {
+        public int Delete(T item, SubSonic.DataProviders.IDataProvider provider)
+        {
             return Delete(item);
         }
 
-        public int Delete(object key, SubSonic.DataProviders.IDataProvider provider) {
+        public int Delete(object key, SubSonic.DataProviders.IDataProvider provider)
+        {
             return Delete(key);
         }
 
-        public int DeleteMany(Expression<Func<T, bool>> expression, SubSonic.DataProviders.IDataProvider provider) {
+        public int DeleteMany(Expression<Func<T, bool>> expression, SubSonic.DataProviders.IDataProvider provider)
+        {
             return DeleteMany(expression);
         }
 
-        public int Delete(IEnumerable<T> items, SubSonic.DataProviders.IDataProvider provider) {
+        public int Delete(IEnumerable<T> items, SubSonic.DataProviders.IDataProvider provider)
+        {
             return Delete(items);
         }
-
     }
 }

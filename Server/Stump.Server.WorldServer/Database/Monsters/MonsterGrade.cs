@@ -1,12 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
 using ServiceStack.Text;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.Server.WorldServer.Game.Spells;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Spells;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
@@ -163,7 +163,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
         public short Wisdom
         {
-            get { return (short) m_wisdom; }
+            get { return (short)m_wisdom; }
             set { m_wisdom = value; }
         }
 
@@ -206,7 +206,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         {
             get
             {
-                return m_spells ?? ( m_spells = SpellsTemplates.Select(entry => new Spell(entry)).ToList());
+                return m_spells ?? (m_spells = SpellsTemplates.Select(entry => new Spell(entry)).ToList());
             }
         }
 
@@ -219,7 +219,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
         public void AssignFields(object d2oObject)
         {
-            var grade = (DofusProtocol.D2oClasses.MonsterGrade) d2oObject;
+            var grade = (DofusProtocol.D2oClasses.MonsterGrade)d2oObject;
             GradeId = grade.grade;
             GradeXp = grade.gradeXp;
             MonsterId = grade.monsterId;
@@ -234,10 +234,10 @@ namespace Stump.Server.WorldServer.Database.Monsters
             LifePoints = grade.lifePoints;
             ActionPoints = grade.actionPoints;
             MovementPoints = grade.movementPoints;
-            Wisdom = (short) grade.wisdom;
+            Wisdom = (short)grade.wisdom;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -246,6 +246,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
             m_statsJSON = Stats.ToJson();
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
     }
 }

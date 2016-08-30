@@ -1,9 +1,8 @@
-
-using System;
-using System.IO;
 using Stump.Core.Xml.Config;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Initialization;
+using System;
+using System.IO;
 
 namespace Stump.Server.BaseServer.Plugins
 {
@@ -83,7 +82,7 @@ namespace Stump.Server.BaseServer.Plugins
 
         public abstract void Dispose();
 
-        #endregion
+        #endregion IPlugin Members
 
         public virtual void LoadConfig()
         {

@@ -1,5 +1,3 @@
-using System;
-using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Messages;
@@ -9,6 +7,8 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
+using System.Drawing;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -37,10 +37,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-
             foreach (var target in GetTargets(trigger))
             {
-
                 var message = new BanAccountMessage
                 {
                     AccountId = target.Account.Id,
@@ -75,7 +73,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                             trigger.Get<int>("time"), reason),
                     error => trigger.ReplyError("Account {0} not banned : {1}", target.Account.Login, error.Message));
 
-
                 if (!trigger.IsArgumentDefined("ip"))
                     return;
 
@@ -90,7 +87,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 IPCAccessor.Instance.SendRequest(banIPMessage,
                     ok => trigger.Reply("IP {0} banned", target.Client.IP),
                     error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));
-
             }
         }
     }
@@ -287,7 +283,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 trigger.ReplyError("IPC service not operational !");
                 return;
             }
-
 
             if (accDefined)
             {

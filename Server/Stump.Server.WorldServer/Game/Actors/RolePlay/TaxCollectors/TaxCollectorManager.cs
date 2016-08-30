@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using Stump.Core.Extensions;
+﻿using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -13,6 +10,9 @@ using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         private readonly List<TaxCollectorNpc> m_activeTaxCollectors = new List<TaxCollectorNpc>();
         private Dictionary<int, TaxCollectorNamesRecord> m_taxCollectorNames;
         private Dictionary<int, TaxCollectorFirstnamesRecord> m_taxCollectorFirstnames;
-        
+
         [Initialization(InitializationPass.Eighth)]
         public override void Initialize()
         {

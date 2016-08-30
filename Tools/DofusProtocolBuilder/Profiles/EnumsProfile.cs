@@ -1,9 +1,9 @@
-using System;
-using System.CodeDom.Compiler;
-using System.IO;
 using DofusProtocolBuilder.Parsing;
 using DofusProtocolBuilder.Templates;
 using Microsoft.VisualStudio.TextTemplating;
+using System;
+using System.CodeDom.Compiler;
+using System.IO;
 
 namespace DofusProtocolBuilder.Profiles
 {

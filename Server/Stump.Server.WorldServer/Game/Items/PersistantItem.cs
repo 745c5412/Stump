@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Types;
+﻿using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -13,13 +13,16 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             get;
         }
+
         bool IsTemporarily
         {
             get;
         }
 
         void OnPersistantItemAdded();
+
         void OnPersistantItemUpdated();
+
         void OnPersistantItemDeleted();
     }
 
@@ -51,7 +54,6 @@ namespace Stump.Server.WorldServer.Game.Items
 
     public abstract class Item : IItem
     {
-        
         public virtual int Guid
         {
             get;
@@ -83,7 +85,6 @@ namespace Stump.Server.WorldServer.Game.Items
     {
         protected PersistantItem()
         {
-            
         }
 
         protected PersistantItem(T record)
@@ -148,7 +149,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()
         {
-            return new ObjectItemInformationWithQuantity((short) Template.Id, 0, false, Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int)Stack);
+            return new ObjectItemInformationWithQuantity((short)Template.Id, 0, false, Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int)Stack);
         }
     }
 }

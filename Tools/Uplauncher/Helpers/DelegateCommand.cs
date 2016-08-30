@@ -1,18 +1,20 @@
 ﻿#region License GNU GPL
+
 // DelegateCommand.cs
-// 
+//
 // Copyright (C) 2012 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
+
+#endregion License GNU GPL
 
 using System;
 using System.Collections.Generic;
@@ -22,7 +24,7 @@ using System.Windows.Input;
 namespace Uplauncher.Helpers
 {
     /// <summary>
-    /// Provides an <see cref="Execute"/> implementation which relays the <see cref="CanExecute"/> and <see cref="ICommand"/> 
+    /// Provides an <see cref="Execute"/> implementation which relays the <see cref="CanExecute"/> and <see cref="ICommand"/>
     /// method to the specified delegates.
     /// </summary>
     public class DelegateCommand : ICommand
@@ -31,7 +33,6 @@ namespace Uplauncher.Helpers
         private readonly Action<object> m_execute;
         private List<WeakReference> m_weakHandlers;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateCommand"/> class.
         /// </summary>
@@ -39,7 +40,7 @@ namespace Uplauncher.Helpers
         /// <param name="canExecute">Delegate to execute when CanExecute is called on the command.</param>
         /// <exception cref="ArgumentNullException">The execute argument must not be null.</exception>
         public DelegateCommand(Action execute, Func<bool> canExecute = null)
-            : this(execute != null ? p => execute() : (Action<object>) null, canExecute != null ? p => canExecute() : (Func<object, bool>) null)
+            : this(execute != null ? p => execute() : (Action<object>)null, canExecute != null ? p => canExecute() : (Func<object, bool>)null)
         {
         }
 
@@ -71,7 +72,7 @@ namespace Uplauncher.Helpers
             {
                 if (m_weakHandlers == null)
                 {
-                    m_weakHandlers = new List<WeakReference>(new[] {new WeakReference(value)});
+                    m_weakHandlers = new List<WeakReference>(new[] { new WeakReference(value) });
                 }
                 else
                 {
@@ -101,7 +102,6 @@ namespace Uplauncher.Helpers
             }
         }
 
-
         /// <summary>
         /// Defines the method that determines whether the command can execute in its current state.
         /// </summary>
@@ -129,7 +129,7 @@ namespace Uplauncher.Helpers
             m_execute(parameter);
         }
 
-        #endregion
+        #endregion ICommand Members
 
         /// <summary>
         /// Raises the <see cref="E:CanExecuteChanged"/> event.

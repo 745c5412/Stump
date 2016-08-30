@@ -1,4 +1,3 @@
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 

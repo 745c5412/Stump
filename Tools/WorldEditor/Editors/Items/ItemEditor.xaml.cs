@@ -1,7 +1,6 @@
-﻿using System.Windows;
+﻿using DBSynchroniser.Records;
+using System.Windows;
 using System.Windows.Controls;
-using DBSynchroniser.Records;
-using Stump.DofusProtocol.D2oClasses;
 
 namespace WorldEditor.Editors.Items
 {

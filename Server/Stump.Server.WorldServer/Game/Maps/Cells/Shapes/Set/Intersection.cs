@@ -10,6 +10,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
             this.A = A;
             this.B = B;
         }
+
         public Set A
         {
             get;

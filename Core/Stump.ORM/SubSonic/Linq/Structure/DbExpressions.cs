@@ -2,12 +2,12 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
+using Stump.ORM.SubSonic.Linq.Translation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Translation;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -59,12 +59,14 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
     public abstract class AliasedExpression : DbExpression
     {
-        TableAlias alias;
+        private TableAlias alias;
+
         protected AliasedExpression(DbExpressionType nodeType, Type type, TableAlias alias)
             : base(nodeType, type)
         {
             this.alias = alias;
         }
+
         public TableAlias Alias
         {
             get { return this.alias; }
@@ -72,13 +74,12 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         }
     }
 
-
     /// <summary>
     /// A custom expression node that represents a table reference in a SQL query
     /// </summary>
     public class TableExpression : AliasedExpression
     {
-        string name;
+        private string name;
 
         public TableExpression(TableAlias alias, string name)
             : base(DbExpressionType.Table, typeof(void), alias)
@@ -102,8 +103,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class ColumnExpression : DbExpression, IEquatable<ColumnExpression>
     {
-        TableAlias alias;
-        string name;
+        private TableAlias alias;
+        private string name;
 
         public ColumnExpression(Type type, TableAlias alias, string name)
             : base(DbExpressionType.Column, type)
@@ -162,17 +163,20 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class ColumnDeclaration
     {
-        string name;
-        Expression expression;
+        private string name;
+        private Expression expression;
+
         public ColumnDeclaration(string name, Expression expression)
         {
             this.name = name;
             this.expression = expression;
         }
+
         public string Name
         {
             get { return this.name; }
         }
+
         public Expression Expression
         {
             get { return this.expression; }
@@ -180,7 +184,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     }
 
     /// <summary>
-    /// An SQL OrderBy order type 
+    /// An SQL OrderBy order type
     /// </summary>
     public enum OrderType
     {
@@ -193,17 +197,20 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class OrderExpression
     {
-        OrderType orderType;
-        Expression expression;
+        private OrderType orderType;
+        private Expression expression;
+
         public OrderExpression(OrderType orderType, Expression expression)
         {
             this.orderType = orderType;
             this.expression = expression;
         }
+
         public OrderType OrderType
         {
             get { return this.orderType; }
         }
+
         public Expression Expression
         {
             get { return this.expression; }
@@ -215,14 +222,14 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class SelectExpression : AliasedExpression
     {
-        ReadOnlyCollection<ColumnDeclaration> columns;
-        bool isDistinct;
-        Expression from;
-        Expression where;
-        ReadOnlyCollection<OrderExpression> orderBy;
-        ReadOnlyCollection<Expression> groupBy;
-        Expression take;
-        Expression skip;
+        private ReadOnlyCollection<ColumnDeclaration> columns;
+        private bool isDistinct;
+        private Expression from;
+        private Expression where;
+        private ReadOnlyCollection<OrderExpression> orderBy;
+        private ReadOnlyCollection<Expression> groupBy;
+        private Expression take;
+        private Expression skip;
 
         public SelectExpression(
             TableAlias alias,
@@ -257,6 +264,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             this.take = take;
             this.skip = skip;
         }
+
         public SelectExpression(
             TableAlias alias,
             IEnumerable<ColumnDeclaration> columns,
@@ -268,6 +276,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             : this(alias, columns, from, where, orderBy, groupBy, false, null, null)
         {
         }
+
         public SelectExpression(
             TableAlias alias, IEnumerable<ColumnDeclaration> columns,
             Expression from, Expression where
@@ -275,46 +284,54 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             : this(alias, columns, from, where, null, null)
         {
         }
+
         public ReadOnlyCollection<ColumnDeclaration> Columns
         {
             get { return this.columns; }
         }
+
         public Expression From
         {
             get { return this.from; }
             set { this.from = value; }
         }
+
         public Expression Where
         {
             get { return this.where; }
         }
+
         public ReadOnlyCollection<OrderExpression> OrderBy
         {
             get { return this.orderBy; }
         }
+
         public ReadOnlyCollection<Expression> GroupBy
         {
             get { return this.groupBy; }
         }
+
         public bool IsDistinct
         {
             get { return this.isDistinct; }
         }
+
         public Expression Skip
         {
             get { return this.skip; }
             set { this.skip = value; }
         }
+
         public Expression Take
         {
             get { return this.take; }
-            set { this.take=value; }
-       }
+            set { this.take = value; }
+        }
+
         public string QueryText
         {
             get { return TSqlFormatter.Format(this); }
         }
-
     }
 
     /// <summary>
@@ -334,10 +351,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class JoinExpression : DbExpression
     {
-        JoinType joinType;
-        Expression left;
-        Expression right;
-        Expression condition;
+        private JoinType joinType;
+        private Expression left;
+        private Expression right;
+        private Expression condition;
 
         public JoinExpression(JoinType joinType, Expression left, Expression right, Expression condition)
             : base(DbExpressionType.Join, typeof(void))
@@ -347,18 +364,22 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             this.right = right;
             this.condition = condition;
         }
+
         public JoinType Join
         {
             get { return this.joinType; }
         }
+
         public Expression Left
         {
             get { return this.left; }
         }
+
         public Expression Right
         {
             get { return this.right; }
         }
+
         public new Expression Condition
         {
             get { return this.condition; }
@@ -367,8 +388,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
     public class OuterJoinedExpression : DbExpression
     {
-        Expression test;
-        Expression expression;
+        private Expression test;
+        private Expression expression;
 
         public OuterJoinedExpression(Expression test, Expression expression)
             : base(DbExpressionType.OuterJoined, expression.Type)
@@ -390,13 +411,15 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
     public abstract class SubqueryExpression : DbExpression
     {
-        SelectExpression select;
+        private SelectExpression select;
+
         protected SubqueryExpression(DbExpressionType eType, Type type, SelectExpression select)
             : base(eType, type)
         {
             System.Diagnostics.Debug.Assert(eType == DbExpressionType.Scalar || eType == DbExpressionType.Exists || eType == DbExpressionType.In);
             this.select = select;
         }
+
         public SelectExpression Select
         {
             get { return this.select; }
@@ -421,13 +444,15 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
     public class InExpression : SubqueryExpression
     {
-        Expression expression;
-        ReadOnlyCollection<Expression> values;  // either select or expressions are assigned
+        private Expression expression;
+        private ReadOnlyCollection<Expression> values;  // either select or expressions are assigned
+
         public InExpression(Expression expression, SelectExpression select)
             : base(DbExpressionType.In, typeof(bool), select)
         {
             this.expression = expression;
         }
+
         public InExpression(Expression expression, IEnumerable<Expression> values)
             : base(DbExpressionType.In, typeof(bool), null)
         {
@@ -438,10 +463,12 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 this.values = new List<Expression>(values).AsReadOnly();
             }
         }
+
         public Expression Expression
         {
             get { return this.expression; }
         }
+
         public ReadOnlyCollection<Expression> Values
         {
             get { return this.values; }
@@ -459,9 +486,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
     public class AggregateExpression : DbExpression
     {
-        AggregateType aggType;
-        Expression argument;
-        bool isDistinct;
+        private AggregateType aggType;
+        private Expression argument;
+        private bool isDistinct;
+
         public AggregateExpression(Type type, AggregateType aggType, Expression argument, bool isDistinct)
             : base(DbExpressionType.Aggregate, type)
         {
@@ -469,14 +497,17 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             this.argument = argument;
             this.isDistinct = isDistinct;
         }
+
         public AggregateType AggregateType
         {
             get { return this.aggType; }
         }
+
         public Expression Argument
         {
             get { return this.argument; }
         }
+
         public bool IsDistinct
         {
             get { return this.isDistinct; }
@@ -485,9 +516,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
     public class AggregateSubqueryExpression : DbExpression
     {
-        TableAlias groupByAlias;
-        Expression aggregateInGroupSelect;
-        ScalarExpression aggregateAsSubquery;
+        private TableAlias groupByAlias;
+        private Expression aggregateInGroupSelect;
+        private ScalarExpression aggregateAsSubquery;
+
         public AggregateSubqueryExpression(TableAlias groupByAlias, Expression aggregateInGroupSelect, ScalarExpression aggregateAsSubquery)
             : base(DbExpressionType.AggregateSubquery, aggregateAsSubquery.Type)
         {
@@ -495,6 +527,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             this.groupByAlias = groupByAlias;
             this.aggregateAsSubquery = aggregateAsSubquery;
         }
+
         public TableAlias GroupByAlias { get { return this.groupByAlias; } }
         public Expression AggregateInGroupSelect { get { return this.aggregateInGroupSelect; } }
         public ScalarExpression AggregateAsSubquery { get { return this.aggregateAsSubquery; } }
@@ -505,12 +538,14 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class IsNullExpression : DbExpression
     {
-        Expression expression;
+        private Expression expression;
+
         public IsNullExpression(Expression expression)
             : base(DbExpressionType.IsNull, typeof(bool))
         {
             this.expression = expression;
         }
+
         public Expression Expression
         {
             get { return this.expression; }
@@ -519,9 +554,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
     public class BetweenExpression : DbExpression
     {
-        Expression expression;
-        Expression lower;
-        Expression upper;
+        private Expression expression;
+        private Expression lower;
+        private Expression upper;
+
         public BetweenExpression(Expression expression, Expression lower, Expression upper)
             : base(DbExpressionType.Between, expression.Type)
         {
@@ -529,14 +565,17 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             this.lower = lower;
             this.upper = upper;
         }
+
         public Expression Expression
         {
             get { return this.expression; }
         }
+
         public Expression Lower
         {
             get { return this.lower; }
         }
+
         public Expression Upper
         {
             get { return this.upper; }
@@ -545,7 +584,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
     public class RowNumberExpression : DbExpression
     {
-        ReadOnlyCollection<OrderExpression> orderBy;
+        private ReadOnlyCollection<OrderExpression> orderBy;
+
         public RowNumberExpression(IEnumerable<OrderExpression> orderBy)
             : base(DbExpressionType.RowCount, typeof(int))
         {
@@ -555,48 +595,65 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 this.orderBy = new List<OrderExpression>(orderBy).AsReadOnly();
             }
         }
+
         public ReadOnlyCollection<OrderExpression> OrderBy
         {
             get { return this.orderBy; }
         }
     }
-    public class LimitExpression : DbExpression {
-        public int Skip {
-            get {
+
+    public class LimitExpression : DbExpression
+    {
+        public int Skip
+        {
+            get
+            {
                 return _skip;
             }
         }
-        public int Take {
-            get {
+
+        public int Take
+        {
+            get
+            {
                 return _take;
             }
         }
-        int _skip;
-        int _take;
-        Expression value;
-        public LimitExpression(int skip, int take, Expression value):base(DbExpressionType.Limit,value.Type) {
+
+        private int _skip;
+        private int _take;
+        private Expression value;
+
+        public LimitExpression(int skip, int take, Expression value) : base(DbExpressionType.Limit, value.Type)
+        {
             _skip = skip;
             _take = take;
             this.value = value;
         }
-        public Expression Value {
+
+        public Expression Value
+        {
             get { return this.value; }
         }
     }
+
     public class NamedValueExpression : DbExpression
     {
-        string name;
-        Expression value;
+        private string name;
+        private Expression value;
+
         public NamedValueExpression(string name, Expression value)
             : base(DbExpressionType.NamedValue, value.Type)
         {
             this.name = name;
             this.value = value;
         }
+
         public string Name
         {
             get { return this.name; }
         }
+
         public Expression Value
         {
             get { return this.value; }
@@ -604,45 +661,53 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     }
 
     /// <summary>
-    /// A custom expression representing the construction of one or more result objects from a 
+    /// A custom expression representing the construction of one or more result objects from a
     /// SQL select expression
     /// </summary>
     public class ProjectionExpression : DbExpression
     {
-        SelectExpression source;
-        Expression projector;
-        LambdaExpression aggregator;
+        private SelectExpression source;
+        private Expression projector;
+        private LambdaExpression aggregator;
+
         public ProjectionExpression(SelectExpression source, Expression projector)
             : this(source, projector, null)
         {
         }
-        public ProjectionExpression( SelectExpression source, Expression projector, LambdaExpression aggregator)
+
+        public ProjectionExpression(SelectExpression source, Expression projector, LambdaExpression aggregator)
             : base(DbExpressionType.Projection, aggregator != null ? aggregator.Body.Type : typeof(IEnumerable<>).MakeGenericType(projector.Type))
         {
             this.source = source;
             this.projector = projector;
             this.aggregator = aggregator;
         }
+
         public SelectExpression Source
         {
             get { return this.source; }
         }
+
         public Expression Projector
         {
             get { return this.projector; }
         }
+
         public LambdaExpression Aggregator
         {
             get { return this.aggregator; }
         }
+
         public bool IsSingleton
         {
             get { return this.aggregator != null && this.aggregator.Body.Type == projector.Type; }
         }
+
         public override string ToString()
         {
             return DbExpressionWriter.WriteToString(this);
         }
+
         public string QueryText
         {
             get { return TSqlFormatter.Format(source); }
@@ -651,9 +716,9 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
     public class ClientJoinExpression : DbExpression
     {
-        ReadOnlyCollection<Expression> outerKey;
-        ReadOnlyCollection<Expression> innerKey;
-        ProjectionExpression projection;
+        private ReadOnlyCollection<Expression> outerKey;
+        private ReadOnlyCollection<Expression> innerKey;
+        private ProjectionExpression projection;
 
         public ClientJoinExpression(ProjectionExpression projection, IEnumerable<Expression> outerKey, IEnumerable<Expression> innerKey)
             : base(DbExpressionType.ClientJoin, projection.Type)
@@ -735,7 +800,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         {
             string colName = proj.Source.GetAvailableColumnName("Test");
             SelectExpression newSource = proj.Source.AddColumn(new ColumnDeclaration(colName, Expression.Constant(1, typeof(int?))));
-            Expression newProjector = 
+            Expression newProjector =
                 new OuterJoinedExpression(
                     new ColumnExpression(typeof(int?), newSource.Alias, colName),
                     proj.Projector
@@ -815,7 +880,6 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         {
             if (skip != select.Skip)
             {
-                
                 return new SelectExpression(select.Alias, select.Columns, select.From, select.Where, select.OrderBy, select.GroupBy, select.IsDistinct, skip, select.Take);
             }
             return select;

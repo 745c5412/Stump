@@ -2,11 +2,10 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -15,7 +14,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class RedundantSubqueryRemover : DbExpressionVisitor
     {
-        private RedundantSubqueryRemover() 
+        private RedundantSubqueryRemover()
         {
         }
 
@@ -43,10 +42,10 @@ namespace Stump.ORM.SubSonic.Linq.Translation
         protected override Expression VisitProjection(ProjectionExpression proj)
         {
             proj = (ProjectionExpression)base.VisitProjection(proj);
-            if (proj.Source.From is SelectExpression) 
+            if (proj.Source.From is SelectExpression)
             {
                 List<SelectExpression> redundant = RedundantSubqueryGatherer.Gather(proj.Source);
-                if (redundant != null) 
+                if (redundant != null)
                 {
                     proj = SubqueryRemover.Remove(proj, redundant);
                 }
@@ -90,9 +89,9 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             return select.From is TableExpression;
         }
 
-        class RedundantSubqueryGatherer : DbExpressionVisitor
+        private class RedundantSubqueryGatherer : DbExpressionVisitor
         {
-            List<SelectExpression> redundant;
+            private List<SelectExpression> redundant;
 
             private RedundantSubqueryGatherer()
             {
@@ -136,7 +135,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             }
         }
 
-        class SubqueryMerger : DbExpressionVisitor
+        private class SubqueryMerger : DbExpressionVisitor
         {
             private SubqueryMerger()
             {
@@ -147,7 +146,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                 return new SubqueryMerger().Visit(expression);
             }
 
-            bool isTopLevel = true;
+            private bool isTopLevel = true;
 
             protected override Expression VisitSelect(SelectExpression select)
             {
@@ -165,7 +164,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                     // remove the redundant subquery
                     select = SubqueryRemover.Remove(select, fromSelect);
 
-                    // merge where expressions 
+                    // merge where expressions
                     Expression where = select.Where;
                     if (fromSelect.Where != null)
                     {

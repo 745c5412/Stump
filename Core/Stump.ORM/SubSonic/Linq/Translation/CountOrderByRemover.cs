@@ -2,10 +2,9 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -14,11 +13,10 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class CountOrderByRemover : DbExpressionVisitor
     {
-        public static Expression Remove(Expression expression) 
+        public static Expression Remove(Expression expression)
         {
             return new CountOrderByRemover().Visit(expression);
         }
-
 
         protected override Expression VisitSelect(SelectExpression select)
         {
@@ -32,9 +30,11 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             Expression where = this.Visit(select.Where);
             Expression from = this.Visit(select.From);
 
-            if (columns.Count == 1 && orderbys!=null) {
-                if (columns[0].Expression.ToString() == "COUNT(*)" && orderbys.Count > 0) {
-                    var newOrders=new OrderExpression[0];
+            if (columns.Count == 1 && orderbys != null)
+            {
+                if (columns[0].Expression.ToString() == "COUNT(*)" && orderbys.Count > 0)
+                {
+                    var newOrders = new OrderExpression[0];
                     //this is is COUNT/ORDER BY/GROUP BY issue
                     select = new SelectExpression(select.Alias, columns, from, where, newOrders, groupbys, select.IsDistinct, skip, take);
                     return select;
@@ -43,8 +43,5 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
             return select;
         }
-
-
-
     }
 }

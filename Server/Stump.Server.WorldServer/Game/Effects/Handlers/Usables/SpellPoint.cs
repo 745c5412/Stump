@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
     [EffectHandler(EffectsEnum.Effect_AddSpellPoints)]
     public class SpellPoint : UsableEffectHandler
     {
-        public SpellPoint(EffectBase effect, Character target, BasePlayerItem item) 
+        public SpellPoint(EffectBase effect, Character target, BasePlayerItem item)
             : base(effect, target, item)
         {
         }

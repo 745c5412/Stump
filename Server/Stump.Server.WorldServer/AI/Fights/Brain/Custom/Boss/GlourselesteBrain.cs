@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
@@ -7,6 +6,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
@@ -86,10 +86,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             if (!(player is CharacterFighter) || player.Team.Id == Fighter.Team.Id)
                 return;
 
-            if (Fighter.HasState((int) SpellStatesEnum.Invulnerable))
+            if (Fighter.HasState((int)SpellStatesEnum.Invulnerable))
                 return;
 
-            var spell = new Spell((int) SpellIdEnum.GLOURSOMPTUEUX, 1);
+            var spell = new Spell((int)SpellIdEnum.GLOURSOMPTUEUX, 1);
             player.CastSpell(spell, Fighter.Cell, true, true);
         }
 

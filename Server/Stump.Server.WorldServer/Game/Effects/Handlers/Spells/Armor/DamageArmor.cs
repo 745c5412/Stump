@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using System.Collections.Generic;
+using System.Linq;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
             var target = buff.Target;
             if (target is SummonedBomb)
             {
-                target = ((SummonedBomb) target).Summoner;
+                target = ((SummonedBomb)target).Summoner;
             }
 
             foreach (var caracteristic in GetAssociatedCaracteristics(buff.Spell.Id))
@@ -80,19 +80,23 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                 case SpellIdEnum.ARMURE_AQUEUSE_451:
                     yield return PlayerFields.WaterDamageArmor;
                     break;
+
                 case SpellIdEnum.ARMURE_TERRESTRE_453:
                 case SpellIdEnum.ARMURE_TERRESTRE_6:
                     yield return PlayerFields.EarthDamageArmor;
                     yield return PlayerFields.NeutralDamageArmor;
                     break;
+
                 case SpellIdEnum.ARMURE_VENTEUSE_14:
                 case SpellIdEnum.ARMURE_VENTEUSE_454:
                     yield return PlayerFields.AirDamageArmor;
                     break;
+
                 case SpellIdEnum.ARMURE_INCANDESCENTE_452:
                 case SpellIdEnum.ARMURE_INCANDESCENTE_1:
                     yield return PlayerFields.FireDamageArmor;
                     break;
+
                 default:
                     yield return PlayerFields.GlobalDamageReduction;
                     break;

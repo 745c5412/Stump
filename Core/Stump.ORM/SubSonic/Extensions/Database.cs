@@ -1,25 +1,25 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Query;
+using Stump.ORM.SubSonic.Schema;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Query;
-using Stump.ORM.SubSonic.Schema;
 using Constraint = Stump.ORM.SubSonic.Query.Constraint;
 
 namespace Stump.ORM.SubSonic.Extensions
@@ -32,54 +32,77 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <returns></returns>
         public static SqlDbType GetSqlDBType(this DbType dbType)
         {
-            switch(dbType)
+            switch (dbType)
             {
                 case DbType.AnsiString:
                     return SqlDbType.VarChar;
+
                 case DbType.AnsiStringFixedLength:
                     return SqlDbType.Char;
+
                 case DbType.Binary:
                     return SqlDbType.VarBinary;
+
                 case DbType.Boolean:
                     return SqlDbType.Bit;
+
                 case DbType.Byte:
                     return SqlDbType.TinyInt;
+
                 case DbType.Currency:
                     return SqlDbType.Money;
+
                 case DbType.Date:
                     return SqlDbType.DateTime;
+
                 case DbType.DateTime:
                     return SqlDbType.DateTime;
+
                 case DbType.Decimal:
                     return SqlDbType.Decimal;
+
                 case DbType.Double:
                     return SqlDbType.Float;
+
                 case DbType.Guid:
                     return SqlDbType.UniqueIdentifier;
+
                 case DbType.Int16:
                     return SqlDbType.Int;
+
                 case DbType.Int32:
                     return SqlDbType.Int;
+
                 case DbType.Int64:
                     return SqlDbType.BigInt;
+
                 case DbType.Object:
                     return SqlDbType.Variant;
+
                 case DbType.SByte:
                     return SqlDbType.TinyInt;
+
                 case DbType.Single:
                     return SqlDbType.Real;
+
                 case DbType.String:
                     return SqlDbType.NVarChar;
+
                 case DbType.StringFixedLength:
                     return SqlDbType.NChar;
+
                 case DbType.Time:
                     return SqlDbType.DateTime;
+
                 case DbType.UInt16:
                     return SqlDbType.Int;
+
                 case DbType.UInt32:
                     return SqlDbType.Int;
+
                 case DbType.UInt64:
                     return SqlDbType.BigInt;
+
                 case DbType.VarNumeric:
                     return SqlDbType.Decimal;
 
@@ -92,7 +115,7 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             DbType result;
 
-            if(type == typeof(Int32))
+            if (type == typeof(Int32))
                 result = DbType.Int32;
             else if (type == typeof(Byte))
                 result = DbType.Byte;
@@ -101,26 +124,26 @@ namespace Stump.ORM.SubSonic.Extensions
             else if (type == typeof(Int16))
                 result = DbType.Int16;
             else if (type == typeof(Int64))
-                result = DbType.Int64; 
+                result = DbType.Int64;
             else if (type == typeof(UInt32))
                 result = DbType.UInt32;
             else if (type == typeof(UInt16))
                 result = DbType.UInt16;
             else if (type == typeof(UInt64))
                 result = DbType.UInt64;
-            else if(type == typeof(DateTime))
+            else if (type == typeof(DateTime))
                 result = DbType.DateTime;
-            else if(type == typeof(float))
+            else if (type == typeof(float))
                 result = DbType.Decimal;
-            else if(type == typeof(decimal))
+            else if (type == typeof(decimal))
                 result = DbType.Decimal;
-            else if(type == typeof(double))
+            else if (type == typeof(double))
                 result = DbType.Double;
-            else if(type == typeof(Guid))
+            else if (type == typeof(Guid))
                 result = DbType.Guid;
-            else if(type == typeof(bool))
+            else if (type == typeof(bool))
                 result = DbType.Boolean;
-            else if(type == typeof(byte[]))
+            else if (type == typeof(byte[]))
                 result = DbType.Binary;
             else
                 result = DbType.String;
@@ -137,16 +160,18 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             var hashedSet = value.ToDictionary();
             SqlQuery query = new SqlQuery();
-            foreach(string key in hashedSet.Keys)
+            foreach (string key in hashedSet.Keys)
             {
-                if(query.Constraints.Count == 0)
+                if (query.Constraints.Count == 0)
                     query.Where(key).IsEqualTo(hashedSet[key]);
                 else
                     query.And(key).IsEqualTo(hashedSet[key]);
             }
             return query.Constraints;
         }
-        public static void Load<T>(this IDataReader rdr, T item) {
+
+        public static void Load<T>(this IDataReader rdr, T item)
+        {
             Load<T>(rdr, item, new List<string>());
         }
 
@@ -163,91 +188,101 @@ namespace Stump.ORM.SubSonic.Extensions
             PropertyInfo currentProp;
             FieldInfo currentField = null;
 
-            for(int i = 0; i < rdr.FieldCount; i++)
+            for (int i = 0; i < rdr.FieldCount; i++)
             {
                 string pName = rdr.GetName(i);
                 currentProp = cachedProps.SingleOrDefault(x => x.Name.Equals(pName, StringComparison.InvariantCultureIgnoreCase));
 
-				//mike if the property is null and ColumnNames has data then look in ColumnNames for match
-				if (currentProp == null && ColumnNames != null && ColumnNames.Count > i) {
-					currentProp = cachedProps.First(x => x.Name == ColumnNames[i]);
-				}
-                
-				//if the property is null, likely it's a Field
-				if(currentProp == null)
+                //mike if the property is null and ColumnNames has data then look in ColumnNames for match
+                if (currentProp == null && ColumnNames != null && ColumnNames.Count > i)
+                {
+                    currentProp = cachedProps.First(x => x.Name == ColumnNames[i]);
+                }
+
+                //if the property is null, likely it's a Field
+                if (currentProp == null)
                     currentField = cachedFields.SingleOrDefault(x => x.Name.Equals(pName, StringComparison.InvariantCultureIgnoreCase));
 
-                if(currentProp != null && !DBNull.Value.Equals(rdr.GetValue(i)))
+                if (currentProp != null && !DBNull.Value.Equals(rdr.GetValue(i)))
                 {
                     Type valueType = rdr.GetValue(i).GetType();
-                    if(valueType == typeof(Boolean))
+                    if (valueType == typeof(Boolean))
                     {
                         string value = rdr.GetValue(i).ToString();
                         currentProp.SetValue(item, value == "1" || value == "True", null);
                     }
-                    else if(currentProp.PropertyType == typeof(Guid))
+                    else if (currentProp.PropertyType == typeof(Guid))
                     {
-						currentProp.SetValue(item, rdr.GetGuid(i), null);
-					}
-					else if (Objects.IsNullableEnum(currentProp.PropertyType))
-					{
-						var nullEnumObjectValue = Enum.ToObject(Nullable.GetUnderlyingType(currentProp.PropertyType), rdr.GetValue(i));
-						currentProp.SetValue(item, nullEnumObjectValue, null);
-					}
+                        currentProp.SetValue(item, rdr.GetGuid(i), null);
+                    }
+                    else if (Objects.IsNullableEnum(currentProp.PropertyType))
+                    {
+                        var nullEnumObjectValue = Enum.ToObject(Nullable.GetUnderlyingType(currentProp.PropertyType), rdr.GetValue(i));
+                        currentProp.SetValue(item, nullEnumObjectValue, null);
+                    }
                     else if (currentProp.PropertyType.IsEnum)
                     {
                         var enumValue = Enum.ToObject(currentProp.PropertyType, rdr.GetValue(i));
                         currentProp.SetValue(item, enumValue, null);
                     }
-                    else{
-
-					    var val = rdr.GetValue(i);
-					    var valType = val.GetType();
+                    else
+                    {
+                        var val = rdr.GetValue(i);
+                        var valType = val.GetType();
                         //try to assign it
-                        if (currentProp.PropertyType.IsAssignableFrom(valueType)) {
+                        if (currentProp.PropertyType.IsAssignableFrom(valueType))
+                        {
                             currentProp.SetValue(item, val, null);
-                        } else {
+                        }
+                        else
+                        {
                             currentProp.SetValue(item, val.ChangeTypeTo(currentProp.PropertyType), null);
                         }
-					}
+                    }
                 }
-                else if(currentField != null && !DBNull.Value.Equals(rdr.GetValue(i)))
+                else if (currentField != null && !DBNull.Value.Equals(rdr.GetValue(i)))
                 {
                     Type valueType = rdr.GetValue(i).GetType();
-                    if(valueType == typeof(Boolean))
+                    if (valueType == typeof(Boolean))
                     {
                         string value = rdr.GetValue(i).ToString();
                         currentField.SetValue(item, value == "1" || value == "True");
                     }
-                    else if(currentField.FieldType == typeof(Guid))
+                    else if (currentField.FieldType == typeof(Guid))
                     {
-						currentField.SetValue(item, rdr.GetGuid(i));
-					} else if (Objects.IsNullableEnum(currentField.FieldType)) {
+                        currentField.SetValue(item, rdr.GetGuid(i));
+                    }
+                    else if (Objects.IsNullableEnum(currentField.FieldType))
+                    {
                         var nullEnumObjectValue = Enum.ToObject(Nullable.GetUnderlyingType(currentField.FieldType), rdr.GetValue(i));
                         currentField.SetValue(item, nullEnumObjectValue);
-                    } else {
+                    }
+                    else
+                    {
                         var val = rdr.GetValue(i);
                         var valType = val.GetType();
                         //try to assign it
-                        if (currentField.FieldType.IsAssignableFrom(valueType)) {
+                        if (currentField.FieldType.IsAssignableFrom(valueType))
+                        {
                             currentField.SetValue(item, val);
-                        } else {
+                        }
+                        else
+                        {
                             currentField.SetValue(item, val.ChangeTypeTo(currentField.FieldType));
                         }
                     }
                 }
             }
 
-            if (item is IActiveRecord) {
+            if (item is IActiveRecord)
+            {
                 var arItem = (IActiveRecord)item;
                 arItem.SetIsLoaded(true);
                 arItem.SetIsNew(false);
-                
             }
-
         }
 
-    	/// <summary>
+        /// <summary>
         /// Loads a single primitive value type
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -256,10 +291,10 @@ namespace Stump.ORM.SubSonic.Extensions
             Type iType = typeof(T);
             //thanks to Pascal LaCroix for the help here...
 
-            if(iType.IsValueType)
+            if (iType.IsValueType)
             {
                 // We assume only one field
-                if(iType == typeof(Int16) || iType == typeof(Int32) || iType == typeof(Int64))
+                if (iType == typeof(Int16) || iType == typeof(Int32) || iType == typeof(Int64))
                     item = (T)Convert.ChangeType(rdr.GetValue(0), iType);
                 else
                     item = (T)rdr.GetValue(0);
@@ -277,7 +312,7 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             //thanks to Pascal LaCroix for the help here...
             List<T> result = new List<T>();
-            while(rdr.Read())
+            while (rdr.Read())
             {
                 var instance = Activator.CreateInstance<T>();
                 LoadValueType(rdr, ref instance);
@@ -321,60 +356,59 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <param name="rdr"></param>
         /// <param name="columnNames"></param>
         /// <param name="onItemCreated">Invoked when a new item is created</param>
-				public static IEnumerable<T> ToEnumerable<T>(this IDataReader rdr, List<string> columnNames, Func<object, object> onItemCreated)
-				{
-					//mike added ColumnNames
-					List<T> result = new List<T>();
-					while (rdr.Read())
-					{
-						T instance = default(T);
-						var type = typeof(T);
-						if (type.Name.Contains("AnonymousType"))
-						{
+        public static IEnumerable<T> ToEnumerable<T>(this IDataReader rdr, List<string> columnNames, Func<object, object> onItemCreated)
+        {
+            //mike added ColumnNames
+            List<T> result = new List<T>();
+            while (rdr.Read())
+            {
+                T instance = default(T);
+                var type = typeof(T);
+                if (type.Name.Contains("AnonymousType"))
+                {
+                    //this is an anon type and it has read-only fields that are set
+                    //in a constructor. So - read the fields and build it
+                    //http://stackoverflow.com/questions/478013/how-do-i-create-and-access-a-new-instance-of-an-anonymous-class-passed-as-a-param
+                    var properties = type.GetProperties();
+                    int objIdx = 0;
+                    object[] objArray = new object[properties.Length];
 
-							//this is an anon type and it has read-only fields that are set
-							//in a constructor. So - read the fields and build it
-							//http://stackoverflow.com/questions/478013/how-do-i-create-and-access-a-new-instance-of-an-anonymous-class-passed-as-a-param
-							var properties = type.GetProperties();
-							int objIdx = 0;
-							object[] objArray = new object[properties.Length];
+                    foreach (var prop in properties)
+                    {
+                        objArray[objIdx++] = rdr[prop.Name];
+                    }
 
-							foreach (var prop in properties)
-							{
-								objArray[objIdx++] = rdr[prop.Name];
-							}
+                    result.Add((T)Activator.CreateInstance(type, objArray));
+                }
+                //TODO: there has to be a better way to work with the type system
+                else if (IsCoreSystemType(type))
+                {
+                    instance = (T)rdr.GetValue(0).ChangeTypeTo(type);
+                    result.Add(instance);
+                }
+                else if (type.IsValueType)
+                {
+                    instance = Activator.CreateInstance<T>();
+                    LoadValueType(rdr, ref instance);
+                    result.Add(instance);
+                }
+                else
+                {
+                    instance = Activator.CreateInstance<T>();
 
-							result.Add((T)Activator.CreateInstance(type, objArray));
-						}
-						//TODO: there has to be a better way to work with the type system
-						else if (IsCoreSystemType(type))
-						{
-							instance = (T)rdr.GetValue(0).ChangeTypeTo(type);
-							result.Add(instance);
-						}
-						else if (type.IsValueType)
-						{
-							instance = Activator.CreateInstance<T>();
-							LoadValueType(rdr, ref instance);
-							result.Add(instance);
-						}
-						else
-						{
-							instance = Activator.CreateInstance<T>();
+                    if (onItemCreated != null)
+                    {
+                        instance = (T)onItemCreated(instance);
+                    }
 
-							if (onItemCreated != null)
-							{
-								instance = (T)onItemCreated(instance);
-							}
+                    //do we have a parameterless constructor?
+                    Load(rdr, instance, columnNames);//mike added ColumnNames
+                    result.Add(instance);
+                }
+            }
 
-							//do we have a parameterless constructor?
-							Load(rdr, instance, columnNames);//mike added ColumnNames
-							result.Add(instance);
-						}
-					}
-
-					return result;
-				}
+            return result;
+        }
 
         public static List<T> ToList<T>(this IDataReader rdr) where T : new()
         {
@@ -389,17 +423,17 @@ namespace Stump.ORM.SubSonic.Extensions
             List<T> result = new List<T>();
             Type iType = typeof(T);
 
-            //set the values        
-            while(rdr.Read())
+            //set the values
+            while (rdr.Read())
             {
                 T item = new T();
-                
+
                 if (onItemCreated != null)
                 {
                     item = (T)onItemCreated(item);
                 }
 
-                rdr.Load(item,null);//mike added null to match ColumnNames
+                rdr.Load(item, null);//mike added null to match ColumnNames
                 result.Add(item);
             }
             return result;
@@ -416,23 +450,23 @@ namespace Stump.ORM.SubSonic.Extensions
             ITable tbl = provider.FindOrCreateTable<T>();
 
             Update<T> query = new Update<T>(tbl.Provider);
-            if(item is IActiveRecord)
+            if (item is IActiveRecord)
             {
                 var ar = item as IActiveRecord;
-                foreach(var dirty in ar.GetDirtyColumns())
+                foreach (var dirty in ar.GetDirtyColumns())
                 {
-                    if(!dirty.IsPrimaryKey && !dirty.IsReadOnly)
+                    if (!dirty.IsPrimaryKey && !dirty.IsReadOnly)
                         query.Set(dirty.Name).EqualTo(settings[dirty.Name]);
                 }
             }
             else
             {
-                foreach(string key in settings.Keys)
+                foreach (string key in settings.Keys)
                 {
-						 IColumn col = tbl.GetColumnByPropertyName(key);
-                    if(col != null)
+                    IColumn col = tbl.GetColumnByPropertyName(key);
+                    if (col != null)
                     {
-                        if(!col.IsPrimaryKey && !col.IsReadOnly)
+                        if (!col.IsPrimaryKey && !col.IsReadOnly)
                             query.Set(col).EqualTo(settings[key]);
                     }
                 }
@@ -440,11 +474,11 @@ namespace Stump.ORM.SubSonic.Extensions
 
             //add the PK constraint
             Constraint c = new Constraint(ConstraintType.Where, tbl.PrimaryKey.Name)
-                               {
-                                   ParameterValue = settings[tbl.PrimaryKey.Name],
-                                   ParameterName = tbl.PrimaryKey.Name,
-                                   ConstructionFragment = tbl.PrimaryKey.Name
-                               };
+            {
+                ParameterValue = settings[tbl.PrimaryKey.Name],
+                ParameterName = tbl.PrimaryKey.Name,
+                ConstructionFragment = tbl.PrimaryKey.Name
+            };
             query.Constraints.Add(c);
 
             return query;
@@ -459,17 +493,17 @@ namespace Stump.ORM.SubSonic.Extensions
             ITable tbl = provider.FindOrCreateTable<T>();
             Insert query = null;
 
-            if(tbl != null)
+            if (tbl != null)
             {
                 var hashed = item.ToDictionary();
                 query = new Insert(provider).Into<T>(tbl);
-                foreach(string key in hashed.Keys)
+                foreach (string key in hashed.Keys)
                 {
                     IColumn col = tbl.GetColumnByPropertyName(key);
-						  
-                    if(col != null)
+
+                    if (col != null)
                     {
-                        if(!col.AutoIncrement && !col.IsReadOnly && !(col.DefaultSetting != null && hashed[key] == null))
+                        if (!col.AutoIncrement && !col.IsReadOnly && !(col.DefaultSetting != null && hashed[key] == null))
                             query.Value(col.QualifiedName, hashed[key], col.DataType);
                     }
                 }
@@ -486,18 +520,18 @@ namespace Stump.ORM.SubSonic.Extensions
             Type type = typeof(T);
             ITable tbl = provider.FindOrCreateTable<T>();
             var query = new Delete<T>(tbl, provider);
-            if(tbl != null)
+            if (tbl != null)
             {
                 IColumn pk = tbl.PrimaryKey;
                 var settings = item.ToDictionary();
-                if(pk != null)
+                if (pk != null)
                 {
                     var c = new Constraint(ConstraintType.Where, pk.Name)
-                                {
-                                    ParameterValue = settings[pk.Name],
-                                    ParameterName = pk.Name,
-                                    ConstructionFragment = pk.Name
-                                };
+                    {
+                        ParameterValue = settings[pk.Name],
+                        ParameterName = pk.Name,
+                        ConstructionFragment = pk.Name
+                    };
                     query.Constraints.Add(c);
                 }
                 else

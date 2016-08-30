@@ -4,7 +4,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
-
     [Discriminator("EndDialog", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class EndDialogReply : NpcReply
     {

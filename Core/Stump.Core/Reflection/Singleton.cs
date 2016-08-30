@@ -22,7 +22,7 @@ namespace Stump.Core.Reflection
 
             static SingletonAllocator()
             {
-                CreateInstance(typeof (T));
+                CreateInstance(typeof(T));
             }
 
             public static T CreateInstance(Type type)
@@ -45,7 +45,7 @@ namespace Stump.Core.Reflection
 
                 try
                 {
-                    return instance = (T) ctorNonPublic.Invoke(new object[0]);
+                    return instance = (T)ctorNonPublic.Invoke(new object[0]);
                 }
                 catch (Exception e)
                 {
@@ -56,6 +56,6 @@ namespace Stump.Core.Reflection
             }
         }
 
-        #endregion
+        #endregion Nested type: SingletonAllocator
     }
 }

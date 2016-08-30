@@ -1,25 +1,25 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Extensions;
+using Stump.ORM.SubSonic.Schema;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq.Expressions;
 using System.Text;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Extensions;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.Query
 {
@@ -33,7 +33,7 @@ namespace Stump.ORM.SubSonic.Query
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class Insert : ISqlQuery
     {
@@ -46,7 +46,7 @@ namespace Stump.ORM.SubSonic.Query
         /// <summary>
         /// Initializes a new instance of the <see cref="Insert"/> class.
         /// </summary>
-        public Insert() : this(ProviderFactory.GetProvider()) {}
+        public Insert() : this(ProviderFactory.GetProvider()) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Insert"/> class.
@@ -61,7 +61,6 @@ namespace Stump.ORM.SubSonic.Query
         {
             get { return ColumnList.ToDelimitedList(); }
         }
-
 
         #region ISqlQuery Members
 
@@ -80,8 +79,7 @@ namespace Stump.ORM.SubSonic.Query
             return sql;
         }
 
-        #endregion
-
+        #endregion ISqlQuery Members
 
         public Insert Into<T>(params Expression<Func<T, object>>[] props)
         {
@@ -89,7 +87,7 @@ namespace Stump.ORM.SubSonic.Query
             Table = _provider.FindOrCreateTable(typeof(T));
             tableName = Table.Name;
             Init();
-            foreach(object o in props)
+            foreach (object o in props)
             {
                 LambdaExpression lamba = o as LambdaExpression;
                 ColumnList.Add(lamba.ParseObjectValue());
@@ -134,15 +132,15 @@ namespace Stump.ORM.SubSonic.Query
         /// <returns></returns>
         private Insert Init()
         {
-            if(Table==null)
+            if (Table == null)
                 throw new InvalidOperationException("No table is set");
 
             // EK: No methods consume the return value. Is the rest of this necessary?
             bool isFirst = true;
             StringBuilder sb = new StringBuilder();
-            foreach(string s in ColumnList)
+            foreach (string s in ColumnList)
             {
-                if(!isFirst)
+                if (!isFirst)
                     sb.Append(",");
                 sb.Append(s);
 
@@ -156,11 +154,11 @@ namespace Stump.ORM.SubSonic.Query
             //this is a lineup game
             //make sure that the count of values
             //is equal to the columns
-            if(values.Length != ColumnList.Count)
+            if (values.Length != ColumnList.Count)
                 throw new InvalidOperationException("The Select list and value list don't match - they need to match exactly if you're creating an INSERT VALUES query");
 
             int itemIndex = 0;
-            foreach(string s in ColumnList)
+            foreach (string s in ColumnList)
             {
                 AddInsertSetting(s, values[itemIndex], DbType.AnsiString, isExpression);
                 itemIndex++;
@@ -172,13 +170,13 @@ namespace Stump.ORM.SubSonic.Query
         private void AddInsertSetting(string columnName, object columnValue, DbType dbType, bool isExpression)
         {
             InsertSetting setting = new InsertSetting
-                                        {
-                                            ColumnName = columnName,
-                                            ParameterName = _provider.ParameterPrefix + "ins_" + columnName.ToAlphaNumericOnly(),
-                                            Value = columnValue,
-                                            IsExpression = isExpression,
-                                            DataType = dbType
-                                        };
+            {
+                ColumnName = columnName,
+                ParameterName = _provider.ParameterPrefix + "ins_" + columnName.ToAlphaNumericOnly(),
+                Value = columnValue,
+                IsExpression = isExpression,
+                DataType = dbType
+            };
             Inserts.Add(setting);
         }
 
@@ -240,7 +238,6 @@ namespace Stump.ORM.SubSonic.Query
             return BuildSqlStatement();
         }
 
-
         #region Execution
 
         public IDataReader ExecuteReader()
@@ -257,11 +254,11 @@ namespace Stump.ORM.SubSonic.Query
             int returner = 0;
 
             object result = _provider.ExecuteScalar(GetCommand());
-            if(result != null)
+            if (result != null)
             {
-                if(result.GetType() == typeof(decimal))
+                if (result.GetType() == typeof(decimal))
                     returner = Convert.ToInt32(result);
-                if(result.GetType() == typeof(int))
+                if (result.GetType() == typeof(int))
                     returner = Convert.ToInt32(result);
             }
             return returner;
@@ -273,19 +270,19 @@ namespace Stump.ORM.SubSonic.Query
             QueryCommand cmd = new QueryCommand(sql, _provider);
 
             //add in the commands
-            foreach(InsertSetting s in Inserts)
+            foreach (InsertSetting s in Inserts)
             {
                 QueryParameter p = new QueryParameter
-                                       {
-                                           ParameterName = s.ParameterName,
-                                           ParameterValue = s.Value ?? DBNull.Value,
-                                           DataType = s.DataType
-                                       };
+                {
+                    ParameterName = s.ParameterName,
+                    ParameterValue = s.Value ?? DBNull.Value,
+                    DataType = s.DataType
+                };
                 cmd.Parameters.Add(p);
             }
             return cmd;
         }
 
-        #endregion
+        #endregion Execution
     }
 }

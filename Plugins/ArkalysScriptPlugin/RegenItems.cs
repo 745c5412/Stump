@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using System.Linq;
 
 namespace ArkalysScriptPlugin
 {
@@ -30,7 +30,7 @@ namespace ArkalysScriptPlugin
 
     public static class RegenItems
     {
-        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static RegenItem[] Items =
         {
@@ -53,7 +53,6 @@ namespace ArkalysScriptPlugin
             new RegenItem(20360, false),
             new RegenItem(20361, false),
             new RegenItem(20362, false),
-
         };
 
         [Initialization(InitializationPass.Last)]

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using NLog;
+using Stump.Core.Reflection;
+using Stump.Core.Xml;
+using Stump.DofusProtocol.Enums;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using NLog;
-using Stump.Core.Reflection;
-using Stump.Core.Xml;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands
 {
@@ -17,7 +17,7 @@ namespace Stump.Server.BaseServer.Commands
         private IDictionary<string, CommandBase> m_commandsByAlias;
         private readonly List<CommandBase> m_registeredCommands;
         private readonly List<Type> m_registeredTypes;
-        private readonly List<CommandInfo> m_commandsInfos; 
+        private readonly List<CommandInfo> m_commandsInfos;
 
         private CommandManager()
         {
@@ -61,7 +61,7 @@ namespace Stump.Server.BaseServer.Commands
             get { return GetCommand(alias); }
         }
 
-        #endregion
+        #endregion Get Method
 
         #region Register Methods
 
@@ -192,7 +192,6 @@ namespace Stump.Server.BaseServer.Commands
                 if (!m_commandsByAlias.TryGetValue(alias, out value))
                 {
                     m_commandsByAlias[CommandBase.IgnoreCommandCase ? alias.ToLower() : alias] = command;
-
                 }
                 else
                 {
@@ -288,7 +287,7 @@ namespace Stump.Server.BaseServer.Commands
             return m_registeredTypes.Contains(commandType);
         }
 
-        #endregion
+        #endregion Register Methods
 
         #region Handle Method
 
@@ -325,6 +324,6 @@ namespace Stump.Server.BaseServer.Commands
             }
         }
 
-        #endregion
+        #endregion Handle Method
     }
 }

@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:51
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -19,8 +16,10 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "SubAreas";
         public int id;
+
         [I18NField]
         public uint nameId;
+
         public int areaId;
         public List<AmbientSound> ambientSounds;
         public List<uint> mapIds;
@@ -33,7 +32,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -71,6 +69,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_ambientSoundsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -97,6 +96,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_mapIdsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -123,6 +123,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_boundsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -149,6 +150,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_shapeBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -175,6 +177,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_customWorldMapBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -198,7 +201,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SubArea)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             AreaId = castedObj.areaId;
@@ -209,7 +212,7 @@ namespace DBSynchroniser.Records
             CustomWorldMap = castedObj.customWorldMap;
             PackId = castedObj.packId;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (SubArea)parent : new SubArea();
@@ -224,7 +227,7 @@ namespace DBSynchroniser.Records
             obj.packId = PackId;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_ambientSoundsBin = ambientSounds == null ? null : ambientSounds.ToBinary();
@@ -232,7 +235,6 @@ namespace DBSynchroniser.Records
             m_boundsBin = bounds == null ? null : bounds.ToBinary();
             m_shapeBin = shape == null ? null : shape.ToBinary();
             m_customWorldMapBin = customWorldMap == null ? null : customWorldMap.ToBinary();
-        
         }
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game;
@@ -17,6 +11,10 @@ using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Threading.Tasks;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -39,10 +37,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public ReloadCommands()
         {
-            Aliases = new[] {"reload"};
-            RequiredRole=RoleEnum.Administrator;
+            Aliases = new[] { "reload" };
+            RequiredRole = RoleEnum.Administrator;
             Description = "Reload manager";
-            AddParameter<string>("name", "n", "Name of the manager to reload", isOptional:true);
+            AddParameter<string>("name", "n", "Name of the manager to reload", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)

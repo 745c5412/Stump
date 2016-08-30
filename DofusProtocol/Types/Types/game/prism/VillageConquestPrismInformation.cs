@@ -1,31 +1,27 @@
-
-
 // Generated on 03/02/2014 20:43:03
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class VillageConquestPrismInformation
     {
         public const short Id = 379;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public bool isEntered;
         public bool isInRoom;
         public short areaId;
         public sbyte areaAlignment;
-        
+
         public VillageConquestPrismInformation()
         {
         }
-        
+
         public VillageConquestPrismInformation(bool isEntered, bool isInRoom, short areaId, sbyte areaAlignment)
         {
             this.isEntered = isEntered;
@@ -33,7 +29,7 @@ namespace Stump.DofusProtocol.Types
             this.areaId = areaId;
             this.areaAlignment = areaAlignment;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             byte flag1 = 0;
@@ -43,7 +39,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(areaId);
             writer.WriteSByte(areaAlignment);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             byte flag1 = reader.ReadByte();
@@ -56,12 +52,10 @@ namespace Stump.DofusProtocol.Types
             if (areaAlignment < 0)
                 throw new Exception("Forbidden value on areaAlignment = " + areaAlignment + ", it doesn't respect the following condition : areaAlignment < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(bool) + 0 + sizeof(short) + sizeof(sbyte);
         }
-        
     }
-    
 }

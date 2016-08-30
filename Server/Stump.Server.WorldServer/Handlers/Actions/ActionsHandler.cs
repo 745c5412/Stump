@@ -1,4 +1,3 @@
-
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.Network;
 

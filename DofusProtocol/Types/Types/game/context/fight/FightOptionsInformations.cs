@@ -1,10 +1,4 @@
-
-
 // Generated on 03/02/2014 20:42:59
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
@@ -12,20 +6,21 @@ namespace Stump.DofusProtocol.Types
     public class FightOptionsInformations
     {
         public const short Id = 20;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public bool isSecret;
         public bool isRestrictedToPartyOnly;
         public bool isClosed;
         public bool isAskingForHelp;
-        
+
         public FightOptionsInformations()
         {
         }
-        
+
         public FightOptionsInformations(bool isSecret, bool isRestrictedToPartyOnly, bool isClosed, bool isAskingForHelp)
         {
             this.isSecret = isSecret;
@@ -33,7 +28,7 @@ namespace Stump.DofusProtocol.Types
             this.isClosed = isClosed;
             this.isAskingForHelp = isAskingForHelp;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             byte flag1 = 0;
@@ -43,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 3, isAskingForHelp);
             writer.WriteByte(flag1);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             byte flag1 = reader.ReadByte();
@@ -52,12 +47,10 @@ namespace Stump.DofusProtocol.Types
             isClosed = BooleanByteWrapper.GetFlag(flag1, 2);
             isAskingForHelp = BooleanByteWrapper.GetFlag(flag1, 3);
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(bool) + 0 + 0 + 0;
         }
-        
     }
-    
 }

@@ -2,7 +2,6 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
 using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
@@ -12,8 +11,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class ExpressionReplacer : ExpressionVisitor
     {
-        Expression searchFor;
-        Expression replaceWith;
+        private Expression searchFor;
+        private Expression replaceWith;
 
         private ExpressionReplacer(Expression searchFor, Expression replaceWith)
         {

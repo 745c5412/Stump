@@ -1,7 +1,7 @@
-using System;
-using System.IO;
 using NLog;
 using Stump.Core.IO;
+using System;
+using System.IO;
 
 namespace Stump.Server.BaseServer.IPC
 {
@@ -23,7 +23,6 @@ namespace Stump.Server.BaseServer.IPC
                        Length == Data.Length;
             }
         }
-
 
         public byte? LengthBytesCount
         {
@@ -66,7 +65,7 @@ namespace Stump.Server.BaseServer.IPC
 
                 if (LengthBytesCount > 3)
                     logger.Error("Invalid message LengthBytesCount = {0}", LengthBytesCount);
-            } 
+            }
 
             if (LengthBytesCount.HasValue &&
                 reader.BytesAvailable >= LengthBytesCount && !Length.HasValue)
@@ -75,7 +74,7 @@ namespace Stump.Server.BaseServer.IPC
 
                 for (var i = LengthBytesCount.Value - 1; i >= 0; i--)
                 {
-                    Length |= reader.ReadByte() << (i*8);
+                    Length |= reader.ReadByte() << (i * 8);
                 }
 
                 if (Length < 0)
@@ -103,7 +102,7 @@ namespace Stump.Server.BaseServer.IPC
                 }
 
                 // not enough bytes, so we read what we can
-                Data = reader.ReadBytes((int) reader.BytesAvailable);
+                Data = reader.ReadBytes((int)reader.BytesAvailable);
 
                 m_dataMissing = true;
                 return false;
@@ -117,12 +116,12 @@ namespace Stump.Server.BaseServer.IPC
             if (Data.Length + reader.BytesAvailable < Length)
             {
                 var lastLength = m_data.Length;
-                Array.Resize(ref m_data, (int) (Data.Length + reader.BytesAvailable));
+                Array.Resize(ref m_data, (int)(Data.Length + reader.BytesAvailable));
 
                 if (reader.BytesAvailable < 0)
                     return false;
 
-                var array = reader.ReadBytes((int) reader.BytesAvailable);
+                var array = reader.ReadBytes((int)reader.BytesAvailable);
 
                 Array.Copy(array, 0, Data, lastLength, array.Length);
 

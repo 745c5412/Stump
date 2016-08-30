@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace Stump.Server.WorldServer.Database.World
 {
@@ -110,7 +110,7 @@ namespace Stump.Server.WorldServer.Database.World
 
         public void AssignFields(object d2oObject)
         {
-            var map = (WorldMap) d2oObject;
+            var map = (WorldMap)d2oObject;
             Id = map.id;
             OrigineX = map.origineX;
             OrigineY = map.origineY;
@@ -129,6 +129,6 @@ namespace Stump.Server.WorldServer.Database.World
             TotalHeight = map.totalHeight;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

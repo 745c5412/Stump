@@ -1,31 +1,27 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class ActorExtendedAlignmentInformations : ActorAlignmentInformations
     {
         public const short Id = 202;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public ushort honor;
         public ushort honorGradeFloor;
         public ushort honorNextGradeFloor;
         public bool pvpEnabled;
-        
+
         public ActorExtendedAlignmentInformations()
         {
         }
-        
+
         public ActorExtendedAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, ushort dishonor, int characterPower, ushort honor, ushort honorGradeFloor, ushort honorNextGradeFloor, bool pvpEnabled)
          : base(alignmentSide, alignmentValue, alignmentGrade, dishonor, characterPower)
         {
@@ -34,7 +30,7 @@ namespace Stump.DofusProtocol.Types
             this.honorNextGradeFloor = honorNextGradeFloor;
             this.pvpEnabled = pvpEnabled;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -43,7 +39,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(honorNextGradeFloor);
             writer.WriteBoolean(pvpEnabled);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -58,12 +54,10 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on honorNextGradeFloor = " + honorNextGradeFloor + ", it doesn't respect the following condition : honorNextGradeFloor < 0 || honorNextGradeFloor > 20000");
             pvpEnabled = reader.ReadBoolean();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(ushort) + sizeof(ushort) + sizeof(ushort) + sizeof(bool);
         }
-        
     }
-    
 }

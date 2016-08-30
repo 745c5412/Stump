@@ -6,7 +6,7 @@ namespace Stump.ORM.SubSonic.Schema
     {
         public ITable Table { get; private set; }
         public string Name { get; private set; }
-        
+
         public IColumn JoinKey { get; set; }
 
         public ITable TargetTable { get; set; }

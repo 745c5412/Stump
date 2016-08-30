@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Attributes;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.Core.Attributes;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
     public class Bank : ItemsStorage<BankItem>
     {
         //1K per default
-        [Variable] private const int PricePerItem = 1;
+        [Variable]
+        private const int PricePerItem = 1;
 
         public Bank(Character character)
         {
@@ -121,14 +121,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
         protected override void OnItemRemoved(BankItem item, bool removeItemMsg)
-        {            
+        {
             InventoryHandler.SendStorageObjectRemoveMessage(Owner.Client, item);
 
             base.OnItemRemoved(item, false);
         }
 
         protected override void OnItemStackChanged(BankItem item, int difference, bool removeMsg = true)
-        {            
+        {
             InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
 
             base.OnItemStackChanged(item, difference, false);

@@ -1,12 +1,11 @@
-using System;
-using System.Globalization;
-using System.Linq;
 using MongoDB.Bson;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
+using System.Globalization;
 
 namespace Stump.Server.WorldServer.Commands.Trigger
 {
@@ -17,7 +16,6 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         {
             Character = character;
         }
-
 
         protected GameTrigger(string args, Character character)
             : base(args, character.UserGroup.Role)

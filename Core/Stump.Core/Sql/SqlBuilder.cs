@@ -131,7 +131,7 @@ namespace Stump.Core.Sql
         public static string GetValueString(object obj)
         {
             if (obj is RawData)
-                return ( (RawData)obj ).Data.ToString();
+                return ((RawData)obj).Data.ToString();
 
             return "'" + EscapeField(obj.ToString()) + "'";
         }

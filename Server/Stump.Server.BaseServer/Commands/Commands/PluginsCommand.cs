@@ -1,8 +1,8 @@
+using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Plugins;
 using System;
 using System.IO;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Plugins;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -10,7 +10,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public PluginsCommand()
         {
-            Aliases = new[] {"plugins"};
+            Aliases = new[] { "plugins" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Provide commands to manage plugins";
         }
@@ -20,8 +20,8 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public PluginLoadCommand()
         {
-            ParentCommandType = typeof (PluginsCommand);
-            Aliases = new[] {"load"};
+            ParentCommandType = typeof(PluginsCommand);
+            Aliases = new[] { "load" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Load a plugin";
             AddParameter<string>("name", "n", "Plugin name or path (in plugins directory)");
@@ -80,7 +80,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public PluginReloadCommand()
         {
-            ParentCommandType = typeof (PluginsCommand);
+            ParentCommandType = typeof(PluginsCommand);
             Aliases = new[] { "reload" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Reload and reset a plugin";
@@ -109,8 +109,8 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public PluginUnloadCommand()
         {
-            ParentCommandType = typeof (PluginsCommand);
-            Aliases = new[] {"unload"};
+            ParentCommandType = typeof(PluginsCommand);
+            Aliases = new[] { "unload" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Unload a plugin";
             AddParameter<string>("name", "n", "Plugin name");

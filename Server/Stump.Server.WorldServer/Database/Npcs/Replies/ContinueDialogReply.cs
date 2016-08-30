@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (!base.Execute(npc, character))
                 return false;
 
-            ((NpcDialog) character.Dialog).ChangeMessage(NextMessage);
+            ((NpcDialog)character.Dialog).ChangeMessage(NextMessage);
 
             return true;
         }

@@ -1,16 +1,15 @@
-using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
     public partial class CharacterHandler
     {
-        
         public static void SendLifePointsRegenBeginMessage(IPacketReceiver client, byte regenRate)
         {
             client.Send(new LifePointsRegenBeginMessage(regenRate));
@@ -37,8 +36,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 new CharacterStatsListMessage(
                     new CharacterCharacteristicsInformations(
                         client.Character.Experience, // EXPERIENCE
-                        client.Character.LowerBoundExperience, // EXPERIENCE level floor 
-                        client.Character.UpperBoundExperience, // EXPERIENCE nextlevel floor 
+                        client.Character.LowerBoundExperience, // EXPERIENCE level floor
+                        client.Character.UpperBoundExperience, // EXPERIENCE nextlevel floor
 
                         client.Character.Kamas, // Amount of kamas.
 
@@ -72,7 +71,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                         client.Character.Stats[PlayerFields.SummonLimit],
                         client.Character.Stats[PlayerFields.DamageReflection],
                         client.Character.Stats[PlayerFields.CriticalHit],
-                        (short) client.Character.Inventory.WeaponCriticalHit,
+                        (short)client.Character.Inventory.WeaponCriticalHit,
                         client.Character.Stats[PlayerFields.CriticalMiss],
                         client.Character.Stats[PlayerFields.HealBonus],
                         client.Character.Stats[PlayerFields.DamageBonus],
@@ -124,7 +123,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             client.Send(new CharacterLevelUpMessage(level));
         }
-
 
         public static void SendCharacterLevelUpInformationMessage(IPacketReceiver client, Character character, byte level)
         {

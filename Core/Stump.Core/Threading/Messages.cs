@@ -4,7 +4,7 @@ using System.Threading;
 
 /*
  * Original author : Thomas "zeroflag" Kraemer
- * 
+ *
  */
 
 namespace Stump.Core.Threading
@@ -25,7 +25,6 @@ namespace Stump.Core.Threading
     /// </summary>
     public class Message : IMessage
     {
-
         /// <summary>
         /// Returns a recycled or new Message object with the given callback.
         /// </summary>
@@ -82,12 +81,11 @@ namespace Stump.Core.Threading
             var actions = Callback.GetInvocationList();
             foreach (var del in actions)
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.AppendLine(del.Method.ReflectedType.FullName + "." + del.Method.Name);
             }
             return sb.ToString();
         }
     }
-
 
     /// <summary>
     /// Rather performance-hungry message to ensure that a task
@@ -95,7 +93,7 @@ namespace Stump.Core.Threading
     /// </summary>
     public class WaitMessage : Message
     {
-        bool m_executed;
+        private bool m_executed;
 
         public override void Execute()
         {
@@ -129,6 +127,7 @@ namespace Stump.Core.Threading
     }
 
     #region Message1
+
     /// <summary>
     /// Defines a message with one input parameter.
     /// </summary>
@@ -196,20 +195,23 @@ namespace Stump.Core.Threading
         {
             return new Message1<T1>(dele);
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
             Delegate[] actions = Callback.GetInvocationList();
-            foreach ( Delegate del in actions )
+            foreach (Delegate del in actions)
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.AppendLine(del.Method.ReflectedType.FullName + "." + del.Method.Name);
             }
             return sb.ToString();
         }
     }
-    #endregion
+
+    #endregion Message1
 
     #region Message2
+
     public class Message2<T1, T2> : IMessage
     {
         /// <summary>
@@ -295,20 +297,23 @@ namespace Stump.Core.Threading
         {
             return new Message2<T1, T2>(dele);
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
             Delegate[] actions = Callback.GetInvocationList();
-            foreach ( Delegate del in actions )
+            foreach (Delegate del in actions)
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.AppendLine(del.Method.ReflectedType.FullName + "." + del.Method.Name);
             }
             return sb.ToString();
         }
     }
-    #endregion
+
+    #endregion Message2
 
     #region Message3
+
     public class Message3<T1, T2, T3> : IMessage
     {
         /// <summary>
@@ -394,20 +399,23 @@ namespace Stump.Core.Threading
         {
             return new Message3<T1, T2, T3>(dele);
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
             var actions = Callback.GetInvocationList();
             foreach (var del in actions)
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.AppendLine(del.Method.ReflectedType.FullName + "." + del.Method.Name);
             }
             return sb.ToString();
         }
     }
-    #endregion
+
+    #endregion Message3
 
     #region Message4
+
     public class Message4<T1, T2, T3, T4> : IMessage
     {
         /// <summary>
@@ -504,16 +512,18 @@ namespace Stump.Core.Threading
         {
             return new Message4<T1, T2, T3, T4>(callback);
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
             Delegate[] actions = Callback.GetInvocationList();
-            foreach ( Delegate del in actions )
+            foreach (Delegate del in actions)
             {
-                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+                sb.AppendLine(del.Method.ReflectedType.FullName + "." + del.Method.Name);
             }
             return sb.ToString();
         }
     }
-    #endregion
+
+    #endregion Message4
 }

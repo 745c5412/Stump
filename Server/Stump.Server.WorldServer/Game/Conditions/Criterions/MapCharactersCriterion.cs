@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
@@ -45,7 +45,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             }
             else if (split.Length == 2)
             {
-
                 int mapId;
                 if (!int.TryParse(split[0], out mapId))
                     throw new Exception(string.Format("Cannot build MapCharactersCriterion, {0} is not a valid map id", split[0]));

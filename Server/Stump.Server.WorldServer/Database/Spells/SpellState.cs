@@ -1,8 +1,8 @@
-using System;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Spells
 {
@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public void AssignFields(object d2oObject)
         {
-            var state = (DofusProtocol.D2oClasses.SpellState) d2oObject;
+            var state = (DofusProtocol.D2oClasses.SpellState)d2oObject;
             Id = state.id;
             NameId = state.nameId;
             PreventsSpellCast = state.preventsSpellCast;
@@ -65,6 +65,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             Critical = state.critical;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

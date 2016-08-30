@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Stump.Core.Xml;
+using Stump.Plugins.DefaultPlugin.Global.Placements;
+using Stump.Tools.MapControl;
+using System;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Stump.Tools.MapControl;
-using Stump.Core.Xml;
-using Stump.Plugins.DefaultPlugin.Global.Placements;
 
 namespace Stump.Tools.CellPatternBuilder
 {
@@ -83,7 +79,6 @@ namespace Stump.Tools.CellPatternBuilder
                     mapCell.State = CellState.BluePlacement;
                 else if (reds.Contains(mapCell.GetPlanLocation(mapControl)))
                     mapCell.State = CellState.RedPlacement;
-
                 else mapCell.State = CellState.None;
             }
 
@@ -103,7 +98,7 @@ namespace Stump.Tools.CellPatternBuilder
         {
             if (buttons == MouseButtons.Left)
             {
-                cell.State = ( radioButtonBlue.Checked ? CellState.BluePlacement : CellState.RedPlacement );
+                cell.State = (radioButtonBlue.Checked ? CellState.BluePlacement : CellState.RedPlacement);
             }
             else if (buttons == MouseButtons.Right)
             {
@@ -165,7 +160,6 @@ namespace Stump.Tools.CellPatternBuilder
 
         private void CheckBoxRelativeIdsCheckedChanged(object sender, EventArgs e)
         {
-
         }
     }
 }

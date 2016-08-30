@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
@@ -52,12 +52,12 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public int MaxMatchableRank
         {
-            get { return (int) (ArenaRank + ArenaMargeIncreasePerMinutes*(DateTime.Now - InQueueSince).TotalMinutes); }
+            get { return (int)(ArenaRank + ArenaMargeIncreasePerMinutes * (DateTime.Now - InQueueSince).TotalMinutes); }
         }
-        
+
         public int MinMatchableRank
         {
-            get { return (int) (ArenaRank - ArenaMargeIncreasePerMinutes*(DateTime.Now - InQueueSince).TotalMinutes); }
+            get { return (int)(ArenaRank - ArenaMargeIncreasePerMinutes * (DateTime.Now - InQueueSince).TotalMinutes); }
         }
 
         public DateTime InQueueSince

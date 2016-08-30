@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using DBSynchroniser;
+﻿using DBSynchroniser;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using WorldEditor.Editors.Files.D2O;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
-using IDataObject = System.Windows.IDataObject;
 
 namespace WorldEditor.Editors.Tables
 {
@@ -41,7 +32,7 @@ namespace WorldEditor.Editors.Tables
             private set;
         }
 
-         private void FindSubClasses()
+        private void FindSubClasses()
         {
             foreach (var type in typeof(AbuseReasons).Assembly.GetTypes())
             {
@@ -67,8 +58,7 @@ namespace WorldEditor.Editors.Tables
         }
 
         private void ObjectsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {            
-            
+        {
             ModelView.RemoveCommand.RaiseCanExecuteChanged();
             ObjectEditor.EditorDefinitions.Clear();
 
@@ -133,12 +123,10 @@ namespace WorldEditor.Editors.Tables
                     }
                 }
             }
- 
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
         }
-
     }
 }

@@ -2,15 +2,15 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Linq.Expressions;
-using System.IO;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Linq.Translation;
 using Stump.ORM.SubSonic.Query;
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -38,7 +38,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             language = mapping.Language;
             //log = log;
         }
-        
+
         public DbQueryProvider(IDataProvider provider)
         {
             _provider = provider;
@@ -54,7 +54,6 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         {
             get { return connection; }
         }
-
 
         public QueryPolicy Policy
         {
@@ -109,7 +108,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             else
             {
                 // compile the execution plan and invoke it
-                Expression<Func<object>> efn = ConvertThis(plan,typeof(object));
+                Expression<Func<object>> efn = ConvertThis(plan, typeof(object));
                 Func<object> fn = efn.Compile();
                 return fn();
             }
@@ -117,7 +116,6 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
         public Expression<Func<object>> ConvertThis(Expression exp, Type type)
         {
-
             var result = Expression.Lambda<Func<object>>(Expression.Convert(exp, type));
 
             return result;
@@ -179,7 +177,6 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             expression = RedundantJoinRemover.Remove(expression);
             expression = RedundantColumnRemover.Remove(expression);
 
-
             //HACK: Have to fix invalid COUNT/ORDER BY here
             expression = CountOrderByRemover.Remove(expression);
 
@@ -187,7 +184,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         }
 
         /// <summary>
-        /// Determines whether a given expression can be executed locally. 
+        /// Determines whether a given expression can be executed locally.
         /// (It contains no parts that should be translated to the target environment.)
         /// </summary>
         /// <param name="expression"></param>

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Commands.Matching.Characters
 {
@@ -40,16 +40,16 @@ namespace Stump.Server.WorldServer.Commands.Matching.Characters
         {
             var character = World.Instance.GetCharacter(name);
 
-            return character != null ? new []{character} : new Character[0];
+            return character != null ? new[] { character } : new Character[0];
         }
 
         public override Character[] FindMatchs()
-        {    
+        {
             if (Pattern == "*")
                 if (Caller == null)
                     throw new Exception("No caller specified");
                 else
-                    return new[]{Caller};
+                    return new[] { Caller };
 
             if (Pattern.StartsWith("!"))
             {

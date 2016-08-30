@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 using System.Linq;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             if (Operator == ComparaisonOperatorEnum.EQUALS)
                 return character.Inventory.Any(entry => entry.Template.Id == Item);
 
-             return Operator == ComparaisonOperatorEnum.INEQUALS && !character.Inventory.Any(entry => entry.Template.Id == Item && entry.IsEquiped());
+            return Operator == ComparaisonOperatorEnum.INEQUALS && !character.Inventory.Any(entry => entry.Template.Id == Item && entry.IsEquiped());
         }
 
         public override void Build()

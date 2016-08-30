@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.Server.BaseServer.Plugins;
+﻿using Stump.Server.BaseServer.Plugins;
+using System;
 
 namespace ArkalysScriptPlugin
 {
@@ -46,7 +46,6 @@ namespace ArkalysScriptPlugin
 
         public override void Dispose()
         {
-
         }
 
         public static Plugin CurrentPlugin

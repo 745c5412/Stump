@@ -14,7 +14,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class ExpressionComparer
     {
-        ScopedDictionary<ParameterExpression, ParameterExpression> parameterScope;
+        private ScopedDictionary<ParameterExpression, ParameterExpression> parameterScope;
 
         protected ExpressionComparer(ScopedDictionary<ParameterExpression, ParameterExpression> parameterScope)
         {
@@ -53,6 +53,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case ExpressionType.TypeAs:
                 case ExpressionType.UnaryPlus:
                     return this.CompareUnary((UnaryExpression)a, (UnaryExpression)b);
+
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
                 case ExpressionType.Subtract:
@@ -78,31 +79,44 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case ExpressionType.ExclusiveOr:
                 case ExpressionType.Power:
                     return this.CompareBinary((BinaryExpression)a, (BinaryExpression)b);
+
                 case ExpressionType.TypeIs:
                     return this.CompareTypeIs((TypeBinaryExpression)a, (TypeBinaryExpression)b);
+
                 case ExpressionType.Conditional:
                     return this.CompareConditional((ConditionalExpression)a, (ConditionalExpression)b);
+
                 case ExpressionType.Constant:
                     return this.CompareConstant((ConstantExpression)a, (ConstantExpression)b);
+
                 case ExpressionType.Parameter:
                     return this.CompareParameter((ParameterExpression)a, (ParameterExpression)b);
+
                 case ExpressionType.MemberAccess:
                     return this.CompareMemberAccess((MemberExpression)a, (MemberExpression)b);
+
                 case ExpressionType.Call:
                     return this.CompareMethodCall((MethodCallExpression)a, (MethodCallExpression)b);
+
                 case ExpressionType.Lambda:
                     return this.CompareLambda((LambdaExpression)a, (LambdaExpression)b);
+
                 case ExpressionType.New:
                     return this.CompareNew((NewExpression)a, (NewExpression)b);
+
                 case ExpressionType.NewArrayInit:
                 case ExpressionType.NewArrayBounds:
                     return this.CompareNewArray((NewArrayExpression)a, (NewArrayExpression)b);
+
                 case ExpressionType.Invoke:
                     return this.CompareInvocation((InvocationExpression)a, (InvocationExpression)b);
+
                 case ExpressionType.MemberInit:
                     return this.CompareMemberInit((MemberInitExpression)a, (MemberInitExpression)b);
+
                 case ExpressionType.ListInit:
                     return this.CompareListInit((ListInitExpression)a, (ListInitExpression)b);
+
                 default:
                     throw new Exception(string.Format("Unhandled expression type: '{0}'", a.NodeType));
             }
@@ -282,10 +296,13 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             {
                 case MemberBindingType.Assignment:
                     return this.CompareMemberAssignment((MemberAssignment)a, (MemberAssignment)b);
+
                 case MemberBindingType.ListBinding:
                     return this.CompareMemberListBinding((MemberListBinding)a, (MemberListBinding)b);
+
                 case MemberBindingType.MemberBinding:
                     return this.CompareMemberMemberBinding((MemberMemberBinding)a, (MemberMemberBinding)b);
+
                 default:
                     throw new Exception(string.Format("Unhandled binding type: '{0}'", a.BindingType));
             }

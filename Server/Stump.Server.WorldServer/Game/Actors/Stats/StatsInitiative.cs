@@ -29,9 +29,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public int TotalWithLife 
+        public int TotalWithLife
         {
-            get { return (int) (Total*(Owner.Stats.Health.Total/(double) Owner.Stats.Health.TotalMax)); }
+            get { return (int)(Total * (Owner.Stats.Health.Total / (double)Owner.Stats.Health.TotalMax)); }
         }
     }
 }

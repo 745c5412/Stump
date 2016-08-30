@@ -54,11 +54,11 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        #endregion
+        #endregion ISpellRecord Members
 
         public override string ToString()
         {
-            return (SpellIdEnum) SpellId + " (" + SpellId + ")";
+            return (SpellIdEnum)SpellId + " (" + SpellId + ")";
         }
     }
 }

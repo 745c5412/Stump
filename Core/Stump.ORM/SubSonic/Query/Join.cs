@@ -1,71 +1,77 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
-using System;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Schema;
+using System;
 
 namespace Stump.ORM.SubSonic.Query
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class Join
     {
         #region JoinType enum
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public enum JoinType
         {
             /// <summary>
-            /// 
+            ///
             /// </summary>
             Inner,
+
             /// <summary>
-            /// 
+            ///
             /// </summary>
             Outer,
+
             /// <summary>
-            /// 
+            ///
             /// </summary>
             LeftInner,
+
             /// <summary>
-            /// 
+            ///
             /// </summary>
             LeftOuter,
+
             /// <summary>
-            /// 
+            ///
             /// </summary>
             RightInner,
+
             /// <summary>
-            /// 
+            ///
             /// </summary>
             RightOuter,
+
             /// <summary>
-            /// 
+            ///
             /// </summary>
             Cross,
+
             /// <summary>
-            /// 
+            ///
             /// </summary>
             NotEqual
         }
 
-        #endregion
-
+        #endregion JoinType enum
 
         private JoinType _joinType = JoinType.Inner;
 
@@ -93,13 +99,12 @@ namespace Stump.ORM.SubSonic.Query
             DatabaseTable tblTo = (DatabaseTable)DataService.FindTable(toTableName);
             if (tblTo == null)
                 tblTo = DataService.FindTableByClassName(toTableName);
-            
+
             DatabaseTableColumn fromCol = null;
             DatabaseTableColumn toCol = null;
 
             if (tblFrom != null) {
                 fromCol = tblFrom.GetColumn(fromColumnName);
-
             }
 
             if (tblTo != null) {
@@ -110,7 +115,6 @@ namespace Stump.ORM.SubSonic.Query
                 FromColumn = fromCol;
                 ToColumn = toCol;
                 Type = joinType;
-
             } else {
                 throw new InvalidOperationException("Can't find the table/columns you're looking for");
             }
@@ -148,26 +152,32 @@ namespace Stump.ORM.SubSonic.Query
         public static string GetJoinTypeValue(ISqlGenerator generator, JoinType j)
         {
             string result = generator.sqlFragment.INNER_JOIN;
-            switch(j)
+            switch (j)
             {
                 case JoinType.Outer:
                     result = generator.sqlFragment.OUTER_JOIN;
                     break;
+
                 case JoinType.LeftInner:
                     result = generator.sqlFragment.LEFT_INNER_JOIN;
                     break;
+
                 case JoinType.LeftOuter:
                     result = generator.sqlFragment.LEFT_OUTER_JOIN;
                     break;
+
                 case JoinType.RightInner:
                     result = generator.sqlFragment.RIGHT_INNER_JOIN;
                     break;
+
                 case JoinType.RightOuter:
                     result = generator.sqlFragment.RIGHT_OUTER_JOIN;
                     break;
+
                 case JoinType.Cross:
                     result = generator.sqlFragment.CROSS_JOIN;
                     break;
+
                 case JoinType.NotEqual:
                     result = generator.sqlFragment.UNEQUAL_JOIN;
                     break;
@@ -177,7 +187,7 @@ namespace Stump.ORM.SubSonic.Query
 
         public override bool Equals(object obj)
         {
-            if(typeof(object) == typeof(Join))
+            if (typeof(object) == typeof(Join))
             {
                 Join jCompare = (Join)obj;
                 return (FromColumn.Name.Equals(jCompare.FromColumn.Name, StringComparison.InvariantCultureIgnoreCase) &&

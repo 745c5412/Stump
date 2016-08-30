@@ -1,7 +1,7 @@
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
 {
@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             if (amount == 0)
                 return false;
 
-            return amount > 0 ? MoveItemToPanel(guid, (uint)amount) : MoveItemToInventory(guid, (uint)( -amount ));
+            return amount > 0 ? MoveItemToPanel(guid, (uint)amount) : MoveItemToInventory(guid, (uint)(-amount));
         }
 
         public bool MoveItemToPanel(int guid, uint amount)
@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
                 if (tradeItem.Stack <= 0)
                     RemoveItem(tradeItem);
 
-                OnItemMoved(tradeItem, true, (int) (tradeItem.Stack - currentStack));
+                OnItemMoved(tradeItem, true, (int)(tradeItem.Stack - currentStack));
 
                 return true;
             }
@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             tradeItem = new PlayerTradeItem(playerItem, amount);
             AddItem(tradeItem);
 
-            OnItemMoved(tradeItem, false, (int) amount);
+            OnItemMoved(tradeItem, false, (int)amount);
 
             return true;
         }

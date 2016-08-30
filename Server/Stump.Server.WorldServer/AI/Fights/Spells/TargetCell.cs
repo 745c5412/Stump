@@ -1,5 +1,4 @@
-﻿using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.World;
+﻿using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
@@ -15,7 +14,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             unchecked
             {
-                return ((Cell != null ? Cell.GetHashCode() : 0)*397) ^ (int) Direction;
+                return ((Cell != null ? Cell.GetHashCode() : 0) * 397) ^ (int)Direction;
             }
         }
 
@@ -50,7 +49,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((TargetCell) obj);
+            return Equals((TargetCell)obj);
         }
     }
 }

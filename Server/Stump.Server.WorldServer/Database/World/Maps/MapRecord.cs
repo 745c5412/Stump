@@ -1,8 +1,8 @@
-using System;
-using System.Linq;
 using Stump.Core.IO;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.World.Maps
 {
@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             get;
             set;
         }
-        
+
         [DefaultSetting(-1)]
         public int TopNeighbourCellId
         {
@@ -102,7 +102,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             get;
             set;
         }
-        
+
         [DefaultSetting(-1)]
         public int BottomNeighbourCellId
         {
@@ -128,7 +128,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             get;
             set;
         }
-        
+
         [DefaultSetting(-1)]
         public int RightNeighbourCellId
         {
@@ -237,7 +237,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
                 m_compressedCells = value;
                 byte[] uncompressedCells = ZipHelper.Uncompress(m_compressedCells);
 
-                Cells = new Cell[uncompressedCells.Length/Cell.StructSize];
+                Cells = new Cell[uncompressedCells.Length / Cell.StructSize];
                 for (int i = 0, j = 0; i < uncompressedCells.Length; i += Cell.StructSize, j++)
                 {
                     Cells[j] = new Cell();
@@ -254,7 +254,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
                 m_compressedElements = value;
                 byte[] uncompressedElements = ZipHelper.Uncompress(m_compressedElements);
 
-                Elements = new MapElement[uncompressedElements.Length/MapElement.Size];
+                Elements = new MapElement[uncompressedElements.Length / MapElement.Size];
                 for (int i = 0, j = 0; i < uncompressedElements.Length; i += MapElement.Size, j++)
                 {
                     var element = new MapElement();
@@ -283,34 +283,34 @@ namespace Stump.Server.WorldServer.Database.World.Maps
 
         public void BeforeSave(bool insert)
         {
-            m_compressedCells = new byte[Cells.Length*Cell.StructSize];
+            m_compressedCells = new byte[Cells.Length * Cell.StructSize];
 
             for (int i = 0; i < Cells.Length; i++)
             {
-                Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i*Cell.StructSize, Cell.StructSize);
+                Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i * Cell.StructSize, Cell.StructSize);
             }
 
             m_compressedCells = ZipHelper.Compress(m_compressedCells);
 
-            m_compressedElements = new byte[Elements.Length*MapElement.Size];
+            m_compressedElements = new byte[Elements.Length * MapElement.Size];
             for (int i = 0; i < Elements.Length; i++)
             {
-                Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i*MapElement.Size, MapElement.Size);
+                Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);
             }
 
             m_compressedElements = ZipHelper.Compress(m_compressedElements);
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
 
         public static byte[] SerializeFightCells(short[] cells)
         {
-            var bytes = new byte[cells.Length*2];
+            var bytes = new byte[cells.Length * 2];
 
             for (int i = 0, l = 0; i < cells.Length; i++, l += 2)
             {
-                bytes[l] = (byte) ((cells[i] & 0xFF00) >> 8);
-                bytes[l + 1] = (byte) (cells[i] & 0xFF);
+                bytes[l] = (byte)((cells[i] & 0xFF00) >> 8);
+                bytes[l + 1] = (byte)(cells[i] & 0xFF);
             }
 
             return bytes;
@@ -318,13 +318,13 @@ namespace Stump.Server.WorldServer.Database.World.Maps
 
         public static short[] DeserializeFightCells(byte[] bytes)
         {
-            if ((bytes.Length%2) != 0)
+            if ((bytes.Length % 2) != 0)
                 throw new ArgumentException("bytes.Length % 2 != 0");
 
-            var cells = new short[bytes.Length/2];
+            var cells = new short[bytes.Length / 2];
 
             for (int i = 0, j = 0; i < bytes.Length; i += 2, j++)
-                cells[j] = (short) (bytes[i] << 8 | bytes[i + 1]);
+                cells[j] = (short)(bytes[i] << 8 | bytes[i + 1]);
 
             return cells;
         }

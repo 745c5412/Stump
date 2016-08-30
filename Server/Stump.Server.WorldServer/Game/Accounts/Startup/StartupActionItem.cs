@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Startup;
 using Stump.Server.WorldServer.Game.Items;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Accounts.Startup
 {
@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Accounts.Startup
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()
         {
-            return new ObjectItemInformationWithQuantity((short) ItemTemplate.Id, 0, false, ItemTemplate.Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int) Amount);
+            return new ObjectItemInformationWithQuantity((short)ItemTemplate.Id, 0, false, ItemTemplate.Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int)Amount);
         }
     }
 }

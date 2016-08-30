@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:50
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -19,10 +13,13 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "Notifications";
         public int id;
+
         [I18NField]
         public uint titleId;
+
         [I18NField]
         public uint messageId;
+
         public int iconId;
         public int typeId;
         public String trigger;
@@ -31,7 +28,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -82,7 +78,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Notification)obj;
-            
+
             Id = castedObj.id;
             TitleId = castedObj.titleId;
             MessageId = castedObj.messageId;
@@ -90,7 +86,7 @@ namespace DBSynchroniser.Records
             TypeId = castedObj.typeId;
             Trigger = castedObj.trigger;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Notification)parent : new Notification();
@@ -102,10 +98,9 @@ namespace DBSynchroniser.Records
             obj.trigger = Trigger;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

@@ -1,10 +1,10 @@
+using DofusProtocolBuilder.Parsing;
+using DofusProtocolBuilder.Templates;
+using Microsoft.VisualStudio.TextTemplating;
 using System;
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Linq;
-using DofusProtocolBuilder.Parsing;
-using DofusProtocolBuilder.Templates;
-using Microsoft.VisualStudio.TextTemplating;
 
 namespace DofusProtocolBuilder.Profiles
 {
@@ -55,7 +55,6 @@ namespace DofusProtocolBuilder.Profiles
                         {@"public function get type\(\) : int", "public var type:int;"},
                         // ankama's devs are idiots, they attempt to assign -1 to a uint field
                         {@"public var iconId:uint", "public var iconId:int"},
-
 
                         // shouldn't be public
                         {@"public var type:QuestObjectiveType", "private var type:QuestObjectiveType"},

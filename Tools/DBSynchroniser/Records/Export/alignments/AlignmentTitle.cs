@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:46
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -26,7 +23,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)sideId; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("SideId", false)]
@@ -49,6 +45,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_namesIdBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -75,6 +72,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_shortsIdBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -91,12 +89,12 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (AlignmentTitle)obj;
-            
+
             SideId = castedObj.sideId;
             NamesId = castedObj.namesId;
             ShortsId = castedObj.shortsId;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (AlignmentTitle)parent : new AlignmentTitle();
@@ -105,12 +103,11 @@ namespace DBSynchroniser.Records
             obj.shortsId = ShortsId;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_namesIdBin = namesId == null ? null : namesId.ToBinary();
             m_shortsIdBin = shortsId == null ? null : shortsId.ToBinary();
-        
         }
     }
 }

@@ -12,27 +12,27 @@
         Icon="pack://application:,,,/Images/Hammer_Builder_32xLG.png"
         d:DataContext="{d:DesignInstance Type=items:ItemEditorModelView}" Grid.IsSharedSizeScope="True" Height="670" Width="760">
     <Window.Resources>
-        <helpers:BindingProxy Data="{Binding}" x:Key="ModelViewProxy"/>
-        <converters:CurrentLangConverter x:Key="CurrentLang"/>
-        <converters:IdToIconConverter x:Key="IdToIcon"/>
-        <converters:IdToI18NTextConverter x:Key="I18NToText"/>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        <items2:ItemEffectStyleSelector x:Key="EffectStyleSelector"/>
-        <items2:ColorByOperatorConverter x:Key="ColorByOperatorConverter"/>
+        <helpers:BindingProxy Data="{Binding}" x:Key="ModelViewProxy" />
+        <converters:CurrentLangConverter x:Key="CurrentLang" />
+        <converters:IdToIconConverter x:Key="IdToIcon" />
+        <converters:IdToI18NTextConverter x:Key="I18NToText" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <items2:ItemEffectStyleSelector x:Key="EffectStyleSelector" />
+        <items2:ColorByOperatorConverter x:Key="ColorByOperatorConverter" />
         <converters:LangToFlagConverter x:Key="LangToFlag" />
     </Window.Resources>
     <Window.Title>
-        <Binding Path="Item.Name" StringFormat="Editing '{0}'"/>
+        <Binding Path="Item.Name" StringFormat="Editing '{0}'" />
     </Window.Title>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" LastChildFill="True">
             <Border DockPanel.Dock="Left">
@@ -60,17 +60,17 @@
             </Border>
             <TextBox Text="{Binding Item.Name}" Foreground="SteelBlue" FontSize="40" BorderThickness="0" Background="Transparent" VerticalContentAlignment="Bottom"
     			VerticalAlignment="Top" Padding="0" Margin="3,3,3,0" />
-            <TextBox x:Name="ItemIdField"  Text="{Binding Item.Id}" Foreground="DimGray" FontSize="25" VerticalAlignment="Center" VerticalContentAlignment="Bottom" IsEnabled="False" Margin="3,10,3,9"/>
+            <TextBox x:Name="ItemIdField"  Text="{Binding Item.Id}" Foreground="DimGray" FontSize="25" VerticalAlignment="Center" VerticalContentAlignment="Bottom" IsEnabled="False" Margin="3,10,3,9" />
             <Button Click="ItemIdEdit_OnClick" Width="20" Height="25" Margin="2,17">
-                <Image Height="16" Source="/WorldEditor;component/Images/pencil_003_16xMD.png"  Width="16"/>
+                <Image Height="16" Source="/WorldEditor;component/Images/pencil_003_16xMD.png"  Width="16" />
             </Button>
-            <ComboBox SelectedValue="{Binding Item.CurrentLanguage}" ItemsSource="{Binding Source={markups:EnumValues {x:Type i18N:Languages}}}" 
+            <ComboBox SelectedValue="{Binding Item.CurrentLanguage}" ItemsSource="{Binding Source={markups:EnumValues {x:Type i18N:Languages}}}"
                       HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="i18N:Languages">
                         <StackPanel Margin="3" Orientation="Horizontal">
-                            <Image Margin="3" Source="{Binding Converter={StaticResource LangToFlag}}" HorizontalAlignment="Center"/>
-                            <TextBlock Margin="3" Text="{Binding}" HorizontalAlignment="Center"/>
+                            <Image Margin="3" Source="{Binding Converter={StaticResource LangToFlag}}" HorizontalAlignment="Center" />
+                            <TextBlock Margin="3" Text="{Binding}" HorizontalAlignment="Center" />
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
@@ -79,134 +79,133 @@
         <GroupBox Header="Primary Properties" Grid.Row="1">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="0.0*" SharedSizeGroup="Label"/>
-                    <ColumnDefinition Width="1.5*"/>
-                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="0.0*" SharedSizeGroup="Label" />
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Level" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.Level}" Grid.Column="1" Minimum="1" Maximum="200" Margin="3"/>
+                <TextBlock Text="Level" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.Level}" Grid.Column="1" Minimum="1" Maximum="200" Margin="3" />
 
-                <TextBlock Text="Type" Grid.Column="2" Margin="3"/>
+                <TextBlock Text="Type" Grid.Column="2" Margin="3" />
                 <ComboBox Grid.Column="3" Margin="3" ItemsSource="{Binding Types}" SelectedValuePath="Id" SelectedValue="{Binding Item.TypeId}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate DataType="d2OClasses:ItemType">
-                            <TextBlock Text="{Binding NameId, Converter={StaticResource I18NToText}}"/>
+                            <TextBlock Text="{Binding NameId, Converter={StaticResource I18NToText}}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-                <TextBlock Text="Weight" Grid.Column="4" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.Weight}" Grid.Column="5" Minimum="0" Margin="3"/>
+                <TextBlock Text="Weight" Grid.Column="4" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.Weight}" Grid.Column="5" Minimum="0" Margin="3" />
 
-                <TextBlock Text="Price" Grid.Row="1" Grid.Column="0" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.Price}" Grid.Row="1" Grid.Column="1" Minimum="0" Margin="3"/>
+                <TextBlock Text="Price" Grid.Row="1" Grid.Column="0" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.Price}" Grid.Row="1" Grid.Column="1" Minimum="0" Margin="3" />
 
-                <TextBlock Text="Item Set" Grid.Row="1" Grid.Column="2" Margin="3"/>
-                <DockPanel Grid.Row="1" Grid.Column="3" >
+                <TextBlock Text="Item Set" Grid.Row="1" Grid.Column="2" Margin="3" />
+                <DockPanel Grid.Row="1" Grid.Column="3">
                     <Button DockPanel.Dock="Right" Command="{Binding ResetItemSetCommand}"  Margin="-1,3,3,3" Width="22">
-                        <Image Source="/WorldEditor;component/Images/action_Cancel_16xLG.png"/>
+                        <Image Source="/WorldEditor;component/Images/action_Cancel_16xLG.png" />
                     </Button>
                     <ComboBox Margin="3" ItemsSource="{Binding ItemSets}" SelectedValuePath="Id" SelectedValue="{Binding Item.ItemSetId}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate DataType="d2OClasses:ItemSet">
-                                <TextBlock Text="{Binding NameId, Converter={StaticResource I18NToText}}"/>
+                                <TextBlock Text="{Binding NameId, Converter={StaticResource I18NToText}}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </DockPanel>
 
-                <TextBlock Text="Appearance" Grid.Row="1" Grid.Column="4" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.AppearanceId}" Grid.Row="1" Grid.Column="5" Minimum="0" Margin="3"/>
+                <TextBlock Text="Appearance" Grid.Row="1" Grid.Column="4" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.AppearanceId}" Grid.Row="1" Grid.Column="5" Minimum="0" Margin="3" />
 
-                <TextBlock Text="Criteria" Grid.Row="2" Grid.Column="0" Margin="3"/>
-                <TextBox Text="{Binding Item.Criteria}" Grid.Row="2" Grid.Column="1" Margin="3"/>
+                <TextBlock Text="Criteria" Grid.Row="2" Grid.Column="0" Margin="3" />
+                <TextBox Text="{Binding Item.Criteria}" Grid.Row="2" Grid.Column="1" Margin="3" />
 
                 <StackPanel Grid.Row="3" Orientation="Horizontal" Grid.ColumnSpan="4" Grid.Column="0" Margin="3">
-                    <CheckBox Content="Two handed" IsChecked="{Binding Item.TwoHanded}" Margin="3"/>
-                    <CheckBox Content="Hide effects" IsChecked="{Binding Item.HideEffects}" Margin="3"/>
-                    <CheckBox Content="Cursed" IsChecked="{Binding Item.Cursed}" Margin="3"/>
+                    <CheckBox Content="Two handed" IsChecked="{Binding Item.TwoHanded}" Margin="3" />
+                    <CheckBox Content="Hide effects" IsChecked="{Binding Item.HideEffects}" Margin="3" />
+                    <CheckBox Content="Cursed" IsChecked="{Binding Item.Cursed}" Margin="3" />
                 </StackPanel>
-
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="2">
             <GroupBox.Header>
-                <CheckBox Content="Usable item" IsChecked="{Binding Item.Usable}"/>
+                <CheckBox Content="Usable item" IsChecked="{Binding Item.Usable}" />
             </GroupBox.Header>
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label" />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Use Animation" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.UseAnimationId}" IsEnabled="{Binding Item.Usable}" Grid.Column="1" Minimum="0" Margin="3"/>
+                <TextBlock Text="Use Animation" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.UseAnimationId}" IsEnabled="{Binding Item.Usable}" Grid.Column="1" Minimum="0" Margin="3" />
 
-                <CheckBox Content="Targetable" IsChecked="{Binding Item.Targetable}" IsEnabled="{Binding Item.Usable}" Grid.Column="2" Margin="3" VerticalAlignment="Center"/>
+                <CheckBox Content="Targetable" IsChecked="{Binding Item.Targetable}" IsEnabled="{Binding Item.Usable}" Grid.Column="2" Margin="3" VerticalAlignment="Center" />
 
-                <TextBlock Text="Target Criteria" Grid.Row="0" Grid.Column="3" Margin="3"/>
-                <TextBox Text="{Binding Item.CriteriaTarget}" IsEnabled="{Binding Item.Targetable}" Grid.Row="0" Grid.Column="4" Margin="3"/>
+                <TextBlock Text="Target Criteria" Grid.Row="0" Grid.Column="3" Margin="3" />
+                <TextBox Text="{Binding Item.CriteriaTarget}" IsEnabled="{Binding Item.Targetable}" Grid.Row="0" Grid.Column="4" Margin="3" />
 
-                <CheckBox Content="Non Usable On Another" IsChecked="{Binding Item.NonUsableOnAnother}" IsEnabled="{Binding Item.Usable}" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="3"/>
+                <CheckBox Content="Non Usable On Another" IsChecked="{Binding Item.NonUsableOnAnother}" IsEnabled="{Binding Item.Usable}" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="3" />
             </Grid>
         </GroupBox>
         <GroupBox Header="Weapon Properties" Grid.Row="3" Visibility="{Binding IsWeapon, Converter={StaticResource BoolToVisibility}}">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Ap Cost" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.ApCost}" Grid.Column="1" Minimum="0" Margin="3"/>
+                <TextBlock Text="Ap Cost" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.ApCost}" Grid.Column="1" Minimum="0" Margin="3" />
 
-                <TextBlock Text="Min Range" Grid.Column="2" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.MinRange}" Grid.Column="3" Minimum="0" Margin="3"/>
+                <TextBlock Text="Min Range" Grid.Column="2" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.MinRange}" Grid.Column="3" Minimum="0" Margin="3" />
 
-                <TextBlock Text="Range" Grid.Column="4" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.Range}" Grid.Column="5" Minimum="0" Margin="3"/>
+                <TextBlock Text="Range" Grid.Column="4" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.Range}" Grid.Column="5" Minimum="0" Margin="3" />
 
-                <TextBlock Text="Critical Hit Probability" Grid.Row="1" Grid.Column="0" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.CriticalHitProbability}" Grid.Row="1" Grid.Column="1" Minimum="0" Margin="3"/>
+                <TextBlock Text="Critical Hit Probability" Grid.Row="1" Grid.Column="0" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.CriticalHitProbability}" Grid.Row="1" Grid.Column="1" Minimum="0" Margin="3" />
 
-                <TextBlock Text="Critical Hit Bonus" Grid.Row="1" Grid.Column="2" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.CriticalHitBonus}"  Grid.Row="1" Grid.Column="3" Minimum="0" Margin="3"/>
+                <TextBlock Text="Critical Hit Bonus" Grid.Row="1" Grid.Column="2" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.CriticalHitBonus}"  Grid.Row="1" Grid.Column="3" Minimum="0" Margin="3" />
 
-                <TextBlock Text="Critical Failure Probability" Grid.Row="1" Grid.Column="4" Margin="3"/>
-                <xctk:IntegerUpDown Value="{Binding Item.CriticialFailureProbability}" Grid.Row="1" Grid.Column="5" Minimum="0" Margin="3"/>
+                <TextBlock Text="Critical Failure Probability" Grid.Row="1" Grid.Column="4" Margin="3" />
+                <xctk:IntegerUpDown Value="{Binding Item.CriticialFailureProbability}" Grid.Row="1" Grid.Column="5" Minimum="0" Margin="3" />
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Grid.ColumnSpan="4" Margin="3">
-                    <CheckBox Content="Cast in Line" IsChecked="{Binding Item.CastInLine}"  Grid.Row="2" Grid.Column="0" Margin="3"/>
-                    <CheckBox Content="Cast in Diagonal" IsChecked="{Binding Item.CastInDiagonal}" Grid.Row="2" Grid.Column="1" Margin="3"/>
-                    <CheckBox Content="Cast Test Los" IsChecked="{Binding Item.CastTestLos}" Grid.Row="2" Grid.Column="2" Margin="3"/>
+                    <CheckBox Content="Cast in Line" IsChecked="{Binding Item.CastInLine}"  Grid.Row="2" Grid.Column="0" Margin="3" />
+                    <CheckBox Content="Cast in Diagonal" IsChecked="{Binding Item.CastInDiagonal}" Grid.Row="2" Grid.Column="1" Margin="3" />
+                    <CheckBox Content="Cast Test Los" IsChecked="{Binding Item.CastTestLos}" Grid.Row="2" Grid.Column="2" Margin="3" />
                 </StackPanel>
             </Grid>
         </GroupBox>
         <GroupBox Header="Description" Grid.Row="4">
-            <TextBox TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Item.Description}"/>
+            <TextBox TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Item.Description}" />
         </GroupBox>
         <GroupBox Header="Effects" Grid.Row="5">
             <DockPanel>
@@ -215,19 +214,19 @@
                         <Style TargetType="{x:Type Image}">
                             <Style.Triggers>
                                 <Trigger Property="IsEnabled" Value="False">
-                                    <Setter Property="Opacity" Value="0.4"/>
+                                    <Setter Property="Opacity" Value="0.4" />
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
                     </ToolBar.Resources>
                     <Button Command="{Binding EditEffectCommand}" CommandParameter="{Binding SelectedItem, ElementName=EffectsListBox}" Margin="2">
-                        <Image Height="16" Source="/WorldEditor;component/Images/pencil_003_16xMD.png"  Width="16"/>
+                        <Image Height="16" Source="/WorldEditor;component/Images/pencil_003_16xMD.png"  Width="16" />
                     </Button>
                     <Button Command="{Binding AddEffectCommand}" Margin="2">
-                        <Image Height="16" Source="/WorldEditor;component/Images/action_add_16xLG.png" Width="16"/>
+                        <Image Height="16" Source="/WorldEditor;component/Images/action_add_16xLG.png" Width="16" />
                     </Button>
                     <Button Command="{Binding RemoveEffectCommand}" CommandParameter="{Binding SelectedItems, ElementName=EffectsListBox}" Margin="2">
-                        <Image Height="16" Source="/WorldEditor;component/Images/action_Cancel_16xLG.png" Width="16"/>
+                        <Image Height="16" Source="/WorldEditor;component/Images/action_Cancel_16xLG.png" Width="16" />
                     </Button>
                 </ToolBar>
                 <ListBox x:Name="EffectsListBox" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Item.WrappedEffects}"
@@ -242,8 +241,8 @@
         </GroupBox>
         <Button Command="{Binding SaveCommand}" Grid.Row="6" Margin="5">
             <StackPanel Orientation="Horizontal">
-                <Image Source="/WorldEditor;component/Images/Save_6530.png" Width="16" Height="16" Margin="3"/>
-                <TextBlock Text="Save" Margin="3" FontSize="14"/>
+                <Image Source="/WorldEditor;component/Images/Save_6530.png" Width="16" Height="16" Margin="3" />
+                <TextBlock Text="Save" Margin="3" FontSize="14" />
             </StackPanel>
         </Button>
     </Grid>

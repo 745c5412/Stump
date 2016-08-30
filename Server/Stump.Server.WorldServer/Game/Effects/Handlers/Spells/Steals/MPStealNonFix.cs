@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -13,7 +9,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 {
     [EffectHandler(EffectsEnum.Effect_StealMP_77)]
-    public class MPStealNonFix: SpellEffectHandler
+    public class MPStealNonFix : SpellEffectHandler
     {
         public MPStealNonFix(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)

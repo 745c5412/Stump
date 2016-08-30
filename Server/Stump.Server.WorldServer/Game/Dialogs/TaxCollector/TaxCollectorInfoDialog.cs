@@ -47,9 +47,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
             Character.Client.Send(new NpcDialogCreationMessage(TaxCollector.Map.Id, TaxCollector.Id));
             Character.Client.Send(
                 new TaxCollectorDialogQuestionExtendedMessage(TaxCollector.Guild.GetBasicGuildInformations(),
-                    (short) TaxCollector.Guild.TaxCollectorPods,
-                    (short) TaxCollector.Guild.TaxCollectorProspecting, (short) TaxCollector.Guild.TaxCollectorWisdom,
-                    (sbyte) TaxCollector.Guild.TaxCollectors.Count, 0, TaxCollector.GatheredKamas, TaxCollector.GatheredExperience,
+                    (short)TaxCollector.Guild.TaxCollectorPods,
+                    (short)TaxCollector.Guild.TaxCollectorProspecting, (short)TaxCollector.Guild.TaxCollectorWisdom,
+                    (sbyte)TaxCollector.Guild.TaxCollectors.Count, 0, TaxCollector.GatheredKamas, TaxCollector.GatheredExperience,
                     TaxCollector.Bag.BagWeight, TaxCollector.Bag.BagValue));
         }
     }

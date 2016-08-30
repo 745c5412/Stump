@@ -1,35 +1,33 @@
-
-
 // Generated on 03/02/2014 20:43:00
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class JobDescription
     {
         public const short Id = 101;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte jobId;
         public IEnumerable<Types.SkillActionDescription> skills;
-        
+
         public JobDescription()
         {
         }
-        
+
         public JobDescription(sbyte jobId, IEnumerable<Types.SkillActionDescription> skills)
         {
             this.jobId = jobId;
             this.skills = skills;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
@@ -38,17 +36,16 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in skills)
             {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-                 skills_count++;
+                writer.WriteShort(entry.TypeId);
+                entry.Serialize(writer);
+                skills_count++;
             }
             var skills_after = writer.Position;
             writer.Seek((int)skills_before);
             writer.WriteUShort((ushort)skills_count);
             writer.Seek((int)skills_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             jobId = reader.ReadSByte();
@@ -58,17 +55,15 @@ namespace Stump.DofusProtocol.Types
             var skills_ = new Types.SkillActionDescription[limit];
             for (int i = 0; i < limit; i++)
             {
-                 skills_[i] = Types.ProtocolTypeManager.GetInstance<Types.SkillActionDescription>(reader.ReadShort());
-                 skills_[i].Deserialize(reader);
+                skills_[i] = Types.ProtocolTypeManager.GetInstance<Types.SkillActionDescription>(reader.ReadShort());
+                skills_[i].Deserialize(reader);
             }
             skills = skills_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(sbyte) + sizeof(short) + skills.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
-        
     }
-    
 }

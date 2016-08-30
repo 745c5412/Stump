@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 {
@@ -25,8 +25,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
         protected CommonLivingObject(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
-            
         }
+
         protected virtual void Initialize()
         {
             if ((m_moodEffect = (EffectInteger)
@@ -50,10 +50,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                 Effects.Add(m_experienceEffect);
             }
 
-
             if ((m_categoryEffect = (EffectInteger)
                 (Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LivingObjectCategory))) != null) return;
-            m_categoryEffect = new EffectInteger(EffectsEnum.Effect_LivingObjectCategory, (short) m_record.ItemType);
+            m_categoryEffect = new EffectInteger(EffectsEnum.Effect_LivingObjectCategory, (short)m_record.ItemType);
             Effects.Add(m_categoryEffect);
 
             OnObjectModified();
@@ -115,7 +114,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             }
         }
 
-        
         public short Mood
         {
             get { return m_moodEffect.Value; }
@@ -185,7 +183,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                 var skin = Template.AppearanceId;
 
                 if (SelectedLevel > 0 && m_record.Skins.Count > SelectedLevel - 1)
-                    skin = (uint) m_record.Skins[SelectedLevel - 1];
+                    skin = (uint)m_record.Skins[SelectedLevel - 1];
 
                 return skin;
             }
@@ -195,7 +193,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
         {
             get
             {
-                return m_lastMealEffect != null ? m_lastMealEffect.GetDate() : (DateTime?) null;
+                return m_lastMealEffect != null ? m_lastMealEffect.GetDate() : (DateTime?)null;
             }
             set
             {
@@ -209,7 +207,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                     m_lastMealEffect = new EffectDate(EffectsEnum.Effect_LastMeal, value.Value);
                     Effects.Add(m_lastMealEffect);
                 }
-
                 else
                     m_lastMealEffect.SetDate(value.Value);
 
@@ -217,6 +214,5 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                 Invalidate();
             }
         }
-
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace Stump.ORM.SubSonic.DataProviders
 {
-    
     public interface ISqlFragment
     {
         string AND { get; }

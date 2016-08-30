@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Timers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Maps.Spawns
 {
@@ -114,7 +114,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected virtual void OnAutoSpawnDisabled()
         {
-
         }
 
         protected void PauseAutoSpawn()
@@ -175,7 +174,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         }
 
         public bool SpawnGroup(MonsterGroup group)
-        {            
+        {
             if (group == null)
                 return false;
 
@@ -197,6 +196,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         }
 
         protected abstract bool IsLimitReached();
+
         protected abstract int GetNextSpawnInterval();
 
         protected abstract MonsterGroup DequeueNextGroupToSpawn();

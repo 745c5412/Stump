@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Conditions
 {
@@ -17,8 +17,10 @@ namespace Stump.Server.WorldServer.Game.Conditions
             {
                 case '&':
                     return BoolOperatorEnum.AND;
+
                 case '|':
                     return BoolOperatorEnum.OR;
+
                 default:
                     return null;
             }
@@ -30,8 +32,10 @@ namespace Stump.Server.WorldServer.Game.Conditions
             {
                 case BoolOperatorEnum.AND:
                     return '&';
+
                 case BoolOperatorEnum.OR:
                     return '|';
+
                 default:
                     throw new Exception(string.Format("{0} is not a valid bool operator", op));
             }
@@ -74,7 +78,7 @@ namespace Stump.Server.WorldServer.Game.Conditions
 
             if (Operator == BoolOperatorEnum.OR && left)
                 return true;
-            
+
             var right = Right.Eval(character);
 
             if (Operator == BoolOperatorEnum.AND)

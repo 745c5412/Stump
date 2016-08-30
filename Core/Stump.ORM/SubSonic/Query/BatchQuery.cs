@@ -1,24 +1,24 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Linq.Structure;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Query
 {
@@ -42,7 +42,7 @@ namespace Stump.ORM.SubSonic.Query
         }
 
         public BatchQuery(IDataProvider dbProvider) : this(dbProvider, new DbQueryProvider(dbProvider))
-        {}
+        { }
 
         public BatchQuery(IDataProvider dbProvider, DbQueryProvider queryProvider)
         {
@@ -52,8 +52,9 @@ namespace Stump.ORM.SubSonic.Query
             _fixedCommands = new List<QueryCommand>();
         }
 
-        public BatchQuery() : this(ProviderFactory.GetProvider()) { }
-
+        public BatchQuery() : this(ProviderFactory.GetProvider())
+        {
+        }
 
         #region ISqlQuery Members
 
@@ -115,8 +116,7 @@ namespace Stump.ORM.SubSonic.Query
             return result;
         }
 
-        #endregion
-
+        #endregion ISqlQuery Members
 
         /// <summary>
         /// Queues the specified query.
@@ -124,7 +124,6 @@ namespace Stump.ORM.SubSonic.Query
         /// <param name="query">The query.</param>
         public void Queue(ISqlQuery query)
         {
-
             _queries.Add(query);
         }
 

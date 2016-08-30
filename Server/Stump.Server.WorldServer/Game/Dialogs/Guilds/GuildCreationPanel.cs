@@ -28,9 +28,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
             }
         }
 
-
         public void Open()
-        {                        
+        {
             if (Character.Guild != null)
             {
                 GuildHandler.SendGuildCreationResultMessage(Character.Client, GuildCreationResultEnum.GUILD_CREATE_ERROR_ALREADY_IN_GUILD);
@@ -44,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
         public void Close()
         {
             Character.CloseDialog(this);
-            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);        
+            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
         }
 
         public void CreateGuild(string guildName, GuildEmblem emblem)
@@ -56,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
 
                 return;
             }
-            
+
             var result = GuildManager.Instance.CreateGuild(Character, guildName, emblem);
             GuildHandler.SendGuildCreationResultMessage(Character.Client, result);
 

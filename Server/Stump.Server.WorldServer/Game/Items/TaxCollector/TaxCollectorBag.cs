@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 {
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         public int BagValue => (int)this.Sum(x => x.Template.Price * x.Stack);
 
         /// <summary>
-        /// Must be saved 
+        /// Must be saved
         /// </summary>
         public bool IsDirty
         {
@@ -88,8 +88,8 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         }
 
         public override void Save(ORM.Database database)
-        {        
-            if (WorldServer.Instance.IsInitialized)    
+        {
+            if (WorldServer.Instance.IsInitialized)
                 WorldServer.Instance.IOTaskPool.EnsureContext();
 
             base.Save(database);

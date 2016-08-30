@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Xml;
@@ -16,6 +9,11 @@ using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Stump.Plugins.DefaultPlugin.Global.Placements
 {
@@ -24,7 +22,7 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [Variable]
-        public static bool ActiveFix = true;
+        public static bool ActiveFix = false;
 
         [Variable]
         public static bool Override = true;
@@ -71,7 +69,6 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                 {
                     logger.Error("Cannot parse pattern {0}", file);
                 }
-
             }
 
             var patchPath = Path.Combine(Path.GetDirectoryName(Plugin.CurrentPlugin.Context.AssemblyPath), SqlPatchName);
@@ -80,7 +77,6 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                 File.Delete(patchPath);
 
             var rand = new Random();
-
 
             var successCounter = new Dictionary<PlacementPattern, int>();
             var console = new ConsoleProgress();
@@ -92,7 +88,6 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                 if (Override || (map.Record.BlueFightCells.Length == 0 ||
                     map.Record.RedFightCells.Length == 0))
                 {
-
                     var fixPatternsComplx = patterns.Where(entry => !entry.Relativ).Select(entry => entry.Complexity).ToArray();
                     var fixPatterns = patterns.Where(entry => !entry.Relativ).ShuffleWithProbabilities(fixPatternsComplx).ToArray();
                     PlacementPattern success = fixPatterns.FirstOrDefault(entry => entry.TestPattern(map));
@@ -100,9 +95,9 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                     if (success != null)
                     {
                         map.Record.BlueFightCells =
-                            success.Blues.Select(entry => (short) MapPoint.CoordToCellId(entry.X, entry.Y)).ToArray();
+                            success.Blues.Select(entry => (short)MapPoint.CoordToCellId(entry.X, entry.Y)).ToArray();
                         map.Record.RedFightCells =
-                            success.Reds.Select(entry => (short) MapPoint.CoordToCellId(entry.X, entry.Y)).ToArray();
+                            success.Reds.Select(entry => (short)MapPoint.CoordToCellId(entry.X, entry.Y)).ToArray();
                     }
                     else
                     {
@@ -113,7 +108,7 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                         // 300 is approx. the middle of the map
                         foreach (var center in searchZone.GetCells(map.GetCell(300), map))
                         {
-                            var centerPt = MapPoint.CellIdToCoord((uint) center.Id);
+                            var centerPt = MapPoint.CellIdToCoord((uint)center.Id);
                             success = relativPatterns.FirstOrDefault(entry => entry.TestPattern(centerPt, map));
 
                             if (success != null)
@@ -121,12 +116,12 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                                 map.Record.BlueFightCells =
                                     success.Blues.Select(
                                         entry =>
-                                        (short) MapPoint.CoordToCellId(entry.X + centerPt.X, entry.Y + centerPt.Y)).
+                                        (short)MapPoint.CoordToCellId(entry.X + centerPt.X, entry.Y + centerPt.Y)).
                                         ToArray();
                                 map.Record.RedFightCells =
                                     success.Reds.Select(
                                         entry =>
-                                        (short) MapPoint.CoordToCellId(entry.X + centerPt.X, entry.Y + centerPt.Y)).
+                                        (short)MapPoint.CoordToCellId(entry.X + centerPt.X, entry.Y + centerPt.Y)).
                                         ToArray();
                                 break;
                             }
@@ -156,7 +151,6 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                         else successCounter[success]++;
                     }
                 }
-
 
                 console.Update(string.Format("{0:0.0}% ({1} patchs)", i / (double)maps.Length * 100, patches));
             }

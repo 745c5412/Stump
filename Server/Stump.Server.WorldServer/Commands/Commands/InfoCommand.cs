@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Commands;
@@ -12,6 +9,9 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
+using System;
+using System.Globalization;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public InfoMapCommand()
         {
-            Aliases = new [] { "map" };
+            Aliases = new[] { "map" };
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a map";
             ParentCommandType = typeof(InfoCommand);
@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                map = ( trigger as GameTrigger ).Character.Map;
+                map = (trigger as GameTrigger).Character.Map;
             }
 
             if (map == null)
@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                area = ( trigger as GameTrigger ).Character.Area;
+                area = (trigger as GameTrigger).Character.Area;
             }
 
             if (area == null)
@@ -174,9 +174,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a fight";
             ParentCommandType = typeof(InfoCommand);
-            AddParameter("fight", "f", "Gives informations about the given fight", converter:ParametersConverter.FightConverter);
+            AddParameter("fight", "f", "Gives informations about the given fight", converter: ParametersConverter.FightConverter);
         }
-
 
         public override void Execute(TriggerBase trigger)
         {
@@ -220,7 +219,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommandType = typeof(InfoCommand);
             AddParameter<string>("ip", "i", "Gives informations about the given ip");
         }
-
 
         public override void Execute(TriggerBase trigger)
         {

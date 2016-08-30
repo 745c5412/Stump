@@ -1,6 +1,5 @@
-﻿
+﻿using Stump.Server.AuthServer.Network;
 using System;
-using Stump.Server.AuthServer.Network;
 
 namespace Stump.Server.AuthServer.Handlers
 {

@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.IO;
+﻿using Stump.Core.IO;
 using Stump.ORM;
 using Stump.ORM.Relator;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Mounts
 {
     public class MountRecordRelator
     {
         public static string FetchQuery = "SELECT * FROM mounts";
+
         /// <summary>
         /// Use string.Format
         /// </summary>
         public static string FindById = "SELECT * FROM mounts WHERE Id = {0}";
 
         public static string FindByOwner = "SELECT * FROM mounts WHERE OwnerId = {0}";
-        
+
         public static string FindByOwnerStabled = "SELECT * FROM mounts WHERE OwnerId = {0} AND IsInStable = 1 AND PaddockId IS NOT NULL";
 
         public static string FindByOwnerPublicPaddocked = "SELECT * FROM mounts " +
@@ -35,7 +36,6 @@ namespace Stump.Server.WorldServer.Database.Mounts
         private string m_behaviorsCSV = string.Empty;
         private List<int> m_behaviors;
         private MountTemplate m_template;
-
 
         [Ignore]
         public bool IsDirty

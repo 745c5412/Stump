@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -8,10 +7,10 @@ using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
+using System.Linq;
 
 namespace ArkalysPlugin.Npcs
 {
@@ -69,7 +68,7 @@ namespace ArkalysPlugin.Npcs
     {
         public override NpcActionTypeEnum[] ActionType
         {
-            get { return new [] { NpcActionTypeEnum.ACTION_EXCHANGE }; }
+            get { return new[] { NpcActionTypeEnum.ACTION_EXCHANGE }; }
         }
 
         public override void Execute(Npc npc, Character character)
@@ -114,7 +113,7 @@ namespace ArkalysPlugin.Npcs
 
             if (orbs != null)
             {
-                SecondTrader.SetKamas((int) (orbs.Stack*OrbToKamasRate));
+                SecondTrader.SetKamas((int)(orbs.Stack * OrbToKamasRate));
             }
             else
             {

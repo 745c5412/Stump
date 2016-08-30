@@ -1,6 +1,6 @@
-﻿using System;
-using Stump.ORM;
+﻿using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace Stump.Server.AuthServer.Database
 {
@@ -19,21 +19,25 @@ namespace Stump.Server.AuthServer.Database
             get;
             set;
         }
+
         public int CharacterId
         {
             get;
             set;
         }
+
         public DateTime DeletionDate
         {
             get;
             set;
         }
+
         public int AccountId
         {
             get;
             set;
         }
+
         public int WorldId
         {
             get;

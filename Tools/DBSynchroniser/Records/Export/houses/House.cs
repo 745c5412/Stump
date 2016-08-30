@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:47
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -20,17 +14,19 @@ namespace DBSynchroniser.Records
         private const String MODULE = "Houses";
         public int typeId;
         public uint defaultPrice;
+
         [I18NField]
         public int nameId;
+
         [I18NField]
         public int descriptionId;
+
         public int gfxId;
 
         int ID2ORecord.Id
         {
             get { return (int)nameId; }
         }
-
 
         [D2OIgnore]
         public int TypeId
@@ -73,14 +69,14 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (House)obj;
-            
+
             TypeId = castedObj.typeId;
             DefaultPrice = castedObj.defaultPrice;
             NameId = castedObj.nameId;
             DescriptionId = castedObj.descriptionId;
             GfxId = castedObj.gfxId;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (House)parent : new House();
@@ -91,10 +87,9 @@ namespace DBSynchroniser.Records
             obj.gfxId = GfxId;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

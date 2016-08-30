@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Social
         {
             return Character != null;
         }
-            
+
         public IgnoredInformations GetIgnoredInformations()
         {
             if (IsOnline())
@@ -78,6 +78,6 @@ namespace Stump.Server.WorldServer.Game.Social
             return new IgnoredInformations(
                 Account.Id,
                 Account.Nickname);
-        } 
+        }
     }
 }

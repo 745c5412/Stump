@@ -13,13 +13,13 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Grid.ColumnSpan="2" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="8" FontSize="14"
                    Visibility="{Binding IsFirstLaunch, Converter={StaticResource Bool2Visibility}}" TextWrapping="Wrap">
@@ -30,15 +30,15 @@
             <StackPanel>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Host" HorizontalAlignment="Left" VerticalAlignment="Center" />
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="User" HorizontalAlignment="Left" VerticalAlignment="Center" />
@@ -46,50 +46,54 @@
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Database Name" HorizontalAlignment="Left" VerticalAlignment="Center" />
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="SQL Engine" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-                    <TextBox Grid.Row="0" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding DBConfig.Host}"/>
-                    <TextBox Grid.Row="1" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding DBConfig.User}"/>
-                    <TextBox Grid.Row="2" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding DBConfig.Password}"/>
-                    <TextBox Grid.Row="3" Margin="3"  Grid.Column="1" VerticalAlignment="Top" Text="{Binding DBConfig.DbName}"/>
+                    <TextBox Grid.Row="0" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding DBConfig.Host}" />
+                    <TextBox Grid.Row="1" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding DBConfig.User}" />
+                    <TextBox Grid.Row="2" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding DBConfig.Password}" />
+                    <TextBox Grid.Row="3" Margin="3"  Grid.Column="1" VerticalAlignment="Top" Text="{Binding DBConfig.DbName}" />
                     <ComboBox Grid.Row="4" Margin="3"  Grid.Column="1" VerticalAlignment="Top" ItemsSource="{Binding Factories}"
                               SelectedValue="{Binding DBConfig.ProviderName}" SelectedValuePath="InvariantName">
                         <ComboBox.ItemTemplate>
                             <DataTemplate DataType="config:DbFactoryInformation">
-                                <TextBlock Text="{Binding Name}"/>
+                                <TextBlock Text="{Binding Name}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </Grid>
                 <Button Grid.Column="1" Margin="3" Command="{Binding TestDBCommand}">
-                    <StackPanel Orientation="Horizontal"><Image Source="/WorldEditor;component/Images/Relation_8467_32x.png" Width="16" Height="16" Margin="3,0"/><TextBlock Text="Try connection"></TextBlock></StackPanel></Button>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/WorldEditor;component/Images/Relation_8467_32x.png" Width="16" Height="16" Margin="3,0" />
+                        <TextBlock Text="Try connection"></TextBlock>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Loaders" Grid.Column="1" Grid.Row="1" >
+        <GroupBox Header="Loaders" Grid.Column="1" Grid.Row="1">
             <Grid>
                 <Grid.Resources>
-                    <helpers:DataResource BindingTarget="{Binding LoaderSettings.BasePath}" x:Key="BasePath"/>
+                    <helpers:DataResource BindingTarget="{Binding LoaderSettings.BasePath}" x:Key="BasePath" />
                     <Style TargetType="TextBox">
                         <Style.Triggers>
                             <Trigger Property="Validation.HasError" Value="true">
                                 <Setter Property="ToolTip"
-                                        Value="{Binding RelativeSource={RelativeSource Self}, 
+                                        Value="{Binding RelativeSource={RelativeSource Self},
                                                         Path=(Validation.Errors)[0].ErrorContent}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Resources>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Dofus App. Path" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Maps File" HorizontalAlignment="Left" VerticalAlignment="Center" />
@@ -104,7 +108,7 @@
                     <TextBox.Text>
                         <Binding Path="LoaderSettings.BasePath">
                             <Binding.ValidationRules>
-                                <config:PathExistsRule IsDirectory="True"/>
+                                <config:PathExistsRule IsDirectory="True" />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
@@ -113,7 +117,7 @@
                     <TextBox.Text>
                         <Binding Path="LoaderSettings.MapsRelativeFile">
                             <Binding.ValidationRules>
-                                <config:PathExistsRule IsDirectory="False" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}"/>
+                                <config:PathExistsRule IsDirectory="False" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}" />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
@@ -122,7 +126,7 @@
                     <TextBox.Text>
                         <Binding Path="LoaderSettings.D2ORelativeDirectory">
                             <Binding.ValidationRules>
-                                <config:PathExistsRule IsDirectory="True" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}"/>
+                                <config:PathExistsRule IsDirectory="True" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}" />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
@@ -131,7 +135,7 @@
                     <TextBox.Text>
                         <Binding Path="LoaderSettings.D2IRelativeDirectory">
                             <Binding.ValidationRules>
-                                <config:PathExistsRule IsDirectory="True" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}"/>
+                                <config:PathExistsRule IsDirectory="True" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}" />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
@@ -140,7 +144,7 @@
                     <TextBox.Text>
                         <Binding Path="LoaderSettings.ItemIconsRelativeFile">
                             <Binding.ValidationRules>
-                                <config:PathExistsRule IsDirectory="True" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}"/>
+                                <config:PathExistsRule IsDirectory="True" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}" />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
@@ -149,7 +153,7 @@
                     <TextBox.Text>
                         <Binding Path="LoaderSettings.WorldGfxRelativeFile">
                             <Binding.ValidationRules>
-                                <config:PathExistsRule IsDirectory="False" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}"/>
+                                <config:PathExistsRule IsDirectory="False" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}" />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
@@ -158,28 +162,28 @@
                     <TextBox.Text>
                         <Binding Path="LoaderSettings.WorldEleRelativeFile">
                             <Binding.ValidationRules>
-                                <config:PathExistsRule IsDirectory="False" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}"/>
+                                <config:PathExistsRule IsDirectory="False" BasePath="{helpers:DataResourceBinding DataResource={StaticResource BasePath}}" />
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
                 </TextBox>
-                <TextBox Grid.Row="7" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding LoaderSettings.GenericMapDecryptionKey}"/>
+                <TextBox Grid.Row="7" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding LoaderSettings.GenericMapDecryptionKey}" />
             </Grid>
         </GroupBox>
 
         <UniformGrid Grid.Row="2" Grid.Column="1" Rows="1" DockPanel.Dock="Bottom">
-            <Button Content="OK" IsDefault="True" Margin="3" Click="OnOKClicked"/>
+            <Button Content="OK" IsDefault="True" Margin="3" Click="OnOKClicked" />
             <Button Content="Cancel" IsCancel="True" Margin="3" Click="OnCancelClicked">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsFirstLaunch}" Value="True">
-                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="IsEnabled" Value="False" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                </Button>
+            </Button>
         </UniformGrid>
     </Grid>
 </Window>

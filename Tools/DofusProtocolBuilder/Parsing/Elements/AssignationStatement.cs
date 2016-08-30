@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace DofusProtocolBuilder.Parsing.Elements
@@ -58,7 +57,7 @@ namespace DofusProtocolBuilder.Parsing.Elements
 
                     result.Target = variableMatch.Groups["target"].Value.Trim().TrimEnd('.');
                     result.Name = variableMatch.Groups["name"].Value.Trim();
-                }    
+                }
 
                 result.Value = match.Groups["value"].Value.Trim();
 

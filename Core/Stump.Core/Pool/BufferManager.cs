@@ -1,11 +1,11 @@
-﻿using System;
+﻿using NLog;
+using Stump.Core.Collections;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using NLog;
-using Stump.Core.Collections;
 
 namespace Stump.Core.Pool
 {
@@ -68,7 +68,8 @@ namespace Stump.Core.Pool
 
         public byte this[int i]
         {
-            get {
+            get
+            {
                 if (i >= m_length)
                     throw new IndexOutOfRangeException(string.Format("i({0}) >= m_length({1})", i, m_length));
 
@@ -94,6 +95,7 @@ namespace Stump.Core.Pool
         }
 
 #if DEBUG
+
         public string LastUserTrace
         {
             get;
@@ -111,6 +113,7 @@ namespace Stump.Core.Pool
             get;
             set;
         }
+
 #endif
 
         /// <summary>
@@ -224,17 +227,17 @@ namespace Stump.Core.Pool
         /// <summary>
         ///     Large BufferManager for buffers up to 64kb size
         /// </summary>
-        public static readonly BufferManager Large = new BufferManager(128, 64*1024);
+        public static readonly BufferManager Large = new BufferManager(128, 64 * 1024);
 
         /// <summary>
         ///     Extra Large BufferManager holding 512kb buffers
         /// </summary>
-        public static readonly BufferManager ExtraLarge = new BufferManager(32, 512*1024);
+        public static readonly BufferManager ExtraLarge = new BufferManager(32, 512 * 1024);
 
         /// <summary>
         ///     Super Large BufferManager holding 1MB buffers
         /// </summary>
-        public static readonly BufferManager SuperSized = new BufferManager(16, 1024*1024);
+        public static readonly BufferManager SuperSized = new BufferManager(16, 1024 * 1024);
 
         /// <summary>
         ///     Holds the total amount of memory allocated by all buffer managers.
@@ -300,7 +303,7 @@ namespace Stump.Core.Pool
         /// </summary>
         public int TotalAllocatedMemory
         {
-            get { return m_buffers.Count*(m_segmentCount*m_segmentSize); } // do we really care about volatility here?
+            get { return m_buffers.Count * (m_segmentCount * m_segmentSize); } // do we really care about volatility here?
         }
 
         /// <summary>
@@ -312,6 +315,7 @@ namespace Stump.Core.Pool
         }
 
 #if DEBUG
+
         public BufferSegment[] GetSegmentsInUse()
         {
             return m_segmentsInUse.Values.ToArray();
@@ -336,9 +340,10 @@ namespace Stump.Core.Pool
             Managers.Add(this);
         }
 
-        #endregion
+        #endregion Constructors
 
         private static int lastValue;
+
         /// <summary>
         ///     Checks out a segment, creating more if the pool is empty.
         /// </summary>
@@ -411,7 +416,6 @@ namespace Stump.Core.Pool
                     "Checked in segment (Size: {0}, Number: {1}, Uses:{4}) that is already in use! Queue contains: {2}, Buffer amount: {3}, StackTrace:{5}",
                     segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.Uses, new StackTrace().ToString());
 #endif
-
             }
 
             m_availableSegments.Enqueue(segment);
@@ -425,13 +429,13 @@ namespace Stump.Core.Pool
         /// </summary>
         private void CreateBuffer()
         {
-            // create a new buffer 
-            var newBuf = new ArrayBuffer(this, m_segmentCount*m_segmentSize);
+            // create a new buffer
+            var newBuf = new ArrayBuffer(this, m_segmentCount * m_segmentSize);
 
             // create segments from the buffer
             for (int i = 0; i < m_segmentCount; i++)
             {
-                m_availableSegments.Enqueue(new BufferSegment(newBuf, i*m_segmentSize, m_segmentSize, m_segmentId++));
+                m_availableSegments.Enqueue(new BufferSegment(newBuf, i * m_segmentSize, m_segmentSize, m_segmentId++));
             }
 
             // increment our total count
@@ -441,7 +445,7 @@ namespace Stump.Core.Pool
             m_buffers.Add(newBuf);
 
             // update global alloc'd memory
-            Interlocked.Add(ref GlobalAllocatedMemory, m_segmentCount*m_segmentSize);
+            Interlocked.Add(ref GlobalAllocatedMemory, m_segmentCount * m_segmentSize);
         }
 
         /// <summary>
@@ -514,6 +518,6 @@ namespace Stump.Core.Pool
                 m_buffers.Clear();
         }
 
-        #endregion
+        #endregion IDisposable Members
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Stump.Server.WorldServer.Game;
+﻿using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
+using System;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Commands.Matching.Characters
 {
@@ -40,7 +39,6 @@ namespace Stump.Server.WorldServer.Commands.Matching.Characters
                 throw new Exception("Caller not specified, cannot retrieve current map");
 
             return Matching.Caller.Map.GetAllCharacters().ToArray();
-
         }
     }
 }

@@ -1,9 +1,8 @@
-using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using System.Drawing;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
@@ -62,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public GameActionMarkedCell GetGameActionMarkedCell()
         {
-            return new GameActionMarkedCell(Cell.Id, (sbyte) Size, Color.ToArgb() & 0xFFFFFF, (sbyte)Shape);
+            return new GameActionMarkedCell(Cell.Id, (sbyte)Size, Color.ToArgb() & 0xFFFFFF, (sbyte)Shape);
         }
     }
 }

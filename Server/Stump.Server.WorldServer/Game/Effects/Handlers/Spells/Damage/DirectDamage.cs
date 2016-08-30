@@ -1,10 +1,10 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
+using System;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
@@ -103,14 +103,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             {
                 case EffectsEnum.Effect_DamageWater:
                     return EffectSchoolEnum.Water;
+
                 case EffectsEnum.Effect_DamageEarth:
                     return EffectSchoolEnum.Earth;
+
                 case EffectsEnum.Effect_DamageAir:
                     return EffectSchoolEnum.Air;
+
                 case EffectsEnum.Effect_DamageFire:
                     return EffectSchoolEnum.Fire;
+
                 case EffectsEnum.Effect_DamageNeutral:
                     return EffectSchoolEnum.Neutral;
+
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));
             }

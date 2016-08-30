@@ -15,12 +15,10 @@ namespace Stump.Core.Reflection
             m_typeT = typeof(T);
         }
 
-
         public void Add(T value, object obj, MethodInfo method)
         {
             m_cases.Add(new SwitchCase<T>(value, obj, method));
         }
-
 
         public Func<T, T1, object> Build<T1>()
         {
@@ -31,7 +29,7 @@ namespace Stump.Core.Reflection
             var value = Expression.Parameter(typeT1);
 
             var cases = new List<SwitchCase>();
-            
+
             foreach (var @case in m_cases)
             {
                 /* If not right type try to Cast the arg to correct method type */

@@ -1,29 +1,29 @@
 ﻿#region License GNU GPL
+
 // IPCHost.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using NLog;
+using Stump.Core.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using NLog;
-using Stump.Core.Attributes;
-using Stump.Core.Pool;
-using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.IPC
 {
@@ -39,6 +39,7 @@ namespace Stump.Server.AuthServer.IPC
         public static int BufferSize = 8192;
 
         #region Events
+
         public event Action<IPCHost, IPCClient> ClientConnected;
 
         private void NotifyClientConnected(IPCClient client)
@@ -54,7 +55,8 @@ namespace Stump.Server.AuthServer.IPC
             var handler = ClientDisconnected;
             if (handler != null) handler(this, client);
         }
-        #endregion
+
+        #endregion Events
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -98,7 +100,6 @@ namespace Stump.Server.AuthServer.IPC
             get { return m_port; }
         }
 
-
         public Socket Socket
         {
             get { return m_listenSocket; }
@@ -127,7 +128,6 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
-
         public void Stop()
         {
             if (!Started)
@@ -136,10 +136,9 @@ namespace Stump.Server.AuthServer.IPC
             m_paused = true;
         }
 
-
         private void StartAccept()
         {
-            m_acceptArgs = new SocketAsyncEventArgs {AcceptSocket = null};
+            m_acceptArgs = new SocketAsyncEventArgs { AcceptSocket = null };
             m_acceptArgs.Completed += (sender, e) => ProcessAccept(e);
 
             if (m_semaphore.CurrentCount == 0)
@@ -162,7 +161,6 @@ namespace Stump.Server.AuthServer.IPC
             IPCClient client = null;
             try
             {
-
                 // do not accept connections while pausing
                 if (IsPaused)
                 {

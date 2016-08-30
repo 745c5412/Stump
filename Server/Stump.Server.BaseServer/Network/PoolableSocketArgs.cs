@@ -1,5 +1,5 @@
-﻿using System.Net.Sockets;
-using Stump.Core.Pool;
+﻿using Stump.Core.Pool;
+using System.Net.Sockets;
 
 namespace Stump.Server.BaseServer.Network
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -11,24 +9,35 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Spells;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using System;
+using System.Linq;
 
 namespace ArkalysPlugin.Npcs
 {
     public static class NpcRestatScript
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        [Variable] public static double OrbFactor = 5;
 
-        [Variable] public static int NpcId = 3000;
-        //Approche jeune aventurier, je sais que tu as fait de mauvais choix, et je peux t’aider à tout oublier … contre suffisamment d’orbes bien entendu. 
-        //Donnes moi #1 orbes et tu auras une autre chance de choisir ta voie 
-        [Variable] public static int MessageId = 20003;
+        [Variable]
+        public static double OrbFactor = 5;
+
+        [Variable]
+        public static int NpcId = 3000;
+
+        //Approche jeune aventurier, je sais que tu as fait de mauvais choix, et je peux t’aider à tout oublier … contre suffisamment d’orbes bien entendu.
+        //Donnes moi #1 orbes et tu auras une autre chance de choisir ta voie
+        [Variable]
+        public static int MessageId = 20003;
+
         [Variable]
         public static short ReplyRestatId = 20010;
+
         [Variable]
         public static short ReplySpellForgetId = 20011;
-        [Variable] 
+
+        [Variable]
         public static short ReplySpellForgetPanelId = 20033;
+
         [Variable]
         public static short ReplyNoOrbsId = 20012;
 
@@ -36,7 +45,7 @@ namespace ArkalysPlugin.Npcs
 
         private static bool m_scriptDisabled;
 
-        [Initialization(typeof (NpcManager), Silent = true)]
+        [Initialization(typeof(NpcManager), Silent = true)]
         public static void Initialize()
         {
             if (m_scriptDisabled)
@@ -62,7 +71,7 @@ namespace ArkalysPlugin.Npcs
             m_scriptDisabled = true;
         }
 
-        [Initialization(typeof (OrbsManager), Silent = true)]
+        [Initialization(typeof(OrbsManager), Silent = true)]
         public static void InitializeItem()
         {
             if (OrbsManager.OrbItemTemplate != null)
@@ -86,7 +95,7 @@ namespace ArkalysPlugin.Npcs
     {
         public override NpcActionTypeEnum[] ActionType
         {
-            get { return new [] { NpcActionTypeEnum.ACTION_TALK }; }
+            get { return new[] { NpcActionTypeEnum.ACTION_TALK }; }
         }
 
         public override void Execute(Npc npc, Character character)
@@ -99,10 +108,11 @@ namespace ArkalysPlugin.Npcs
     public class NpcRestatDialog : NpcDialog
     {
         private readonly int m_requieredOrbs;
+
         public NpcRestatDialog(Character character, Npc npc)
             : base(character, npc)
         {
-            m_requieredOrbs = (int)Math.Floor(Character.Level*NpcRestatScript.OrbFactor);
+            m_requieredOrbs = (int)Math.Floor(Character.Level * NpcRestatScript.OrbFactor);
             CurrentMessage = NpcRestatScript.Message;
         }
 
@@ -162,7 +172,7 @@ namespace ArkalysPlugin.Npcs
                     panel.Open();
                 }
             }
-               
+
             Close();
         }
     }

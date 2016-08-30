@@ -1,22 +1,18 @@
-
-
 // Generated on 03/02/2014 20:42:59
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class FightResultExperienceData : FightResultAdditionalData
     {
         public const short Id = 192;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public bool showExperience;
         public bool showExperienceLevelFloor;
         public bool showExperienceNextLevelFloor;
@@ -31,11 +27,11 @@ namespace Stump.DofusProtocol.Types
         public int experienceForGuild;
         public int experienceForMount;
         public int rerollExperienceMul;
-        
+
         public FightResultExperienceData()
         {
         }
-        
+
         public FightResultExperienceData(bool showExperience, bool showExperienceLevelFloor, bool showExperienceNextLevelFloor, bool showExperienceFightDelta, bool showExperienceForGuild, bool showExperienceForMount, bool isIncarnationExperience, double experience, double experienceLevelFloor, double experienceNextLevelFloor, int experienceFightDelta, int experienceForGuild, int experienceForMount, int rerollExperienceMul)
         {
             this.showExperience = showExperience;
@@ -53,7 +49,7 @@ namespace Stump.DofusProtocol.Types
             this.experienceForMount = experienceForMount;
             this.rerollExperienceMul = rerollExperienceMul;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -74,7 +70,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(experienceForMount);
             writer.WriteInt(rerollExperienceMul);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -104,12 +100,10 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on experienceForMount = " + experienceForMount + ", it doesn't respect the following condition : experienceForMount < 0");
             rerollExperienceMul = reader.ReadInt();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int);
         }
-        
     }
-    
 }
