@@ -1,8 +1,7 @@
+using DofusProtocolBuilder.Parsing;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
-using DofusProtocolBuilder.Parsing;
 
 namespace DofusProtocolBuilder.Profiles
 {
@@ -80,7 +79,7 @@ namespace DofusProtocolBuilder.Profiles
         public string GetRelativePath(string file)
         {
             string folder = Path.GetDirectoryName(file);
-            string[] foldersSplitted = folder.Split(new[] {SourcePath.Replace("/", "\\")}, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
+            string[] foldersSplitted = folder.Split(new[] { SourcePath.Replace("/", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
 
             return foldersSplitted.Length > 1 ? foldersSplitted[1] : ""; // return the "rest"
         }

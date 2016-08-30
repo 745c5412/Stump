@@ -1,19 +1,22 @@
 ﻿#region License GNU GPL
+
 // D2IEditorModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,9 +24,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Windows.Forms;
-using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using WorldEditor.Helpers;
 
 namespace WorldEditor.Editors.Files.D2I
@@ -35,9 +36,9 @@ namespace WorldEditor.Editors.Files.D2I
         private int m_highestId;
         private Stack<D2IGridRow> m_deletedRows = new Stack<D2IGridRow>();
 
-
         private ReadOnlyObservableCollection<D2IGridRow> m_readOnylRows;
         private ObservableCollection<D2IGridRow> m_rows = new ObservableCollection<D2IGridRow>();
+
         public D2IEditorModelView(D2IEditor editor, D2IFile file)
         {
             m_editor = editor;
@@ -116,6 +117,7 @@ namespace WorldEditor.Editors.Files.D2I
                         }
                     }
                     break;
+
                 case "Text":
                     for (var i = startIndex; i < Rows.Count; i++)
                     {
@@ -195,8 +197,7 @@ namespace WorldEditor.Editors.Files.D2I
             }
         }
 
-        #endregion
-
+        #endregion FindCommand
 
         #region FindNextCommand
 
@@ -231,7 +232,7 @@ namespace WorldEditor.Editors.Files.D2I
             }
         }
 
-        #endregion
+        #endregion FindNextCommand
 
         #region AddRowCommand
 
@@ -258,9 +259,7 @@ namespace WorldEditor.Editors.Files.D2I
             m_editor.TextsGrid.Focus();
         }
 
-        #endregion
-
-
+        #endregion AddRowCommand
 
         #region AddUIRowCommand
 
@@ -287,8 +286,7 @@ namespace WorldEditor.Editors.Files.D2I
             m_editor.TextsGrid.Focus();
         }
 
-        #endregion
-
+        #endregion AddUIRowCommand
 
         #region RemoveRowCommand
 
@@ -319,9 +317,7 @@ namespace WorldEditor.Editors.Files.D2I
             }
         }
 
-        #endregion
-
-
+        #endregion RemoveRowCommand
 
         #region ConvertToTxtCommand
 
@@ -370,8 +366,7 @@ namespace WorldEditor.Editors.Files.D2I
             MessageService.ShowMessage(m_editor, string.Format("File converted to {0}", Path.GetFileName(filePath)));
         }
 
-        #endregion
-
+        #endregion ConvertToTxtCommand
 
         #region SaveCommand
 
@@ -392,8 +387,7 @@ namespace WorldEditor.Editors.Files.D2I
             PerformSave(m_file.FilePath);
         }
 
-        #endregion
-
+        #endregion SaveCommand
 
         #region SaveAsCommand
 
@@ -427,7 +421,7 @@ namespace WorldEditor.Editors.Files.D2I
             PerformSave(filePath);
         }
 
-        #endregion
+        #endregion SaveAsCommand
 
         private void PerformSave(string filePath)
         {
@@ -439,7 +433,6 @@ namespace WorldEditor.Editors.Files.D2I
                 m_file.Save(filePath);
 
                 MessageService.ShowMessage(m_editor, "File saved successfully");
-
             }
             catch (IOException ex)
             {
@@ -468,9 +461,9 @@ namespace WorldEditor.Editors.Files.D2I
                 }
 
                 if (row is D2ITextRow)
-                    m_file.SetText(( row as D2ITextRow ).Id, row.Text);
+                    m_file.SetText((row as D2ITextRow).Id, row.Text);
                 if (row is D2ITextUiRow)
-                    m_file.SetText(( row as D2ITextUiRow ).Id, row.Text);
+                    m_file.SetText((row as D2ITextUiRow).Id, row.Text);
 
                 row.State = RowState.None;
             }
@@ -479,9 +472,9 @@ namespace WorldEditor.Editors.Files.D2I
             {
                 var row = m_deletedRows.Pop();
                 if (row is D2ITextRow)
-                    m_file.DeleteText(( row as D2ITextRow ).Id);
+                    m_file.DeleteText((row as D2ITextRow).Id);
                 if (row is D2ITextUiRow)
-                    m_file.DeleteText(( row as D2ITextUiRow ).Id);
+                    m_file.DeleteText((row as D2ITextUiRow).Id);
             }
 
             return true;

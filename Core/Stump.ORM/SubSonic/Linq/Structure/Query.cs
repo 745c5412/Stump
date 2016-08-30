@@ -2,13 +2,12 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.DataProviders;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.DataProviders;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -25,13 +24,14 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class Query<T> : IQueryable<T>, IQueryable, IEnumerable<T>, IEnumerable, IOrderedQueryable<T>, IOrderedQueryable
     {
-        IQueryProvider provider;
-        Expression expression;
-        public Query():this(ProviderFactory.GetProvider())
+        private IQueryProvider provider;
+        private Expression expression;
+
+        public Query() : this(ProviderFactory.GetProvider())
         {
         }
 
-        public Query(IDataProvider provider):this(new DbQueryProvider(provider))
+        public Query(IDataProvider provider) : this(new DbQueryProvider(provider))
         {
         }
 
@@ -83,7 +83,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             return ((IEnumerable<T>)this.provider.Execute(this.expression)).GetEnumerator();
         }
 
-        IEnumerator  IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable)this.provider.Execute(this.expression)).GetEnumerator();
         }
@@ -103,7 +103,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
         public string QueryText
         {
-            get 
+            get
             {
                 IQueryText iqt = this.provider as IQueryText;
                 if (iqt != null)

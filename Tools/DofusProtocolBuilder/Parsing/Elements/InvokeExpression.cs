@@ -74,8 +74,8 @@ namespace DofusProtocolBuilder.Parsing.Elements
                                 result.ReturnVariableAssignationTarget.Length - 1, 1); // remove dot
 
                 if (match.Groups["assignation"].Value != "")
-                    result.ReturnVariableAssignation = 
-						match.Groups["assignation"].Value.Trim().
+                    result.ReturnVariableAssignation =
+                        match.Groups["assignation"].Value.Trim().
                             Replace("=", "").
                             Replace(":", "").
                             Replace("*", "").
@@ -89,12 +89,12 @@ namespace DofusProtocolBuilder.Parsing.Elements
                 }
                 if (result.Target != null && result.Target.EndsWith("."))
                     result.Target = result.Target.Remove(result.Target.Length - 1, 1);
-                        // remove dot
+                // remove dot
 
                 result.Name = match.Groups["name"].Value;
 
-            	result.Args = (from object capture in match.Groups["argument"].Captures
-            	               select capture.ToString().Trim().Replace(",", "")).ToArray();
+                result.Args = (from object capture in match.Groups["argument"].Captures
+                               select capture.ToString().Trim().Replace(",", "")).ToArray();
             }
 
             return result;

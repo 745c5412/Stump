@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
@@ -7,11 +5,11 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Spells;
-using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Diagnostics;
+using System.Linq;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
@@ -73,8 +71,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             {
                 ExecuteSpellCast();
                 ExecutePostMove();
-            }            
-            
+            }
+
             if (sw != null)
             {
                 sw.Stop();
@@ -89,7 +87,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public void ExecutePostMove()
         {
-            if (!Fighter.CanMove()) 
+            if (!Fighter.CanMove())
                 return;
 
             Action action;
@@ -171,7 +169,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 {
                     if (!Fighter.CastSpell(cast.Spell, cast.TargetCell.Cell))
                         break;
-                    
+
                     i++;
 
                     if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell)) ||

@@ -1,15 +1,15 @@
+using NLog;
+using Stump.Core.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NLog;
-using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Initialization
 {
     public class InitializationManager : Singleton<InitializationManager>
     {
-        public event Action< string> ProcessInitialization;
+        public event Action<string> ProcessInitialization;
 
         private void OnProcessInitialization(string text)
         {
@@ -21,12 +21,13 @@ namespace Stump.Server.BaseServer.Initialization
 
         private readonly List<Type> m_initializedTypes = new List<Type>();
         private readonly Dictionary<Type, List<InitializationMethod>> m_dependances = new Dictionary<Type, List<InitializationMethod>>();
+
         private readonly Dictionary<InitializationPass, List<InitializationMethod>> m_initializer =
             new Dictionary<InitializationPass, List<InitializationMethod>>();
 
         private InitializationManager()
         {
-            foreach (InitializationPass pass in Enum.GetValues(typeof(InitializationPass)))   
+            foreach (InitializationPass pass in Enum.GetValues(typeof(InitializationPass)))
             {
                 m_initializer.Add(pass, new List<InitializationMethod>());
             }
@@ -66,7 +67,6 @@ namespace Stump.Server.BaseServer.Initialization
 
                     var initializationMethod = new InitializationMethod(attribute, method);
 
-                    
                     if (method.IsStatic)
                     {
                         initializationMethod.Caller = null; // null because it's static
@@ -123,7 +123,7 @@ namespace Stump.Server.BaseServer.Initialization
                 {
                     logger.ErrorException(ex.InnerException.Message, ex);
                     throw;
-                } 
+                }
 
                 method.Initialized = true;
 

@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -33,12 +33,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 case ChallengeEnum.JARDINIER:
                     m_spell = (int)SpellIdEnum.CAWOTTE;
                     break;
+
                 case ChallengeEnum.FOSSOYEUR:
                     m_spell = (int)SpellIdEnum.INVOCATION_DE_CHAFERFU;
                     break;
+
                 case ChallengeEnum.CASINO_ROYAL:
                     m_spell = (int)SpellIdEnum.ROULETTE;
                     break;
+
                 case ChallengeEnum.ARAKNOPHILE:
                     m_spell = (int)SpellIdEnum.INVOCATION_D_ARAKNE_370;
                     break;
@@ -73,7 +76,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel))
                 UpdateStatus(ChallengeStatusEnum.FAILED, fighter);
         }
-
 
         protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
         {

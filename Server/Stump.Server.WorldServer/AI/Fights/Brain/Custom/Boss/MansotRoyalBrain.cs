@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Spells;
@@ -17,7 +16,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void OnFightStarted(IFight fight)
         {
-            var spell = new Spell((int) SpellIdEnum.MANSOMURE, 1);
+            var spell = new Spell((int)SpellIdEnum.MANSOMURE, 1);
             Fighter.CastSpell(spell, Fighter.Cell, true, true);
 
             foreach (var fighter in Fighter.Team.GetAllFighters())

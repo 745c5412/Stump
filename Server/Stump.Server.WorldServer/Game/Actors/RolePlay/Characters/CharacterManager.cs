@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
@@ -17,12 +11,17 @@ using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public class CharacterManager : DataManager<CharacterManager>
     {
-
         [Variable]
         public static int CharacterDeletionDaysDelay = 15;
 
@@ -42,7 +41,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <summary>
         ///   Maximum number of characters you can create/store in your account
         /// </summary>
-        [Variable(true)] public static uint MaxCharacterSlot = 5;
+        [Variable(true)]
+        public static uint MaxCharacterSlot = 5;
 
         private static readonly Regex m_nameCheckerRegex = new Regex(
             "^[A-Z][a-z]{2,9}(?:-[A-Za-z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
@@ -151,7 +151,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 if (breedColors.Length > i)
                 {
-                    look.AddColor(i + 1, color == -1 ? Color.FromArgb((int) breedColors[i]) : Color.FromArgb(color));
+                    look.AddColor(i + 1, color == -1 ? Color.FromArgb((int)breedColors[i]) : Color.FromArgb(color));
                 }
 
                 i++;
@@ -164,18 +164,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             using (var transaction = Database.GetTransaction())
             {
                 record = new CharacterRecord(breed)
-                    {
-                        Experience = ExperienceManager.Instance.GetCharacterLevelExperience((byte)breed.StartLevel),
-                        Name = name,
-                        Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
-                        Head = headId,
-                        EntityLook = look,
-                        CreationDate = DateTime.Now,
-                        LastUsage = DateTime.Now,
-                        AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL,
-                        WarnOnConnection = true,
-                        WarnOnLevel = true,
-                    };
+                {
+                    Experience = ExperienceManager.Instance.GetCharacterLevelExperience((byte)breed.StartLevel),
+                    Name = name,
+                    Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
+                    Head = headId,
+                    EntityLook = look,
+                    CreationDate = DateTime.Now,
+                    LastUsage = DateTime.Now,
+                    AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL,
+                    WarnOnConnection = true,
+                    WarnOnLevel = true,
+                };
 
                 Database.Insert(record);
 
@@ -183,7 +183,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 var spellsToLearn = from spell in breed.Spells
                                     where spell.ObtainLevel <= breed.StartLevel
-                                    orderby spell.ObtainLevel , spell.Spell ascending
+                                    orderby spell.ObtainLevel, spell.Spell ascending
                                     select spell;
 
                 var slot = 0;
@@ -195,7 +195,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 {
                     Database.Insert(spellRecord);
 
-                    var shortcut = new SpellShortcut(record, slot, (short) spellRecord.SpellId);
+                    var shortcut = new SpellShortcut(record, slot, (short)spellRecord.SpellId);
                     Database.Insert(shortcut);
                     slot++;
                 }
@@ -299,6 +299,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Consonants[rand.Next(0, Consonants.Length - 1)];
         }
 
-        #endregion
+        #endregion Character Name Random Generation
     }
 }

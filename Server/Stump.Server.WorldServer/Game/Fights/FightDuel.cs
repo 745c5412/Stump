@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public TimeSpan GetPlacementTimeLeft()
         {
-            var timeleft = TimeSpan.FromMilliseconds(FightConfiguration.PlacementPhaseTime) - ( DateTime.Now - CreationTime );
+            var timeleft = TimeSpan.FromMilliseconds(FightConfiguration.PlacementPhaseTime) - (DateTime.Now - CreationTime);
 
             if (timeleft < TimeSpan.Zero)
                 timeleft = TimeSpan.Zero;

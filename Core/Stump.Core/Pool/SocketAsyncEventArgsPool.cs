@@ -37,7 +37,7 @@ namespace Stump.Core.Pool
             m_disposed = true;
         }
 
-        #endregion
+        #endregion IDisposable Members
 
         /// <summary>
         ///   Met un SocketAsyncEventArgs dans le pool

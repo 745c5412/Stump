@@ -12,8 +12,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class DbExpressionReplacer : DbExpressionVisitor
     {
-        Expression searchFor;
-        Expression replaceWith;
+        private Expression searchFor;
+        private Expression replaceWith;
 
         private DbExpressionReplacer(Expression searchFor, Expression replaceWith)
         {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Linq;
-using System.Text.RegularExpressions;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -17,9 +11,13 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.Handlers.TaxCollector;
 using Stump.Server.WorldServer.Handlers.Guilds;
-using GuildMemberNetwork = Stump.DofusProtocol.Types.GuildMember;
+using Stump.Server.WorldServer.Handlers.TaxCollector;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text.RegularExpressions;
 using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
 
 namespace Stump.Server.WorldServer.Game.Guilds
@@ -55,21 +53,24 @@ namespace Stump.Server.WorldServer.Game.Guilds
             (short) SpellIdEnum.ARMURE_INCANDESCENTE_452,
             (short) SpellIdEnum.COMPULSION_DE_MASSE,
         };
+
         public const int TAX_COLLECTOR_MAX_PODS = 5000;
         public const int TAX_COLLECTOR_MAX_PROSPECTING = 500;
         public const int TAX_COLLECTOR_MAX_TAX = 50;
         public const int TAX_COLLECTOR_MAX_WISDOM = 400;
 
-        [Variable(true)] public static int MaxMembersNumber = 50;
+        [Variable(true)]
+        public static int MaxMembersNumber = 50;
 
-        [Variable(true)] public static int MaxGuildXP = 300000;
+        [Variable(true)]
+        public static int MaxGuildXP = 300000;
 
-        readonly List<GuildMember> m_members = new List<GuildMember>();
-        private readonly List<Paddock> m_paddocks = new List<Paddock>(); 
-        readonly WorldClientCollection m_clients = new WorldClientCollection();
-        readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>();
-        readonly Spell[] m_spells = new Spell[TAX_COLLECTOR_SPELLS.Length];
-        bool m_isDirty;
+        private readonly List<GuildMember> m_members = new List<GuildMember>();
+        private readonly List<Paddock> m_paddocks = new List<Paddock>();
+        private readonly WorldClientCollection m_clients = new WorldClientCollection();
+        private readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>();
+        private readonly Spell[] m_spells = new Spell[TAX_COLLECTOR_SPELLS.Length];
+        private bool m_isDirty;
 
         public Guild(GuildRecord record, IEnumerable<GuildMember> members)
         {
@@ -105,7 +106,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 if (record.Spells[i] == 0)
                     continue;
-                
+
                 m_spells[i] = new Spell(TAX_COLLECTOR_SPELLS[i], (byte)record.Spells[i]);
             }
         }
@@ -194,7 +195,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public int TaxCollectorHealth
         {
-            get { return 100*Level; }
+            get { return 100 * Level; }
         }
 
         public int TaxCollectorResistance
@@ -258,11 +259,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public short HireCost
         {
-            get { return (short) (1000 + (Level*100)); }
+            get { return (short)(1000 + (Level * 100)); }
         }
 
-
-        public ReadOnlyCollection<Paddock> Paddocks => m_paddocks.AsReadOnly(); 
+        public ReadOnlyCollection<Paddock> Paddocks => m_paddocks.AsReadOnly();
 
         public bool IsDirty
         {
@@ -312,10 +312,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
             for (var i = XP_PER_GAP.Length - 1; i >= 0; i--)
             {
                 if (gap > XP_PER_GAP[i][0])
-                    return (long) (amount*XP_PER_GAP[i][1]*0.01);
+                    return (long)(amount * XP_PER_GAP[i][1] * 0.01);
             }
 
-            return (long) (amount*XP_PER_GAP[0][1]*0.01);
+            return (long)(amount * XP_PER_GAP[0][1] * 0.01);
         }
 
         public void AddXP(long experience)
@@ -444,9 +444,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     return false;
             }
 
-
             Boost -= 5;
-
 
             return true;
         }
@@ -779,7 +777,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_clients.Send(new GuildLevelUpMessage(Level));
         }
 
-        void OnMemberConnected(GuildMember member)
+        private void OnMemberConnected(GuildMember member)
         {
             //Un membre de votre guilde, {player,%1,%2}, est en ligne.
             BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 224,
@@ -792,7 +790,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_clients.Send(new GuildMemberOnlineStatusMessage(member.Id, true));
         }
 
-        void OnMemberDisconnected(GuildMember member, Character character)
+        private void OnMemberDisconnected(GuildMember member, Character character)
         {
             m_clients.Remove(character.Client);
 
@@ -802,20 +800,20 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_clients.Send(new GuildMemberLeavingMessage(false, member.Id));
         }
 
-        void BindMemberEvents(GuildMember member)
+        private void BindMemberEvents(GuildMember member)
         {
             member.Connected += OnMemberConnected;
             member.Disconnected += OnMemberDisconnected;
         }
 
-        void UnBindMemberEvents(GuildMember member)
+        private void UnBindMemberEvents(GuildMember member)
         {
             member.Connected -= OnMemberConnected;
             member.Disconnected -= OnMemberDisconnected;
         }
 
         public GuildInformations GetGuildInformations() => new GuildInformations(Id, Name, Emblem.GetNetworkGuildEmblem());
+
         public BasicGuildInformations GetBasicGuildInformations() => new BasicGuildInformations(Id, Name);
     }
 }
-

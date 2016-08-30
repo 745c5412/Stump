@@ -1,6 +1,5 @@
 ﻿using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
@@ -38,7 +37,6 @@ namespace Stump.Server.WorldServer.Database.World
             get;
             set;
         }
-
 
         public string Name
         {
@@ -144,7 +142,7 @@ namespace Stump.Server.WorldServer.Database.World
 
         public void AssignFields(object d2oObject)
         {
-            var subarea = (SubArea) d2oObject;
+            var subarea = (SubArea)d2oObject;
             Id = subarea.id;
             NameId = subarea.nameId;
             AreaId = subarea.areaId;
@@ -156,7 +154,7 @@ namespace Stump.Server.WorldServer.Database.World
             SpawnsLimit = 3;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -167,6 +165,6 @@ namespace Stump.Server.WorldServer.Database.World
             m_customWorldMapCSV = m_customWorldMap.ToCSV(",");
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
     }
 }

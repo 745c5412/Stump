@@ -33,9 +33,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
             if (monster == null)
                 return;
-           
-           var target = Environment.GetNearestFighter(x => (x is SummonedMonster
-            && ((SummonedMonster) x).Monster.MonsterId == 494) || !x.IsFriendlyWith(monster));
+
+            var target = Environment.GetNearestFighter(x => (x is SummonedMonster
+             && ((SummonedMonster)x).Monster.MonsterId == 494) || !x.IsFriendlyWith(monster));
 
             if (target == null)
             {
@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             Environment.ResetMoveZone();
 
             var spellId = target.IsFriendlyWith(monster) ? (int)SpellIdEnum.PARADE_DES_VIEUX_JOUETS : (int)SpellIdEnum.ASPIR_NENFAN;
-            var spell = new Spell(spellId, (byte) monster.Monster.Grade.Level);
+            var spell = new Spell(spellId, (byte)monster.Monster.Grade.Level);
 
             var cell = Environment.GetCellToCastSpell(new TargetCell(target.Cell),
                 spell, spell.CurrentSpellLevel.CastTestLos);

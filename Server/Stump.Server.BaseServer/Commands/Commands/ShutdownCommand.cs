@@ -1,6 +1,6 @@
+using Stump.DofusProtocol.Enums;
 using System;
 using System.Threading;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -11,14 +11,14 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
         public ShutdownCommand()
         {
-            Aliases = new[] {"shutdown", "stop"};
+            Aliases = new[] { "shutdown", "stop" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Stop the server";
             Usage = "";
 
             AddParameter<int>("time", "t", "Stop after [time] seconds");
             AddParameter<string>("reason", "r", "Display a reason for the shutdown", isOptional: true);
-            AddParameter<bool>("cancel", "c", "Cancel a shutting down procedure", isOptional:true);
+            AddParameter<bool>("cancel", "c", "Cancel a shutting down procedure", isOptional: true);
             AddParameter<bool>("info", "i", "Informations about the current shutdown", isOptional: true);
         }
 
@@ -46,7 +46,6 @@ namespace Stump.Server.BaseServer.Commands.Commands
                 ServerBase.InstanceAsBase.ScheduleShutdown(TimeSpan.FromSeconds(m_shutdownCountdown),
                                                            trigger.Get<string>("reason"));
                 trigger.Reply("Server shutting down in {0} seconds", m_shutdownCountdown);
-
             }
             else
             {

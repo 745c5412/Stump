@@ -1,8 +1,8 @@
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells
 {
@@ -27,7 +27,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
 
         private static bool m_initialized;
         private static readonly MapPoint[] OrthogonalGridReference = new MapPoint[MapSize];
-
 
         private short m_cellId;
         private int m_x;
@@ -98,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             if (!m_initialized)
                 InitializeStaticGrid();
 
-            m_cellId = (short) ((m_x - m_y)*MapWidth + m_y + (m_x - m_y)/2);
+            m_cellId = (short)((m_x - m_y) * MapWidth + m_y + (m_x - m_y) / 2);
         }
 
         private void SetFromCellId()
@@ -114,15 +113,14 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             m_y = point.Y;
         }
 
-
         public uint EuclideanDistanceTo(MapPoint point)
         {
-            return (uint)Math.Sqrt(( point.X - m_x ) * ( point.X - m_x ) + ( point.Y - m_y ) * ( point.Y - m_y ));
+            return (uint)Math.Sqrt((point.X - m_x) * (point.X - m_x) + (point.Y - m_y) * (point.Y - m_y));
         }
 
         public uint ManhattanDistanceTo(MapPoint point)
         {
-            return (uint) (Math.Abs(m_x - point.X) + Math.Abs(m_y - point.Y));
+            return (uint)(Math.Abs(m_x - point.X) + Math.Abs(m_y - point.Y));
         }
 
         public bool IsAdjacentTo(MapPoint point)
@@ -133,10 +131,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public DirectionsEnum OrientationToAdjacent(MapPoint point)
         {
             var vector = new Point
-                             {
-                                 X = point.X > m_x ? (1) : (point.X < m_x ? (-1) : (0)),
-                                 Y = point.Y > m_y ? (1) : (point.Y < m_y ? (-1) : (0))
-                             };
+            {
+                X = point.X > m_x ? (1) : (point.X < m_x ? (-1) : (0)),
+                Y = point.Y > m_y ? (1) : (point.Y < m_y ? (-1) : (0))
+            };
 
             if (vector == VectorRight)
             {
@@ -179,11 +177,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             int dx = point.X - m_x;
             int dy = m_y - point.Y;
 
-            double distance = Math.Sqrt(dx*dx + dy*dy);
+            double distance = Math.Sqrt(dx * dx + dy * dy);
             double angleInRadians = Math.Acos(dx / distance);
 
             double angleInDegrees = angleInRadians * 180 / Math.PI;
-            double transformedAngle = angleInDegrees * (point.Y > m_y ? ( -1 ) : ( 1 ));
+            double transformedAngle = angleInDegrees * (point.Y > m_y ? (-1) : (1));
 
             double orientation = !diagonal ? Math.Round(transformedAngle / 90) * 2 + 1 : Math.Round(transformedAngle / 45) + 1;
 
@@ -192,12 +190,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
                 orientation = orientation + 8;
             }
 
-            return (DirectionsEnum) (uint) orientation;
+            return (DirectionsEnum)(uint)orientation;
         }
 
         public DirectionsEnum GetOppositeDirection(DirectionsEnum direction)
         {
-            return (DirectionsEnum) (((int)direction + 4)%8);
+            return (DirectionsEnum)(((int)direction + 4) % 8);
         }
 
         public IEnumerable<MapPoint> GetAllCellsInRectangle(MapPoint oppositeCell, bool skipStartAndEndCells = true, Func<MapPoint, bool> predicate = null)
@@ -208,10 +206,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
                 y2 = Math.Max(oppositeCell.Y, Y);
             for (int x = x1; x <= x2; x++)
                 for (int y = y1; y <= y2; y++)
-                    if (!skipStartAndEndCells || ( !( x == X && y == Y ) && !( x == oppositeCell.X && y == oppositeCell.Y ) ))
+                    if (!skipStartAndEndCells || (!(x == X && y == Y) && !(x == oppositeCell.X && y == oppositeCell.Y)))
                     {
                         var cell = GetPoint(x, y);
-                        if (cell != null && ( predicate == null || predicate(cell) )) yield return cell;
+                        if (cell != null && (predicate == null || predicate(cell))) yield return cell;
                     }
         }
 
@@ -233,13 +231,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public bool IsBetween(MapPoint A, MapPoint B)
         {
             // check colinearity
-            if ((X - A.X)*(B.Y - Y) - (Y - A.Y)*(B.X - X) != 0)
+            if ((X - A.X) * (B.Y - Y) - (Y - A.Y) * (B.X - X) != 0)
                 return false;
 
             var min = new Point(Math.Min(A.X, B.X), Math.Min(A.Y, B.Y));
             var max = new Point(Math.Max(A.X, B.X), Math.Max(A.Y, B.Y));
             // check position
-            return  (X >= min.X && X <= max.X && Y >= min.Y && Y <= max.Y);
+            return (X >= min.X && X <= max.X && Y >= min.Y && Y <= max.Y);
         }
 
         public MapPoint[] GetCellsOnLineBetween(MapPoint destination)
@@ -272,8 +270,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             int x = X;
             int y = Y;
             int n = 1 + dx + dy;
-            int vectorX = ( destination.X > X ) ? 1 : -1;
-            int vectorY = ( destination.Y > Y ) ? 1 : -1;
+            int vectorX = (destination.X > X) ? 1 : -1;
+            int vectorY = (destination.Y > Y) ? 1 : -1;
             int error = dx - dy;
             dx *= 2;
             dy *= 2;
@@ -385,7 +383,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
 
         public static bool IsInMap(int x, int y)
         {
-            return x + y >= 0 && x - y >= 0 && x - y < MapHeight*2 && x + y < MapWidth*2;
+            return x + y >= 0 && x - y >= 0 && x - y < MapHeight * 2 && x + y < MapWidth * 2;
         }
 
         public static uint CoordToCellId(int x, int y)
@@ -393,7 +391,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             if (!m_initialized)
                 InitializeStaticGrid();
 
-            return (uint) ((x - y)*MapWidth + y + (x - y)/2);
+            return (uint)((x - y) * MapWidth + y + (x - y) / 2);
         }
 
         public static Point CellIdToCoord(uint cellId)
@@ -429,7 +427,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
 
                 posY--;
             }
-
         }
 
         public static MapPoint GetPoint(int x, int y)
@@ -485,8 +482,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             unchecked
             {
                 int result = m_cellId;
-                result = (result*397) ^ m_x;
-                result = (result*397) ^ m_y;
+                result = (result * 397) ^ m_x;
+                result = (result * 397) ^ m_y;
                 return result;
             }
         }

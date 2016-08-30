@@ -1,15 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.IO;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Items.Templates
 {
@@ -17,7 +17,6 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
     {
         public static string FetchQuery = "SELECT * FROM items_sets";
     }
-
 
     [TableName("items_sets")]
     [D2OClass("ItemSet", "com.ankamagames.dofus.datacenter.items")]
@@ -93,17 +92,17 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public void AssignFields(object d2oObject)
         {
-            var itemSet = (ItemSet) d2oObject;
+            var itemSet = (ItemSet)d2oObject;
             Id = itemSet.id;
-            ItemsCSV = SerializeItems(itemSet.items.Select(entry => (int) entry).ToArray());
+            ItemsCSV = SerializeItems(itemSet.items.Select(entry => (int)entry).ToArray());
             NameId = itemSet.nameId;
             BonusIsSecret = itemSet.bonusIsSecret;
             var effects = itemSet.effects.Select(entry => entry.Where(subentry => subentry != null).
-                Select(subentry =>EffectManager.Instance.ConvertExportedEffect(subentry)).ToList()).ToList();
+                Select(subentry => EffectManager.Instance.ConvertExportedEffect(subentry)).ToList()).ToList();
             EffectsBin = effects.ToBinary();
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -114,7 +113,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
                 ItemsCSV = SerializeItems(Items.Select(entry => entry.Id).ToArray());
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
 
         public EffectBase[] GetEffects(int itemsCount)
         {
@@ -125,7 +124,6 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
             return Effects[index].ToArray();
         }
-
 
         private static string SerializeItems(IEnumerable<int> templateIds)
         {

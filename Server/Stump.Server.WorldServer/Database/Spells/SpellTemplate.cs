@@ -1,10 +1,10 @@
-using System;
 using Stump.Core.IO;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Spells
 {
@@ -12,7 +12,6 @@ namespace Stump.Server.WorldServer.Database.Spells
     {
         public static string FetchQuery = "SELECT * FROM spells_templates";
     }
-
 
     [TableName("spells_templates")]
     [D2OClass("Spell", "com.ankamagames.dofus.datacenter.spells")]
@@ -45,7 +44,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             get;
             set;
         }
-
 
         public string Description
         {
@@ -115,7 +113,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public void AssignFields(object d2oObject)
         {
-            var spell = (Spell) d2oObject;
+            var spell = (Spell)d2oObject;
             Id = spell.id;
             NameId = spell.nameId;
             DescriptionId = spell.descriptionId;
@@ -129,7 +127,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             UseParamCache = spell.useParamCache;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -138,7 +136,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             m_spellLevelsIdsCSV = SpellLevelsIds.ToCSV(",");
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
 
         public override string ToString()
         {

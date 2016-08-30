@@ -1,41 +1,37 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class MapObstacle
     {
         public const short Id = 200;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public short obstacleCellId;
         public sbyte state;
-        
+
         public MapObstacle()
         {
         }
-        
+
         public MapObstacle(short obstacleCellId, sbyte state)
         {
             this.obstacleCellId = obstacleCellId;
             this.state = state;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(obstacleCellId);
             writer.WriteSByte(state);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             obstacleCellId = reader.ReadShort();
@@ -45,12 +41,10 @@ namespace Stump.DofusProtocol.Types
             if (state < 0)
                 throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + sizeof(sbyte);
         }
-        
     }
-    
 }

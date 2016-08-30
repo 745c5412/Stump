@@ -1,7 +1,7 @@
-using System;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Arena;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Parties
 {
@@ -29,12 +29,14 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public Party Create(PartyTypeEnum type)
         {
-            switch(type)
+            switch (type)
             {
                 case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
                     return CreateClassical();
+
                 case PartyTypeEnum.PARTY_TYPE_ARENA:
                     return CreateArenaParty();
+
                 default:
                     throw new NotImplementedException(string.Format("Party of type {0} not supported", type));
             }

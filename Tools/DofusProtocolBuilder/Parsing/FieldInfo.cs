@@ -32,9 +32,9 @@
             set;
         }
 
-		public bool IsConst
-		{
-			get; set;
-		}
+        public bool IsConst
+        {
+            get; set;
+        }
     }
 }

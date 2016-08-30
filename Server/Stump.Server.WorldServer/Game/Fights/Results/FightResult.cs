@@ -2,7 +2,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
-using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -20,7 +19,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             get;
             protected set;
         }
-
 
         #region IFightResult Members
 
@@ -78,14 +76,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public virtual FightResultListEntry GetFightResultListEntry()
         {
-            return new FightResultFighterListEntry((short) Outcome, Loot.GetFightLoot(), Id, Alive);
+            return new FightResultFighterListEntry((short)Outcome, Loot.GetFightLoot(), Id, Alive);
         }
 
         public virtual void Apply()
         {
         }
 
-        #endregion
+        #endregion IFightResult Members
     }
 
     public class FightResult : FightResult<FightActor>
@@ -102,6 +100,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             get;
         }
+
         bool HasLeft
         {
             get;
@@ -145,6 +144,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         bool CanLoot(FightTeam looters);
 
         FightResultListEntry GetFightResultListEntry();
+
         void Apply();
     }
 }

@@ -1,32 +1,30 @@
-
-
 // Generated on 03/02/2014 20:43:02
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class EntityLook
     {
         public const short Id = 55;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public short bonesId;
         public IEnumerable<short> skins;
         public IEnumerable<int> indexedColors;
         public IEnumerable<short> scales;
         public IEnumerable<Types.SubEntity> subentities;
-        
+
         public EntityLook()
         {
         }
-        
+
         public EntityLook(short bonesId, IEnumerable<short> skins, IEnumerable<int> indexedColors, IEnumerable<short> scales, IEnumerable<Types.SubEntity> subentities)
         {
             this.bonesId = bonesId;
@@ -35,7 +33,7 @@ namespace Stump.DofusProtocol.Types
             this.scales = scales;
             this.subentities = subentities;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(bonesId);
@@ -44,8 +42,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in skins)
             {
-                 writer.WriteShort(entry);
-                 skins_count++;
+                writer.WriteShort(entry);
+                skins_count++;
             }
             var skins_after = writer.Position;
             writer.Seek((int)skins_before);
@@ -57,8 +55,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in indexedColors)
             {
-                 writer.WriteInt(entry);
-                 indexedColors_count++;
+                writer.WriteInt(entry);
+                indexedColors_count++;
             }
             var indexedColors_after = writer.Position;
             writer.Seek((int)indexedColors_before);
@@ -70,8 +68,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in scales)
             {
-                 writer.WriteShort(entry);
-                 scales_count++;
+                writer.WriteShort(entry);
+                scales_count++;
             }
             var scales_after = writer.Position;
             writer.Seek((int)scales_before);
@@ -83,16 +81,15 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in subentities)
             {
-                 entry.Serialize(writer);
-                 subentities_count++;
+                entry.Serialize(writer);
+                subentities_count++;
             }
             var subentities_after = writer.Position;
             writer.Seek((int)subentities_before);
             writer.WriteUShort((ushort)subentities_count);
             writer.Seek((int)subentities_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             bonesId = reader.ReadShort();
@@ -102,38 +99,36 @@ namespace Stump.DofusProtocol.Types
             var skins_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 skins_[i] = reader.ReadShort();
+                skins_[i] = reader.ReadShort();
             }
             skins = skins_;
             limit = reader.ReadUShort();
             var indexedColors_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 indexedColors_[i] = reader.ReadInt();
+                indexedColors_[i] = reader.ReadInt();
             }
             indexedColors = indexedColors_;
             limit = reader.ReadUShort();
             var scales_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 scales_[i] = reader.ReadShort();
+                scales_[i] = reader.ReadShort();
             }
             scales = scales_;
             limit = reader.ReadUShort();
             var subentities_ = new Types.SubEntity[limit];
             for (int i = 0; i < limit; i++)
             {
-                 subentities_[i] = new Types.SubEntity();
-                 subentities_[i].Deserialize(reader);
+                subentities_[i] = new Types.SubEntity();
+                subentities_[i].Deserialize(reader);
             }
             subentities = subentities_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + sizeof(short) + skins.Sum(x => sizeof(short)) + sizeof(short) + indexedColors.Sum(x => sizeof(int)) + sizeof(short) + scales.Sum(x => sizeof(short)) + sizeof(short) + subentities.Sum(x => x.GetSerializationSize());
         }
-        
     }
-    
 }

@@ -69,8 +69,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             AddEntity(fight.Id, fight);
 
             return fight;
-        }        
-        
+        }
+
         public ArenaFight CreateArenaFight(ArenaPreFight preFight)
         {
             var challengersTeam = new ArenaTeam(TeamEnum.TEAM_CHALLENGER, preFight.Arena.Map.GetRedFightPlacement());
@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             return fight;
         }
-        
+
         public ArenaPreFight CreateArenaPreFight(ArenaRecord arena)
         {
             var fight = new ArenaPreFight(m_idProvider.Pop(), arena);

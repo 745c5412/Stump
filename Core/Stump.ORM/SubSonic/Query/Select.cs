@@ -1,30 +1,30 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
-using System;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Schema;
+using System;
 
 namespace Stump.ORM.SubSonic.Query
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class Select : SqlQuery
     {
         private ISqlFragment sqlFragment;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Select"/> class.
         /// </summary>
@@ -43,10 +43,10 @@ namespace Stump.ORM.SubSonic.Query
         /// Initializes a new instance of the <see cref="Select"/> class.
         /// </summary>
         public Select() : this(ProviderFactory.GetProvider())
-        {}
+        { }
 
-        public Select(IDataProvider provider) : this(provider, new string[0]) 
-        {}
+        public Select(IDataProvider provider) : this(provider, new string[0])
+        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Select"/> class.
@@ -57,7 +57,7 @@ namespace Stump.ORM.SubSonic.Query
             _provider = ProviderFactory.GetProvider();
             this.sqlFragment = _provider.SqlFragment;
             SQLCommand = this.sqlFragment.SELECT;
-            foreach(Aggregate agg in aggregates)
+            foreach (Aggregate agg in aggregates)
                 Aggregates.Add(agg);
         }
 
@@ -71,7 +71,7 @@ namespace Stump.ORM.SubSonic.Query
             _provider = provider;
             this.sqlFragment = _provider.SqlFragment;
             SQLCommand = this.sqlFragment.SELECT;
-            foreach(Aggregate agg in aggregates)
+            foreach (Aggregate agg in aggregates)
                 Aggregates.Add(agg);
         }
 
@@ -81,13 +81,12 @@ namespace Stump.ORM.SubSonic.Query
         /// <param name="columns">The columns.</param>
         public Select(params IColumn[] columns)
         {
-            if(columns.Length > 0)
+            if (columns.Length > 0)
             {
                 _provider = columns[0].Table.Provider;
                 this.sqlFragment = _provider.SqlFragment;
                 SQLCommand = this.sqlFragment.SELECT;
-                
-                
+
                 SelectColumnList = new string[columns.Length];
                 for (int i = 0; i < columns.Length; i++)
                     SelectColumnList[i] = columns[i].QualifiedName;
@@ -104,10 +103,10 @@ namespace Stump.ORM.SubSonic.Query
             _provider = ProviderFactory.GetProvider();
             this.sqlFragment = _provider.SqlFragment;
             SQLCommand = this.sqlFragment.SELECT;
-            if(columns.Length == 1 && columns[0].Contains(","))
+            if (columns.Length == 1 && columns[0].Contains(","))
             {
                 //user entered a single string column list: "col1, col2, col3"
-                SelectColumnList = columns[0].Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries);
+                SelectColumnList = columns[0].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < SelectColumnList.Length; i++)
                     SelectColumnList[i] = SelectColumnList[i].Trim();
             }
@@ -153,7 +152,7 @@ namespace Stump.ORM.SubSonic.Query
         public Select Top(string top)
         {
             SQLCommand = this.sqlFragment.SELECT;
-            if(!top.ToLower().Trim().Contains("top"))
+            if (!top.ToLower().Trim().Contains("top"))
                 top = String.Concat(" TOP ", top);
             TopSpec = top;
             return this;

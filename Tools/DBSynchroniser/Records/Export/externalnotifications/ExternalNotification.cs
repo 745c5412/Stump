@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:47
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -22,13 +16,16 @@ namespace DBSynchroniser.Records
         public int categoryId;
         public int iconId;
         public int colorId;
+
         [I18NField]
         public uint descriptionId;
+
         public Boolean defaultEnable;
         public Boolean defaultSound;
         public Boolean defaultNotify;
         public Boolean defaultMultiAccount;
         public String name;
+
         [I18NField]
         public uint messageId;
 
@@ -36,7 +33,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -122,7 +118,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (ExternalNotification)obj;
-            
+
             Id = castedObj.id;
             CategoryId = castedObj.categoryId;
             IconId = castedObj.iconId;
@@ -135,7 +131,7 @@ namespace DBSynchroniser.Records
             Name = castedObj.name;
             MessageId = castedObj.messageId;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (ExternalNotification)parent : new ExternalNotification();
@@ -152,10 +148,9 @@ namespace DBSynchroniser.Records
             obj.messageId = MessageId;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

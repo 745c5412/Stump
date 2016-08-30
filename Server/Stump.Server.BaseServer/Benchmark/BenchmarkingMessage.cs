@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Stump.Core.Threading;
+using System;
 using System.Diagnostics;
-using Stump.Core.Threading;
 
 namespace Stump.Server.BaseServer.Benchmark
 {
@@ -31,7 +31,7 @@ namespace Stump.Server.BaseServer.Benchmark
                 sw.Stop();
                 ElapsedTime = sw.Elapsed;
 
-                if (sw.ElapsedMilliseconds>1)
+                if (sw.ElapsedMilliseconds > 1)
                     BenchmarkManager.Instance.Add(BenchmarkEntry.Create(m_message + "[IO]", sw.Elapsed, "type", "io"));
             }
         }

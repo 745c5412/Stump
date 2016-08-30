@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Threading;
+﻿using Stump.Core.Threading;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
-using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
@@ -49,10 +48,10 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                     if (stopRand)
                         continue;
 
-                    if (rand > effect.Random/randSum)
+                    if (rand > effect.Random / randSum)
                     {
                         // effect ignored
-                        rand -= effect.Random/randSum;
+                        rand -= effect.Random / randSum;
                         continue;
                     }
 
@@ -75,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             m_initialized = true;
 
             return true;
-       } 
+        }
 
         public override void Execute()
         {
@@ -97,7 +96,6 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                     };
 
                     Caster.AddAndApplyBuff(buff);
-
                 }
                 else
                     handler.Apply();
@@ -110,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                 return;
 
             if (token is SpellEffectHandler)
-                ((SpellEffectHandler) token).Apply();
+                ((SpellEffectHandler)token).Apply();
         }
 
         public override IEnumerable<SpellEffectHandler> GetEffectHandlers()

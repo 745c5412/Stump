@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {

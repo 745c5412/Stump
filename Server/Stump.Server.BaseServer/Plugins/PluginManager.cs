@@ -1,12 +1,11 @@
-
+using NLog;
+using Stump.Core.Attributes;
+using Stump.Core.Reflection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using NLog;
-using Stump.Core.Attributes;
-using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Plugins
 {
@@ -15,7 +14,7 @@ namespace Stump.Server.BaseServer.Plugins
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [Variable(true)]
-        public static List<string> PluginsPath = new List<string>{"./plugins/"};
+        public static List<string> PluginsPath = new List<string> { "./plugins/" };
 
         public delegate void PluginContextHandler(PluginContext pluginContext);
 
@@ -39,7 +38,6 @@ namespace Stump.Server.BaseServer.Plugins
 
         private PluginManager()
         {
-
         }
 
         public void LoadAllPlugins()
@@ -79,7 +77,7 @@ namespace Stump.Server.BaseServer.Plugins
             var initialized = false;
 
             // search the entry point (the class that implements IPlugin)
-            foreach (var pluginType in pluginAssembly.GetTypes().Where(pluginType => pluginType.IsPublic && !pluginType.IsAbstract).Where(pluginType => pluginType.HasInterface(typeof (IPlugin))))
+            foreach (var pluginType in pluginAssembly.GetTypes().Where(pluginType => pluginType.IsPublic && !pluginType.IsAbstract).Where(pluginType => pluginType.HasInterface(typeof(IPlugin))))
             {
                 if (initialized)
                     throw new PluginLoadException("Found 2 classes that implements IPlugin. A plugin can contains only one");
@@ -117,9 +115,9 @@ namespace Stump.Server.BaseServer.Plugins
         public PluginContext GetPlugin(string name, bool ignoreCase = false)
         {
             var plugins = from entry in PluginContexts
-                         where entry.Plugin.Name.Equals(name, ignoreCase ?
-                            StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture)
-                         select entry;
+                          where entry.Plugin.Name.Equals(name, ignoreCase ?
+                             StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture)
+                          select entry;
 
             return plugins.FirstOrDefault();
         }
@@ -149,7 +147,6 @@ namespace Stump.Server.BaseServer.Plugins
         public PluginLoadException(string exception)
             : base(exception)
         {
-
         }
     }
 }

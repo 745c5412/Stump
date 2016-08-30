@@ -1,11 +1,11 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Fights.Teams
 {
-    public abstract class FightTeamWithLeader<T> : FightTeam 
+    public abstract class FightTeamWithLeader<T> : FightTeam
         where T : FightActor
     {
         public FightTeamWithLeader(TeamEnum id, Cell[] placementCells) : base(id, placementCells)
@@ -33,7 +33,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         {
             if (Fighters.Count == 1 && !(Fighters[0] is T))
                 throw new Exception(string.Format("Leader of a FightPlayerTeam must be a {0} not {1}", typeof(T), Fighters[0].GetType()));
-
 
             base.OnFighterAdded(fighter);
         }

@@ -1,33 +1,29 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class TaxCollectorBasicInformations
     {
         public const short Id = 96;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public short firstNameId;
         public short lastNameId;
         public short worldX;
         public short worldY;
         public int mapId;
         public short subAreaId;
-        
+
         public TaxCollectorBasicInformations()
         {
         }
-        
+
         public TaxCollectorBasicInformations(short firstNameId, short lastNameId, short worldX, short worldY, int mapId, short subAreaId)
         {
             this.firstNameId = firstNameId;
@@ -37,7 +33,7 @@ namespace Stump.DofusProtocol.Types
             this.mapId = mapId;
             this.subAreaId = subAreaId;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(firstNameId);
@@ -47,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             firstNameId = reader.ReadShort();
@@ -67,12 +63,10 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
         }
-        
     }
-    
 }

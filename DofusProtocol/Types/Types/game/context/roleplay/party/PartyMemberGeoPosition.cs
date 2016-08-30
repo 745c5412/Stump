@@ -1,32 +1,28 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class PartyMemberGeoPosition
     {
         public const short Id = 378;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int memberId;
         public short worldX;
         public short worldY;
         public int mapId;
         public short subAreaId;
-        
+
         public PartyMemberGeoPosition()
         {
         }
-        
+
         public PartyMemberGeoPosition(int memberId, short worldX, short worldY, int mapId, short subAreaId)
         {
             this.memberId = memberId;
@@ -35,7 +31,7 @@ namespace Stump.DofusProtocol.Types
             this.mapId = mapId;
             this.subAreaId = subAreaId;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(memberId);
@@ -44,7 +40,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             memberId = reader.ReadInt();
@@ -61,12 +57,10 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
         }
-        
     }
-    
 }

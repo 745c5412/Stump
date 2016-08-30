@@ -23,6 +23,7 @@ namespace Stump.Core.Threading
         }
 
         void Start();
+
         void Stop();
 
         void AddMessage(IMessage message);
@@ -37,5 +38,4 @@ namespace Stump.Core.Threading
 
         void EnsureContext();
     }
-
 }

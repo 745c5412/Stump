@@ -1,12 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.ORM;
@@ -18,6 +10,13 @@ using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
 using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.AuthServer
@@ -44,7 +43,6 @@ namespace Stump.Server.AuthServer
 
         [Variable]
         public static int IpcPort = 9100;
-
 
         [Variable]
         public static string ConnectionSwfPatch = "./swf_patchs/StumpPatch.swf";
@@ -84,7 +82,6 @@ namespace Stump.Server.AuthServer
 
         public override void Initialize()
         {
-
             try
             {
                 base.Initialize();
@@ -165,7 +162,6 @@ namespace Stump.Server.AuthServer
             logger.Warn("SWF Patch for connection not found ({0}", ConnectionSwfPatch);
             return null;
         }
-
 
         protected override void OnShutdown()
         {

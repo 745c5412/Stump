@@ -1,26 +1,25 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.Schema;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using System;
 using System.Data;
 using System.Text;
-using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.DataProviders.SQLite
 {
-
     public class SQLiteSchema : ANSISchemaGenerator
     {
         public SQLiteSchema()
@@ -40,7 +39,7 @@ namespace Stump.ORM.SubSonic.DataProviders.SQLite
 
         public override string GetNativeType(DbType dbType)
         {
-            switch(dbType)
+            switch (dbType)
             {
                 case DbType.Object:
                 case DbType.AnsiString:
@@ -48,39 +47,53 @@ namespace Stump.ORM.SubSonic.DataProviders.SQLite
                 case DbType.String:
                 case DbType.StringFixedLength:
                     return "nvarchar";
+
                 case DbType.Boolean:
                     return "tinyint";
+
                 case DbType.SByte:
                 case DbType.Binary:
                 case DbType.Byte:
                     return "blob";
+
                 case DbType.Currency:
                     return "money";
+
                 case DbType.Time:
                 case DbType.Date:
                 case DbType.DateTime:
                     return "datetime";
+
                 case DbType.Decimal:
                     return "decimal";
+
                 case DbType.Double:
                     return "float";
+
                 case DbType.Guid:
                     return "guid";
+
                 case DbType.UInt32:
                 case DbType.Int32:
                     return "int";
+
                 case DbType.Int16:
                 case DbType.UInt16:
                     return "tinyint";
+
                 case DbType.UInt64:
                 case DbType.Int64:
                     return "integer";
+
                 case DbType.Single:
                     return "real";
+
                 case DbType.VarNumeric:
                     return "numeric";
+
                 case DbType.Xml:
                     return "xml";
+
                 default:
                     return "nvarchar";
             }
@@ -125,20 +138,20 @@ namespace Stump.ORM.SubSonic.DataProviders.SQLite
             else if (column.DataType == DbType.Double || column.DataType == DbType.Decimal)
                 sb.Append("(" + column.NumericPrecision + ", " + column.NumberScale + ")");
 
-            if(column.IsPrimaryKey)
+            if (column.IsPrimaryKey)
             {
                 sb.Append(" NOT NULL PRIMARY KEY");
-                if(column.IsNumeric && column.AutoIncrement)
+                if (column.IsNumeric && column.AutoIncrement)
                     sb.Append(" AUTOINCREMENT ");
             }
             else
             {
-                if(!column.IsNullable)
+                if (!column.IsNullable)
                     sb.Append(" NOT NULL");
                 else
                     sb.Append(" NULL");
 
-                if(column.DefaultSetting != null)
+                if (column.DefaultSetting != null)
                     sb.Append(" DEFAULT '" + column.DefaultSetting + "'");
             }
 
@@ -162,9 +175,11 @@ namespace Stump.ORM.SubSonic.DataProviders.SQLite
                 case "varchar":
                 case "nvarchar":
                     return DbType.String;
+
                 case "bit":
                 case "tinyint":
                     return DbType.Boolean;
+
                 case "decimal":
                 case "float":
                 case "newdecimal":
@@ -172,46 +187,58 @@ namespace Stump.ORM.SubSonic.DataProviders.SQLite
                 case "double":
                 case "real":
                     return DbType.Decimal;
+
                 case "int":
                 case "int32":
                     return DbType.Int32;
+
                 case "integer":
                     return DbType.Int64;
+
                 case "int16":
                 case "smallint":
                     return DbType.Int16;
+
                 case "date":
                 case "time":
                 case "datetime":
                 case "smalldatetime":
                     return DbType.DateTime;
+
                 case "image":
                 case "varbinary":
                 case "binary":
                 case "blob":
                 case "longblob":
                     return DbType.Binary;
+
                 case "char":
                     return DbType.AnsiStringFixedLength;
+
                 case "currency":
                 case "money":
                 case "smallmoney":
                     return DbType.Currency;
+
                 case "timestamp":
                     return DbType.DateTime;
+
                 case "uniqueidentifier":
                     return DbType.Guid;
+
                 case "uint16":
                     return DbType.UInt16;
+
                 case "uint32":
                     return DbType.UInt32;
+
                 default:
                     return DbType.String;
             }
         }
 
-
-        public override void SetColumnDefaults(IColumn column) {
+        public override void SetColumnDefaults(IColumn column)
+        {
             if (column.IsNumeric)
                 column.DefaultSetting = 0;
             else if (column.IsDateTime)
@@ -221,6 +248,5 @@ namespace Stump.ORM.SubSonic.DataProviders.SQLite
             else if (column.DataType == DbType.Boolean)
                 column.DefaultSetting = false;
         }
-    
     }
 }

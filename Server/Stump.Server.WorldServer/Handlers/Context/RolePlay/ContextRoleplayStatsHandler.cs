@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 {StatsBoostTypeEnum.Intelligence, PlayerFields.Intelligence},
                 {StatsBoostTypeEnum.Vitality, PlayerFields.Vitality},
             };
-            
+
         [WorldHandler(StatsUpgradeRequestMessage.Id)]
         public static void HandleStatsUpgradeRequestMessage(WorldClient client, StatsUpgradeRequestMessage message)
         {
@@ -57,16 +57,16 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 // if not last threshold and enough pts to reach the next threshold we fill this first
                 if (index < thresholds.Length - 1 && (pts / (double)thresholds[index][1]) > (thresholds[index + 1][0] - actualPoints))
                 {
-                    boost = (short) (thresholds[index + 1][0] - actualPoints);
-                    ptsUsed = (short)( boost * thresholds[index][1] );
+                    boost = (short)(thresholds[index + 1][0] - actualPoints);
+                    ptsUsed = (short)(boost * thresholds[index][1]);
 
                     if (thresholds[index].Length > 2)
-                        boost = (short) (boost * thresholds[index][2]);
+                        boost = (short)(boost * thresholds[index][2]);
                 }
                 else
                 {
-                    boost = (short)Math.Floor( pts / (double)thresholds[index][1] );
-                    ptsUsed = (short)( boost * thresholds[index][1] );
+                    boost = (short)Math.Floor(pts / (double)thresholds[index][1]);
+                    ptsUsed = (short)(boost * thresholds[index][1]);
 
                     if (thresholds[index].Length > 2)
                         boost = (short)(boost * thresholds[index][2]);

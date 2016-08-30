@@ -1,8 +1,8 @@
-using System.Linq;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Types;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Items.Shops
 {
@@ -72,11 +72,11 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
         private ObjectItemToSellInNpcShop BuildObjectItemToSellInNpcShop()
         {
             return new ObjectItemToSellInNpcShop(
-                (short) Item.Id,
+                (short)Item.Id,
                 0,
                 false,
                 Item.Effects.Select(entry => entry.GetObjectEffect()),
-                (int) (CustomPrice.HasValue ? CustomPrice.Value : Item.Price),
+                (int)(CustomPrice.HasValue ? CustomPrice.Value : Item.Price),
                 BuyCriterion ?? string.Empty);
         }
 
@@ -85,6 +85,6 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
             return m_objectItemToSellInNpcShop;
         }
 
-        #endregion
+        #endregion ObjectItemToSellInNpcShop
     }
 }

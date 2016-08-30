@@ -1,8 +1,8 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (Effect.EffectId == EffectsEnum.Effect_SubRange)
                     actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_DEBOOST_RANGE, Caster, actor, (short)(-integerEffect.Value));
 
-                AddStatBuff(actor, (short) (-integerEffect.Value), GetEffectCaracteristic(Effect.EffectId), true);
+                AddStatBuff(actor, (short)(-integerEffect.Value), GetEffectCaracteristic(Effect.EffectId), true);
             }
 
             return true;
@@ -64,49 +64,71 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
             {
                 case EffectsEnum.Effect_SubAgility:
                     return PlayerFields.Agility;
+
                 case EffectsEnum.Effect_SubChance:
                     return PlayerFields.Chance;
+
                 case EffectsEnum.Effect_SubIntelligence:
                     return PlayerFields.Intelligence;
+
                 case EffectsEnum.Effect_SubStrength:
                     return PlayerFields.Strength;
+
                 case EffectsEnum.Effect_SubWisdom:
                     return PlayerFields.Wisdom;
+
                 case EffectsEnum.Effect_SubRange:
                 case EffectsEnum.Effect_SubRange_135:
                     return PlayerFields.Range;
+
                 case EffectsEnum.Effect_SubCriticalHit:
                     return PlayerFields.CriticalHit;
+
                 case EffectsEnum.Effect_SubDamageBonus:
                     return PlayerFields.DamageBonus;
+
                 case EffectsEnum.Effect_SubDamageBonusPercent:
                     return PlayerFields.DamageBonusPercent;
+
                 case EffectsEnum.Effect_SubDodge:
                     return PlayerFields.TackleEvade;
+
                 case EffectsEnum.Effect_SubLock:
                     return PlayerFields.TackleBlock;
+
                 case EffectsEnum.Effect_SubDodgeAPProbability:
                     return PlayerFields.DodgeAPProbability;
+
                 case EffectsEnum.Effect_SubDodgeMPProbability:
                     return PlayerFields.DodgeMPProbability;
+
                 case EffectsEnum.Effect_SubVitality:
                     return PlayerFields.Vitality;
+
                 case EffectsEnum.Effect_SubAPAttack:
                     return PlayerFields.APAttack;
+
                 case EffectsEnum.Effect_SubMPAttack:
                     return PlayerFields.MPAttack;
+
                 case EffectsEnum.Effect_SubHealBonus:
                     return PlayerFields.HealBonus;
+
                 case EffectsEnum.Effect_SubNeutralResistPercent:
                     return PlayerFields.NeutralResistPercent;
+
                 case EffectsEnum.Effect_SubEarthResistPercent:
                     return PlayerFields.EarthResistPercent;
+
                 case EffectsEnum.Effect_SubWaterResistPercent:
                     return PlayerFields.WaterResistPercent;
+
                 case EffectsEnum.Effect_SubAirResistPercent:
                     return PlayerFields.AirResistPercent;
+
                 case EffectsEnum.Effect_SubFireResistPercent:
                     return PlayerFields.FireResistPercent;
+
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }

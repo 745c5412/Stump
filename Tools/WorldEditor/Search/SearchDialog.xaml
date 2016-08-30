@@ -89,7 +89,6 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-
                 <Button Width="150" Margin="10,5,10,0" Command="{Binding AddCriteriaCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/WorldEditor;component/Images/action_add_16xLG.png" Margin="0,0,3,0" Width="16" Height="16" VerticalAlignment="Center"></Image>

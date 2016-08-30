@@ -1,14 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.IO;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Spells
 {
@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public SpellTemplate Spell
         {
-            get { return m_spell ?? (m_spell = SpellManager.Instance.GetSpellTemplate((int) SpellId)); }
+            get { return m_spell ?? (m_spell = SpellManager.Instance.GetSpellTemplate((int)SpellId)); }
         }
 
         public uint SpellBreed
@@ -267,7 +267,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public void AssignFields(object d2oObject)
         {
-            var spell = (SpellLevel) d2oObject;
+            var spell = (SpellLevel)d2oObject;
 
             Id = spell.id;
             SpellId = spell.spellId;
@@ -300,7 +300,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             m_criticalEffectsBin = EffectManager.Instance.SerializeEffects(spell.criticalEffect);
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -312,6 +312,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             m_criticalEffectsBin = EffectManager.Instance.SerializeEffects(CriticalEffects);
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
     }
 }

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Dialogs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
 {
@@ -20,8 +20,10 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
             Character = character;
             Zaapi = zaapi;
 
-            foreach (var map in from map in character.Area.Maps from interactive in map.GetInteractiveObjects()
-                                    .Where(interactive => interactive.Template != null && interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAPI) select map)
+            foreach (var map in from map in character.Area.Maps
+                                from interactive in map.GetInteractiveObjects()
+    .Where(interactive => interactive.Template != null && interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAPI)
+                                select map)
             {
                 AddDestination(map);
             }

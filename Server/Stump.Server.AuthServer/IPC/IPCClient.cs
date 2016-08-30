@@ -1,38 +1,36 @@
 ﻿#region License GNU GPL
+
 // IPCClient.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
+#endregion License GNU GPL
+
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Pool;
+using Stump.Core.Threading;
 using Stump.Core.Timers;
-using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
-using Stump.Server.BaseServer.Network;
-using Stump.Core.Threading;
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Stump.Server.AuthServer.IPC
 {
@@ -40,6 +38,7 @@ namespace Stump.Server.AuthServer.IPC
     {
         [Variable(DefinableRunning = true)]
         public static int DefaultRequestTimeout = -1;
+
         //public static int DefaultRequestTimeout = 60;
 
         /// <summary>
@@ -59,13 +58,14 @@ namespace Stump.Server.AuthServer.IPC
         {
             Socket = socket;
             TaskPool = new SelfRunningTaskPool(TaskPoolInterval, "IPCClient Task Pool");
-            m_readArgs = new SocketAsyncEventArgs(); 
+            m_readArgs = new SocketAsyncEventArgs();
             m_readArgs.UserToken = this;
             m_bufferSegment = BufferManager.GetSegment(IPCHost.BufferSize);
         }
 
         private IPCOperations m_operations;
         private SocketAsyncEventArgs m_readArgs;
+
         public event Action<IPCClient> Disconnected;
 
         public WorldServer Server
@@ -75,6 +75,7 @@ namespace Stump.Server.AuthServer.IPC
         }
 
         #region Network Stuff
+
         public Socket Socket
         {
             get;
@@ -89,12 +90,12 @@ namespace Stump.Server.AuthServer.IPC
 
         public int Port
         {
-            get { return ((IPEndPoint) Socket.RemoteEndPoint).Port; }
+            get { return ((IPEndPoint)Socket.RemoteEndPoint).Port; }
         }
 
         public IPAddress Address
         {
-            get { return ((IPEndPoint) Socket.RemoteEndPoint).Address; }
+            get { return ((IPEndPoint)Socket.RemoteEndPoint).Address; }
         }
 
         public bool IsConnected
@@ -135,7 +136,8 @@ namespace Stump.Server.AuthServer.IPC
             Socket.SendAsync(args);
 
             // is it necessarily ?
-            LastActivity = DateTime.Now;}
+            LastActivity = DateTime.Now;
+        }
 
         private static void OnSendCompleted(object sender, SocketAsyncEventArgs e)
         {
@@ -179,11 +181,11 @@ namespace Stump.Server.AuthServer.IPC
                 if (BuildMessage(m_bufferSegment))
                 {
                     m_writeOffset = m_readOffset = 0;
-					if (m_bufferSegment.Length != IPCHost.BufferSize)
-					{
-						m_bufferSegment.DecrementUsage();
-						m_bufferSegment = BufferManager.GetSegment(IPCHost.BufferSize);
-					}
+                    if (m_bufferSegment.Length != IPCHost.BufferSize)
+                    {
+                        m_bufferSegment.DecrementUsage();
+                        m_bufferSegment = BufferManager.GetSegment(IPCHost.BufferSize);
+                    }
                 }
 
                 ResumeReceive();
@@ -276,7 +278,7 @@ namespace Stump.Server.AuthServer.IPC
             // handshake not done yet
             if (m_operations == null)
             {
-                if (!( message is HandshakeMessage ))
+                if (!(message is HandshakeMessage))
                 {
                     SendError(string.Format("The first received packet should be a HandshakeMessage not {0}", message.GetType()), message);
                     Disconnect();
@@ -309,7 +311,6 @@ namespace Stump.Server.AuthServer.IPC
             else
             {
                 base.ProcessMessage(message);
-
             }
         }
 
@@ -360,7 +361,7 @@ namespace Stump.Server.AuthServer.IPC
                 Socket.Close();
 
             if (Server != null)
-               WorldServerManager.Instance.RemoveWorld(Server);
+                WorldServerManager.Instance.RemoveWorld(Server);
 
             if (m_operations != null)
                 m_operations.Dispose();
@@ -385,7 +386,6 @@ namespace Stump.Server.AuthServer.IPC
                 evnt(this);
         }
 
-        #endregion
-
+        #endregion Network Stuff
     }
 }

@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {

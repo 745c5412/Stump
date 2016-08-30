@@ -1,17 +1,20 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Extensions;
+using Stump.ORM.SubSonic.Schema;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,14 +23,11 @@ using System.Data;
 using System.Linq.Expressions;
 using System.Text;
 using System.Transactions;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Extensions;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.Query
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class SqlQuery : ISqlQuery
     {
@@ -70,7 +70,6 @@ namespace Stump.ORM.SubSonic.Query
             _provider = ProviderFactory.GetProvider(cString, provider);
         }
 
-
         #region Validation
 
         /// <summary>
@@ -79,12 +78,11 @@ namespace Stump.ORM.SubSonic.Query
         public virtual void ValidateQuery()
         {
             //gotta have a "FROM"
-            if(FromTables.Count == 0)
+            if (FromTables.Count == 0)
                 throw new InvalidOperationException("Need to have at least one From table specified");
         }
 
-        #endregion
-
+        #endregion Validation
 
         /// <summary>
         /// Gets or sets the open paren count.
@@ -117,10 +115,10 @@ namespace Stump.ORM.SubSonic.Query
         public IColumn FindColumn(string Name)
         {
             IColumn result = null;
-            foreach(ITable t in FromTables)
+            foreach (ITable t in FromTables)
             {
                 result = t.GetColumn(Name);
-                if(result != null)
+                if (result != null)
                     return result;
             }
             return result;
@@ -131,27 +129,26 @@ namespace Stump.ORM.SubSonic.Query
             string providerTable = null;
             string providerColumn = null;
 
-            if(!String.IsNullOrEmpty(tableName))
+            if (!String.IsNullOrEmpty(tableName))
                 providerTable = tableName;
-            if(FromTables.Count > 0)
+            if (FromTables.Count > 0)
                 providerTable = FromTables[0].Name;
 
-            if(!String.IsNullOrEmpty(Name))
+            if (!String.IsNullOrEmpty(Name))
                 providerColumn = Name;
 
-            if(!String.IsNullOrEmpty(providerTable) & ! String.IsNullOrEmpty(providerColumn))
+            if (!String.IsNullOrEmpty(providerTable) & !String.IsNullOrEmpty(providerColumn))
             {
                 ITable table = _provider.FindTable(providerTable);
-                if(table != null)
+                if (table != null)
                 {
                     IColumn column = table.GetColumn(providerColumn);
-                    if(column != null)
+                    if (column != null)
                         return column.DataType;
                 }
             }
             return DbType.AnsiString;
         }
-
 
         #region Where
 
@@ -160,7 +157,7 @@ namespace Stump.ORM.SubSonic.Query
             //ExpressionParser parser = new ExpressionParser();
             IList<Constraint> c = expression.ParseConstraints();
 
-            foreach(Constraint constrain in c)
+            foreach (Constraint constrain in c)
             {
                 IColumn column = _provider.FindTable(typeof(T).Name).GetColumnByPropertyName(constrain.ColumnName);
                 constrain.ColumnName = column.Name;
@@ -193,9 +190,9 @@ namespace Stump.ORM.SubSonic.Query
         public Constraint Where(IColumn column)
         {
             Constraint c = new Constraint(ConstraintType.Where, column.Name, column.QualifiedName, column.Name, this)
-                               {
-                                   TableName = column.Table.Name
-                               };
+            {
+                TableName = column.Table.Name
+            };
             return c;
         }
 
@@ -207,14 +204,13 @@ namespace Stump.ORM.SubSonic.Query
         public Constraint Where(Aggregate agg)
         {
             Constraint c = new Constraint(ConstraintType.Where, agg.ColumnName, agg.ColumnName, agg.WithoutAlias(), this)
-                               {
-                                   IsAggregate = true
-                               };
+            {
+                IsAggregate = true
+            };
             return c;
         }
 
-        #endregion
-
+        #endregion Where
 
         #region Or
 
@@ -236,9 +232,9 @@ namespace Stump.ORM.SubSonic.Query
         public Constraint Or(IColumn column)
         {
             Constraint c = new Constraint(ConstraintType.Or, column.Name, column.QualifiedName, column.Name, this)
-                               {
-                                   TableName = column.Table.Name
-                               };
+            {
+                TableName = column.Table.Name
+            };
             return c;
         }
 
@@ -250,9 +246,9 @@ namespace Stump.ORM.SubSonic.Query
         public Constraint Or(Aggregate agg)
         {
             Constraint c = new Constraint(ConstraintType.Or, agg.ColumnName, agg.ColumnName, agg.WithoutAlias(), this)
-                               {
-                                   IsAggregate = true
-                               };
+            {
+                IsAggregate = true
+            };
             return c;
         }
 
@@ -265,10 +261,10 @@ namespace Stump.ORM.SubSonic.Query
         {
             //as a convenience, check that the last constraint
             //is a close paren
-            if(Constraints.Count > 0 && (ClosedParenCount < OpenParenCount))
+            if (Constraints.Count > 0 && (ClosedParenCount < OpenParenCount))
             {
                 Constraint last = Constraints[Constraints.Count - 1];
-                if(last.Comparison != Comparison.CloseParentheses)
+                if (last.Comparison != Comparison.CloseParentheses)
                     CloseExpression();
             }
 
@@ -283,9 +279,9 @@ namespace Stump.ORM.SubSonic.Query
         public SqlQuery OpenExpression()
         {
             Constraint c = new Constraint(ConstraintType.Where, "##", "##", "##", this)
-                               {
-                                   Comparison = Comparison.OpenParentheses
-                               };
+            {
+                Comparison = Comparison.OpenParentheses
+            };
             Constraints.Add(c);
             OpenParenCount++;
             return this;
@@ -298,16 +294,15 @@ namespace Stump.ORM.SubSonic.Query
         public SqlQuery CloseExpression()
         {
             Constraint c = new Constraint(ConstraintType.Where, "##", "##", "##", this)
-                               {
-                                   Comparison = Comparison.CloseParentheses
-                               };
+            {
+                Comparison = Comparison.CloseParentheses
+            };
             Constraints.Add(c);
             ClosedParenCount++;
             return this;
         }
 
-        #endregion
-
+        #endregion Or
 
         #region And
 
@@ -329,9 +324,9 @@ namespace Stump.ORM.SubSonic.Query
         public Constraint And(IColumn column)
         {
             Constraint c = new Constraint(ConstraintType.And, column.Name, column.QualifiedName, column.Name, this)
-                               {
-                                   TableName = column.Table.Name
-                               };
+            {
+                TableName = column.Table.Name
+            };
             return c;
         }
 
@@ -343,9 +338,9 @@ namespace Stump.ORM.SubSonic.Query
         public Constraint And(Aggregate agg)
         {
             Constraint c = new Constraint(ConstraintType.And, agg.ColumnName, agg.ColumnName, agg.WithoutAlias(), this)
-                               {
-                                   IsAggregate = true
-                               };
+            {
+                IsAggregate = true
+            };
             return c;
         }
 
@@ -358,18 +353,17 @@ namespace Stump.ORM.SubSonic.Query
         {
             //as a convenience, check that the last constraint
             //is a close paren
-            if(Constraints.Count > 0 && (ClosedParenCount < OpenParenCount))
+            if (Constraints.Count > 0 && (ClosedParenCount < OpenParenCount))
             {
                 Constraint last = Constraints[Constraints.Count - 1];
-                if(last.Comparison != Comparison.CloseParentheses)
+                if (last.Comparison != Comparison.CloseParentheses)
                     CloseExpression();
             }
             OpenParenCount++;
             return new Constraint(ConstraintType.And, columnName, columnName, "(" + columnName, this);
         }
 
-        #endregion
-
+        #endregion And
 
         #region Exception Handling
 
@@ -382,14 +376,14 @@ namespace Stump.ORM.SubSonic.Query
             //but how to solve
 
             //connection strings?
-            if(fromException.Message.ToLower().Contains("user instance"))
+            if (fromException.Message.ToLower().Contains("user instance"))
             {
                 result =
                     new InvalidOperationException(
                         "You're trying to connect to a database in your App_Data directory, and your SQL Server installation does not support User Instances.",
                         fromException);
             }
-            else if(fromException.Message.Contains("use correlation names"))
+            else if (fromException.Message.Contains("use correlation names"))
             {
                 result =
                     new InvalidOperationException(
@@ -402,8 +396,7 @@ namespace Stump.ORM.SubSonic.Query
             return result;
         }
 
-        #endregion
-
+        #endregion Exception Handling
 
         #region object overrides
 
@@ -416,8 +409,7 @@ namespace Stump.ORM.SubSonic.Query
             return BuildSqlStatement();
         }
 
-        #endregion
-
+        #endregion object overrides
 
         #region Sql Builder
 
@@ -431,17 +423,20 @@ namespace Stump.ORM.SubSonic.Query
             ISqlGenerator generator = GetGenerator();
             string sql;
 
-            switch(QueryCommandType)
+            switch (QueryCommandType)
             {
                 case QueryType.Update:
                     sql = generator.BuildUpdateStatement();
                     break;
+
                 case QueryType.Insert:
                     sql = generator.BuildInsertStatement();
                     break;
+
                 case QueryType.Delete:
                     sql = generator.BuildDeleteStatement();
                     break;
+
                 default:
                     sql = PageSize > 0 ? generator.BuildPagedSelectStatement() : generator.BuildSelectStatement();
                     break;
@@ -453,19 +448,16 @@ namespace Stump.ORM.SubSonic.Query
         internal ISqlGenerator GetGenerator()
         {
             return _provider.GetSqlGenerator(this);
-            
-            //return SqlGeneratorFactory.GetInstance(_provider.ClientName, this);
 
+            //return SqlGeneratorFactory.GetInstance(_provider.ClientName, this);
         }
 
-        #endregion
-
+        #endregion Sql Builder
 
         #region Command Builder
 
         public QueryCommand GetCommand()
         {
-            
             QueryCommand cmd = new QueryCommand(BuildSqlStatement(), _provider);
             SetConstraintParams(cmd);
 
@@ -475,21 +467,21 @@ namespace Stump.ORM.SubSonic.Query
         internal static void SetConstraintParams(SqlQuery qry, QueryCommand cmd)
         {
             //loop the constraints and add the values
-            foreach(Constraint c in qry.Constraints)
+            foreach (Constraint c in qry.Constraints)
             {
                 //set the data type of the param
                 IColumn col = qry.FindColumn(c.ColumnName);
-                if(col != null)
+                if (col != null)
                     c.DbType = col.DataType;
 
-                if(c.Comparison == Comparison.BetweenAnd)
+                if (c.Comparison == Comparison.BetweenAnd)
                 {
                     cmd.Parameters.Add(String.Concat(c.ParameterName, "_start"), c.StartValue, c.DbType);
                     cmd.Parameters.Add(String.Concat(c.ParameterName + "_end"), c.EndValue, c.DbType);
                 }
-                else if(c.Comparison == Comparison.In || c.Comparison == Comparison.NotIn)
+                else if (c.Comparison == Comparison.In || c.Comparison == Comparison.NotIn)
                 {
-                    if(c.InSelect != null)
+                    if (c.InSelect != null)
                     {
                         //set the parameters for the nested select
                         //this will support recursive INs... I hope
@@ -499,7 +491,7 @@ namespace Stump.ORM.SubSonic.Query
                     {
                         int i = 1;
                         IEnumerator en = c.InValues.GetEnumerator();
-                        while(en.MoveNext())
+                        while (en.MoveNext())
                         {
                             cmd.Parameters.Add(String.Concat(c.ParameterName, "In", i), en.Current, c.DbType);
                             i++;
@@ -517,8 +509,7 @@ namespace Stump.ORM.SubSonic.Query
             SetConstraintParams(this, cmd);
         }
 
-        #endregion
-
+        #endregion Command Builder
 
         #region From
 
@@ -541,9 +532,9 @@ namespace Stump.ORM.SubSonic.Query
         /// <returns></returns>
         public SqlQuery From(string tableName)
         {
-            ITable tbl = _provider.FindTable(tableName) ?? new DatabaseTable(tableName,_provider);
+            ITable tbl = _provider.FindTable(tableName) ?? new DatabaseTable(tableName, _provider);
 
-            if(tbl == null)
+            if (tbl == null)
                 throw new InvalidOperationException("Can't find the table " + tableName + "; suggest you use the Generics <T> to pass the From (From<T>())");
 
             FromTables.Add(tbl);
@@ -563,11 +554,9 @@ namespace Stump.ORM.SubSonic.Query
             return From(result);
         }
 
-        #endregion
-
+        #endregion From
 
         #region Joins
-
 
         #region Join Builders
 
@@ -577,7 +566,7 @@ namespace Stump.ORM.SubSonic.Query
             Joins.Add(j);
 
             //add the tables to the From collection
-            if(!FromTables.Contains(toColumn.Table))
+            if (!FromTables.Contains(toColumn.Table))
                 FromTables.Add(toColumn.Table);
         }
 
@@ -587,18 +576,18 @@ namespace Stump.ORM.SubSonic.Query
             var toTable = _provider.FindOrCreateTable(typeof(T));
 
             //the assumption here is that the FromTable[0] is the table to join from
-            if(FromTables.Count == 0)
+            if (FromTables.Count == 0)
                 throw new InvalidOperationException("Can't join if there's no table to join to - make sure to use From() before InnerJoin");
 
-            if(toTable == null)
+            if (toTable == null)
                 throw new InvalidOperationException("Can't find the table for this type. Try using the Column instead");
 
             var fromColumn = FromTables[0].GetColumn(fromColumnName);
-            if(fromColumn == null)
+            if (fromColumn == null)
                 throw new InvalidOperationException("Don't know which column to join to - can't find column " + fromColumnName + " in table " + FromTables[0].Name);
 
             var toColumn = toTable.GetColumn(toColumnName);
-            if(toColumn == null)
+            if (toColumn == null)
                 throw new InvalidOperationException("Don't know which column to join to - can't find column " + toColumnName + " in table " + toTable.Name);
 
             CreateJoin(fromColumn, toColumn, Join.JoinType.Inner);
@@ -609,11 +598,11 @@ namespace Stump.ORM.SubSonic.Query
             //see if we can find the table
             var toTable = _provider.FindOrCreateTable(typeof(T));
 
-            if(toTable == null)
+            if (toTable == null)
                 throw new InvalidOperationException("Can't find the table for this type. Try using the Column instead");
 
             //the assumption here is that the FromTable[0] is the table to join from
-            if(FromTables.Count == 0)
+            if (FromTables.Count == 0)
                 throw new InvalidOperationException("Can't join if there's no table to join to - make sure to use From() before InnerJoin");
 
             //the "from" table is a bit tricky
@@ -627,49 +616,48 @@ namespace Stump.ORM.SubSonic.Query
             //find the From table's PK in the other table
             var toColumn = toTable.GetColumn(fromColumn.Name);
 
-            if(toColumn == null)
+            if (toColumn == null)
             {
                 //second effort - reverse the lookup and match the PK of the toTable to the fromTable
                 toColumn = toTable.PrimaryKey;
                 fromColumn = fromTable.GetColumn(toColumn.Name);
             }
 
-            if(toColumn == null)
+            if (toColumn == null)
             {
-                //match the first matching pair 
-                foreach(var col in fromTable.Columns)
+                //match the first matching pair
+                foreach (var col in fromTable.Columns)
                 {
                     fromColumn = col;
                     toColumn = toTable.GetColumn(fromColumn.Name);
 
-                    if(toColumn != null)
+                    if (toColumn != null)
                         break;
                 }
             }
 
             //still null? keep going - reverse the last search
-            if(toColumn == null)
+            if (toColumn == null)
             {
-                //match the first matching pair 
-                foreach(var col in toTable.Columns)
+                //match the first matching pair
+                foreach (var col in toTable.Columns)
                 {
                     fromColumn = col;
                     toColumn = toTable.GetColumn(fromColumn.Name);
 
-                    if(toColumn != null)
+                    if (toColumn != null)
                         break;
                 }
             }
 
             //OK - give up
-            if(toColumn == null)
+            if (toColumn == null)
                 throw new InvalidOperationException("Don't know which column to join to - tried to join based on Primary Key (" + fromColumn.Name + ") but couldn't find a match");
 
             CreateJoin(fromColumn, toColumn, type);
         }
 
-        #endregion
-
+        #endregion Join Builders
 
         #region Inner
 
@@ -711,8 +699,7 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
-
+        #endregion Inner
 
         #region Outer
 
@@ -742,8 +729,7 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
-
+        #endregion Outer
 
         #region Cross
 
@@ -773,8 +759,7 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
-
+        #endregion Cross
 
         #region LeftInner
 
@@ -804,8 +789,7 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
-
+        #endregion LeftInner
 
         #region RightInner
 
@@ -835,8 +819,7 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
-
+        #endregion RightInner
 
         #region LeftOuter
 
@@ -866,8 +849,7 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
-
+        #endregion LeftOuter
 
         #region RightOuter
 
@@ -897,8 +879,7 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
-
+        #endregion RightOuter
 
         #region NotEqual
 
@@ -928,11 +909,9 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
+        #endregion NotEqual
 
-
-        #endregion
-
+        #endregion Joins
 
         #region Ordering
 
@@ -946,9 +925,9 @@ namespace Stump.ORM.SubSonic.Query
             ISqlGenerator generator = GetGenerator();
             StringBuilder sb = new StringBuilder();
             bool isFirst = true;
-            foreach(string s in columns)
+            foreach (string s in columns)
             {
-                if(!isFirst)
+                if (!isFirst)
                     sb.Append(", ");
                 sb.Append(s);
                 sb.Append(generator.sqlFragment.ASC);
@@ -968,9 +947,9 @@ namespace Stump.ORM.SubSonic.Query
             ISqlGenerator generator = GetGenerator();
             StringBuilder sb = new StringBuilder();
             bool isFirst = true;
-            foreach(string s in columns)
+            foreach (string s in columns)
             {
-                if(!isFirst)
+                if (!isFirst)
                     sb.Append(", ");
                 sb.Append(s);
                 sb.Append(generator.sqlFragment.DESC);
@@ -980,8 +959,7 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
-
+        #endregion Ordering
 
         #region Paging
 
@@ -1012,8 +990,7 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
-
+        #endregion Paging
 
         #region Execution
 
@@ -1028,7 +1005,7 @@ namespace Stump.ORM.SubSonic.Query
             {
                 result = _provider.ExecuteQuery(GetCommand());
             }
-            catch(Exception x)
+            catch (Exception x)
             {
                 InvalidOperationException ex = GenerateException(x);
                 throw ex;
@@ -1048,7 +1025,7 @@ namespace Stump.ORM.SubSonic.Query
                 var command = GetCommand();
                 rdr = _provider.ExecuteReader(command);
             }
-            catch(Exception x)
+            catch (Exception x)
             {
                 InvalidOperationException ex = GenerateException(x);
                 throw ex;
@@ -1067,7 +1044,7 @@ namespace Stump.ORM.SubSonic.Query
             {
                 result = _provider.ExecuteScalar(GetCommand());
             }
-            catch(Exception x)
+            catch (Exception x)
             {
                 InvalidOperationException ex = GenerateException(x);
                 throw ex;
@@ -1088,10 +1065,10 @@ namespace Stump.ORM.SubSonic.Query
             {
                 object queryResult = _provider.ExecuteScalar(GetCommand());
 
-                if(queryResult != null && queryResult != DBNull.Value)
+                if (queryResult != null && queryResult != DBNull.Value)
                     result = (TResult)queryResult.ChangeTypeTo<TResult>();
             }
-            catch(Exception x)
+            catch (Exception x)
             {
                 InvalidOperationException ex = GenerateException(x);
                 throw ex;
@@ -1109,14 +1086,14 @@ namespace Stump.ORM.SubSonic.Query
             int count = 0;
             try
             {
-                using(IDataReader rdr = ExecuteReader())
+                using (IDataReader rdr = ExecuteReader())
                 {
-                    while(rdr.Read())
+                    while (rdr.Read())
                         count++;
                     rdr.Close();
                 }
             }
-            catch(Exception x)
+            catch (Exception x)
             {
                 InvalidOperationException ex = GenerateException(x);
                 throw ex;
@@ -1154,8 +1131,7 @@ namespace Stump.ORM.SubSonic.Query
             return _provider.ExecuteSingle<T>(GetCommand());
         }
 
-        #endregion
-
+        #endregion Execution
 
         #region Transactions
 
@@ -1165,11 +1141,11 @@ namespace Stump.ORM.SubSonic.Query
         /// <param name="queries">The queries.</param>
         public static void ExecuteTransaction(List<SqlQuery> queries)
         {
-            using(SharedDbConnectionScope scope = new SharedDbConnectionScope())
+            using (SharedDbConnectionScope scope = new SharedDbConnectionScope())
             {
-                using(TransactionScope ts = new TransactionScope())
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    foreach(SqlQuery q in queries)
+                    foreach (SqlQuery q in queries)
                         q.Execute();
                 }
             }
@@ -1182,18 +1158,17 @@ namespace Stump.ORM.SubSonic.Query
         /// <param name="connectionStringName">ColumnName of the connection string.</param>
         public static void ExecuteTransaction(List<SqlQuery> queries, string connectionStringName)
         {
-
             var provider = ProviderFactory.GetProvider(connectionStringName);
             using (SharedDbConnectionScope scope = new SharedDbConnectionScope(provider))
             {
-                using(TransactionScope ts = new TransactionScope())
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    foreach(SqlQuery q in queries)
+                    foreach (SqlQuery q in queries)
                         q.Execute();
                 }
             }
         }
 
-        #endregion
+        #endregion Transactions
     }
 }

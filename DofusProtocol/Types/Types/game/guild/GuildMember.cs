@@ -1,22 +1,18 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GuildMember : CharacterMinimalInformations
     {
         public const short Id = 88;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte breed;
         public bool sex;
         public short rank;
@@ -29,11 +25,11 @@ namespace Stump.DofusProtocol.Types
         public sbyte moodSmileyId;
         public int accountId;
         public int achievementPoints;
-        
+
         public GuildMember()
         {
         }
-        
+
         public GuildMember(int id, byte level, string name, sbyte breed, bool sex, short rank, double givenExperience, sbyte experienceGivenPercent, uint rights, sbyte connected, sbyte alignmentSide, ushort hoursSinceLastConnection, sbyte moodSmileyId, int accountId, int achievementPoints)
          : base(id, level, name)
         {
@@ -50,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             this.accountId = accountId;
             this.achievementPoints = achievementPoints;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -67,7 +63,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(accountId);
             writer.WriteInt(achievementPoints);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -98,12 +94,10 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
             achievementPoints = reader.ReadInt();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(sbyte) + sizeof(bool) + sizeof(short) + sizeof(double) + sizeof(sbyte) + sizeof(uint) + sizeof(sbyte) + sizeof(sbyte) + sizeof(ushort) + sizeof(sbyte) + sizeof(int) + sizeof(int);
         }
-        
     }
-    
 }

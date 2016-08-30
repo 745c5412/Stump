@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.IO;
+﻿using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Items
-{    public class LivingObjectRelator
+{
+    public class LivingObjectRelator
     {
         public static string FetchQuery = "SELECT * FROM items_livingobjects";
     }
@@ -85,7 +86,7 @@ namespace Stump.Server.WorldServer.Database.Items
 
         public virtual void AssignFields(object obj)
         {
-            var castedObj = (LivingObjectSkinJntMood) obj;
+            var castedObj = (LivingObjectSkinJntMood)obj;
 
             Id = castedObj.skinId;
             Moods = castedObj.moods;

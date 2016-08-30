@@ -1,19 +1,19 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
-using System;
 using Stump.ORM.SubSonic.Schema;
+using System;
 
 namespace Stump.ORM.SubSonic.Query
 {
@@ -33,7 +33,7 @@ namespace Stump.ORM.SubSonic.Query
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class Aggregate
     {
@@ -407,8 +407,7 @@ namespace Stump.ORM.SubSonic.Query
             return agg;
         }
 
-        #endregion
-
+        #endregion Aggregates Factories
 
         #region .ctors
 
@@ -474,8 +473,7 @@ namespace Stump.ORM.SubSonic.Query
             return Enum.GetName(typeof(AggregateFunction), agg.AggregateType);
         }
 
-        #endregion
-
+        #endregion .ctors
 
         /// <summary>
         /// Gets or sets the type of the aggregate.
@@ -507,7 +505,7 @@ namespace Stump.ORM.SubSonic.Query
         {
             string result;
 
-            if(AggregateType == AggregateFunction.GroupBy)
+            if (AggregateType == AggregateFunction.GroupBy)
                 result = ColumnName;
             else
             {
@@ -528,7 +526,7 @@ namespace Stump.ORM.SubSonic.Query
         {
             string result;
 
-            if(AggregateType == AggregateFunction.GroupBy)
+            if (AggregateType == AggregateFunction.GroupBy)
                 result = ColumnName;
             else
             {

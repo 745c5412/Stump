@@ -5,7 +5,6 @@ namespace DofusProtocolBuilder.Parsing.Elements
 {
     public class ControlStatementEnd : IStatement
     {
-
     }
 
     public class ControlStatement : IStatement
@@ -35,9 +34,9 @@ namespace DofusProtocolBuilder.Parsing.Elements
                 result = new ControlStatement();
 
                 if (match.Groups["type"].Value != "")
-					result.ControlType =
+                    result.ControlType =
                         (ControlType)
-                        Enum.Parse(typeof (ControlType), match.Groups["type"].Value.Replace(" ", ""), true);
+                        Enum.Parse(typeof(ControlType), match.Groups["type"].Value.Replace(" ", ""), true);
 
                 if (match.Groups["condition"].Value != "")
                 {

@@ -1,25 +1,25 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Extensions;
 using Stump.ORM.SubSonic.Query;
 using Stump.ORM.SubSonic.Schema;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.Repository
 {
@@ -35,7 +35,6 @@ namespace Stump.ORM.SubSonic.Repository
             _db = db;
         }
 
-
         #region IRepository<T> Members
 
         public ITable GetTable()
@@ -44,29 +43,29 @@ namespace Stump.ORM.SubSonic.Repository
             return tbl;
         }
 
-				/// <summary>
-				/// Loads a T object
-				/// </summary>
-				/// <typeparam name="T"></typeparam>
-				/// <param name="item">The item.</param>
-				/// <param name="column">The column.</param>
-				/// <param name="value">The value.</param>
-				/// <returns></returns>
-				public bool Load<T>(T item, string column, object value) where T : class, new()
-				{
-					var qry = _db.Select.From(GetTable()).Where(column).IsEqualTo(value);
-					bool loaded = false;
-					using (var rdr = qry.ExecuteReader())
-					{
-						if (rdr.Read())
-						{
-							rdr.Load(item, null);//mike added null as ColumnNames not known
-							loaded = true;
-						}
-						rdr.Dispose();
-					}
-					return loaded;
-				}
+        /// <summary>
+        /// Loads a T object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item">The item.</param>
+        /// <param name="column">The column.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public bool Load<T>(T item, string column, object value) where T : class, new()
+        {
+            var qry = _db.Select.From(GetTable()).Where(column).IsEqualTo(value);
+            bool loaded = false;
+            using (var rdr = qry.ExecuteReader())
+            {
+                if (rdr.Read())
+                {
+                    rdr.Load(item, null);//mike added null as ColumnNames not known
+                    loaded = true;
+                }
+                rdr.Dispose();
+            }
+            return loaded;
+        }
 
         /// <summary>
         /// Loads a T object
@@ -75,24 +74,24 @@ namespace Stump.ORM.SubSonic.Repository
         /// <param name="item">The item.</param>
         /// <param name="expression">The expression.</param>
         /// <returns></returns>
-				public bool Load<T>(T item, Expression<Func<T, bool>> expression) where T : class, new()
-				{
-					var qry = _db.Select.From(GetTable()).Where(expression);
-					bool loaded = false;
-					using (var rdr = qry.ExecuteReader())
-					{
-						if (rdr.Read())
-						{
-							rdr.Load(item, null);//mike added null as ColumnNames not known
-							loaded = true;
-						}
-						rdr.Dispose();
-					}
-					return loaded;
-				}
+        public bool Load<T>(T item, Expression<Func<T, bool>> expression) where T : class, new()
+        {
+            var qry = _db.Select.From(GetTable()).Where(expression);
+            bool loaded = false;
+            using (var rdr = qry.ExecuteReader())
+            {
+                if (rdr.Read())
+                {
+                    rdr.Load(item, null);//mike added null as ColumnNames not known
+                    loaded = true;
+                }
+                rdr.Dispose();
+            }
+            return loaded;
+        }
 
         /// <summary>
-        /// Returns all T items 
+        /// Returns all T items
         /// </summary>
         public IQueryable<T> GetAll()
         {
@@ -100,7 +99,7 @@ namespace Stump.ORM.SubSonic.Repository
         }
 
         /// <summary>
-        /// Returns a single record 
+        /// Returns a single record
         /// </summary>
         public T GetByKey(object key)
         {
@@ -111,7 +110,7 @@ namespace Stump.ORM.SubSonic.Repository
         }
 
         /// <summary>
-        /// Returns a server-side Paged List 
+        /// Returns a server-side Paged List
         /// </summary>
         public PagedList<T> GetPaged<TKey>(Func<T, TKey> orderBy, int pageIndex, int pageSize)
         {
@@ -119,7 +118,7 @@ namespace Stump.ORM.SubSonic.Repository
         }
 
         /// <summary>
-        /// Returns a server-side Paged List 
+        /// Returns a server-side Paged List
         /// </summary>
         public PagedList<T> GetPaged(int pageIndex, int pageSize)
         {
@@ -129,7 +128,7 @@ namespace Stump.ORM.SubSonic.Repository
         }
 
         /// <summary>
-        /// Returns a server-side Paged List 
+        /// Returns a server-side Paged List
         /// </summary>
         public PagedList<T> GetPaged(string sortBy, int pageIndex, int pageSize)
         {
@@ -139,7 +138,7 @@ namespace Stump.ORM.SubSonic.Repository
             var qry = _db.Select.From(tbl)
                 .Paged(pageIndex, pageSize);
 
-            if(!sortBy.EndsWith(" desc", StringComparison.InvariantCultureIgnoreCase))
+            if (!sortBy.EndsWith(" desc", StringComparison.InvariantCultureIgnoreCase))
                 qry.OrderAsc(sortBy);
             else
                 qry.OrderDesc(sortBy.FastReplace(" desc", ""));
@@ -157,7 +156,7 @@ namespace Stump.ORM.SubSonic.Repository
         /// </summary>
         public IList<T> Search(string column, string value)
         {
-            if(!value.EndsWith("%"))
+            if (!value.EndsWith("%"))
                 value += "%";
             var qry = _db.Select.From<T>().Where(column).Like(value).OrderAsc(column);
             return qry.ExecuteTypedList<T>();
@@ -171,13 +170,13 @@ namespace Stump.ORM.SubSonic.Repository
             return GetAll().Where(expression);
         }
 
-                /// <summary>
+        /// <summary>
         /// Adds a T item to the db
         /// </summary>
-        public object Add(T item) {
+        public object Add(T item)
+        {
             return Add(item, _db.Provider);
         }
-
 
         /// <summary>
         /// Adds a T item to the db
@@ -186,10 +185,9 @@ namespace Stump.ORM.SubSonic.Repository
         {
             var query = item.ToInsertQuery(provider).GetCommand();
             object result = null;
-            if(query != null)
+            if (query != null)
             {
-                
-                    query.CommandSql += provider.InsertionIdentityFetchString;  
+                query.CommandSql += provider.InsertionIdentityFetchString;
 
                 /* add "using" keywords to dispose IDataReader rdr object after its get out of the scope */
                 using (var rdr = provider.ExecuteReader(query))
@@ -199,14 +197,12 @@ namespace Stump.ORM.SubSonic.Repository
                     // repopulate primary key column with newly generated ID
                     if (result != null && result != DBNull.Value)
                     {
-
                         try
                         {
                             var tbl = provider.FindOrCreateTable(typeof(T));
                             var prop = item.GetType().GetProperty(tbl.PrimaryKey.Name);
                             var settable = result.ChangeTypeTo(prop.PropertyType);
                             prop.SetValue(item, settable, null);
-
                         }
                         catch (Exception)
                         {
@@ -215,27 +211,25 @@ namespace Stump.ORM.SubSonic.Repository
                         }
                     }
                 }
-
             }
             return result;
         }
 
-                /// <summary>
-        /// Adds a bunch of T items 
+        /// <summary>
+        /// Adds a bunch of T items
         ///</summary>
-        public void Add(IEnumerable<T> items) {
+        public void Add(IEnumerable<T> items)
+        {
             Add(items, _db.Provider);
-
         }
 
-
         /// <summary>
-        /// Adds a bunch of T items 
+        /// Adds a bunch of T items
         ///</summary>
         public void Add(IEnumerable<T> items, IDataProvider provider)
         {
             BatchQuery bQuery = new BatchQuery(provider);
-            foreach(T item in items)
+            foreach (T item in items)
             {
                 var query = item.ToInsertQuery(provider);
                 bQuery.Queue(query);
@@ -244,7 +238,7 @@ namespace Stump.ORM.SubSonic.Repository
         }
 
         /// <summary>
-        /// Updates the passed-in T 
+        /// Updates the passed-in T
         /// </summary>
         public int Update(T item)
         {
@@ -252,7 +246,7 @@ namespace Stump.ORM.SubSonic.Repository
         }
 
         /// <summary>
-        /// Updates the passed-in T 
+        /// Updates the passed-in T
         /// </summary>
         public int Update(T item, IDataProvider provider)
         {
@@ -263,23 +257,23 @@ namespace Stump.ORM.SubSonic.Repository
             return result;
         }
 
-
         /// <summary>
-        /// Updates the passed-in T 
+        /// Updates the passed-in T
         /// </summary>
-        public int Update(IEnumerable<T> items){
+        public int Update(IEnumerable<T> items)
+        {
             return Update(items, _db.Provider);
         }
 
         /// <summary>
-        /// Updates the passed-in T 
+        /// Updates the passed-in T
         /// </summary>
         public int Update(IEnumerable<T> items, IDataProvider provider)
         {
             BatchQuery bQuery = new BatchQuery(provider);
             int result = 0;
 
-            foreach(T item in items)
+            foreach (T item in items)
             {
                 var query = item.ToUpdateQuery(provider);
                 bQuery.Queue(query);
@@ -288,24 +282,23 @@ namespace Stump.ORM.SubSonic.Repository
             return result;
         }
 
-                /// <summary>
-        /// Deletes the passed-in T items 
+        /// <summary>
+        /// Deletes the passed-in T items
         /// </summary>
-        public int Delete(IEnumerable<T> items) {
-
+        public int Delete(IEnumerable<T> items)
+        {
             return Delete(items, _db.Provider);
         }
 
-
         /// <summary>
-        /// Deletes the passed-in T items 
+        /// Deletes the passed-in T items
         /// </summary>
         public int Delete(IEnumerable<T> items, IDataProvider provider)
         {
             BatchQuery bQuery = new BatchQuery(provider);
             int result = 0;
 
-            foreach(T item in items)
+            foreach (T item in items)
             {
                 var query = item.ToDeleteQuery(provider);
                 bQuery.Queue(query);
@@ -315,15 +308,15 @@ namespace Stump.ORM.SubSonic.Repository
         }
 
         /// <summary>
-        /// Deletes the passed-in T item 
+        /// Deletes the passed-in T item
         /// </summary>
-        public int Delete(T item) {
+        public int Delete(T item)
+        {
             return Delete(item, _db.Provider);
         }
 
-
         /// <summary>
-        /// Deletes the passed-in T item 
+        /// Deletes the passed-in T item
         /// </summary>
         public int Delete(T item, IDataProvider provider)
         {
@@ -334,14 +327,13 @@ namespace Stump.ORM.SubSonic.Repository
             return result;
         }
 
-                /// <summary>
+        /// <summary>
         /// Deletes the T item  by Primary Key
         /// </summary>
-        public int Delete(object key) {
+        public int Delete(object key)
+        {
             return Delete(key, _db.Provider);
-
         }
-
 
         /// <summary>
         /// Deletes the T item  by Primary Key
@@ -350,7 +342,7 @@ namespace Stump.ORM.SubSonic.Repository
         {
             ITable tbl = _db.FindTable(typeof(T).Name);
             int result = 0;
-            if(tbl != null)
+            if (tbl != null)
                 result = new Delete<T>(provider).Where(tbl.PrimaryKey.Name).IsEqualTo(key).Execute();
             return result;
         }
@@ -358,7 +350,8 @@ namespace Stump.ORM.SubSonic.Repository
         /// <summary>
         /// Deletes 0 to n T items from the Database based on the passed-in Expression
         /// </summary>
-        public int DeleteMany(Expression<Func<T, bool>> expression) {
+        public int DeleteMany(Expression<Func<T, bool>> expression)
+        {
             return DeleteMany(expression, _db.Provider);
         }
 
@@ -367,10 +360,10 @@ namespace Stump.ORM.SubSonic.Repository
         /// </summary>
         public int DeleteMany(Expression<Func<T, bool>> expression, IDataProvider provider)
         {
-            var cmd= _db.Delete(expression).GetCommand();
+            var cmd = _db.Delete(expression).GetCommand();
             return provider.ExecuteQuery(cmd);
         }
 
-        #endregion
+        #endregion IRepository<T> Members
     }
 }

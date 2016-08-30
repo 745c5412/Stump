@@ -1,5 +1,5 @@
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
@@ -45,12 +45,12 @@ namespace Stump.Server.WorldServer.Database.World
 
         public void AssignFields(object d2oObject)
         {
-            var area = (SuperArea) d2oObject;
+            var area = (SuperArea)d2oObject;
             Id = area.id;
             NameId = area.nameId;
             WorldmapId = area.worldmapId;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

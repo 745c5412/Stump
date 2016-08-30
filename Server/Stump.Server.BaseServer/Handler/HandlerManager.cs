@@ -1,17 +1,17 @@
-﻿using System;
+﻿using NLog;
+using Stump.Core.Reflection;
+using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using NLog;
-using Stump.Core.Reflection;
-using Stump.DofusProtocol.Messages;
-using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.BaseServer.Handler
 {
     public class HandlerManager<THandler, TAttribute, TContainer, TClient> : Singleton<THandler>
-        where THandler : HandlerManager<THandler, TAttribute, TContainer, TClient> 
+        where THandler : HandlerManager<THandler, TAttribute, TContainer, TClient>
         where TContainer : IHandlerContainer
         where TAttribute : HandlerAttribute
         where TClient : IClient
@@ -72,7 +72,7 @@ namespace Stump.Server.BaseServer.Handler
         {
             if (type.IsAbstract || !(type.GetInterfaces().Contains(typeof(TContainer)) || type.IsSubclassOf(typeof(TContainer))))
                 return;
-            
+
             var methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public);
 
             TContainer handlerContainer;
@@ -100,11 +100,11 @@ namespace Stump.Server.BaseServer.Handler
                         method.GetParameters().Count(
                             entry =>
                             (entry.ParameterType.IsSubclassOf(typeof(Message)) ||
-                             (entry.ParameterType == typeof(TClient) || entry.ParameterType.IsSubclassOf(typeof(TClient))) )) != 2)
+                             (entry.ParameterType == typeof(TClient) || entry.ParameterType.IsSubclassOf(typeof(TClient))))) != 2)
                         throw new ArgumentException("Incorrect delegate parameters");
 
                     var handlerDelegate = DynamicExtension.CreateDelegate(method, typeof(TClient), typeof(Message)) as Action<object, TClient, Message>;
-                    
+
                     foreach (var attribute in attributes)
                     {
                         RegisterHandler(attribute.MessageId, handlerContainer, attribute, handlerDelegate);
@@ -115,7 +115,7 @@ namespace Stump.Server.BaseServer.Handler
                     var handlerStr = type.FullName + "." + method.Name;
                     throw new Exception("Unable to register PacketHandler " + handlerStr +
                                         ".\n Make sure its arguments are: " + typeof(TClient).FullName + ", " +
-                                        typeof (Message).FullName +
+                                        typeof(Message).FullName +
                                         ".\n" + e.Message);
                 }
             }
@@ -161,7 +161,7 @@ namespace Stump.Server.BaseServer.Handler
                     client.Disconnect();
                 }
             }
-            else 
+            else
             {
                 m_logger.Debug("Received Unknown packet : " + message);
             }

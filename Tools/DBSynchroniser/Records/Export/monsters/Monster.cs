@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:49
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -19,8 +16,10 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "Monsters";
         public int id;
+
         [I18NField]
         public uint nameId;
+
         public uint gfxId;
         public int race;
         public List<MonsterGrade> grades;
@@ -36,7 +35,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -81,6 +79,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_gradesBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -143,6 +142,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_animFunListBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -166,7 +166,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Monster)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             GfxId = castedObj.gfxId;
@@ -180,7 +180,7 @@ namespace DBSynchroniser.Records
             AnimFunList = castedObj.animFunList;
             IsBoss = castedObj.isBoss;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Monster)parent : new Monster();
@@ -198,12 +198,11 @@ namespace DBSynchroniser.Records
             obj.isBoss = IsBoss;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_gradesBin = grades == null ? null : grades.ToBinary();
             m_animFunListBin = animFunList == null ? null : animFunList.ToBinary();
-        
         }
     }
 }

@@ -20,7 +20,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
         {
             return new GameRolePlayNamedActorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), Name);
         }
-        #endregion
+
+        #endregion Network
 
         #region Actions
 
@@ -31,8 +32,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             ChatHandler.SendChatServerMessage(CharacterContainer.Clients, this, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
         }
 
-        #endregion
-        
-        #endregion
+        #endregion Chat
+
+        #endregion Actions
     }
 }

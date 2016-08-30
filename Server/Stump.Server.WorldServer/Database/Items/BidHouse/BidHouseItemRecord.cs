@@ -1,6 +1,6 @@
-﻿using System;
-using Stump.ORM;
+﻿using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Items.BidHouse
 {

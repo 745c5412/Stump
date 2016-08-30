@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
             if (!int.TryParse(Literal, out level))
                 throw new Exception(string.Format("Cannot build AlignementLevelCriterion, {0} is not a valid alignement level", Literal));
-        
+
             Level = level;
         }
 

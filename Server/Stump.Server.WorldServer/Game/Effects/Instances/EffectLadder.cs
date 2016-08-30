@@ -1,6 +1,6 @@
-﻿using System;
-using Stump.DofusProtocol.D2oClasses;
+﻿using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Types;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -20,13 +20,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public EffectLadder()
         {
-            
         }
 
         public EffectLadder(EffectLadder copy)
-            : this (copy.Id, copy.MonsterFamily, copy.MonsterCount, copy)
+            : this(copy.Id, copy.MonsterFamily, copy.MonsterCount, copy)
         {
-            
         }
 
         public EffectLadder(short id, short monsterfamily, short monstercount, EffectBase effect)
@@ -38,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectLadder(EffectInstanceLadder effect)
             : base(effect)
         {
-            m_monsterCount = (short) effect.monsterCount;
+            m_monsterCount = (short)effect.monsterCount;
         }
 
         public override int ProtocoleId
@@ -63,6 +61,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             return new ObjectEffectLadder(Id, MonsterFamily, MonsterCount);
         }
+
         public override EffectInstance GetEffectInstance()
         {
             return new EffectInstanceLadder()
@@ -78,15 +77,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = (uint) ZoneShape,
-                monsterCount = (uint) m_monsterCount,
-                monsterFamilyId = (uint) m_monsterfamily,
+                zoneShape = (uint)ZoneShape,
+                monsterCount = (uint)m_monsterCount,
+                monsterFamilyId = (uint)m_monsterfamily,
             };
         }
+
         public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
         {
             return new EffectLadder(this);
         }
+
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);
@@ -113,7 +114,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             if (ReferenceEquals(a, b))
                 return true;
 
-            if (((object) a == null) || ((object) b == null))
+            if (((object)a == null) || ((object)b == null))
                 return false;
 
             return a.Equals(b);
@@ -135,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             unchecked
             {
-                return (base.GetHashCode()*397) ^ m_monsterCount.GetHashCode();
+                return (base.GetHashCode() * 397) ^ m_monsterCount.GetHashCode();
             }
         }
     }

@@ -1,23 +1,26 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Sql;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace ArkalysPlugin.Npcs
 {
     public static class NpcShops
     {
-        [Variable] public static readonly bool Active = true;
+        [Variable]
+        public static readonly bool Active = true;
 
-        [Variable] public static readonly short OrbItemTemplate = 20000;
+        [Variable]
+        public static readonly short OrbItemTemplate = 20000;
 
-        [Variable] public static readonly SerializableDictionary<int, ItemTypeEnum[]> Sellers =
+        [Variable]
+        public static readonly SerializableDictionary<int, ItemTypeEnum[]> Sellers =
             new SerializableDictionary<int, ItemTypeEnum[]>
                 {
                     {812, new[] {ItemTypeEnum.HAT}},
@@ -38,9 +41,11 @@ namespace ArkalysPlugin.Npcs
                     {240, new[] {ItemTypeEnum.BREAD}},
                 };
 
-        [Variable] public static readonly int OrbSeller = 551;
+        [Variable]
+        public static readonly int OrbSeller = 551;
 
-        [Variable] public static readonly SerializableDictionary<int, int> OrbsPrices =
+        [Variable]
+        public static readonly SerializableDictionary<int, int> OrbsPrices =
             new SerializableDictionary<int, int>
                 {
                     {60, 0},
@@ -53,7 +58,8 @@ namespace ArkalysPlugin.Npcs
                     {200, 10000},
                 };
 
-        [Variable] public static readonly SerializableDictionary<int, int> Prices =
+        [Variable]
+        public static readonly SerializableDictionary<int, int> Prices =
             new SerializableDictionary<int, int>
                 {
                     {60, 0},
@@ -66,13 +72,17 @@ namespace ArkalysPlugin.Npcs
                     {200, 470000},
                 };
 
-        [Variable] public static readonly double BreadHpPerKama = 0.25;
+        [Variable]
+        public static readonly double BreadHpPerKama = 0.25;
 
-        [Variable] public static readonly int MinItemLevel = 20;
+        [Variable]
+        public static readonly int MinItemLevel = 20;
 
-        [Variable] public static string PatchName = "npcs_shops.sql";
+        [Variable]
+        public static string PatchName = "npcs_shops.sql";
 
-        [Variable] public static int[] IgnoredItems =
+        [Variable]
+        public static int[] IgnoredItems =
         {
             12655,
             12656,
@@ -176,7 +186,7 @@ namespace ArkalysPlugin.Npcs
 
         private static string m_patchPath;
 
-        [Initialization(typeof (ItemManager))]
+        [Initialization(typeof(ItemManager))]
         public static void Initialize()
         {
             if (!Active)
@@ -214,12 +224,12 @@ namespace ArkalysPlugin.Npcs
                 AppendQuery("SET @shopid=(SELECT LAST_INSERT_ID())");
 
                 var selector = (from entry in ItemManager.Instance.GetTemplates()
-                                                             where
-                                                                 Array.IndexOf(seller.Value, (ItemTypeEnum) entry.TypeId) !=
-                                                                 -1 && entry.Level >= MinItemLevel &&
-                                                                 entry.Effects.Count > 0 && !entry.Etheral
-                                                             orderby entry.Level ascending
-                                                             select entry);
+                                where
+                                    Array.IndexOf(seller.Value, (ItemTypeEnum)entry.TypeId) !=
+                                    -1 && entry.Level >= MinItemLevel &&
+                                    entry.Effects.Count > 0 && !entry.Etheral
+                                orderby entry.Level ascending
+                                select entry);
 
                 foreach (var template in selector)
                 {
@@ -228,7 +238,7 @@ namespace ArkalysPlugin.Npcs
 
                     var price = Prices.First(entry => template.Level <= entry.Key).Value;
 
-                    if (template.TypeId == (int) ItemTypeEnum.BREAD)
+                    if (template.TypeId == (int)ItemTypeEnum.BREAD)
                     {
                         var restoreEffect =
                             template.Effects.SingleOrDefault(entry => entry.EffectId == EffectsEnum.Effect_AddHealth) as
@@ -237,7 +247,7 @@ namespace ArkalysPlugin.Npcs
                         if (restoreEffect == null)
                             continue;
 
-                        price = (int) (Math.Max(restoreEffect.DiceFace, restoreEffect.DiceNum)*BreadHpPerKama);
+                        price = (int)(Math.Max(restoreEffect.DiceFace, restoreEffect.DiceNum) * BreadHpPerKama);
                     }
 
                     var itemQuery = new KeyValueListBase("npcs_items");

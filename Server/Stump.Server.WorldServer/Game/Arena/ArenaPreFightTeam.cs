@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
@@ -27,7 +26,6 @@ namespace Stump.Server.WorldServer.Game.Arena
             var handler = MemberRemoved;
             if (handler != null) handler(this, arg2);
         }
-
 
         public ArenaPreFightTeam(TeamEnum team, ArenaPreFight fight)
         {

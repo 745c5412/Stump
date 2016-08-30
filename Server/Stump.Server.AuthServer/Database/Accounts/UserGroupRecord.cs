@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.IO;
+﻿using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.IPC.Objects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.AuthServer.Database
 {
-      public static class UserGroupDefaultValues
+    public static class UserGroupDefaultValues
     {
         [Initialization(InitializationPass.First, Silent = true)]
         public static void CreateDefaultValues()
         {
             var db = AuthServer.Instance.DBAccessor.Database;
 
-            foreach (var role in from RoleEnum role in Enum.GetValues(typeof(RoleEnum)) where role != RoleEnum.None where !db.Query<UserGroupRecord>("SELECT * FROM groups WHERE groups.Role = " + (int) role).Any() select role)
+            foreach (var role in from RoleEnum role in Enum.GetValues(typeof(RoleEnum)) where role != RoleEnum.None where !db.Query<UserGroupRecord>("SELECT * FROM groups WHERE groups.Role = " + (int)role).Any() select role)
             {
                 db.Insert(new UserGroupRecord
                 {

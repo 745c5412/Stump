@@ -1,14 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
-using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.BaseServer.Logging;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
@@ -20,14 +12,19 @@ using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
-using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Friends;
+using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Handlers.Mounts;
 using Stump.Server.WorldServer.Handlers.PvP;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
 using Stump.Server.WorldServer.Handlers.Startup;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
@@ -187,13 +184,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                               AccountManager.Instance.CreateWorldAccount(client);
                 client.WorldAccount = account;
             }
-            
+
             // update tokens
             if (client.WorldAccount.Tokens + client.WorldAccount.NewTokens <= 0)
                 client.WorldAccount.Tokens = 0;
             else
                 client.WorldAccount.Tokens += client.WorldAccount.NewTokens;
-            
+
             client.WorldAccount.NewTokens = 0;
 
             client.Character = new Character(character, client);
@@ -213,20 +210,20 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             //ContextHandler.SendSpellForgottenMessage(client);
 
             ContextRoleplayHandler.SendEmoteListMessage(client, client.Character.Emotes.Select(x => (sbyte)x));
-            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
+            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] { });
 
             PvPHandler.SendAlignmentRankUpdateMessage(client);
             PvPHandler.SendAlignmentSubAreasListMessage(client);
 
             InventoryHandler.SendSpellListMessage(client, true);
-            
+
             InitializationHandler.SendSetCharacterRestrictionsMessage(client);
 
             InventoryHandler.SendInventoryWeightMessage(client);
 
             //Guild
             if (client.Character.GuildMember != null)
-                GuildHandler.SendGuildMembershipMessage(client,client.Character.GuildMember);
+                GuildHandler.SendGuildMembershipMessage(client, client.Character.GuildMember);
 
             //Mount
             if (client.Character.EquippedMount != null)
@@ -262,14 +259,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             WorldServer.Instance.DBAccessor.Database.Update(character);
         }
 
-
         [WorldHandler(CharactersListRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
         {
             if (client.Account != null && client.Account.Login != "")
             {
                 SendCharactersListWithModificationsMessage(client);
-
 
                 var characterInFight = FindCharacterFightReconnection(client);
                 if (characterInFight != null)
@@ -285,7 +280,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
             else
             {
-                client.Send(new IdentificationFailedMessage((int) IdentificationFailureReasonEnum.KICKED));
+                client.Send(new IdentificationFailedMessage((int)IdentificationFailureReasonEnum.KICKED));
                 client.DisconnectLater(1000);
             }
         }
@@ -299,14 +294,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 CommonCharacterSelection(client, client.ForceCharacterSelection);
         }
 
-        static CharacterRecord FindCharacterFightReconnection(WorldClient client)
+        private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
             => (from characterInFight in client.Characters.Where(x => !x.IsDeleted).Where(x => x.LeftFightId != null)
                 let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value)
                 where fight != null
                 let fighter = fight.GetLeaver(characterInFight.Id)
                 where fighter != null
                 select characterInFight).FirstOrDefault();
-
 
         public static void SendCharactersListMessage(WorldClient client)
         {
@@ -317,7 +311,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                     characterRecord.Name,
                     characterRecord.EntityLook.GetEntityLook(),
-                    (sbyte) characterRecord.Breed,
+                    (sbyte)characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
             client.Send(new CharactersListMessage(
@@ -339,7 +333,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                                                                             characterRecord.Name, characterRecord.EntityLook.GetEntityLook(),
-                                                                            (sbyte) characterRecord.Breed,
+                                                                            (sbyte)characterRecord.Breed,
                                                                             characterRecord.Relook == 2 ? characterRecord.Sex == SexTypeEnum.SEX_MALE : characterRecord.Sex != SexTypeEnum.SEX_MALE));
 
                 if (characterRecord.Rename)

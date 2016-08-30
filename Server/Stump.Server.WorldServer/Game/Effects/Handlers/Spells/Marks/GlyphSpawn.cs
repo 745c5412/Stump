@@ -1,10 +1,10 @@
-using System.Drawing;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
+using System.Drawing;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
         public override bool Apply()
         {
-            var glyphSpell = new Spell(Dice.DiceNum, (byte) Dice.DiceFace);
+            var glyphSpell = new Spell(Dice.DiceNum, (byte)Dice.DiceFace);
 
             if (glyphSpell.Template == null || !glyphSpell.ByLevel.ContainsKey(Dice.DiceFace))
             {
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
             var spell = Spell;
 
-            if (spell.Id == (int) SpellIdEnum.DAIPIPAY)
+            if (spell.Id == (int)SpellIdEnum.DAIPIPAY)
                 spell = glyphSpell;
 
             // todo : find usage of Dice.Value
@@ -51,6 +51,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             {
                 case (int)SpellIdEnum.DAIPIPAY:
                     return Color.White;
+
                 default:
                     return Color.Red;
             }

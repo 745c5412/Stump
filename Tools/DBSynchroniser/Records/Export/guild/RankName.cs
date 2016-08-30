@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:47
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -19,15 +13,16 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "RankNames";
         public int id;
+
         [I18NField]
         public uint nameId;
+
         public int order;
 
         int ID2ORecord.Id
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -55,12 +50,12 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (RankName)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             Order = castedObj.order;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (RankName)parent : new RankName();
@@ -69,10 +64,9 @@ namespace DBSynchroniser.Records
             obj.order = Order;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

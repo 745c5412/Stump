@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Stump.Core.Threading;
-using Stump.Server.BaseServer;
+﻿using Stump.Core.Threading;
 using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
-using Stump.Server.WorldServer;
-using Stump.Server.WorldServer.Core.Network;
+using System;
+using System.Collections.Generic;
 using Message = Stump.DofusProtocol.Messages.Message;
 
 namespace FakeClients.Handlers

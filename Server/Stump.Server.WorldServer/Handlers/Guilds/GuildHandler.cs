@@ -1,16 +1,16 @@
-﻿using System.Linq;
+﻿using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Core.Extensions;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
+using System.Linq;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Handlers.Guilds
@@ -28,21 +28,27 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 case (sbyte)GuildInformationsTypeEnum.INFO_GENERAL:
                     SendGuildInformationsGeneralMessage(client, client.Character.Guild);
                     break;
+
                 case (sbyte)GuildInformationsTypeEnum.INFO_MEMBERS:
                     SendGuildInformationsMembersMessage(client, client.Character.Guild);
                     break;
+
                 case (sbyte)GuildInformationsTypeEnum.INFO_BOOSTS:
                     SendGuildInfosUpgradeMessage(client, client.Character.Guild);
                     break;
+
                 case (sbyte)GuildInformationsTypeEnum.INFO_PADDOCKS:
                     SendGuildInformationsPaddocksMessage(client);
                     break;
+
                 case (sbyte)GuildInformationsTypeEnum.INFO_HOUSES:
                     SendGuildHousesInformationMessage(client);
                     break;
+
                 case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR:
                     TaxCollectorHandler.SendTaxCollectorListMessage(client, client.Character.Guild);
                     break;
+
                 case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR_LEAVE:
                     TaxCollectorHandler.SendTaxCollectorListMessage(client, client.Character.Guild);
                     break;
@@ -63,12 +69,15 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 case 0: //Pods
                     client.Character.Guild.UpgradeTaxCollectorPods();
                     break;
+
                 case 1: //Prospecting
                     client.Character.Guild.UpgradeTaxCollectorProspecting();
                     break;
+
                 case 2: //Wisdom
                     client.Character.Guild.UpgradeTaxCollectorWisdom();
                     break;
+
                 case 3: //MaxTaxCollectors
                     client.Character.Guild.UpgradeMaxTaxCollectors();
                     break;
@@ -139,7 +148,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 return;
 
             client.Character.Guild.ChangeParameters(client.Character, target, message.rank,
-                                                    (byte) message.experienceGivenPercent, message.rights);
+                                                    (byte)message.experienceGivenPercent, message.rights);
         }
 
         [WorldHandler(GuildKickRequestMessage.Id)]
@@ -185,7 +194,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
             if (target.IsBusy())
             {
-                // Ce joueur est occupé. Impossible de l'inviter.                    
+                // Ce joueur est occupé. Impossible de l'inviter.
                 client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 209);
                 return;
             }
@@ -230,7 +239,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
             if (target.IsBusy())
             {
-                // Ce joueur est occupé. Impossible de l'inviter.                    
+                // Ce joueur est occupé. Impossible de l'inviter.
                 client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 209);
                 return;
             }
@@ -302,7 +311,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildInformationsGeneralMessage(IPacketReceiver client, Guild guild)
         {
             client.Send(new GuildInformationsGeneralMessage(true, false, guild.Level, guild.ExperienceLevelFloor, guild.Experience,
-                guild.ExperienceNextLevelFloor, guild.CreationDate.GetUnixTimeStamp())); 
+                guild.ExperienceNextLevelFloor, guild.CreationDate.GetUnixTimeStamp()));
         }
 
         public static void SendGuildInformationsMembersMessage(IPacketReceiver client, Guild guild)

@@ -31,7 +31,7 @@ namespace Stump.Core.IO
             using (var stream = new MemoryStream(bytes))
             {
                 formatter.AssemblyFormat = FormatterAssemblyStyle.Simple;
-                return (T) formatter.Deserialize(stream);
+                return (T)formatter.Deserialize(stream);
             }
         }
 
@@ -44,7 +44,7 @@ namespace Stump.Core.IO
                 formatter.AssemblyFormat = FormatterAssemblyStyle.Simple;
                 formatter.Binder = binder;
 
-                return (T) formatter.Deserialize(stream);
+                return (T)formatter.Deserialize(stream);
             }
         }
 
@@ -87,13 +87,13 @@ namespace Stump.Core.IO
             int i = csvValue.IndexOf(separator, StringComparison.Ordinal);
             while (i >= 0 && i < csvValue.Length)
             {
-                result.Add((T) Convert.ChangeType(csvValue.Substring(lastIndex, i - lastIndex), typeof (T)));
+                result.Add((T)Convert.ChangeType(csvValue.Substring(lastIndex, i - lastIndex), typeof(T)));
                 lastIndex = i + separator.Length;
                 i = csvValue.IndexOf(separator, lastIndex, StringComparison.Ordinal);
             }
             if (!string.IsNullOrEmpty(csvValue))
                 result.Add(
-                    (T) Convert.ChangeType(csvValue.Substring(lastIndex, csvValue.Length - lastIndex), typeof (T)));
+                    (T)Convert.ChangeType(csvValue.Substring(lastIndex, csvValue.Length - lastIndex), typeof(T)));
 
             return result.ToArray();
         }
@@ -110,7 +110,7 @@ namespace Stump.Core.IO
                 i = csvValue.IndexOf(separator, lastIndex, StringComparison.Ordinal);
             }
             if (!string.IsNullOrEmpty(csvValue))
-                    result.Add(converter(csvValue.Substring(lastIndex, csvValue.Length - lastIndex)));
+                result.Add(converter(csvValue.Substring(lastIndex, csvValue.Length - lastIndex)));
             return result.ToArray();
         }
     }

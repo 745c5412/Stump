@@ -1,36 +1,32 @@
 ﻿#region License GNU GPL
 
 // ItemWrapper.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#endregion
+#endregion License GNU GPL
 
+using DBSynchroniser.Records;
+using DBSynchroniser.Records.Langs;
+using Stump.Core.I18N;
+using Stump.DofusProtocol.D2oClasses;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DBSynchroniser.Records;
-using DBSynchroniser.Records.Langs;
-using Stump.Core.I18N;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.ORM;
-using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Game.Items;
 using WorldEditor.Annotations;
-using WorldEditor.Database;
 using WorldEditor.Loaders.Data;
 using WorldEditor.Loaders.I18N;
 using ItemTypeRecord = DBSynchroniser.Records.ItemTypeRecord;
@@ -67,7 +63,6 @@ namespace WorldEditor.Editors.Items
             WrappedItem = wrappedItem;
             m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
         }
-
 
         public ItemRecord WrappedItem
         {
@@ -167,7 +162,9 @@ namespace WorldEditor.Editors.Items
         public uint RealWeight
         {
             get { return WrappedItem.realWeight; }
-            set { WrappedItem.realWeight = value;
+            set
+            {
+                WrappedItem.realWeight = value;
                 WrappedItem.weight = value;
             }
         }
@@ -321,7 +318,9 @@ namespace WorldEditor.Editors.Items
         public uint Weight
         {
             get { return WrappedItem.weight; }
-            set { WrappedItem.weight = value;
+            set
+            {
+                WrappedItem.weight = value;
                 WrappedItem.realWeight = value;
             }
         }
@@ -332,7 +331,7 @@ namespace WorldEditor.Editors.Items
             {
                 if (Id == 0)
                     Id = Math.Max(ObjectDataManager.Instance.FindFreeId<ItemRecord>(), ObjectDataManager.Instance.FindFreeId<WeaponRecord>());
-                NameId = (uint) I18NDataManager.Instance.FindFreeId();
+                NameId = (uint)I18NDataManager.Instance.FindFreeId();
                 DescriptionId = NameId + 1;
             }
 

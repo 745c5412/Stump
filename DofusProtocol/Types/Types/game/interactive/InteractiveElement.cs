@@ -1,31 +1,29 @@
-
-
 // Generated on 03/02/2014 20:43:02
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class InteractiveElement
     {
         public const short Id = 80;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int elementId;
         public int elementTypeId;
         public IEnumerable<Types.InteractiveElementSkill> enabledSkills;
         public IEnumerable<Types.InteractiveElementSkill> disabledSkills;
-        
+
         public InteractiveElement()
         {
         }
-        
+
         public InteractiveElement(int elementId, int elementTypeId, IEnumerable<Types.InteractiveElementSkill> enabledSkills, IEnumerable<Types.InteractiveElementSkill> disabledSkills)
         {
             this.elementId = elementId;
@@ -33,7 +31,7 @@ namespace Stump.DofusProtocol.Types
             this.enabledSkills = enabledSkills;
             this.disabledSkills = disabledSkills;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(elementId);
@@ -43,9 +41,9 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in enabledSkills)
             {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-                 enabledSkills_count++;
+                writer.WriteShort(entry.TypeId);
+                entry.Serialize(writer);
+                enabledSkills_count++;
             }
             var enabledSkills_after = writer.Position;
             writer.Seek((int)enabledSkills_before);
@@ -57,17 +55,16 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in disabledSkills)
             {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-                 disabledSkills_count++;
+                writer.WriteShort(entry.TypeId);
+                entry.Serialize(writer);
+                disabledSkills_count++;
             }
             var disabledSkills_after = writer.Position;
             writer.Seek((int)disabledSkills_before);
             writer.WriteUShort((ushort)disabledSkills_count);
             writer.Seek((int)disabledSkills_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             elementId = reader.ReadInt();
@@ -78,25 +75,23 @@ namespace Stump.DofusProtocol.Types
             var enabledSkills_ = new Types.InteractiveElementSkill[limit];
             for (int i = 0; i < limit; i++)
             {
-                 enabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
-                 enabledSkills_[i].Deserialize(reader);
+                enabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
+                enabledSkills_[i].Deserialize(reader);
             }
             enabledSkills = enabledSkills_;
             limit = reader.ReadUShort();
             var disabledSkills_ = new Types.InteractiveElementSkill[limit];
             for (int i = 0; i < limit; i++)
             {
-                 disabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
-                 disabledSkills_[i].Deserialize(reader);
+                disabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
+                disabledSkills_[i].Deserialize(reader);
             }
             disabledSkills = disabledSkills_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(int) + sizeof(short) + enabledSkills.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + disabledSkills.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
-        
     }
-    
 }

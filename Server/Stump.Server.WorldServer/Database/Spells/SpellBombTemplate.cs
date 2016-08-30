@@ -1,9 +1,8 @@
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Spells;
-using Spell = Stump.DofusProtocol.D2oClasses.Spell;
 
 namespace Stump.Server.WorldServer.Database.Spells
 {
@@ -47,6 +46,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             get;
             set;
         }
+
         public SpellTemplate ExplodReactionSpell
         {
             get
@@ -67,6 +67,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             get;
             set;
         }
+
         public SpellTemplate InstantReactionSpell
         {
             get
@@ -75,6 +76,7 @@ namespace Stump.Server.WorldServer.Database.Spells
                        (m_instantReactionSpell = SpellManager.Instance.GetSpellTemplate(InstantSpellId));
             }
         }
+
         public int ComboCoeff
         {
             get;
@@ -85,7 +87,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public void AssignFields(object d2oObject)
         {
-            var spell = (SpellBomb) d2oObject;
+            var spell = (SpellBomb)d2oObject;
             Id = spell.id;
             ChainReactionSpellId = spell.chainReactionSpellId;
             ExplodSpellId = spell.explodSpellId;
@@ -94,6 +96,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             ComboCoeff = spell.comboCoeff;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

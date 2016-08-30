@@ -1,9 +1,9 @@
+using Stump.Core.Attributes;
+using Stump.Core.Reflection;
 using System;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using Stump.Core.Attributes;
-using Stump.Core.Reflection;
 
 namespace Stump.Core.Xml.Config
 {
@@ -28,7 +28,7 @@ namespace Stump.Core.Xml.Config
             BindToField(field);
 
             Name = field.Name;
-            Serialized = !field.FieldType.HasInterface(typeof (IConvertible)) || field.FieldType.IsEnum;
+            Serialized = !field.FieldType.HasInterface(typeof(IConvertible)) || field.FieldType.IsEnum;
             ClassName = field.DeclaringType.Name;
             Namespace = field.DeclaringType.Namespace;
             Instance = null;
@@ -81,9 +81,9 @@ namespace Stump.Core.Xml.Config
             private set;
         }
 
-        public bool Serialized 
-        { 
-            get; 
+        public bool Serialized
+        {
+            get;
             set;
         }
 
@@ -169,7 +169,6 @@ namespace Stump.Core.Xml.Config
 
                 return BindedField.GetValue(Instance);
             }
-
             else if (BindedProperty != null && BindedField == null)
             {
                 if (!realValue && m_newValue != null &&
@@ -188,18 +187,15 @@ namespace Stump.Core.Xml.Config
             {
                 if (m_newValue == null && !alreadyRunning)
                     BindedField.SetValue(Instance, value);
-
                 else if (Attribute.DefinableRunning)
                     BindedField.SetValue(Instance, value);
 
                 m_newValue = value;
             }
-
             else if (BindedProperty != null && BindedField == null)
             {
                 if (m_newValue == null && !alreadyRunning)
                     BindedProperty.SetValue(Instance, value, new object[0]);
-
                 else if (Attribute.DefinableRunning)
                     BindedProperty.SetValue(Instance, value, new object[0]);
 
@@ -232,8 +228,8 @@ namespace Stump.Core.Xml.Config
             var previous = node.PreviousSibling;
             while (previous != null && previous.NodeType == XmlNodeType.Comment && previous is XmlComment)
             {
-                if (!( previous as XmlComment ).Value.StartsWith("Editable as Running : "))
-                    return ( previous as XmlComment ).Value;
+                if (!(previous as XmlComment).Value.StartsWith("Editable as Running : "))
+                    return (previous as XmlComment).Value;
 
                 previous = previous.PreviousSibling;
             }

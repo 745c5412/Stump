@@ -1,30 +1,30 @@
 ﻿#region License GNU GPL
 
 // EffectWrapper.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#endregion
+#endregion License GNU GPL
 
+using DBSynchroniser.Records;
+using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
-using DBSynchroniser.Records;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tools;
 using WorldEditor.Annotations;
 using WorldEditor.Database;
 using WorldEditor.Editors.Items.Effects;
@@ -37,7 +37,6 @@ namespace WorldEditor.Editors.Items
     {
         private string m_description;
         private EffectRecord m_template;
-
 
         protected EffectWrapper(EffectInstance wrappedEffect)
         {
@@ -52,8 +51,11 @@ namespace WorldEditor.Editors.Items
 
         public EffectRecord Template
         {
-            get { return m_template ?? (m_template = DatabaseManager.Instance.Database.
-                SingleOrDefault<EffectRecord>(string.Format("SELECT * FROM Effects WHERE Id={0}", EffectId))); }
+            get
+            {
+                return m_template ?? (m_template = DatabaseManager.Instance.Database.
+              SingleOrDefault<EffectRecord>(string.Format("SELECT * FROM Effects WHERE Id={0}", EffectId)));
+            }
         }
 
         public int EffectId
@@ -145,7 +147,6 @@ namespace WorldEditor.Editors.Items
             get { return WrappedEffect.rawZone; }
             set { WrappedEffect.rawZone = value; }
         }
-
 
         public string Description
         {

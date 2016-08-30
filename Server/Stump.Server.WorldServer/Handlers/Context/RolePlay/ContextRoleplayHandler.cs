@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -13,6 +11,8 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Handlers.Basic;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 fight.Id,
                 fighters.Select(entry => entry.GetMapRunningFighterName()),
                 fighters.Select(entry => (short)entry.Level),
-                (sbyte) redFighters.Length,
+                (sbyte)redFighters.Length,
                 fighters.Select(entry => entry.IsAlive())));
         }
 

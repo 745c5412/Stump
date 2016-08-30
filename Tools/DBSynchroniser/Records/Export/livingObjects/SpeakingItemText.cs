@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:49
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -20,8 +14,10 @@ namespace DBSynchroniser.Records
         private const String MODULE = "SpeakingItemsText";
         public int textId;
         public double textProba;
+
         [I18NField]
         public uint textStringId;
+
         public int textLevel;
         public int textSound;
         public String textRestriction;
@@ -30,7 +26,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)textId; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("TextId", false)]
@@ -80,7 +75,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SpeakingItemText)obj;
-            
+
             TextId = castedObj.textId;
             TextProba = castedObj.textProba;
             TextStringId = castedObj.textStringId;
@@ -88,7 +83,7 @@ namespace DBSynchroniser.Records
             TextSound = castedObj.textSound;
             TextRestriction = castedObj.textRestriction;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (SpeakingItemText)parent : new SpeakingItemText();
@@ -100,10 +95,9 @@ namespace DBSynchroniser.Records
             obj.textRestriction = TextRestriction;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

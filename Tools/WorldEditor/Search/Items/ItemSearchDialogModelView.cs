@@ -1,24 +1,25 @@
 ﻿#region License GNU GPL
+
 // ItemSearchDialogModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
+#endregion License GNU GPL
+
+using DBSynchroniser.Records;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using DBSynchroniser.Records;
 using WorldEditor.Database;
 using WorldEditor.Editors.Items;
 using WorldEditor.Loaders.I18N;
@@ -28,7 +29,7 @@ namespace WorldEditor.Search.Items
     public class ItemSearchDialogModelView : SearchDialogModelView<ItemWrapper>
     {
         public ItemSearchDialogModelView()
-            : base (typeof(ItemRecord))
+            : base(typeof(ItemRecord))
         {
         }
 
@@ -42,7 +43,7 @@ namespace WorldEditor.Search.Items
             if (parameter == null || !CanEditItem(parameter))
                 return;
 
-            var editor = new ItemEditor(( (ItemWrapper)parameter ).WrappedItem);
+            var editor = new ItemEditor(((ItemWrapper)parameter).WrappedItem);
             editor.Show();
         }
 
@@ -52,11 +53,11 @@ namespace WorldEditor.Search.Items
         }
 
         protected override void OnCopyItem(object parameter)
-        {            
+        {
             if (parameter == null || !CanEditItem(parameter))
                 return;
 
-            var item = ((ItemWrapper) parameter).WrappedItem;
+            var item = ((ItemWrapper)parameter).WrappedItem;
             ItemWrapper copy;
 
             if (item is WeaponRecord)
@@ -64,7 +65,7 @@ namespace WorldEditor.Search.Items
             else copy = new ItemWrapper();
 
             copy.Name = I18NDataManager.Instance.ReadText(item.NameId);
-            copy.TypeId = (int) item.TypeId;
+            copy.TypeId = (int)item.TypeId;
             copy.Description = I18NDataManager.Instance.ReadText(item.DescriptionId);
             copy.IconId = item.IconId;
             copy.Level = item.Level;
@@ -76,7 +77,7 @@ namespace WorldEditor.Search.Items
             copy.Price = item.Price;
             copy.TwoHanded = item.TwoHanded;
             copy.Etheral = item.Etheral;
-            copy.ItemSetId = (uint) item.ItemSetId;
+            copy.ItemSetId = (uint)item.ItemSetId;
             copy.Criteria = item.Criteria;
             copy.CriteriaTarget = item.CriteriaTarget;
             copy.HideEffects = item.HideEffects;
@@ -105,13 +106,11 @@ namespace WorldEditor.Search.Items
                 copy_weapon.CriticalHitProbability = weapon.CriticalHitProbability;
                 copy_weapon.CriticalHitBonus = weapon.CriticalHitBonus;
                 copy_weapon.CriticalFailureProbability = weapon.CriticalFailureProbability;
-
             }
 
             var editor = new ItemEditor(copy);
             editor.Show();
         }
-
 
         public override IEnumerable<ItemWrapper> FindMatches()
         {

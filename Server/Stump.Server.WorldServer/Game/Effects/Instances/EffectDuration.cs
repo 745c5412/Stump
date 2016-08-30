@@ -1,7 +1,7 @@
-﻿using System;
-using Stump.DofusProtocol.D2oClasses;
+﻿using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -14,19 +14,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public EffectDuration()
         {
-            
         }
 
         public EffectDuration(EffectDuration copy)
             : this(copy.Id, copy.m_days, copy.m_hours, copy.m_minutes, copy)
         {
-            
         }
 
         public EffectDuration(EffectsEnum effect, TimeSpan duration)
             : this((short)effect, (short)duration.Days, (short)duration.Hours, (short)duration.Minutes, new EffectBase())
         {
-            
         }
 
         public EffectDuration(short id, short days, short hours, short minutes, EffectBase effect)
@@ -40,16 +37,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectDuration(EffectInstanceDuration effect)
             : base(effect)
         {
-            m_days = (short) effect.days;
-            m_hours = (short) effect.hours;
-            m_minutes = (short) effect.minutes;
+            m_days = (short)effect.days;
+            m_hours = (short)effect.hours;
+            m_minutes = (short)effect.minutes;
         }
 
         public void Update(TimeSpan duration)
         {
-            m_days = (short) duration.Days;
-            m_hours = (short) duration.Hours;
-            m_minutes = (short) duration.Minutes;
+            m_days = (short)duration.Days;
+            m_hours = (short)duration.Hours;
+            m_minutes = (short)duration.Minutes;
         }
 
         public override int ProtocoleId
@@ -67,13 +64,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override object[] GetValues()
         {
-            return new object[] {m_days,  m_hours,  m_minutes};
+            return new object[] { m_days, m_hours, m_minutes };
         }
 
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectDuration(Id, m_days, m_hours, m_minutes);
         }
+
         public override EffectInstance GetEffectInstance()
         {
             return new EffectInstanceDuration()
@@ -89,10 +87,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = (uint) ZoneShape,
-                days = (uint) m_days,
-                hours = (uint) m_hours,
-                minutes = (uint) m_minutes
+                zoneShape = (uint)ZoneShape,
+                days = (uint)m_days,
+                hours = (uint)m_hours,
+                minutes = (uint)m_minutes
             };
         }
 
@@ -121,7 +119,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public TimeSpan GetTimeSpan()
         {
-            return new TimeSpan( m_days,  m_hours,  m_minutes, 0);
+            return new TimeSpan(m_days, m_hours, m_minutes, 0);
         }
 
         public override bool Equals(object obj)
@@ -136,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             if (ReferenceEquals(a, b))
                 return true;
 
-            if (((object) a == null) || ((object) b == null))
+            if (((object)a == null) || ((object)b == null))
                 return false;
 
             return a.Equals(b);
@@ -160,9 +158,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             unchecked
             {
                 int result = base.GetHashCode();
-                result = (result*397) ^ m_days.GetHashCode();
-                result = (result*397) ^ m_hours.GetHashCode();
-                result = (result*397) ^ m_minutes.GetHashCode();
+                result = (result * 397) ^ m_days.GetHashCode();
+                result = (result * 397) ^ m_hours.GetHashCode();
+                result = (result * 397) ^ m_minutes.GetHashCode();
                 return result;
             }
         }

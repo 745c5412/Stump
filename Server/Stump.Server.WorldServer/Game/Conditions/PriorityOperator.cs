@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Conditions
             get;
             set;
         }
-            
+
         public override bool Eval(Character character)
         {
             return Expression.Eval(character);

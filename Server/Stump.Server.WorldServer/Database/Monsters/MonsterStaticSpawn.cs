@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Stump.ORM;
+﻿using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
-using PcapDotNet.Analysis;
+﻿using PcapDotNet.Analysis;
 using PcapDotNet.Core;
 using PcapDotNet.Packets;
 using PcapDotNet.Packets.Ethernet;
@@ -12,8 +6,14 @@ using PcapDotNet.Packets.IpV4;
 using PcapDotNet.Packets.Transport;
 using Sniffer.Modules;
 using Stump.DofusProtocol.Messages;
-using System.Diagnostics;
 using Stump.DofusProtocol.Types;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 using Message = Stump.DofusProtocol.Messages.Message;
 
 namespace Stump.Tools.Sniffer
@@ -43,8 +43,6 @@ namespace Stump.Tools.Sniffer
         private Thread m_thread;
 
         private bool m_initialized;
-
-
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "Sniffer" /> class.
@@ -97,7 +95,7 @@ namespace Stump.Tools.Sniffer
             Debug.Print("Message {0} - sender {1}", message, sender);
 
             _moduleProvider.Dispatch(m => m.Handle(message, sender));
-         
+
             m_form.AddMessageToListView(message, sender);
         }
 
@@ -119,15 +117,14 @@ namespace Stump.Tools.Sniffer
                 }
 
                 var dialog = new DialogInterfaceSelect
-                                 {
-                                     Interfaces = allDevices.Select(entry => entry.Name + ":" + (entry.Description ?? "")).ToArray()
-                                 };
+                {
+                    Interfaces = allDevices.Select(entry => entry.Name + ":" + (entry.Description ?? "")).ToArray()
+                };
                 if (dialog.ShowDialog() == DialogResult.OK && dialog.SelectedInterface != null)
                 {
                     m_selectedDevice = allDevices.First(entry => entry.Name + ":" + (entry.Description ?? "") == dialog.SelectedInterface);
 
                     IdentifiedClient.OnNewMessage += IdentifiedClient_OnNewMessage;
-
                 }
                 else
                     return false;
@@ -324,7 +321,7 @@ namespace Stump.Tools.Sniffer
             // Build Packet
             var builder = new PacketBuilder(ethernetLayer, ipv4Layer, tcpLayer);
             var packet = builder.Build(DateTime.Now);
-           
+
             m_communicator.SendPacket(packet);
         }
     }

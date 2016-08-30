@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
         {
             get
             {
-                return new [] { NpcActionTypeEnum.ACTION_TALK };
+                return new[] { NpcActionTypeEnum.ACTION_TALK };
             }
         }
 

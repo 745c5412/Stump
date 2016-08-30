@@ -1,33 +1,32 @@
-
-
 // Generated on 03/02/2014 20:43:02
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class HouseInformations
     {
         public const short Id = 111;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public bool isOnSale;
         public bool isSaleLocked;
         public int houseId;
         public IEnumerable<int> doorsOnMap;
         public string ownerName;
         public short modelId;
-        
+
         public HouseInformations()
         {
         }
-        
+
         public HouseInformations(bool isOnSale, bool isSaleLocked, int houseId, IEnumerable<int> doorsOnMap, string ownerName, short modelId)
         {
             this.isOnSale = isOnSale;
@@ -37,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             this.ownerName = ownerName;
             this.modelId = modelId;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             byte flag1 = 0;
@@ -50,8 +49,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in doorsOnMap)
             {
-                 writer.WriteInt(entry);
-                 doorsOnMap_count++;
+                writer.WriteInt(entry);
+                doorsOnMap_count++;
             }
             var doorsOnMap_after = writer.Position;
             writer.Seek((int)doorsOnMap_before);
@@ -61,7 +60,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUTF(ownerName);
             writer.WriteShort(modelId);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             byte flag1 = reader.ReadByte();
@@ -74,7 +73,7 @@ namespace Stump.DofusProtocol.Types
             var doorsOnMap_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 doorsOnMap_[i] = reader.ReadInt();
+                doorsOnMap_[i] = reader.ReadInt();
             }
             doorsOnMap = doorsOnMap_;
             ownerName = reader.ReadUTF();
@@ -82,12 +81,10 @@ namespace Stump.DofusProtocol.Types
             if (modelId < 0)
                 throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(bool) + 0 + sizeof(int) + sizeof(short) + doorsOnMap.Sum(x => sizeof(int)) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short);
         }
-        
     }
-    
 }

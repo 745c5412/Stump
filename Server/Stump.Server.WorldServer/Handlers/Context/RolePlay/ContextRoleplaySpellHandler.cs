@@ -1,11 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Dialogs.Spells;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {

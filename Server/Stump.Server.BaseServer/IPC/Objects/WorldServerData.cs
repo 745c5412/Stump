@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ProtoBuf;
+using Stump.DofusProtocol.Enums;
+using System;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using ProtoBuf;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.IPC.Objects
 {
@@ -57,6 +57,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
             get;
             set;
         }
+
         [ProtoMember(6)]
         public RoleEnum RequiredRole
         {
@@ -76,6 +77,6 @@ namespace Stump.Server.BaseServer.IPC.Objects
             get { return Address + ":" + Port; }
         }
 
-        #endregion
+        #endregion Properties
     }
 }

@@ -58,36 +58,36 @@ namespace Stump.Server.WorldServer.Database.World
         {
             var bytes = new byte[StructSize];
 
-            bytes[0] = (byte) (Id >> 8);
-            bytes[1] = (byte) (Id & 0xFF);
+            bytes[0] = (byte)(Id >> 8);
+            bytes[1] = (byte)(Id & 0xFF);
 
-            bytes[2] = (byte) (Floor >> 8);
-            bytes[3] = (byte) (Floor & 0xFF);
+            bytes[2] = (byte)(Floor >> 8);
+            bytes[3] = (byte)(Floor & 0xFF);
 
             bytes[4] = LosMov;
             bytes[5] = MapChangeData;
             bytes[6] = Speed;
 
-            bytes[7] = (byte) (MoveZone >> 24);
-            bytes[8] = (byte) (MoveZone >> 16);
-            bytes[9] = (byte) (MoveZone >> 8);
-            bytes[10] = (byte) (MoveZone & 0xFF);
+            bytes[7] = (byte)(MoveZone >> 24);
+            bytes[8] = (byte)(MoveZone >> 16);
+            bytes[9] = (byte)(MoveZone >> 8);
+            bytes[10] = (byte)(MoveZone & 0xFF);
 
             return bytes;
         }
 
         public void Deserialize(byte[] data, int index = 0)
         {
-            Id = (short) ((data[index + 0] << 8) | data[index + 1]);
+            Id = (short)((data[index + 0] << 8) | data[index + 1]);
 
-            Floor = (short) ((data[index + 2] << 8) | data[index + 3]);
+            Floor = (short)((data[index + 2] << 8) | data[index + 3]);
 
             LosMov = data[index + 4];
             MapChangeData = data[index + 5];
             Speed = data[index + 6];
 
             MoveZone =
-                (uint) ((data[index + 7] << 24) | (data[index + 8] << 16) | (data[index + 9] << 8) | (data[index + 10]));
+                (uint)((data[index + 7] << 24) | (data[index + 8] << 16) | (data[index + 9] << 8) | (data[index + 10]));
         }
     }
 }

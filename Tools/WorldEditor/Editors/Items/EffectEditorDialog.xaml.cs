@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using DBSynchroniser.Records;
+using System.Collections.Generic;
 using System.Windows;
-using DBSynchroniser.Records;
 
 namespace WorldEditor.Editors.Items
 {
@@ -10,7 +10,7 @@ namespace WorldEditor.Editors.Items
     public partial class EffectEditorDialog
     {
         public static readonly DependencyProperty EffectToEditProperty =
-            DependencyProperty.Register("EffectToEdit", typeof (EffectWrapper), typeof (EffectEditorDialog),
+            DependencyProperty.Register("EffectToEdit", typeof(EffectWrapper), typeof(EffectEditorDialog),
                                         new PropertyMetadata(default(EffectWrapper)));
 
         public static readonly DependencyProperty EffectsSourceProperty =
@@ -24,13 +24,13 @@ namespace WorldEditor.Editors.Items
 
         public EffectWrapper EffectToEdit
         {
-            get { return (EffectWrapper) GetValue(EffectToEditProperty); }
+            get { return (EffectWrapper)GetValue(EffectToEditProperty); }
             set { SetValue(EffectToEditProperty, value); }
         }
 
         public IEnumerable<EffectRecord> EffectsSource
         {
-            get { return (IEnumerable<EffectRecord>) GetValue(EffectsSourceProperty); }
+            get { return (IEnumerable<EffectRecord>)GetValue(EffectsSourceProperty); }
             set { SetValue(EffectsSourceProperty, value); }
         }
 

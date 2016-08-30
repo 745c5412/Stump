@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 {
@@ -29,12 +29,12 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 
             Handlers[3].Apply(); //Frozen State
 
-            if (Spell.Id == (int) SpellIdEnum.MARTEAU_DE_MUNGAM)
+            if (Spell.Id == (int)SpellIdEnum.MARTEAU_DE_MUNGAM)
                 Handlers[4].Apply();
             else
             {
                 Handlers[5].Apply(); //StealHP Water
-                Handlers[6].Apply(); //Change Look   
+                Handlers[6].Apply(); //Change Look
             }
 
             var affectedActors = Handlers[3].GetAffectedActors().ToArray();
@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
                     Duration = (short)effect.Duration
                 };
 
-                actor.AddAndApplyBuff(buff); 
+                actor.AddAndApplyBuff(buff);
             }
         }
 

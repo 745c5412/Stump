@@ -8,7 +8,6 @@ namespace Stump.Server.BaseServer.IPC.Messages
     {
         public GroupAddResultMessage()
         {
-            
         }
 
         public GroupAddResultMessage(UserGroupData userGroup)

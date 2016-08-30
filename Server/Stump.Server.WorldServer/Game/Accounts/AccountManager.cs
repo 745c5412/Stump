@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC;
@@ -13,18 +8,23 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace Stump.Server.WorldServer.Game.Accounts
 {
     public class AccountManager : DataManager<AccountManager>
     {
-        [Variable(true)] 
+        [Variable(true)]
         public static readonly int AccountBlockMaxDelay = 20; // in seconds
-        
-        public static UserGroup DefaultUserGroup = new UserGroup(new UserGroupData() { Id = 0, IsGameMaster = false, Name = "Default", Role = RoleEnum.Player});
+
+        public static UserGroup DefaultUserGroup = new UserGroup(new UserGroupData() { Id = 0, IsGameMaster = false, Name = "Default", Role = RoleEnum.Player });
 
         private Dictionary<int, UserGroup> m_userGroups;
-        private readonly ConcurrentDictionary<int, Tuple<Character, DateTime>> m_blockedAccount = new ConcurrentDictionary<int, Tuple<Character, DateTime>>(); 
+        private readonly ConcurrentDictionary<int, Tuple<Character, DateTime>> m_blockedAccount = new ConcurrentDictionary<int, Tuple<Character, DateTime>>();
 
         public override void Initialize()
         {
@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Accounts
             return Database.ExecuteScalar<bool>(string.Format("SELECT EXISTS(SELECT 1 FROM accounts WHERE Id={0})", id));
         }
 
-        // block this account 
+        // block this account
         public void BlockAccount(WorldAccount account, Character character)
         {
             m_blockedAccount.TryAdd(account.Id, Tuple.Create(character, DateTime.Now));

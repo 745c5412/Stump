@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -8,6 +6,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
@@ -25,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
         {
             var distance = CastPoint.ManhattanDistanceTo(TargetedPoint);
             var direction = CastPoint.OrientationTo(TargetedPoint, false);
-            var isEven = (short)direction%2 == 0;
+            var isEven = (short)direction % 2 == 0;
 
             Caster.Position.Cell = TargetedCell;
 
@@ -39,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                 if (direction == dir)
                     continue;
 
-                var cell = CastPoint.GetCellInDirection(dir, (short) distance);
+                var cell = CastPoint.GetCellInDirection(dir, (short)distance);
                 if (cell == null)
                     continue;
 

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 {
@@ -15,13 +15,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-
         private readonly ItemTemplate m_livingObjectTemplate;
 
         public BoundLivingObjectItem(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
-            var idEffect = (EffectInteger) Effects.First(x => x.EffectId == EffectsEnum.Effect_LivingObjectId);
+            var idEffect = (EffectInteger)Effects.First(x => x.EffectId == EffectsEnum.Effect_LivingObjectId);
             m_livingObjectTemplate = ItemManager.Instance.TryGetTemplate(idEffect.Value);
             LivingObjectRecord = ItemManager.Instance.TryGetLivingObjectRecord(idEffect.Value);
 
@@ -42,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             if (food.Template.TypeId != LivingObjectRecord.ItemType)
                 return false;
 
-            var xp = (short)Math.Ceiling(food.Template.Level/2d);
+            var xp = (short)Math.Ceiling(food.Template.Level / 2d);
             Experience += xp;
 
             // todo, manage it

@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier((int) ChallengeEnum.BARBARE)]
+    [ChallengeIdentifier((int)ChallengeEnum.BARBARE)]
     public class BarbaricChallenge : DefaultChallenge
     {
         public BarbaricChallenge(int id, IFight fight)

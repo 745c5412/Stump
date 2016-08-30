@@ -1,17 +1,18 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Items;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Stump.Plugins.DefaultPlugin.Code
 {
-    class ItemIdEnumGeneration
+    internal class ItemIdEnumGeneration
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         [Variable]
-        public static bool Active = true;
+        public static bool Active = false;
 
         [Variable]
         public static string Output = "Gen/ItemIdEnum.cs";

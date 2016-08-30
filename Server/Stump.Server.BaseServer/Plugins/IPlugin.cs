@@ -40,6 +40,7 @@ namespace Stump.Server.BaseServer.Plugins
         void LoadConfig();
 
         void Initialize();
+
         void Shutdown();
 
         void Dispose();

@@ -1,4 +1,3 @@
-
 using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Network

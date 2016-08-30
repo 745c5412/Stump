@@ -8,7 +8,8 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
     [Discriminator("Restat", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class RestatReply : NpcReply
     {
-        [Variable] public static bool RestatOnce = true;
+        [Variable]
+        public static bool RestatOnce = true;
 
         public RestatReply(NpcReplyRecord record) : base(record)
         {
@@ -33,7 +34,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             character.PermanentAddedIntelligence = 0;
             character.PermanentAddedChance = 0;
 
-            character.StatsPoints = (ushort) (character.Level*5);
+            character.StatsPoints = (ushort)(character.Level * 5);
 
             character.RefreshStats();
 

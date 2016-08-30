@@ -2,13 +2,12 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -17,9 +16,9 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class RelationshipIncluder : DbExpressionVisitor
     {
-        QueryPolicy policy;
-        QueryMapping mapping;
-        ScopedDictionary<MemberInfo, bool> includeScope = new ScopedDictionary<MemberInfo, bool>(null);
+        private QueryPolicy policy;
+        private QueryMapping mapping;
+        private ScopedDictionary<MemberInfo, bool> includeScope = new ScopedDictionary<MemberInfo, bool>(null);
 
         private RelationshipIncluder(QueryPolicy policy)
         {
@@ -47,7 +46,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             if (this.mapping.IsEntity(init.Type))
             {
                 var save = this.includeScope;
-                this.includeScope = new ScopedDictionary<MemberInfo,bool>(this.includeScope);
+                this.includeScope = new ScopedDictionary<MemberInfo, bool>(this.includeScope);
 
                 Dictionary<MemberInfo, MemberBinding> existing = init.Bindings.ToDictionary(b => b.Member);
                 List<MemberBinding> newBindings = null;

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -15,6 +13,8 @@ using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ArkalysPlugin.Npcs
 {
@@ -24,8 +24,10 @@ namespace ArkalysPlugin.Npcs
 
         [Variable]
         public static int NpcId = 3005;
+
         [Variable]
         public static int MessageId = 20024;
+
         [Variable]
         public static short ReplyId = 20025;
 
@@ -73,7 +75,7 @@ namespace ArkalysPlugin.Npcs
         {
             get
             {
-                return new [] { NpcActionTypeEnum.ACTION_TALK };
+                return new[] { NpcActionTypeEnum.ACTION_TALK };
             }
         }
 
@@ -109,7 +111,7 @@ namespace ArkalysPlugin.Npcs
     {
         public override NpcActionTypeEnum[] ActionType
         {
-            get { return new [] { NpcActionTypeEnum.ACTION_EXCHANGE }; }
+            get { return new[] { NpcActionTypeEnum.ACTION_EXCHANGE }; }
         }
 
         public override void Execute(Npc npc, Character character)

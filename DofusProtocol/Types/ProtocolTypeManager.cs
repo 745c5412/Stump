@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Stump.Core.Reflection;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Stump.Core.Reflection;
 
 namespace Stump.DofusProtocol.Types
 {
@@ -16,7 +16,7 @@ namespace Stump.DofusProtocol.Types
         /// </summary>
         public static void Initialize()
         {
-            Assembly asm = Assembly.GetAssembly(typeof (Version));
+            Assembly asm = Assembly.GetAssembly(typeof(Version));
 
             foreach (Type type in asm.GetTypes())
             {

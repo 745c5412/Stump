@@ -1,7 +1,6 @@
-using System;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using System;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.AI.Fights.Threat
@@ -70,7 +69,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Threat
 
         public float GetThreat()
         {
-            var times = (int) Math.Ceiling((Caster.AP + Caster.UsedAP) / (double)Cost);
+            var times = (int)Math.Ceiling((Caster.AP + Caster.UsedAP) / (double)Cost);
 
             return (InflictedDamage + HealedPoints) * times;
         }

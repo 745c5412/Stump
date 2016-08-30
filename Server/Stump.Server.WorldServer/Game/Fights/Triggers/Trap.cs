@@ -1,5 +1,3 @@
-using System.Drawing;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
@@ -7,6 +5,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Drawing;
+using System.Linq;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override GameActionMark GetGameActionMark()
         {
-            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
+            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte)Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
         }
 
         public override bool IsAffected(FightActor actor)

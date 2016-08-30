@@ -1,11 +1,11 @@
-using System;
-using System.Globalization;
-using System.Linq;
 using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System;
+using System.Globalization;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
 {
@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
         {
             base.Close();
 
-            InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client, DialogTypeEnum.DIALOG_EXCHANGE, 
+            InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client, DialogTypeEnum.DIALOG_EXCHANGE,
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
             InventoryHandler.SendExchangeLeaveMessage(SecondTrader.Character.Client, DialogTypeEnum.DIALOG_EXCHANGE,
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
@@ -77,9 +77,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
                 return;
 
             FirstTrader.Character.Inventory.SetKamas(
-                (int) (FirstTrader.Character.Inventory.Kamas + (SecondTrader.Kamas - FirstTrader.Kamas)));
+                (int)(FirstTrader.Character.Inventory.Kamas + (SecondTrader.Kamas - FirstTrader.Kamas)));
             SecondTrader.Character.Inventory.SetKamas(
-                (int) (SecondTrader.Character.Inventory.Kamas + (FirstTrader.Kamas - SecondTrader.Kamas)));
+                (int)(SecondTrader.Character.Inventory.Kamas + (FirstTrader.Kamas - SecondTrader.Kamas)));
 
             // trade items
             foreach (var tradeItem in FirstTrader.Items)
@@ -146,9 +146,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             base.OnTraderKamasChanged(trader, amount);
 
             InventoryHandler.SendExchangeKamaModifiedMessage(FirstTrader.Character.Client, trader != FirstTrader,
-                                                             (int) amount);
+                                                             (int)amount);
             InventoryHandler.SendExchangeKamaModifiedMessage(SecondTrader.Character.Client, trader != SecondTrader,
-                                                             (int) amount);
+                                                             (int)amount);
         }
 
         protected override void OnTraderReadyStatusChanged(Trader trader, bool status)

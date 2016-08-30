@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Sniffer.Modules
+﻿namespace Sniffer.Modules
 {
     public abstract class BaseModule
     {
@@ -21,17 +19,14 @@ namespace Sniffer.Modules
 
         public virtual void Initialize()
         {
-            
         }
 
         public virtual void Run()
         {
-            
         }
 
         public virtual void Stop()
         {
-
         }
     }
 }

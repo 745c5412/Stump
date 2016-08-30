@@ -243,30 +243,30 @@ namespace Stump.Core.Threading
                         // If we got a Task, continue from it to continue iterating
                         if (nextItem is Task)
                         {
-                            var nextTask = (Task) nextItem;
+                            var nextTask = (Task)nextItem;
 
                             nextTask.IgnoreExceptions(); // TODO: Is this a good idea?
                             nextTask.ContinueWith(body).IgnoreExceptions();
                         }
-                            // If we got a scheduler, continue iterating under the new scheduler,
-                            // enabling hopping between contexts.
+                        // If we got a scheduler, continue iterating under the new scheduler,
+                        // enabling hopping between contexts.
                         else if (nextItem is TaskScheduler)
                         {
                             if (body != null)
                                 Task.Factory.StartNew(() => body(null), CancellationToken.None, TaskCreationOptions.None,
-                                                      (TaskScheduler) nextItem).IgnoreExceptions();
+                                                      (TaskScheduler)nextItem).IgnoreExceptions();
                         }
-                            // Anything else is invalid
+                        // Anything else is invalid
                         else
                             trs.TrySetException(
                                 new InvalidOperationException("Task or TaskScheduler object expected in Iterate"));
                     }
 
-                        // Otherwise, we're done!
+                    // Otherwise, we're done!
                     else trs.TrySetResult(null);
                 }
-                    // If MoveNext throws an exception, propagate that to the user,
-                    // either as cancellation or as a fault
+                // If MoveNext throws an exception, propagate that to the user,
+                // either as cancellation or as a fault
                 catch (Exception exc)
                 {
                     var oce = exc as OperationCanceledException;
@@ -480,7 +480,7 @@ namespace Stump.Core.Threading
 
             // Create the timed task
             var tcs = new TaskCompletionSource<object>(factory.CreationOptions);
-            CancellationTokenRegistration[] ctr = {default(CancellationTokenRegistration)};
+            CancellationTokenRegistration[] ctr = { default(CancellationTokenRegistration) };
 
             // Create the timer but don't start it yet.  If we start it now,
             // it might fire before ctr has been set to the right registration.
@@ -488,7 +488,7 @@ namespace Stump.Core.Threading
             {
                 // Clean up both the cancellation token and the timer, and try to transition to completed
                 ctr[0].Dispose();
-                ((Timer) self).Dispose();
+                ((Timer)self).Dispose();
                 tcs.TrySetResult(null);
             });
 
@@ -763,7 +763,7 @@ namespace Stump.Core.Threading
 
             // Create the trigger and the timer to start it
             var tcs = new TaskCompletionSource<object>();
-            var timer = new Timer(obj => ((TaskCompletionSource<object>) obj).SetResult(null),
+            var timer = new Timer(obj => ((TaskCompletionSource<object>)obj).SetResult(null),
                                   tcs, millisecondsDelay, Timeout.Infinite);
 
             // Return a task that executes the function when the trigger fires
@@ -852,7 +852,7 @@ namespace Stump.Core.Threading
 
             // Create the task that will be returned
             var result = new TaskCompletionSource<TResult>(state);
-            Timer[] timer = {null};
+            Timer[] timer = { null };
 
             // Create the task that will run the user's function
             var functionTask = new Task<TResult>(function, state, creationOptions);
@@ -867,7 +867,7 @@ namespace Stump.Core.Threading
                                       TaskContinuationOptions.ExecuteSynchronously, scheduler);
 
             // Start the timer for the trigger
-            timer[0] = new Timer(obj => ((Task) obj).Start(scheduler),
+            timer[0] = new Timer(obj => ((Task)obj).Start(scheduler),
                                  functionTask, millisecondsDelay, Timeout.Infinite);
 
             return result.Task;

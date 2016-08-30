@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Fights.History
 {
@@ -25,6 +24,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         {
             Owner = owner;
         }
+
         public SpellHistory(FightActor owner, IEnumerable<SpellHistoryEntry> entries)
         {
             Owner = owner;
@@ -114,7 +114,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
             if (mostRecentEntry == null && CurrentRound < spell.InitialCooldown)
             {
-                return (int) (spell.InitialCooldown - CurrentRound);
+                return (int)(spell.InitialCooldown - CurrentRound);
             }
 
             if (mostRecentEntry == null)
@@ -145,9 +145,9 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             var spells = m_underlyingStack.Select(x => x.Spell).Distinct();
 
             return (from spell in spells
-                let cd = GetSpellCooldown(spell)
-                where cd > 0
-                select new GameFightSpellCooldown((int) spell.SpellId, (sbyte) cd)).ToArray();
+                    let cd = GetSpellCooldown(spell)
+                    where cd > 0
+                    select new GameFightSpellCooldown((int)spell.SpellId, (sbyte)cd)).ToArray();
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.BaseServer.Commands;
+using System;
+using System.Linq;
 
 namespace ArkalysPlugin.Commands
 {
@@ -46,7 +46,7 @@ namespace ArkalysPlugin.Commands
 
             character.Inventory.RemoveItem(item, amount);
 
-            var amountPerPlayer = (int)Math.Ceiling((double)amount/players.Count());
+            var amountPerPlayer = (int)Math.Ceiling((double)amount / players.Count());
 
             foreach (var player in players)
             {

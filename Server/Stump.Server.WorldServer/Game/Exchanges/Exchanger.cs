@@ -12,6 +12,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         }
 
         public abstract bool MoveItem(int id, int quantity);
+
         public abstract bool SetKamas(int amount);
 
         public IDialog Dialog

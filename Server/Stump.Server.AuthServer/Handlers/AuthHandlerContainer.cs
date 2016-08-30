@@ -1,9 +1,8 @@
-
-using System;
-using System.Collections.Generic;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Server.AuthServer.Handlers
 {
@@ -21,7 +20,7 @@ namespace Stump.Server.AuthServer.Handlers
             if (!Predicates.ContainsKey(messageId))
                 return true;
 
-            if (!( client is AuthClient ))
+            if (!(client is AuthClient))
                 return false;
 
             return Predicates[messageId](client as AuthClient);

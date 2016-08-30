@@ -1,5 +1,4 @@
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
@@ -51,12 +50,12 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public void AssignFields(object d2oObject)
         {
-            var type = (DofusProtocol.D2oClasses.SpellType) d2oObject;
+            var type = (DofusProtocol.D2oClasses.SpellType)d2oObject;
             Id = type.id;
             LongNameId = type.longNameId;
             ShortNameId = type.shortNameId;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

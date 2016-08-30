@@ -1,5 +1,4 @@
 ﻿using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -25,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 if (integerEffect == null)
                     return false;
 
-                AddStatBuff(actor, (short)( -( integerEffect.Value ) ), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
+                AddStatBuff(actor, (short)(-(integerEffect.Value)), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
                 actor.TriggerBuffs(BuffTriggerType.LOST_MP);
 
                 if (Effect.Duration > 0)

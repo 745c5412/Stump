@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.BidHouse;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
 
         public override NpcActionTypeEnum[] ActionType
         {
-            get { return new [] { NpcActionTypeEnum.ACTION_BUY }; }
+            get { return new[] { NpcActionTypeEnum.ACTION_BUY }; }
         }
 
         private IEnumerable<int> m_types;

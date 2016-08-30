@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
@@ -30,45 +29,58 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     case SpellIdEnum.FRICTION:
                         triggerHandler = FrictionBuffTrigger;
                         break;
+
                     case SpellIdEnum.POUTCH:
                     case SpellIdEnum.BRISE_L_ÂME:
                         triggerType = BuffTriggerType.BUFF_ADDED;
                         break;
+
                     case SpellIdEnum.RÉMISSION:
                         triggerHandler = RemissionBuffTrigger;
                         break;
+
                     case SpellIdEnum.MOT_LOTOF:
                         triggerType = BuffTriggerType.TURN_BEGIN;
                         break;
+
                     case SpellIdEnum.SACCHAROSE:
                         triggerType = BuffTriggerType.LOST_MP;
                         break;
+
                     case SpellIdEnum.MANSOMURE:
                         triggerType = BuffTriggerType.AFTER_HEALED;
                         break;
+
                     case SpellIdEnum.INIMOUTH:
                         triggerType = BuffTriggerType.DAMAGES_PUSHBACK;
                         break;
+
                     case SpellIdEnum.RATTRAPAGE:
                         triggerType = BuffTriggerType.TACKLE;
                         break;
+
                     case SpellIdEnum.ÉVOLUTION:
                         triggerType = BuffTriggerType.BUFF_ADDED;
                         triggerHandler = EvolutionBuffTrigger;
                         break;
+
                     case SpellIdEnum.POLLEN:
                         triggerHandler = PollenBuffTrigger;
                         break;
+
                     case SpellIdEnum.MÉRULE_TRAÇON:
                         triggerHandler = MeruleBuffTrigger;
                         break;
+
                     case SpellIdEnum.MANSOPOUDRAGE:
                     case SpellIdEnum.HAIMJI:
                         triggerType = BuffTriggerType.PUSH;
                         break;
+
                     case SpellIdEnum.GLOURS_POURSUITE:
                     case SpellIdEnum.GLOURSON_DE_CLOCHE:
                         break;
+
                     default:
                         return false;
                 }

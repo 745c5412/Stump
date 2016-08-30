@@ -1,21 +1,25 @@
 ﻿#region License GNU GPL
 
 // ActorLook.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#endregion
+#endregion License GNU GPL
 
+using Stump.Core.Cache;
+using Stump.Core.Extensions;
+using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Types;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,10 +27,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Stump.Core.Cache;
-using Stump.Core.Extensions;
-using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Actors.Look
 {
@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook = new ObjectValidator<EntityLook>(BuildEntityLook);
         }
 
-        public ActorLook(short bones, IEnumerable<short> skins, Dictionary<int, Color> indexedColors, IEnumerable<short> scales, 
+        public ActorLook(short bones, IEnumerable<short> skins, Dictionary<int, Color> indexedColors, IEnumerable<short> scales,
             IEnumerable<SubActorLook> subLooks)
             : this()
         {
@@ -58,7 +58,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         public short BonesID
         {
             get { return m_bonesID; }
-            set { m_bonesID = value;
+            set
+            {
+                m_bonesID = value;
                 m_entityLook.Invalidate();
             }
         }
@@ -121,10 +123,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         public void Rescale(double factor)
         {
             if (m_scales.Count == 0)
-                AddScale((short) (100*factor));
+                AddScale((short)(100 * factor));
             else
             {
-                SetScales(m_scales.Select(x => (short) (x*factor)).ToArray());
+                SetScales(m_scales.Select(x => (short)(x * factor)).ToArray());
             }
         }
 
@@ -175,7 +177,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             foreach (var subLook in m_subLooks)
                 subLook.SubEntityValidator.ObjectInvalidated -= OnSubEntityInvalidated;
 
-            m_subLooks= subLooks.ToList();
+            m_subLooks = subLooks.ToList();
             m_entityLook.Invalidate();
 
             foreach (var subLook in m_subLooks)
@@ -199,7 +201,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_subLooks.RemoveAll(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET);
             m_entityLook.Invalidate();
         }
-
 
         public void SetRiderLook(ActorLook look)
         {
@@ -251,18 +252,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             return m_entityLook;
         }
 
-        #endregion
+        #endregion EntityLook
 
         public ActorLook Clone()
         {
             return new ActorLook
-                {
-                    BonesID = m_bonesID,
-                    m_colors = m_colors.ToDictionary(x => x.Key, x => x.Value),
-                    m_skins = m_skins.ToList(),
-                    m_scales = m_scales.ToList(),
-                    m_subLooks = m_subLooks.Select(x => new SubActorLook(x.BindingIndex, x.BindingCategory, x.Look.Clone())).ToList(),
-                };
+            {
+                BonesID = m_bonesID,
+                m_colors = m_colors.ToDictionary(x => x.Key, x => x.Value),
+                m_skins = m_skins.ToList(),
+                m_scales = m_scales.ToList(),
+                m_subLooks = m_subLooks.Select(x => new SubActorLook(x.BindingIndex, x.BindingCategory, x.Look.Clone())).ToList(),
+            };
         }
 
         public override string ToString()
@@ -338,24 +339,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             cursorPos = separatorPos + 1;
 
             var skins = new short[0];
-            if (( separatorPos = str.IndexOf('|', cursorPos) ) != -1 ||
-                 ( separatorPos = str.IndexOf('}', cursorPos) ) != -1)
+            if ((separatorPos = str.IndexOf('|', cursorPos)) != -1 ||
+                 (separatorPos = str.IndexOf('}', cursorPos)) != -1)
             {
                 skins = ParseCollection(str.Substring(cursorPos, separatorPos - cursorPos), short.Parse);
                 cursorPos = separatorPos + 1;
             }
 
             var colors = new Tuple<int, int>[0];
-            if (( separatorPos = str.IndexOf('|', cursorPos) ) != -1 ||
-                 ( separatorPos = str.IndexOf('}', cursorPos) ) != -1) // if false there are no informations between the two separators
+            if ((separatorPos = str.IndexOf('|', cursorPos)) != -1 ||
+                 (separatorPos = str.IndexOf('}', cursorPos)) != -1) // if false there are no informations between the two separators
             {
                 colors = ParseCollection(str.Substring(cursorPos, separatorPos - cursorPos), ParseIndexedColor);
                 cursorPos = separatorPos + 1;
             }
 
             var scales = new short[0];
-            if (( separatorPos = str.IndexOf('|', cursorPos) ) != -1 ||
-                 ( separatorPos = str.IndexOf('}', cursorPos) ) != -1) // if false there are no informations between the two separators
+            if ((separatorPos = str.IndexOf('|', cursorPos)) != -1 ||
+                 (separatorPos = str.IndexOf('}', cursorPos)) != -1) // if false there are no informations between the two separators
             {
                 scales = ParseCollection(str.Substring(cursorPos, separatorPos - cursorPos), short.Parse);
                 cursorPos = separatorPos + 1;
@@ -367,7 +368,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
                 var atSeparatorIndex = str.IndexOf('@', cursorPos, 3); // max size of a byte = 255, so 3 characters
                 var equalsSeparatorIndex = str.IndexOf('=', atSeparatorIndex + 1, 3); // max size of a byte = 255, so 3 characters
                 var category = byte.Parse(str.Substring(cursorPos, atSeparatorIndex - cursorPos));
-                var index = byte.Parse(str.Substring(atSeparatorIndex + 1, equalsSeparatorIndex - ( atSeparatorIndex + 1 )));
+                var index = byte.Parse(str.Substring(atSeparatorIndex + 1, equalsSeparatorIndex - (atSeparatorIndex + 1)));
 
                 var hookDepth = 0;
                 var i = equalsSeparatorIndex + 1;
@@ -381,6 +382,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
                         case '{':
                             hookDepth++;
                             break;
+
                         case '}':
                             hookDepth--;
                             break;
@@ -389,7 +391,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
                     i++;
                 } while (hookDepth > 0);
 
-                subEntities.Add(new SubActorLook((sbyte)index, (SubEntityBindingPointCategoryEnum) category, Parse(subEntity.ToString())));
+                subEntities.Add(new SubActorLook((sbyte)index, (SubEntityBindingPointCategoryEnum)category, Parse(subEntity.ToString())));
 
                 cursorPos = i + 1; // ignore the comma and the last '}' char
             }
@@ -403,7 +405,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             var hexNumber = str[signPos + 1] == '#';
 
             var index = int.Parse(str.Substring(0, signPos));
-            var color = int.Parse(str.Substring(signPos + ( hexNumber ? 2 : 1 ), str.Length - ( signPos + ( hexNumber ? 2 : 1 ) )),
+            var color = int.Parse(str.Substring(signPos + (hexNumber ? 2 : 1), str.Length - (signPos + (hexNumber ? 2 : 1))),
                                   hexNumber ? NumberStyles.HexNumber : NumberStyles.Integer);
 
             return Tuple.Create(index, color);

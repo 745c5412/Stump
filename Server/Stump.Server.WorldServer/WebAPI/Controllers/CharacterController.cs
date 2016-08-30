@@ -43,7 +43,9 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
         }
 
         public IHttpActionResult Put(int characterId) => StatusCode(HttpStatusCode.MethodNotAllowed);
+
         public IHttpActionResult Post(int characterId, string value) => StatusCode(HttpStatusCode.MethodNotAllowed);
+
         public IHttpActionResult Delete(int characterId) => StatusCode(HttpStatusCode.MethodNotAllowed);
     }
 }

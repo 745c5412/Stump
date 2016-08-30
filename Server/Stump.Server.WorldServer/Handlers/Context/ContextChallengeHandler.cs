@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Fights.Challenges;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {

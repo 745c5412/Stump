@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Stump.Core.Extensions;
+﻿using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -13,7 +13,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public BufferCommand()
         {
-            Aliases = new[] {"buffer"};
+            Aliases = new[] { "buffer" };
             Description = "Gives buffer manager current state";
             RequiredRole = RoleEnum.Administrator;
         }
@@ -41,11 +41,12 @@ namespace Stump.Server.BaseServer.Commands.Commands
     }
 
 #if DEBUG
+
     public class BufferLeaksCommand : CommandBase
     {
         public BufferLeaksCommand()
         {
-            Aliases = new[] {"bufferleaks"};
+            Aliases = new[] { "bufferleaks" };
             Description = "Find possible leaks";
             RequiredRole = RoleEnum.Administrator;
         }
@@ -53,8 +54,6 @@ namespace Stump.Server.BaseServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var path = string.Format("./bufferleaks {0}.txt", DateTime.Now.ToString("dd-MM hh-mm-ss"));
-            
-
 
             using (var file = File.OpenWrite(path))
             {
@@ -78,7 +77,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             var leaks = manager.GetSegmentsInUse();
 
-            file.WriteLine("------------- {0} kB {1}/{2} used segments -------------", manager.SegmentSize/1024, manager.UsedSegmentCount, manager.TotalSegmentCount);
+            file.WriteLine("------------- {0} kB {1}/{2} used segments -------------", manager.SegmentSize / 1024, manager.UsedSegmentCount, manager.TotalSegmentCount);
             foreach (var leak in leaks.OrderByDescending(x => DateTime.Now - x.LastUsage))
             {
                 var client = leak.Token as BaseClient;
@@ -96,5 +95,6 @@ namespace Stump.Server.BaseServer.Commands.Commands
             }
         }
     }
+
 #endif
 }

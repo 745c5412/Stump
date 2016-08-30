@@ -1,8 +1,7 @@
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
@@ -22,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
         {
             get
             {
-                return ( (uint)Radius + 1 ) * ( (uint)Radius + 1 );
+                return ((uint)Radius + 1) * ((uint)Radius + 1);
             }
         }
 
@@ -79,6 +78,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         x--;
                     }
                     break;
+
                 case DirectionsEnum.DIRECTION_SOUTH_WEST:
                     y = centerPoint.Y;
                     while (y >= centerPoint.Y - Radius)
@@ -95,6 +95,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         y--;
                     }
                     break;
+
                 case DirectionsEnum.DIRECTION_SOUTH_EAST:
                     x = centerPoint.X;
                     while (x <= centerPoint.X + Radius)
@@ -111,6 +112,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         x++;
                     }
                     break;
+
                 case DirectionsEnum.DIRECTION_NORTH_EAST:
                     y = centerPoint.Y;
                     while (y <= centerPoint.Y + Radius)
@@ -127,7 +129,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         y++;
                     }
                     break;
-
             }
 
             return result.ToArray();
@@ -140,6 +141,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
             container.Add(map.Cells[MapPoint.CoordToCellId(x, y)]);
         }
-        #endregion
+
+        #endregion IShape Members
     }
 }

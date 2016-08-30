@@ -1,13 +1,11 @@
-﻿using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Handlers.Actions;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
@@ -26,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
             foreach (var affectedActor in GetAffectedActors())
             {
-                var state = SpellManager.Instance.GetSpellState((uint) Dice.Value);
+                var state = SpellManager.Instance.GetSpellState((uint)Dice.Value);
 
                 if (state == null)
                 {
@@ -43,13 +41,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     var id = Caster.PopNextBuffId();
                     var buff = new DelayBuff(id, affectedActor, Caster, Dice, Spell, false, false, StateTrigger)
                     {
-                        Duration = (short) Dice.Duration,
+                        Duration = (short)Dice.Duration,
                         Token = stateBuff
                     };
 
                     Caster.AddAndApplyBuff(buff);
                 }
-
 
                 RemoveStateBuff(affectedActor, (SpellStatesEnum)state.Id);
             }
@@ -59,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
         public void StateTrigger(DelayBuff buff, object token)
         {
-            var state = (StateBuff) token;
+            var state = (StateBuff)token;
             if (state == null)
                 return;
 

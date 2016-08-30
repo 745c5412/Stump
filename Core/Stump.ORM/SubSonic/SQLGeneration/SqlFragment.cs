@@ -7,7 +7,7 @@ namespace Stump.ORM.SubSonic.SQLGeneration
     /// </summary>
     public class SqlFragment : ISqlFragment
     {
-        public string ClientName{get;set;}
+        public string ClientName { get; set; }
 
         private string _and = " AND ";
         public string AND { get { return _and; } set { _and = value; } }
@@ -113,7 +113,5 @@ namespace Stump.ORM.SubSonic.SQLGeneration
 
         private string _where = " WHERE ";
         public string WHERE { get { return _where; } set { _where = value; } }
-
-
     }
 }

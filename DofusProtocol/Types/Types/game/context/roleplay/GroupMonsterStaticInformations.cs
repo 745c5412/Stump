@@ -1,35 +1,32 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
+using Stump.Core.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GroupMonsterStaticInformations
     {
         public const short Id = 140;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public Types.MonsterInGroupLightInformations mainCreatureLightInfos;
         public IEnumerable<Types.MonsterInGroupInformations> underlings;
-        
+
         public GroupMonsterStaticInformations()
         {
         }
-        
+
         public GroupMonsterStaticInformations(Types.MonsterInGroupLightInformations mainCreatureLightInfos, IEnumerable<Types.MonsterInGroupInformations> underlings)
         {
             this.mainCreatureLightInfos = mainCreatureLightInfos;
             this.underlings = underlings;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             mainCreatureLightInfos.Serialize(writer);
@@ -38,16 +35,15 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in underlings)
             {
-                 entry.Serialize(writer);
-                 underlings_count++;
+                entry.Serialize(writer);
+                underlings_count++;
             }
             var underlings_after = writer.Position;
             writer.Seek((int)underlings_before);
             writer.WriteUShort((ushort)underlings_count);
             writer.Seek((int)underlings_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             mainCreatureLightInfos = new Types.MonsterInGroupLightInformations();
@@ -56,17 +52,15 @@ namespace Stump.DofusProtocol.Types
             var underlings_ = new Types.MonsterInGroupInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 underlings_[i] = new Types.MonsterInGroupInformations();
-                 underlings_[i].Deserialize(reader);
+                underlings_[i] = new Types.MonsterInGroupInformations();
+                underlings_[i].Deserialize(reader);
             }
             underlings = underlings_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return mainCreatureLightInfos.GetSerializationSize() + sizeof(short) + underlings.Sum(x => x.GetSerializationSize());
         }
-        
     }
-    
 }

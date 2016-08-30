@@ -1,31 +1,31 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq.Expressions;
-using System.Linq;
-using System.ComponentModel;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Extensions;
 using Stump.ORM.SubSonic.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.Query
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class Setting
     {
@@ -105,9 +105,11 @@ namespace Stump.ORM.SubSonic.Query
         /// <summary>
         /// Initializes a new instance of the <see cref="Update&lt;T&gt;"/> class.
         /// </summary>
-        public Update(string tableName) : this(ProviderFactory.GetProvider().FindTable(tableName)) {}
+        public Update(string tableName) : this(ProviderFactory.GetProvider().FindTable(tableName)) { }
 
-        public Update(string tableName, IDataProvider provider) : this(provider.FindTable(tableName)) {}
+        public Update(string tableName, IDataProvider provider) : this(provider.FindTable(tableName))
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Update&lt;T&gt;"/> class.
@@ -124,8 +126,7 @@ namespace Stump.ORM.SubSonic.Query
             _query.FromTables.Add(dbTable);
         }
 
-        #endregion
-
+        #endregion .ctors
 
         internal readonly IDataProvider _provider;
         internal readonly SqlQuery _query;
@@ -175,29 +176,28 @@ namespace Stump.ORM.SubSonic.Query
         internal Setting CreateSetting(string columnName, DbType dbType, bool isExpression)
         {
             Setting s = new Setting
-                            {
-                                query = this,
-                                ColumnName = columnName,
-                                ParameterName = String.Format("{0}up_{1}", _provider.ParameterPrefix,columnName),
-                                IsExpression = isExpression,
-                                DataType = dbType
-                            };
+            {
+                query = this,
+                ColumnName = columnName,
+                ParameterName = String.Format("{0}up_{1}", _provider.ParameterPrefix, columnName),
+                IsExpression = isExpression,
+                DataType = dbType
+            };
             return s;
         }
 
         internal Setting CreateSetting(IColumn column, bool isExpression)
         {
             Setting s = new Setting
-                            {
-                                query = this,
-                                ColumnName = column.QualifiedName,
-                                ParameterName = (_provider.ParameterPrefix + "up_" + column.Name),
-                                IsExpression = isExpression,
-                                DataType = column.DataType
-                            };
+            {
+                query = this,
+                ColumnName = column.QualifiedName,
+                ParameterName = (_provider.ParameterPrefix + "up_" + column.Name),
+                IsExpression = isExpression,
+                DataType = column.DataType
+            };
             return s;
         }
-
 
         #region Execution
 
@@ -229,17 +229,17 @@ namespace Stump.ORM.SubSonic.Query
             QueryCommand cmd = new QueryCommand(BuildSqlStatement(), _provider);
 
             //add in the commands
-            foreach(Setting s in _query.SetStatements)
+            foreach (Setting s in _query.SetStatements)
             {
                 //Fix the data type!
                 var table = _query.FromTables.FirstOrDefault();
-                if(table != null)
+                if (table != null)
                 {
                     // EK: The line below is intentional. See: http://weblogs.asp.net/fbouma/archive/2009/06/25/linq-beware-of-the-access-to-modified-closure-demon.aspx
                     Setting setting = s;
 
                     var col = table.Columns.SingleOrDefault(x => x.Name.Equals(setting.ColumnName, StringComparison.InvariantCultureIgnoreCase));
-                    if(col != null)
+                    if (col != null)
                         s.DataType = col.DataType;
                 }
                 cmd.Parameters.Add(s.ParameterName, s.Value, s.DataType);
@@ -251,15 +251,14 @@ namespace Stump.ORM.SubSonic.Query
             return cmd;
         }
 
-        #endregion
-
+        #endregion Execution
 
         public Update Where<T>(Expression<Func<T, bool>> expression)
         {
             //ExpressionParser parser = new ExpressionParser();
             IList<Constraint> c = expression.ParseConstraints();
 
-            foreach(Constraint constrain in c)
+            foreach (Constraint constrain in c)
             {
                 IColumn column = _provider.FindTable(typeof(T).Name).GetColumnByPropertyName(constrain.ColumnName);
                 constrain.ColumnName = column.Name;
@@ -276,7 +275,7 @@ namespace Stump.ORM.SubSonic.Query
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class Update<T> : Update where T : new()
     {
@@ -284,8 +283,7 @@ namespace Stump.ORM.SubSonic.Query
         /// Initializes a new instance of the <see cref="Update&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="provider">The provider.</param>
-        public Update(IDataProvider provider) : base(provider.FindOrCreateTable<T>()) {}
-
+        public Update(IDataProvider provider) : base(provider.FindOrCreateTable<T>()) { }
 
         #region Special Constraint
 
@@ -294,8 +292,7 @@ namespace Stump.ORM.SubSonic.Query
             return (Update<T>)base.Where(expression);
         }
 
-        #endregion
-
+        #endregion Special Constraint
 
         #region SET
 
@@ -306,14 +303,14 @@ namespace Stump.ORM.SubSonic.Query
         /// <returns></returns>
         public Update<T> Set(params Expression<Func<T, bool>>[] columns)
         {
-            foreach(var column in columns)
+            foreach (var column in columns)
             {
                 LambdaExpression lamda = column;
                 Constraint c = lamda.ParseConstraint();
 
                 if (c.Comparison == Comparison.Is) c.Comparison = Comparison.Equals;
 
-                if(c.Comparison != Comparison.Equals)
+                if (c.Comparison != Comparison.Equals)
                     throw new InvalidOperationException("Can't use a non-equality here");
 
                 IColumn col = _provider.FindTable(typeof(T).Name).GetColumnByPropertyName(c.ColumnName);
@@ -324,6 +321,6 @@ namespace Stump.ORM.SubSonic.Query
             return this;
         }
 
-        #endregion
+        #endregion SET
     }
 }

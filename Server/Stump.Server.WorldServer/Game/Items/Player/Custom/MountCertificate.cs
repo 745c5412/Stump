@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
@@ -8,6 +6,8 @@ using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {

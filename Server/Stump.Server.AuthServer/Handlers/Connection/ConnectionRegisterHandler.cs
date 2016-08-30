@@ -1,14 +1,13 @@
-﻿using System.Text.RegularExpressions;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
+using System.Text.RegularExpressions;
 
 namespace Stump.Server.AuthServer.Handlers.Connection
 {
     public partial class ConnectionHandler
     {
-
         [AuthHandler(NicknameChoiceRequestMessage.Id)]
         public static void HandleNicknameChoiceRequestMessage(AuthClient client, NicknameChoiceRequestMessage message)
         {
@@ -17,28 +16,28 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             /* Check the Username */
             if (!CheckNickName(nickname))
             {
-                client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.INVALID_NICK));
+                client.Send(new NicknameRefusedMessage((sbyte)NicknameErrorEnum.INVALID_NICK));
                 return;
             }
 
             /* Same as Login */
             if (nickname == client.Account.Login)
             {
-                client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.SAME_AS_LOGIN));
+                client.Send(new NicknameRefusedMessage((sbyte)NicknameErrorEnum.SAME_AS_LOGIN));
                 return;
             }
 
             /* Look like Login */
             if (client.Account.Login.Contains(nickname))
             {
-                client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.TOO_SIMILAR_TO_LOGIN));
+                client.Send(new NicknameRefusedMessage((sbyte)NicknameErrorEnum.TOO_SIMILAR_TO_LOGIN));
                 return;
             }
 
             /* Already Used */
             if (AccountManager.Instance.NicknameExists(nickname))
             {
-                client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.ALREADY_USED));
+                client.Send(new NicknameRefusedMessage((sbyte)NicknameErrorEnum.ALREADY_USED));
                 return;
             }
 
@@ -55,6 +54,5 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         {
             return Regex.IsMatch(nickName, @"^[a-zA-Z\-]{3,29}$", RegexOptions.Compiled);
         }
-
     }
 }

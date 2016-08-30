@@ -1,11 +1,10 @@
-﻿
+﻿using NLog;
+using Stump.Core.Attributes;
+using Stump.Core.Threading;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
-using Stump.Core.Attributes;
-using Stump.Core.Threading;
 
 namespace Stump.Server.BaseServer
 {
@@ -33,9 +32,9 @@ namespace Stump.Server.BaseServer
         public static readonly ConsoleColor[] LogoColors =
         {
             ConsoleColor.DarkCyan,
-            ConsoleColor.DarkRed, 
-            ConsoleColor.DarkGray, 
-            ConsoleColor.DarkGreen, 
+            ConsoleColor.DarkRed,
+            ConsoleColor.DarkGray,
+            ConsoleColor.DarkGreen,
             ConsoleColor.DarkYellow,
             ConsoleColor.Green,
             ConsoleColor.Red,
@@ -82,8 +81,6 @@ namespace Stump.Server.BaseServer
             Console.ForegroundColor = color;
         }
 
-
-
         protected virtual void Process()
         {
         }
@@ -104,7 +101,7 @@ namespace Stump.Server.BaseServer
                     logger.Warn(request + Environment.NewLine + "[CANCEL IN " + delay + " SECONDS] (y/n)");
 
                     // Wait that user enter any characters
-                    if (ConditionWaiter.WaitFor(() => !EnteringCommand && Console.KeyAvailable, delay*1000, AskWaiterInterval))
+                    if (ConditionWaiter.WaitFor(() => !EnteringCommand && Console.KeyAvailable, delay * 1000, AskWaiterInterval))
                     {
                         // wait 'enter'
                         var response = Console.ReadLine().ToLower();

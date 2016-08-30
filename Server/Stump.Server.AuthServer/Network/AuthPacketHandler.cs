@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Handlers;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
+using System.Collections.Generic;
 
 namespace Stump.Server.AuthServer.Network
 {

@@ -9,7 +9,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_SubAP)]
-    public class APDebuff: SpellEffectHandler
+    public class APDebuff : SpellEffectHandler
     {
         public APDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
@@ -50,6 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
             return true;
         }
+
         private void NotifySpellReflected(FightActor source)
         {
             ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);

@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:51
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -23,8 +20,10 @@ namespace DBSynchroniser.Records
         public int posY;
         public Boolean outdoor;
         public int capabilities;
+
         [I18NField]
         public int nameId;
+
         public List<AmbientSound> sounds;
         public int subAreaId;
         public int worldMap;
@@ -34,7 +33,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -93,6 +91,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_soundsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -130,7 +129,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (MapPosition)obj;
-            
+
             Id = castedObj.id;
             PosX = castedObj.posX;
             PosY = castedObj.posY;
@@ -142,7 +141,7 @@ namespace DBSynchroniser.Records
             WorldMap = castedObj.worldMap;
             HasPriorityOnWorldmap = castedObj.hasPriorityOnWorldmap;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (MapPosition)parent : new MapPosition();
@@ -158,11 +157,10 @@ namespace DBSynchroniser.Records
             obj.hasPriorityOnWorldmap = HasPriorityOnWorldmap;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_soundsBin = sounds == null ? null : sounds.ToBinary();
-        
         }
     }
 }

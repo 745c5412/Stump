@@ -8,6 +8,7 @@ namespace Stump.Server.WorldServer.Database.Characters
     public class CharacterSpellRelator
     {
         public static string FetchQuery = "SELECT * FROM characters_spells";
+
         /// <summary>
         /// Use string.Format
         /// </summary>
@@ -52,11 +53,11 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        #endregion
+        #endregion ISpellRecord Members
 
         public override string ToString()
         {
-            return (SpellIdEnum) SpellId + " (" + SpellId + ")";
+            return (SpellIdEnum)SpellId + " (" + SpellId + ")";
         }
     }
 }

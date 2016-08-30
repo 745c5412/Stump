@@ -1,7 +1,7 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Actors.Stats
 {
@@ -22,6 +22,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Name = name;
             Owner = owner;
         }
+
         public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, int? limit, bool limitEquippedOnly = false)
         {
             ValueBase = valueBase;
@@ -157,34 +158,32 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public static int operator *(int i1, StatsData s1)
         {
-            return i1*s1.Total;
+            return i1 * s1.Total;
         }
 
         public static int operator *(StatsData s1, StatsData s2)
         {
-            return s1.Total*s2.Total;
+            return s1.Total * s2.Total;
         }
 
         public static double operator /(StatsData s1, double d1)
         {
-            return s1.Total/d1;
+            return s1.Total / d1;
         }
 
         public static double operator /(StatsData s1, StatsData s2)
         {
-            return s1.Total/(double) s2.Total;
+            return s1.Total / (double)s2.Total;
         }
 
         public static implicit operator CharacterBaseCharacteristic(StatsData s1)
         {
             return new CharacterBaseCharacteristic(
-                (short)( s1.Base > short.MaxValue ? short.MaxValue : s1.Base ),
-                (short)( s1.m_limitEquippedOnly && s1.Limit != null && s1.Equiped > s1.Limit.Value ? s1.Limit.Value : s1.Equiped ),
-                (short)( s1.Given > short.MaxValue ? short.MaxValue : s1.Given ),
-                (short)( s1.Context > short.MaxValue ? short.MaxValue : s1.Context ));
+                (short)(s1.Base > short.MaxValue ? short.MaxValue : s1.Base),
+                (short)(s1.m_limitEquippedOnly && s1.Limit != null && s1.Equiped > s1.Limit.Value ? s1.Limit.Value : s1.Equiped),
+                (short)(s1.Given > short.MaxValue ? short.MaxValue : s1.Given),
+                (short)(s1.Context > short.MaxValue ? short.MaxValue : s1.Context));
         }
-
-        
 
         public override string ToString()
         {

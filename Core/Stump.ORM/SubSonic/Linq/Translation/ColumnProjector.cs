@@ -2,13 +2,12 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -17,8 +16,8 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public sealed class ProjectedColumns
     {
-        Expression projector;
-        ReadOnlyCollection<ColumnDeclaration> columns;
+        private Expression projector;
+        private ReadOnlyCollection<ColumnDeclaration> columns;
 
         public ProjectedColumns(Expression projector, ReadOnlyCollection<ColumnDeclaration> columns)
         {
@@ -44,13 +43,13 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class ColumnProjector : DbExpressionVisitor
     {
-        Dictionary<ColumnExpression, ColumnExpression> map;
-        List<ColumnDeclaration> columns;
-        HashSet<string> columnNames;
-        HashSet<Expression> candidates;
-        HashSet<TableAlias> existingAliases;
-        TableAlias newAlias;
-        int iColumn;
+        private Dictionary<ColumnExpression, ColumnExpression> map;
+        private List<ColumnDeclaration> columns;
+        private HashSet<string> columnNames;
+        private HashSet<Expression> candidates;
+        private HashSet<TableAlias> existingAliases;
+        private TableAlias newAlias;
+        private int iColumn;
 
         private ColumnProjector(Func<Expression, bool> fnCanBeColumn, Expression expression, IEnumerable<ColumnDeclaration> existingColumns, TableAlias newAlias, IEnumerable<TableAlias> existingAliases)
         {
@@ -104,7 +103,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
                             return new ColumnExpression(column.Type, this.newAlias, existingColumn.Name);
                         }
                     }
-                    if (this.existingAliases.Contains(column.Alias)) 
+                    if (this.existingAliases.Contains(column.Alias))
                     {
                         int ordinal = this.columns.Count;
                         string columnName = this.GetUniqueColumnName(column.Name);
@@ -152,14 +151,14 @@ namespace Stump.ORM.SubSonic.Linq.Translation
         }
 
         /// <summary>
-        /// Nominator is a class that walks an expression tree bottom up, determining the set of 
+        /// Nominator is a class that walks an expression tree bottom up, determining the set of
         /// candidate expressions that are possible columns of a select expression
         /// </summary>
-        class Nominator : DbExpressionVisitor
+        private class Nominator : DbExpressionVisitor
         {
-            Func<Expression, bool> fnCanBeColumn;
-            bool isBlocked;
-            HashSet<Expression> candidates;
+            private Func<Expression, bool> fnCanBeColumn;
+            private bool isBlocked;
+            private HashSet<Expression> candidates;
 
             private Nominator(Func<Expression, bool> fnCanBeColumn)
             {

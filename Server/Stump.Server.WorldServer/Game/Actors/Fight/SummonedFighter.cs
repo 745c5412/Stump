@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Stump.Server.WorldServer.Database.World;
+﻿using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using System.Collections.Generic;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -36,7 +36,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get;
             protected set;
         }
-
 
         public override int GetTackledAP()
         {

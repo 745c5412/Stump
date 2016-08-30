@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:46
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -19,14 +16,19 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "Breeds";
         public int id;
+
         [I18NField]
         public uint shortNameId;
+
         [I18NField]
         public uint longNameId;
+
         [I18NField]
         public uint descriptionId;
+
         [I18NField]
         public uint gameplayDescriptionId;
+
         public String maleLook;
         public String femaleLook;
         public uint creatureBonesId;
@@ -46,7 +48,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -138,6 +139,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForStrengthBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -164,6 +166,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForIntelligenceBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -190,6 +193,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForChanceBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -216,6 +220,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForAgilityBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -242,6 +247,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForVitalityBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -268,6 +274,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForWisdomBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -294,6 +301,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_breedSpellsIdBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -320,6 +328,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_maleColorsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -346,6 +355,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_femaleColorsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -362,7 +372,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Breed)obj;
-            
+
             Id = castedObj.id;
             ShortNameId = castedObj.shortNameId;
             LongNameId = castedObj.longNameId;
@@ -383,7 +393,7 @@ namespace DBSynchroniser.Records
             MaleColors = castedObj.maleColors;
             FemaleColors = castedObj.femaleColors;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Breed)parent : new Breed();
@@ -408,7 +418,7 @@ namespace DBSynchroniser.Records
             obj.femaleColors = FemaleColors;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_statsPointsForStrengthBin = statsPointsForStrength == null ? null : statsPointsForStrength.ToBinary();
@@ -420,7 +430,6 @@ namespace DBSynchroniser.Records
             m_breedSpellsIdBin = breedSpellsId == null ? null : breedSpellsId.ToBinary();
             m_maleColorsBin = maleColors == null ? null : maleColors.ToBinary();
             m_femaleColorsBin = femaleColors == null ? null : femaleColors.ToBinary();
-        
         }
     }
 }

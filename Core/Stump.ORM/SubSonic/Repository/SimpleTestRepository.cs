@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Stump.ORM.SubSonic.Extensions;
+using Stump.ORM.SubSonic.Schema;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Stump.ORM.SubSonic.Extensions;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.Repository
 {
@@ -107,7 +107,7 @@ namespace Stump.ORM.SubSonic.Repository
 
             public DataStorage()
             {
-                _itemStorages = new Dictionary<Type,ItemStorage>();
+                _itemStorages = new Dictionary<Type, ItemStorage>();
             }
 
             public ItemStorage<T> FindOrCreateTable<T>()
@@ -125,7 +125,6 @@ namespace Stump.ORM.SubSonic.Repository
 
         private class ItemStorage
         {
-
         }
 
         private class ItemStorage<T> : ItemStorage
@@ -203,7 +202,7 @@ namespace Stump.ORM.SubSonic.Repository
                 var i = 0;
                 foreach (var item in items)
                 {
-                    i+=Delete(_primaryKeyProperty.GetValue(item, null));
+                    i += Delete(_primaryKeyProperty.GetValue(item, null));
                 }
 
                 return i;
@@ -249,10 +248,10 @@ namespace Stump.ORM.SubSonic.Repository
                 var sortColumnName = sortBy.FastReplace(" desc", "");
                 var sortColumnProperty = typeof(T).GetProperty(sortColumnName);
 
-                Func<T, object> keySelector = x => {
+                Func<T, object> keySelector = x =>
+                {
                     return sortColumnProperty.GetValue(x, null);
                 };
-
 
                 if (sortBy.EndsWith(" desc", StringComparison.InvariantCultureIgnoreCase))
                 {

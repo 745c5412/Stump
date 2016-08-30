@@ -70,7 +70,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                 }
             }
 
-
             return true;
         }
     }

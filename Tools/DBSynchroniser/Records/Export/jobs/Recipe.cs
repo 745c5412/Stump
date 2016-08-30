@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:49
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -27,7 +24,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)resultId; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("ResultId", false)]
@@ -57,6 +53,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_ingredientIdsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -83,6 +80,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_quantitiesBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -99,13 +97,13 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Recipe)obj;
-            
+
             ResultId = castedObj.resultId;
             ResultLevel = castedObj.resultLevel;
             IngredientIds = castedObj.ingredientIds;
             Quantities = castedObj.quantities;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Recipe)parent : new Recipe();
@@ -115,12 +113,11 @@ namespace DBSynchroniser.Records
             obj.quantities = Quantities;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_ingredientIdsBin = ingredientIds == null ? null : ingredientIds.ToBinary();
             m_quantitiesBin = quantities == null ? null : quantities.ToBinary();
-        
         }
     }
 }

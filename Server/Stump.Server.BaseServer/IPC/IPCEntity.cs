@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using NLog;
+﻿using NLog;
 using Stump.Core.Timers;
 using Stump.Server.BaseServer.IPC.Messages;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Server.BaseServer.IPC
 {
@@ -18,8 +18,8 @@ namespace Stump.Server.BaseServer.IPC
 
         public delegate void IPCMessageHandler(IPCMessage message);
 
-
         private readonly Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
+
         protected abstract int RequestTimeout
         {
             get;
@@ -35,6 +35,7 @@ namespace Stump.Server.BaseServer.IPC
         protected abstract TimedTimerEntry RegisterTimer(Action action, int timeout);
 
         protected abstract void ProcessRequest(IPCMessage request);
+
         protected abstract void ProcessAnswer(IIPCRequest request, IPCMessage answer);
 
         protected virtual void ProcessMessage(IPCMessage message)
@@ -63,22 +64,22 @@ namespace Stump.Server.BaseServer.IPC
             Send(message);
         }
 
-         public void SendRequest<T>(IPCMessage message, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback, RequestCallbackDefaultDelegate defaultCallback,
-            int timeout) where T : IPCMessage
+        public void SendRequest<T>(IPCMessage message, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback, RequestCallbackDefaultDelegate defaultCallback,
+           int timeout) where T : IPCMessage
         {
             var guid = Guid.NewGuid();
             message.RequestGuid = guid;
 
             IPCRequest<T> request = null;
-             if (timeout > 0)
-             {
-                 var timer = RegisterTimer(delegate { RequestTimedOut(request); }, timeout);
-                 request = new IPCRequest<T>(message, guid, callback, errorCallback, defaultCallback, timer);
-             }
-             else
-                 request = new IPCRequest<T>(message, guid, callback, errorCallback, defaultCallback, null);
+            if (timeout > 0)
+            {
+                var timer = RegisterTimer(delegate { RequestTimedOut(request); }, timeout);
+                request = new IPCRequest<T>(message, guid, callback, errorCallback, defaultCallback, timer);
+            }
+            else
+                request = new IPCRequest<T>(message, guid, callback, errorCallback, defaultCallback, null);
 
-             lock (m_requests)
+            lock (m_requests)
                 m_requests.Add(guid, request);
 
             Send(message);
@@ -96,7 +97,7 @@ namespace Stump.Server.BaseServer.IPC
             SendRequest(message, callback, errorCallback, defaultCallback, RequestTimeout * 1000);
         }
 
-        public void SendRequest<T>(IPCMessage message, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback) 
+        public void SendRequest<T>(IPCMessage message, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback)
             where T : IPCMessage
         {
             SendRequest(message, callback, errorCallback, RequestTimeout * 1000);
@@ -136,7 +137,7 @@ namespace Stump.Server.BaseServer.IPC
                 return null;
 
             IIPCRequest request;
-            lock(m_requests)
+            lock (m_requests)
                 m_requests.TryGetValue(guid, out request);
             return request;
         }
@@ -158,6 +159,5 @@ namespace Stump.Server.BaseServer.IPC
         {
             logger.Error("Unexpected message {0}. Request {1}", message.GetType(), TryGetRequest(message.RequestGuid).RequestMessage.GetType());
         }
-
     }
 }

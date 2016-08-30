@@ -1,9 +1,9 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         private ObjectPosition m_position;
 
         public SkillTeleport(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
-            : base (id, record, interactiveObject)
+            : base(id, record, interactiveObject)
         {
         }
 

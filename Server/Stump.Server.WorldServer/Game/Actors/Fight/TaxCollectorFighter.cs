@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Extensions;
+﻿using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
@@ -11,6 +9,8 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -24,20 +24,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Id = Fight.GetNextContextualId();
             TaxCollectorNpc = taxCollector;
             Look = TaxCollectorNpc.Look.Clone();
-            Items = TaxCollectorNpc.Bag.SelectMany(x => Enumerable.Repeat(x.Template.Id, (int) x.Stack))
+            Items = TaxCollectorNpc.Bag.SelectMany(x => Enumerable.Repeat(x.Template.Id, (int)x.Stack))
                             .Shuffle()
                             .ToList();
             Kamas = TaxCollectorNpc.GatheredKamas;
 
             m_stats = new StatsFields(this);
             m_stats.Initialize(TaxCollectorNpc);
-            
+
             Cell cell;
             if (!Fight.FindRandomFreeCell(this, out cell, false))
                 return;
 
             Position = new ObjectPosition(TaxCollectorNpc.Map, cell, TaxCollectorNpc.Direction);
-
         }
 
         public TaxCollectorNpc TaxCollectorNpc

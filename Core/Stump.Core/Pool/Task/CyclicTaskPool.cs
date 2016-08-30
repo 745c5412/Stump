@@ -1,9 +1,9 @@
+using Stump.Core.Attributes;
+using Stump.Core.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Stump.Core.Attributes;
-using Stump.Core.Reflection;
 
 namespace Stump.Core.Pool.Task
 {
@@ -20,7 +20,7 @@ namespace Stump.Core.Pool.Task
                 {
                     foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
                     {
-                        var attribute = method.GetCustomAttributes(typeof (Cyclic), false).SingleOrDefault() as Cyclic;
+                        var attribute = method.GetCustomAttributes(typeof(Cyclic), false).SingleOrDefault() as Cyclic;
                         if (attribute != null)
                         {
                             RegisterCyclicTask(Delegate.CreateDelegate(method.GetActionType(), method) as Action, attribute.Time);

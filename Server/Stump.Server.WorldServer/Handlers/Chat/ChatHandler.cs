@@ -1,17 +1,17 @@
-using System;
-using System.Collections.Generic;
+using MongoDB.Bson;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Social;
-using MongoDB.Bson;
-using Stump.Server.BaseServer.Logging;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Stump.Server.WorldServer.Handlers.Chat
@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND);
             }
         }
-    
+
         [WorldHandler(ChatClientPrivateWithObjectMessage.Id)]
         public static void HandleChatClientPrivateWithObjectMessage(WorldClient client, ChatClientPrivateWithObjectMessage message)
         {
@@ -178,7 +178,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             ChatManager.Instance.HandleChat(client, (ChatActivableChannelsEnum)message.channel, message.content, message.objects);
         }
 
-        public static  void SendChatServerWithObjectMessage(IPacketReceiver client, INamedActor sender, ChatActivableChannelsEnum channel, string content, string fingerprint, IEnumerable<ObjectItem> objectItems)
+        public static void SendChatServerWithObjectMessage(IPacketReceiver client, INamedActor sender, ChatActivableChannelsEnum channel, string content, string fingerprint, IEnumerable<ObjectItem> objectItems)
         {
             client.Send(new ChatServerWithObjectMessage((sbyte)channel, content, DateTime.UtcNow.GetUnixTimeStamp(), fingerprint, sender.Id, sender.Name, 0, objectItems));
         }
@@ -276,7 +276,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                        accountId));
             }
         }
-        
+
         public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel,
                                                      string message)
         {

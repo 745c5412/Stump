@@ -18,7 +18,7 @@ namespace Stump.Server.BaseServer.Database.Patchs
         private void Parse()
         {
             Match match;
-            if (!( match = Regex.Match(FileName, "([0-9]+)_to_([0-9]+)") ).Success)
+            if (!(match = Regex.Match(FileName, "([0-9]+)_to_([0-9]+)")).Success)
                 throw new Exception(string.Format("Cannot parse file {0}, right syntax is : A_to_B.sql", FileName));
 
             ForRevision = uint.Parse(match.Groups[1].Value);
@@ -47,7 +47,7 @@ namespace Stump.Server.BaseServer.Database.Patchs
         {
             get;
             private set;
-        }   
+        }
 
         public static IEnumerable<PatchFile> GeneratePatchSequenceExecution(IEnumerable<PatchFile> files, uint forRevision, uint toRevision)
         {

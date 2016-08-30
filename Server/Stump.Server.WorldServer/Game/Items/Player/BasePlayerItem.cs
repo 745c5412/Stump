@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -10,6 +7,9 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -23,8 +23,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             private set;
         }
 
-
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -36,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Owner = owner;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Functions
 
@@ -97,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>True whenever the item can be added</returns>
         public virtual bool OnAddItem()
@@ -106,7 +105,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>True whenever the item can be removed</returns>
         public virtual bool OnRemoveItem()
@@ -115,7 +114,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="character"></param>
         /// <param name="item"></param>
@@ -184,8 +183,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         protected virtual ObjectItem BuildObjectItem()
         {
             return new ObjectItem(
-                (byte) Position,
-                (short) Template.Id,
+                (byte)Position,
+                (short)Template.Id,
                 0, // todo : power rate
                 false, // todo : over max
                 Effects.Where(entry => !entry.Hidden).Select(entry => entry.GetObjectEffect()),
@@ -206,9 +205,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             m_objectItemValidator.Invalidate();
         }
 
-        #endregion
+        #endregion ObjectItem
 
-        #endregion
+        #endregion Functions
 
         #region Properties
 
@@ -272,9 +271,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public virtual int Weight
         {
-            get { return (int) (Template.RealWeight*Stack); }
+            get { return (int)(Template.RealWeight * Stack); }
         }
 
-        #endregion
+        #endregion Properties
     }
 }

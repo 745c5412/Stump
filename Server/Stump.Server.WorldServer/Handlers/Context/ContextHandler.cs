@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -10,6 +8,8 @@ using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -17,7 +17,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
     {
         private ContextHandler()
         {
-            
         }
 
         [WorldHandler(GameContextCreateRequestMessage.Id)]
@@ -38,7 +37,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (client.Character.IsInFight())
                 return;
 
-            client.Character.Direction = (DirectionsEnum) message.direction;
+            client.Character.Direction = (DirectionsEnum)message.direction;
             SendGameMapChangeOrientationMessage(client.Character.CharacterContainer.Clients, client.Character);
         }
 
@@ -97,7 +96,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameMapChangeOrientationMessage(IPacketReceiver client, ContextActor actor)
         {
             client.Send(new GameMapChangeOrientationMessage(new ActorOrientation(actor.Id,
-                                                                         (sbyte) actor.Position.Direction)));
+                                                                         (sbyte)actor.Position.Direction)));
         }
 
         public static void SendGameContextRemoveElementMessage(IPacketReceiver client, ContextActor actor)

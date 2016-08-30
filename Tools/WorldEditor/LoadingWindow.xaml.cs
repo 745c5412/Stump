@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Stump.Core.I18N;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Stump.Core.I18N;
 using WorldEditor.Config;
 using WorldEditor.Database;
 using WorldEditor.Loaders.Data;
@@ -29,11 +29,11 @@ namespace WorldEditor
         }
 
         public static readonly DependencyProperty StatusTextProperty =
-            DependencyProperty.Register("StatusText", typeof (string), typeof (LoadingWindow), new PropertyMetadata(default(string)));
+            DependencyProperty.Register("StatusText", typeof(string), typeof(LoadingWindow), new PropertyMetadata(default(string)));
 
         public string StatusText
         {
-            get { return (string) GetValue(StatusTextProperty); }
+            get { return (string)GetValue(StatusTextProperty); }
             set { SetValue(StatusTextProperty, value); }
         }
 
@@ -42,12 +42,11 @@ namespace WorldEditor
             SetStatus(string.Format("Load {0}...", Settings.ConfigPath));
             Settings.LoadSettings();
 
-
             if (Settings.IsFirstLaunch)
                 ShowConfigDialog();
 
             OpenDB();
-            
+
             InitializeLoader(() => I18NDataManager.Instance.Initialize(),
                              "Loading d2i files ...");
             InitializeLoader(() => IconsManager.Instance.Initialize(Settings.LoaderSettings.ItemIconsFile),
@@ -75,7 +74,6 @@ namespace WorldEditor
         {
             Dispatcher.Invoke(Close);
         }
-    
 
         private void OpenDB()
         {

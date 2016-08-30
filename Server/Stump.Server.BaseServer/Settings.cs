@@ -1,5 +1,4 @@
-﻿
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Core.I18N;
 
 namespace Stump.Server.BaseServer

@@ -1,6 +1,6 @@
-﻿using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
+﻿using Stump.ORM.SubSonic.Linq.Structure;
 using Stump.ORM.SubSonic.Linq.Translation;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.DataProviders.SQLite
 {
@@ -15,7 +15,6 @@ namespace Stump.ORM.SubSonic.DataProviders.SQLite
         {
             ClientName = "System.Data.SQLite";
         }
-
 
         public override string Quote(string name)
         {
@@ -52,7 +51,6 @@ namespace Stump.ORM.SubSonic.DataProviders.SQLite
                 //reset the Take since we need both on the Select
                 //for the formatter to work
                 outer.Take = inner.Take;
-
 
                 expression = new ProjectionExpression(outer, projection.Projector);
             }

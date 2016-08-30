@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.BaseServer.Commands
 {
@@ -61,7 +61,7 @@ namespace Stump.Server.BaseServer.Commands
                 return "";
 
             return string.Join(" ", from entry in Parameters
-                select entry.GetUsage());
+                                    select entry.GetUsage());
         }
 
         public virtual string[] GetFullAliases()

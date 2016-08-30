@@ -1,26 +1,28 @@
 ﻿#region License GNU GPL
+
 // TitleCommands.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
+#endregion License GNU GPL
+
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.Tinsel;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -28,12 +30,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public AddRemoveTitleCommand()
         {
-            Aliases = new[] {"title"};
+            Aliases = new[] { "title" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Add or remove a title on the target";
             AddParameter("target", "t", "Target", converter: ParametersConverter.CharacterConverter);
             AddParameter<short>("id", "id", "Id of the title", isOptional: true);
-            AddParameter<bool>("all", "a", "Add/remove all titles", isOptional:true);
+            AddParameter<bool>("all", "a", "Add/remove all titles", isOptional: true);
         }
 
         public Character GetTarget(TriggerBase trigger)
@@ -42,7 +44,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             if (trigger.IsArgumentDefined("target"))
                 target = trigger.Get<Character>("target");
             else if (trigger is GameTrigger)
-                target = ( trigger as GameTrigger ).Character;
+                target = (trigger as GameTrigger).Character;
 
             if (target == null)
                 throw new Exception("Target is not defined");
@@ -137,7 +139,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             if (trigger.IsArgumentDefined("target"))
                 target = trigger.Get<Character>("target");
             else if (trigger is GameTrigger)
-                target = ( trigger as GameTrigger ).Character;
+                target = (trigger as GameTrigger).Character;
 
             if (target == null)
                 throw new Exception("Target is not defined");

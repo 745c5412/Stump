@@ -1,8 +1,8 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
                 var displayedEffects = GetBuffDisplayedEffect(Effect.EffectId);
 
-                AddStatBuff(actor, (short) (-(integerEffect.Value)), GetEffectCaracteristic(Effect.EffectId), true, (short)displayedEffects[1]);
+                AddStatBuff(actor, (short)(-(integerEffect.Value)), GetEffectCaracteristic(Effect.EffectId), true, (short)displayedEffects[1]);
                 AddStatBuff(Caster, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true, (short)displayedEffects[0]);
             }
 
@@ -45,18 +45,25 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             {
                 case EffectsEnum.Effect_StealChance:
                     return PlayerFields.Chance;
+
                 case EffectsEnum.Effect_StealVitality:
                     return PlayerFields.Vitality;
+
                 case EffectsEnum.Effect_StealWisdom:
                     return PlayerFields.Wisdom;
+
                 case EffectsEnum.Effect_StealIntelligence:
                     return PlayerFields.Intelligence;
+
                 case EffectsEnum.Effect_StealAgility:
                     return PlayerFields.Agility;
+
                 case EffectsEnum.Effect_StealStrength:
                     return PlayerFields.Strength;
+
                 case EffectsEnum.Effect_StealRange:
                     return PlayerFields.Range;
+
                 default:
                     throw new Exception("No associated caracteristic to effect '" + effect + "'");
             }
@@ -68,18 +75,25 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             {
                 case EffectsEnum.Effect_StealChance:
                     return new[] { EffectsEnum.Effect_AddChance, EffectsEnum.Effect_SubChance };
+
                 case EffectsEnum.Effect_StealVitality:
                     return new[] { EffectsEnum.Effect_AddVitality, EffectsEnum.Effect_SubVitality };
+
                 case EffectsEnum.Effect_StealWisdom:
                     return new[] { EffectsEnum.Effect_AddWisdom, EffectsEnum.Effect_SubWisdom };
+
                 case EffectsEnum.Effect_StealIntelligence:
                     return new[] { EffectsEnum.Effect_AddIntelligence, EffectsEnum.Effect_SubIntelligence };
+
                 case EffectsEnum.Effect_StealAgility:
                     return new[] { EffectsEnum.Effect_AddAgility, EffectsEnum.Effect_SubAgility };
+
                 case EffectsEnum.Effect_StealStrength:
                     return new[] { EffectsEnum.Effect_AddStrength, EffectsEnum.Effect_SubStrength };
+
                 case EffectsEnum.Effect_StealRange:
                     return new[] { EffectsEnum.Effect_AddRange, EffectsEnum.Effect_SubRange };
+
                 default:
                     throw new Exception("No associated caracteristic to effect '" + effect + "'");
             }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
@@ -18,6 +13,7 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Breeds;
+using System.Collections.Generic;
 
 namespace FakeClients
 {
@@ -25,9 +21,10 @@ namespace FakeClients
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        [Variable(true)] 
+        [Variable(true)]
         public static string AccountName = "FakeClient";
-        [Variable(true)] 
+
+        [Variable(true)]
         public static string AccountPassword = "FakePassword";
 
         [Variable(true)]
@@ -75,18 +72,18 @@ namespace FakeClients
                 WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
                 {
                     IPCAccessor.Instance.SendRequest<AccountsAnswerMessage>(
-                        new AccountsRequestMessage() {LoginLike = AccountName + "%"}, x =>
-                        {
-                            if (x.Accounts != null)
-                            {
-                                foreach (var account in x.Accounts)
-                                {
-                                    int id;
-                                    if (int.TryParse(account.Login.Remove(0, AccountName.Length), out id))
-                                        m_fakeAccountsId.Add(id);
-                                }
-                            }
-                        });
+                        new AccountsRequestMessage() { LoginLike = AccountName + "%" }, x =>
+                          {
+                              if (x.Accounts != null)
+                              {
+                                  foreach (var account in x.Accounts)
+                                  {
+                                      int id;
+                                      if (int.TryParse(account.Login.Remove(0, AccountName.Length), out id))
+                                          m_fakeAccountsId.Add(id);
+                                  }
+                              }
+                          });
 
                     var usergroup = AccountManager.Instance.GetGroupOrDefault(FakeUserGroup);
 
@@ -98,7 +95,7 @@ namespace FakeClients
                             Name = "FakeClient",
                             IsGameMaster = true,
                             Role = RoleEnum.Moderator,
-                            Servers = new[] {WorldServer.ServerInformation.Id},
+                            Servers = new[] { WorldServer.ServerInformation.Id },
                             Commands = new string[0]
                         };
 
@@ -113,9 +110,8 @@ namespace FakeClients
             };
         }
 
-
         public FakeClient AddAndConnectClient()
-            {
+        {
             var client = new FakeClient(m_idProvider.Pop());
             m_clients.Add(client);
 
@@ -153,9 +149,9 @@ namespace FakeClients
                 client.Disconnected += OnClientDisconnected;
             }
 
-
             return client;
         }
+
         public IEnumerable<FakeClient> AddAndConnectClients(int count)
         {
             for (int i = 0; i < count; i++)
@@ -169,7 +165,5 @@ namespace FakeClients
             if (!obj.ConnectingToWorld)
                 m_clients.Remove(obj);
         }
-
-
     }
 }

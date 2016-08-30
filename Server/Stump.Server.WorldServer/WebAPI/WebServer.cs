@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.WebAPI
         {
             try
             {
-                // Start OWIN host 
+                // Start OWIN host
                 WebApp.Start<Startup>(url: $"http://{WorldServer.Host}:{WebAPIPort}/");
             }
             catch (Exception ex)

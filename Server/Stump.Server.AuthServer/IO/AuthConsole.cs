@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Server.AuthServer.Commands.Trigger;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Commands;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Server.AuthServer.IO
 {
@@ -73,6 +73,7 @@ namespace Stump.Server.AuthServer.IO
         }
 
         private readonly List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
+
         public List<KeyValuePair<string, Exception>> CommandsErrors
         {
             get

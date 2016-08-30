@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Stump.Core.IO;
+﻿using Stump.Core.IO;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Core.IO
 {
@@ -22,6 +22,7 @@ namespace Stump.Server.WorldServer.Core.IO
         }
 
         private readonly List<string> m_commands = new List<string>();
+
         public List<string> Commands
         {
             get
@@ -31,6 +32,7 @@ namespace Stump.Server.WorldServer.Core.IO
         }
 
         private readonly List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
+
         public List<KeyValuePair<string, Exception>> CommandsErrors
         {
             get

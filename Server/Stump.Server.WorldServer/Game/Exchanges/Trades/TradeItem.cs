@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using System.Linq;
 using Item = Stump.Server.WorldServer.Game.Items.Item;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Trades

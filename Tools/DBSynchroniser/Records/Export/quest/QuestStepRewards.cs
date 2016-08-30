@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:50
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -31,7 +28,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -75,6 +71,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_itemsRewardBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -101,6 +98,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_emotesRewardBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -127,6 +125,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_jobsRewardBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -153,6 +152,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_spellsRewardBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -169,7 +169,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (QuestStepRewards)obj;
-            
+
             Id = castedObj.id;
             StepId = castedObj.stepId;
             LevelMin = castedObj.levelMin;
@@ -179,7 +179,7 @@ namespace DBSynchroniser.Records
             JobsReward = castedObj.jobsReward;
             SpellsReward = castedObj.spellsReward;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (QuestStepRewards)parent : new QuestStepRewards();
@@ -193,14 +193,13 @@ namespace DBSynchroniser.Records
             obj.spellsReward = SpellsReward;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_itemsRewardBin = itemsReward == null ? null : itemsReward.ToBinary();
             m_emotesRewardBin = emotesReward == null ? null : emotesReward.ToBinary();
             m_jobsRewardBin = jobsReward == null ? null : jobsReward.ToBinary();
             m_spellsRewardBin = spellsReward == null ? null : spellsReward.ToBinary();
-        
         }
     }
 }

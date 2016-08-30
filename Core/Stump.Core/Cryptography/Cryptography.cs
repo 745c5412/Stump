@@ -70,7 +70,7 @@ namespace Stump.Core.Cryptography
             return comparer.Compare(hashOfInput, hash) == 0;
         }
 
-        #endregion
+        #endregion MD5
 
         #region RSA
 
@@ -84,7 +84,6 @@ namespace Stump.Core.Cryptography
 
             var encryptedValue = Convert.ToBase64String(bytesEncrypted);
 
-
             return encryptedValue;
         }
 
@@ -97,6 +96,7 @@ namespace Stump.Core.Cryptography
 
             return decryptedValue;
         }
-        #endregion
+
+        #endregion RSA
     }
 }

@@ -62,5 +62,4 @@ namespace Stump.Server.BaseServer.Database.Interfaces
             set;
         }
     }
-
 }

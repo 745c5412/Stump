@@ -1,12 +1,10 @@
-using System;
+using DofusProtocolBuilder.Parsing;
+using DofusProtocolBuilder.Parsing.Elements;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
-using DofusProtocolBuilder.Parsing;
-using DofusProtocolBuilder.Parsing.Elements;
-using DofusProtocolBuilder.Profiles;
 
 namespace DofusProtocolBuilder.XmlPatterns
 {
@@ -34,9 +32,9 @@ namespace DofusProtocolBuilder.XmlPatterns
             for (int i = 0; i < deserializeAsMethod.Statements.Count; i++)
             {
                 if (deserializeAsMethod.Statements[i] is AssignationStatement &&
-                    ( (AssignationStatement)deserializeAsMethod.Statements[i] ).Value.Contains("Read"))
+                    ((AssignationStatement)deserializeAsMethod.Statements[i]).Value.Contains("Read"))
                 {
-                    var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
+                    var statement = ((AssignationStatement)deserializeAsMethod.Statements[i]);
                     type = Regex.Match(statement.Value, @"Read([\w\d_]+)\(").Groups[1].Value.ToLower();
                     var name = statement.Name;
 
@@ -49,9 +47,9 @@ namespace DofusProtocolBuilder.XmlPatterns
                         IEnumerable<string> limitLinq = from entry in Parser.Constructors[0].Statements
                                                         where
                                                             entry is AssignationStatement &&
-                                                            ( (AssignationStatement)entry ).Name == arrayMatch.Groups[1].Value
+                                                            ((AssignationStatement)entry).Name == arrayMatch.Groups[1].Value
                                                         let entryMatch =
-                                                            Regex.Match(( (AssignationStatement)entry ).Value,
+                                                            Regex.Match(((AssignationStatement)entry).Value,
                                                                         @"new List<[\d\w\._]+>\(([\d]+)\)")
                                                         where entryMatch.Success
                                                         select entryMatch.Groups[1].Value;
@@ -61,7 +59,6 @@ namespace DofusProtocolBuilder.XmlPatterns
 
                         type += "[]";
                         name = name.Split('[')[0];
-                        
                     }
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == name);
 
@@ -71,8 +68,8 @@ namespace DofusProtocolBuilder.XmlPatterns
 
                         if (i + 1 < deserializeAsMethod.Statements.Count &&
                             deserializeAsMethod.Statements[i + 1] is ControlStatement &&
-                            ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).ControlType == ControlType.If)
-                            condition = ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).Condition;
+                            ((ControlStatement)deserializeAsMethod.Statements[i + 1]).ControlType == ControlType.If)
+                            condition = ((ControlStatement)deserializeAsMethod.Statements[i + 1]).Condition;
 
                         xmlFields.Add(new XmlField
                         {
@@ -88,9 +85,9 @@ namespace DofusProtocolBuilder.XmlPatterns
                 }
 
                 if (deserializeAsMethod.Statements[i] is InvokeExpression &&
-                    ( (InvokeExpression)deserializeAsMethod.Statements[i] ).Name == "deserialize")
+                    ((InvokeExpression)deserializeAsMethod.Statements[i]).Name == "deserialize")
                 {
-                    var statement = ( (InvokeExpression)deserializeAsMethod.Statements[i] );
+                    var statement = ((InvokeExpression)deserializeAsMethod.Statements[i]);
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Target);
 
                     if (field != null && xmlFields.Count(entry => entry.Name == field.Name) <= 0)
@@ -101,8 +98,8 @@ namespace DofusProtocolBuilder.XmlPatterns
 
                         if (i + 1 < deserializeAsMethod.Statements.Count &&
                             deserializeAsMethod.Statements[i + 1] is ControlStatement &&
-                            ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).ControlType == ControlType.If)
-                            condition = ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).Condition;
+                            ((ControlStatement)deserializeAsMethod.Statements[i + 1]).ControlType == ControlType.If)
+                            condition = ((ControlStatement)deserializeAsMethod.Statements[i + 1]).Condition;
 
                         xmlFields.Add(new XmlField
                         {
@@ -118,7 +115,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                     else if (i > 0 &&
                              deserializeAsMethod.Statements[i - 1] is AssignationStatement)
                     {
-                        var substatement = ( (AssignationStatement)deserializeAsMethod.Statements[i - 1] );
+                        var substatement = ((AssignationStatement)deserializeAsMethod.Statements[i - 1]);
                         var name = substatement.Name;
                         Match match = Regex.Match(substatement.Value, @"new ([\d\w]+)");
 
@@ -132,9 +129,9 @@ namespace DofusProtocolBuilder.XmlPatterns
                                 IEnumerable<string> limitLinq = from entry in Parser.Constructors[0].Statements
                                                                 where
                                                                     entry is AssignationStatement &&
-                                                                    ( (AssignationStatement)entry ).Name == arrayMatch.Groups[1].Value
+                                                                    ((AssignationStatement)entry).Name == arrayMatch.Groups[1].Value
                                                                 let entryMatch =
-                                                                    Regex.Match(( (AssignationStatement)entry ).Value,
+                                                                    Regex.Match(((AssignationStatement)entry).Value,
                                                                                 @"new List<[\d\w\._]+>\(([\d]+)\)")
                                                                 where entryMatch.Success
                                                                 select entryMatch.Groups[1].Value;
@@ -144,7 +141,6 @@ namespace DofusProtocolBuilder.XmlPatterns
 
                                 type += "[]";
                                 name = name.Split('[')[0];
-
                             }
                         }
 
@@ -156,8 +152,8 @@ namespace DofusProtocolBuilder.XmlPatterns
 
                             if (i + 1 < deserializeAsMethod.Statements.Count &&
                                 deserializeAsMethod.Statements[i + 1] is ControlStatement &&
-                                ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).ControlType == ControlType.If)
-                                condition = ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).Condition;
+                                ((ControlStatement)deserializeAsMethod.Statements[i + 1]).ControlType == ControlType.If)
+                                condition = ((ControlStatement)deserializeAsMethod.Statements[i + 1]).Condition;
 
                             xmlFields.Add(new XmlField
                             {
@@ -174,9 +170,9 @@ namespace DofusProtocolBuilder.XmlPatterns
                 }
 
                 if (deserializeAsMethod.Statements[i] is AssignationStatement &&
-                    ( (AssignationStatement)deserializeAsMethod.Statements[i] ).Value.Contains("getFlag"))
+                    ((AssignationStatement)deserializeAsMethod.Statements[i]).Value.Contains("getFlag"))
                 {
-                    var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
+                    var statement = ((AssignationStatement)deserializeAsMethod.Statements[i]);
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Name);
 
                     var match = Regex.Match(statement.Value, @"getFlag\([\w\d]+, (\d+)\)");
@@ -199,9 +195,9 @@ namespace DofusProtocolBuilder.XmlPatterns
                 }
 
                 if (deserializeAsMethod.Statements[i] is AssignationStatement &&
-                    ( (AssignationStatement)deserializeAsMethod.Statements[i] ).Value.Contains("getInstance"))
+                    ((AssignationStatement)deserializeAsMethod.Statements[i]).Value.Contains("getInstance"))
                 {
-                    var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
+                    var statement = ((AssignationStatement)deserializeAsMethod.Statements[i]);
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Name);
 
                     type = "instance of Types." + Regex.Match(statement.Value, @"getInstance\(([\w\d_\.]+),").Groups[1].Value;
@@ -219,10 +215,10 @@ namespace DofusProtocolBuilder.XmlPatterns
                 }
 
                 if (deserializeAsMethod.Statements[i] is InvokeExpression &&
-                    ( (InvokeExpression)deserializeAsMethod.Statements[i] ).Name == "Add" &&
+                    ((InvokeExpression)deserializeAsMethod.Statements[i]).Name == "Add" &&
                     type != null)
                 {
-                    var statement = ( (InvokeExpression)deserializeAsMethod.Statements[i] );
+                    var statement = ((InvokeExpression)deserializeAsMethod.Statements[i]);
 
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Target);
 
@@ -230,8 +226,8 @@ namespace DofusProtocolBuilder.XmlPatterns
 
                     if (i + 1 < deserializeAsMethod.Statements.Count &&
                         deserializeAsMethod.Statements[i + 1] is ControlStatement &&
-                        ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).ControlType == ControlType.If)
-                        condition = ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).Condition;
+                        ((ControlStatement)deserializeAsMethod.Statements[i + 1]).ControlType == ControlType.If)
+                        condition = ((ControlStatement)deserializeAsMethod.Statements[i + 1]).Condition;
 
                     xmlFields.Add(new XmlField
                     {

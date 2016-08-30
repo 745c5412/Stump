@@ -1,22 +1,20 @@
-
-
 // Generated on 03/02/2014 20:43:03
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class PaddockContentInformations : PaddockInformations
     {
         public const short Id = 183;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public int paddockId;
         public short worldX;
         public short worldY;
@@ -24,11 +22,11 @@ namespace Stump.DofusProtocol.Types
         public short subAreaId;
         public bool abandonned;
         public IEnumerable<Types.MountInformationsForPaddock> mountsInformations;
-        
+
         public PaddockContentInformations()
         {
         }
-        
+
         public PaddockContentInformations(short maxOutdoorMount, short maxItems, int paddockId, short worldX, short worldY, int mapId, short subAreaId, bool abandonned, IEnumerable<Types.MountInformationsForPaddock> mountsInformations)
          : base(maxOutdoorMount, maxItems)
         {
@@ -40,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             this.abandonned = abandonned;
             this.mountsInformations = mountsInformations;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -55,16 +53,15 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in mountsInformations)
             {
-                 entry.Serialize(writer);
-                 mountsInformations_count++;
+                entry.Serialize(writer);
+                mountsInformations_count++;
             }
             var mountsInformations_after = writer.Position;
             writer.Seek((int)mountsInformations_before);
             writer.WriteUShort((ushort)mountsInformations_count);
             writer.Seek((int)mountsInformations_after);
-
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -84,17 +81,15 @@ namespace Stump.DofusProtocol.Types
             var mountsInformations_ = new Types.MountInformationsForPaddock[limit];
             for (int i = 0; i < limit; i++)
             {
-                 mountsInformations_[i] = new Types.MountInformationsForPaddock();
-                 mountsInformations_[i].Deserialize(reader);
+                mountsInformations_[i] = new Types.MountInformationsForPaddock();
+                mountsInformations_[i].Deserialize(reader);
             }
             mountsInformations = mountsInformations_;
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(int) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(bool) + sizeof(short) + mountsInformations.Sum(x => x.GetSerializationSize());
         }
-        
     }
-    
 }

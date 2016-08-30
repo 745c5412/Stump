@@ -1,6 +1,5 @@
-
-using System.Drawing;
 using Stump.Core.Attributes;
+using System.Drawing;
 
 namespace Stump.Server.WorldServer
 {

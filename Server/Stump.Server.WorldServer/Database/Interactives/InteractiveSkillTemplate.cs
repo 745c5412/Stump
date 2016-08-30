@@ -1,10 +1,10 @@
-﻿using System;
-using Stump.Core.IO;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+﻿using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Interactives;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Interactives
 {
@@ -115,7 +115,6 @@ namespace Stump.Server.WorldServer.Database.Interactives
             }
         }
 
-
         public InteractiveTemplate Interactive
         {
             get { return m_interactive ?? (m_interactive = InteractiveManager.Instance.GetTemplate(InteractiveId)); }
@@ -125,7 +124,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         public void AssignFields(object d2oObject)
         {
-            var skill = (Skill) d2oObject;
+            var skill = (Skill)d2oObject;
 
             Id = skill.id;
             NameId = skill.nameId;
@@ -142,6 +141,6 @@ namespace Stump.Server.WorldServer.Database.Interactives
             LevelMin = skill.levelMin;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Accounts;
@@ -11,6 +7,10 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Friends;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Social
 {
@@ -18,7 +18,8 @@ namespace Stump.Server.WorldServer.Game.Social
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        [Variable(true)] public static int MaxFriendsNumber = 30;
+        [Variable(true)]
+        public static int MaxFriendsNumber = 30;
 
         private readonly ConcurrentDictionary<int, Friend> m_friends = new ConcurrentDictionary<int, Friend>();
         private readonly ConcurrentDictionary<int, Ignored> m_ignoreds = new ConcurrentDictionary<int, Ignored>();
@@ -218,7 +219,7 @@ namespace Stump.Server.WorldServer.Game.Social
             {
                 ignored = new Ignored(relation, ignoredAccount, session);
             }
-                
+
             var success = m_ignoreds.TryAdd(ignoredAccount.Id, ignored);
             FriendHandler.SendIgnoredAddedMessage(Owner.Client, ignored, session);
 
@@ -375,6 +376,7 @@ namespace Stump.Server.WorldServer.Game.Social
                         else
                             m_friends.TryAdd(account.Id, new Friend(relation, account));
                         break;
+
                     case AccountRelationType.Ignored:
                         if (account.ConnectedCharacter.HasValue)
                         {

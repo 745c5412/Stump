@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items.BidHouse;
+using Stump.Server.WorldServer.Handlers.Inventory;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 {
@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (Buy)
             {
                 InventoryHandler.SendExchangeStartedBidBuyerMessage(Character.Client, this);
-            } 
+            }
             else
             {
                 var items = BidHouseManager.Instance.GetBidHouseItems(Character.Account.Id, Types);
@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             InventoryHandler.SendExchangeTypesItemsExchangerDescriptionForUserMessage(Character.Client, categories);
         }
 
-        #endregion
+        #endregion Functions
 
         #region Events
 
@@ -146,7 +146,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
                 UpdateCurrentViewedItem(item.Template.Id);
 
                 return;
-            }  
+            }
 
             if (CurrentViewedItem != item.Template.Id)
                 return;
@@ -157,9 +157,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
                 InventoryHandler.SendExchangeBidHouseInListUpdatedMessage(Character.Client, category);
         }
 
-        #endregion
+        #endregion Events
 
-        #endregion
+        #endregion IDialog Members
 
         #region Network
 
@@ -168,6 +168,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             return new SellerBuyerDescriptor(BidHouseManager.Quantities, Types, BidHouseManager.TaxPercent, MaxItemLevel, Character.Level, Npc.Id, (short)BidHouseManager.UnsoldDelay);
         }
 
-        #endregion
+        #endregion Network
     }
 }

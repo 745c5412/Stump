@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Messages;
@@ -23,7 +21,8 @@ using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
-using Stump.Server.WorldServer.Game.Maps.Paddocks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -66,7 +65,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
                         return;
                     }
-                    
+
                     if (!client.Character.Map.AllowExchangesBetweenPlayers)
                     {
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_IMPOSSIBLE);
@@ -80,6 +79,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                     request.Open();
 
                     break;
+
                 default:
                     SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_IMPOSSIBLE);
                     break;
@@ -134,7 +134,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeSellMessage(WorldClient client, ExchangeSellMessage message)
         {
             var dialog = client.Character.Dialog as IShopDialog;
-            if (dialog != null) 
+            if (dialog != null)
                 dialog.SellItem(message.objectToSellId, message.quantity);
         }
 
@@ -171,7 +171,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!client.Character.IsInExchange())
                 return;
 
-            if(client.Character.Exchanger is CharacterMerchant)
+            if (client.Character.Exchanger is CharacterMerchant)
             {
                 ((CharacterMerchant)client.Character.Exchanger).MovePricedItem(message.objectUID, message.quantity, (uint)message.price);
             }
@@ -265,36 +265,47 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 case StableExchangeActionsEnum.EQUIP_TO_STABLE:
                     exchanger.EquipToStable(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.STABLE_TO_EQUIP:
                     exchanger.StableToEquip(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.STABLE_TO_INVENTORY:
                     exchanger.StableToInventory(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.INVENTORY_TO_STABLE:
-                     exchanger.InventoryToStable(message.rideId);
+                    exchanger.InventoryToStable(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.STABLE_TO_PADDOCK:
                     exchanger.StableToPaddock(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.PADDOCK_TO_STABLE:
                     exchanger.PaddockToStable(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.EQUIP_TO_PADDOCK:
                     exchanger.EquipToPaddock(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.PADDOCK_TO_EQUIP:
                     exchanger.PaddockToEquip(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.EQUIP_TO_INVENTORY:
                     exchanger.EquipToInventory(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.PADDOCK_TO_INVENTORY:
                     exchanger.PaddockToInventory(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.INVENTORY_TO_EQUIP:
                     exchanger.InventoryToEquip(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.INVENTORY_TO_PADDOCK:
                     exchanger.InventoryToPaddock(message.rideId);
                     break;

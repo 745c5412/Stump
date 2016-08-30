@@ -1,5 +1,5 @@
-using System;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.Server.BaseServer.Network
 {
@@ -103,7 +103,7 @@ namespace Stump.Server.BaseServer.Network
                     throw new Exception("Malformated Message Header, invalid bytes number to read message length (inferior to 0 or superior to 3)");
 
                 Length = 0;
-                
+
                 // 3..0 or 2..0 or 1..0
                 for (var i = LengthBytesCount.Value - 1; i >= 0; i--)
                 {
@@ -137,7 +137,7 @@ namespace Stump.Server.BaseServer.Network
                     return IsValid;
 
                 if (ReadData)
-                    Data = reader.ReadBytes((int) reader.BytesAvailable);
+                    Data = reader.ReadBytes((int)reader.BytesAvailable);
                 else
                     m_availableBytes = reader.BytesAvailable;
 
@@ -155,8 +155,8 @@ namespace Stump.Server.BaseServer.Network
                 if (ReadData)
                 {
                     var lastLength = m_data.Length;
-                    Array.Resize(ref m_data, (int) (Data.Length + reader.BytesAvailable));
-                    var array = reader.ReadBytes((int) reader.BytesAvailable);
+                    Array.Resize(ref m_data, (int)(Data.Length + reader.BytesAvailable));
+                    var array = reader.ReadBytes((int)reader.BytesAvailable);
 
                     Array.Copy(array, 0, Data, lastLength, array.Length);
                 }
@@ -173,7 +173,6 @@ namespace Stump.Server.BaseServer.Network
             if (ReadData)
             {
                 var bytesToRead = Length.Value - Data.Length;
-
 
                 Array.Resize(ref m_data, Data.Length + bytesToRead);
                 var array = reader.ReadBytes(bytesToRead);

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types;
+﻿using Stump.DofusProtocol.Types;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Items
 {
@@ -153,7 +152,6 @@ namespace Stump.Server.WorldServer.Database.Items
 
                 presetObjects.Add(new PresetItem(position, objGid, objUid));
             }
-
 
             return presetObjects.ToList();
         }

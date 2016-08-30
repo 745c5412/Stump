@@ -46,6 +46,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
             Character.CloseDialog(this);
         }
 
-        #endregion
+        #endregion IDialog Members
     }
 }

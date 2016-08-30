@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
-using CSScriptLibrary;
+﻿using CSScriptLibrary;
 using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -23,8 +23,8 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public CommandsExceptions()
         {
-            Aliases = new[] {"cmderror"};
-            ParentCommandType = typeof (DebugCommand);
+            Aliases = new[] { "cmderror" };
+            ParentCommandType = typeof(DebugCommand);
             RequiredRole = RoleEnum.Administrator;
             Description = "Give command error details";
             AddParameter<int>("index", "i", "Error index (last if not defined)", isOptional: true);
@@ -49,7 +49,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             trigger.Reply("Command : " + pair.Key);
             trigger.Reply("Exception : ");
 
-            foreach (var line in pair.Value.ToString().Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var line in pair.Value.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 trigger.Reply(line);
             }
@@ -86,7 +86,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             trigger.Reply("Command : " + pair.Key);
             trigger.Reply("Exception : ");
 
-            foreach (var line in pair.Value.ToString().Split(new [] {'\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var line in pair.Value.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 trigger.Reply(line);
             }
@@ -108,7 +108,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             CSScript.AssemblyResolvingEnabled = true;
             var eval = CSScript.BuildEval(string.Format("func() {{ {0}; }}", trigger.Get<string>("code")));
-            
+
             eval();
             trigger.Reply("Executed");
         }

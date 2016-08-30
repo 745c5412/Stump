@@ -1,36 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.IPC.Objects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.AuthServer.Database
 {
     public class AccountRelator
     {
         public static string FetchQuery = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id";
+
         /// <summary>
         /// Use string.Format
         /// </summary>
         public static string FindAccountById = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Id = {0}";
+
         /// <summary>
         /// Use SQL parameter
         /// </summary>
         public static string FindAccountByLogin = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Login = @0";
+
         /// <summary>
         /// Use SQL parameter
         /// </summary>
         public static string FindAccountByNickname = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Nickname = @0";
-                /// <summary>
+
+        /// <summary>
         /// Use string.Format
         /// </summary>
         public static string FindAccountByCharacterId = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE worlds_characters.CharacterId = {0}";
 
-
-
         private Account m_current;
+
         public Account Map(Account account, WorldCharacter character)
         {
             if (account == null)
@@ -71,7 +74,7 @@ namespace Stump.Server.AuthServer.Database
         }
 
         // Primitive properties
-       
+
         [PrimaryKey("Id")]
         public int Id
         {
@@ -111,7 +114,7 @@ namespace Stump.Server.AuthServer.Database
             {
                 m_availableBreedsFlag = value;
                 m_availableBreeds = new List<PlayableBreedEnum>();
-                m_availableBreeds.AddRange(Enum.GetValues(typeof (PlayableBreedEnum)).Cast<PlayableBreedEnum>().
+                m_availableBreeds.AddRange(Enum.GetValues(typeof(PlayableBreedEnum)).Cast<PlayableBreedEnum>().
                                                Where(IsBreedAvailable));
             }
         }
@@ -254,8 +257,7 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-
-        #endregion
+        #endregion Record Properties
 
         [Ignore]
         public List<PlayableBreedEnum> AvailableBreeds
@@ -266,7 +268,7 @@ namespace Stump.Server.AuthServer.Database
                     return m_availableBreeds;
 
                 m_availableBreeds = new List<PlayableBreedEnum>();
-                m_availableBreeds.AddRange(Enum.GetValues(typeof (PlayableBreedEnum)).Cast<PlayableBreedEnum>().
+                m_availableBreeds.AddRange(Enum.GetValues(typeof(PlayableBreedEnum)).Cast<PlayableBreedEnum>().
                     Where(IsBreedAvailable));
 
                 return m_availableBreeds;
@@ -275,53 +277,53 @@ namespace Stump.Server.AuthServer.Database
             {
                 m_availableBreeds = value;
                 m_availableBreedsFlag =
-                    (uint) value.Aggregate(0, (current, breedEnum) => current | (1 << ((int) breedEnum - 1)));
+                    (uint)value.Aggregate(0, (current, breedEnum) => current | (1 << ((int)breedEnum - 1)));
             }
         }
 
         public AccountData Serialize()
         {
             return new AccountData
-                       {
-                           Id = Id,
-                           Login = Login,
-                           PasswordHash = PasswordHash,
-                           Nickname = Nickname,
-                           UserGroupId = UserGroupId,
-                           AvailableBreeds = AvailableBreeds,
-                           Ticket = Ticket,
-                           SecretQuestion = SecretQuestion,
-                           SecretAnswer = SecretAnswer,
-                           Lang = Lang,
-                           Email = Email,
-                           CreationDate = CreationDate,
-                           IsJailed = IsJailed,
-                           IsBanned = IsBanned,
-                           BanEndDate = BanEndDate,
-                           BanReason = BanReason,
-                           LastConnection = m_loadedLastConnection,
-                           LastConnectionIp = m_loadedLastConnectionIP,
-                           LastClientKey = LastClientKey,
-                           SubscriptionEndDate = SubscriptionEnd,
-                           Characters = WorldCharacters.Select(entry => new WorldCharacterData(entry.CharacterId, entry.WorldId)).ToList(),
-                           LastVote = LastVote,
-                       };
+            {
+                Id = Id,
+                Login = Login,
+                PasswordHash = PasswordHash,
+                Nickname = Nickname,
+                UserGroupId = UserGroupId,
+                AvailableBreeds = AvailableBreeds,
+                Ticket = Ticket,
+                SecretQuestion = SecretQuestion,
+                SecretAnswer = SecretAnswer,
+                Lang = Lang,
+                Email = Email,
+                CreationDate = CreationDate,
+                IsJailed = IsJailed,
+                IsBanned = IsBanned,
+                BanEndDate = BanEndDate,
+                BanReason = BanReason,
+                LastConnection = m_loadedLastConnection,
+                LastConnectionIp = m_loadedLastConnectionIP,
+                LastClientKey = LastClientKey,
+                SubscriptionEndDate = SubscriptionEnd,
+                Characters = WorldCharacters.Select(entry => new WorldCharacterData(entry.CharacterId, entry.WorldId)).ToList(),
+                LastVote = LastVote,
+            };
         }
 
         public bool IsBreedAvailable(PlayableBreedEnum breed)
         {
             return true;
 
-            if ((int) breed <= 0)
+            /*if (breed <= 0)
                 return false;
 
             var flag = (1 << ((int) breed - 1));
-            return (AvailableBreedsFlag & flag) == flag;
+            return (AvailableBreedsFlag & flag) == flag;*/
         }
 
         public sbyte GetCharactersCountByWorld(int worldId)
         {
-            return (sbyte) WorldCharacters.Count(entry => entry.WorldId == worldId);
+            return (sbyte)WorldCharacters.Count(entry => entry.WorldId == worldId);
         }
 
         public IEnumerable<int> GetWorldCharactersId(int worldId)

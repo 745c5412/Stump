@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -37,7 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(InventoryPresetUseMessage.Id)]
         public static void HandleInventoryPresetUse(WorldClient client, InventoryPresetUseMessage message)
         {
-            client.Character.Inventory.EquipPreset(message.presetId);  
+            client.Character.Inventory.EquipPreset(message.presetId);
         }
 
         public static void SendInventoryPresetUpdateMessage(WorldClient client, Preset preset)

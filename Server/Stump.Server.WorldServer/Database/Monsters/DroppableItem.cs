@@ -1,7 +1,7 @@
-using System;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             get;
             set;
         }
-        
+
         /// <summary>
         /// Define the probability that the item drop. Between 0.00% and 100.00%
         /// </summary>
@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             get;
             set;
         }
-        
+
         /// <summary>
         /// Define the probability that the item drop. Between 0.00% and 100.00%
         /// </summary>
@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             get;
             set;
         }
-        
+
         /// <summary>
         /// Define the probability that the item drop. Between 0.00% and 100.00%
         /// </summary>
@@ -106,7 +106,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
             get;
             set;
         }
-
 
         /// <summary>
         /// How many times the rolls are thrown

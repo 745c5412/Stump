@@ -2,7 +2,6 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +15,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// <typeparam name="TElement"></typeparam>
     public class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
     {
-        TKey key;
-        IEnumerable<TElement> group;
+        private TKey key;
+        private IEnumerable<TElement> group;
 
         public Grouping(TKey key, IEnumerable<TElement> group)
         {
@@ -39,5 +38,5 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         {
             return this.group.GetEnumerator();
         }
-    }   
+    }
 }

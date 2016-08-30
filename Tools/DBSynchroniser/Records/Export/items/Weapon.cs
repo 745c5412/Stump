@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:48
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -26,8 +20,6 @@ namespace DBSynchroniser.Records
         public int criticalHitProbability;
         public int criticalHitBonus;
         public int criticalFailureProbability;
-
-
 
         [D2OIgnore]
         public int ApCost
@@ -95,7 +87,7 @@ namespace DBSynchroniser.Records
         public override void AssignFields(object obj)
         {
             var castedObj = (Weapon)obj;
-            
+
             base.AssignFields(obj);
             ApCost = castedObj.apCost;
             MinRange = castedObj.minRange;
@@ -107,7 +99,7 @@ namespace DBSynchroniser.Records
             CriticalHitBonus = castedObj.criticalHitBonus;
             CriticalFailureProbability = castedObj.criticalFailureProbability;
         }
-        
+
         public override object CreateObject(object parent = null)
         {
             var obj = new Weapon();
@@ -123,11 +115,10 @@ namespace DBSynchroniser.Records
             obj.criticalFailureProbability = CriticalFailureProbability;
             return obj;
         }
-        
+
         public override void BeforeSave(bool insert)
         {
             base.BeforeSave(insert);
-        
         }
     }
 }

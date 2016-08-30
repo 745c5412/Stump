@@ -1,4 +1,3 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -6,6 +5,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 {
@@ -20,6 +20,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
         }
 
         public event Action<RolePlayActor, Map> LeaveMap;
+
         public virtual void OnLeaveMap(Map map)
         {
             var handler = LeaveMap;
@@ -33,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             return new GameRolePlayActorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations());
         }
 
-        #endregion
+        #endregion Network
 
         #region Actions
 
@@ -118,9 +119,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             return Map != null && Map.IsActor(this);
         }
 
-        #endregion
+        #endregion Teleport
 
-        #endregion
+        #endregion Actions
 
         protected override void OnDisposed()
         {

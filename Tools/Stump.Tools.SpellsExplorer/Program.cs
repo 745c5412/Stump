@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
+﻿using Stump.Core.Attributes;
 using Stump.Core.I18N;
 using Stump.Core.Xml.Config;
-using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using Stump.Core.Attributes;
+using System.Linq;
+using System.Reflection;
 
 namespace Stump.Tools.SpellsExplorer
 {
@@ -87,11 +85,11 @@ namespace Stump.Tools.SpellsExplorer
                                 SpellManager.Instance.GetSpellTemplates()
                                             .Where(
                                                 x =>
-                                                    SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => (int) y.Targets == flag)))
+                                                    SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => (int)y.Targets == flag)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
-                                        
+
                     if (pattern.StartsWith("delay"))
                     {
                         foreach (
@@ -99,11 +97,11 @@ namespace Stump.Tools.SpellsExplorer
                                 SpellManager.Instance.GetSpellTemplates()
                                             .Where(
                                                 x =>
-                                                    SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => (int) y.Delay != 0)))
+                                                    SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => (int)y.Delay != 0)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
-                                        
+
                     if (pattern.StartsWith("mod"))
                     {
                         foreach (
@@ -111,10 +109,10 @@ namespace Stump.Tools.SpellsExplorer
                                 SpellManager.Instance.GetSpellTemplates()
                                             .Where(
                                                 x =>
-                                                    SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => (int) y.Modificator != 0)))
+                                                    SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => (int)y.Modificator != 0)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
-                    }                                        
+                    }
                     if (pattern.StartsWith("group"))
                     {
                         foreach (
@@ -122,15 +120,15 @@ namespace Stump.Tools.SpellsExplorer
                                 SpellManager.Instance.GetSpellTemplates()
                                             .Where(
                                                 x =>
-                                                    SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => (int) y.Group != 0)))
+                                                    SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => (int)y.Group != 0)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
                     if (pattern.StartsWith("@"))
                     {
                         pattern = pattern.Remove(0, 1);
 
-                        foreach (var spell in SpellManager.Instance.GetSpellTemplates() .Where(
+                        foreach (var spell in SpellManager.Instance.GetSpellTemplates().Where(
                             x => SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0]).Effects.Any(y => y.Id == int.Parse(pattern))))
                         {
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
@@ -143,7 +141,7 @@ namespace Stump.Tools.SpellsExplorer
                         pattern = pattern.Remove(pattern.Length - 1, 1);
 
                     foreach (SpellTemplate spell in FindSpells(pattern))
-                        {
+                    {
                         if (spell == null)
                             Console.WriteLine("Spell not found");
                         else
@@ -179,7 +177,7 @@ namespace Stump.Tools.SpellsExplorer
             {
                 foreach (SpellTemplate spell in SpellManager.Instance.GetSpellTemplates())
                 {
-                    if (string.IsNullOrEmpty(pattern) || spell.Name.IndexOf(pattern, StringComparison.InvariantCultureIgnoreCase) != -1 || 
+                    if (string.IsNullOrEmpty(pattern) || spell.Name.IndexOf(pattern, StringComparison.InvariantCultureIgnoreCase) != -1 ||
                         TextManager.Instance.GetText(spell.NameId, SecondaryLanguage).Contains(pattern))
                         yield return spell;
                 }
@@ -200,7 +198,7 @@ namespace Stump.Tools.SpellsExplorer
 
         public static void ExploreSpell(SpellTemplate spell, int level, bool critical)
         {
-            var levelTemplate = SpellManager.Instance.GetSpellLevel((int) spell.SpellLevelsIds[level - 1]);
+            var levelTemplate = SpellManager.Instance.GetSpellLevel((int)spell.SpellLevelsIds[level - 1]);
             var type = SpellManager.Instance.GetSpellType(spell.TypeId);
 
             Console.WriteLine("Spell '{0}'  : {1} ({2}) - Level {3}", spell.Id, spell.Name, TextManager.Instance.GetText(spell.NameId, SecondaryLanguage), level);

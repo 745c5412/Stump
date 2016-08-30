@@ -1,11 +1,11 @@
+using Stump.Core.IO;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Network;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Stump.Core.IO;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.BaseServer.Commands
 {
@@ -30,7 +30,6 @@ namespace Stump.Server.BaseServer.Commands
         protected TriggerBase(string args, RoleEnum userRole)
             : this(new StringStream(args), userRole)
         {
-
         }
 
         public abstract ICommandsUser User
@@ -116,7 +115,7 @@ namespace Stump.Server.BaseServer.Commands
         public string Bold(string message)
         {
             if (!CanFormat)
-                return message; 
+                return message;
 
             return "<b>" + message + "</b>";
         }
@@ -163,9 +162,9 @@ namespace Stump.Server.BaseServer.Commands
         public virtual T Get<T>(string name)
         {
             if (CommandsParametersByName.ContainsKey(name))
-                return (T) CommandsParametersByName[name].Value;
+                return (T)CommandsParametersByName[name].Value;
             if (CommandsParametersByShortName.ContainsKey(name))
-                return (T) CommandsParametersByShortName[name].Value;
+                return (T)CommandsParametersByShortName[name].Value;
 
             throw new ArgumentException("'" + name + "' is not an existing parameter");
         }
@@ -270,7 +269,7 @@ namespace Stump.Server.BaseServer.Commands
                             {
                                 // parameters defined like "-life" imply being true
                                 // writting "-life" is similar to "-life=true"
-                                if (definedOnly && definition.ValueType == typeof (bool))
+                                if (definedOnly && definition.ValueType == typeof(bool))
                                     value = "true";
 
                                 parameter.SetValue(value, this);
@@ -292,7 +291,6 @@ namespace Stump.Server.BaseServer.Commands
                         }
                     }
                 }
-
 
                 if (!parsed)
                 {
@@ -321,7 +319,6 @@ namespace Stump.Server.BaseServer.Commands
 
                 word = Args.NextWord();
             }
-
 
             foreach (var unusedDefinition in paramToDefine)
             {

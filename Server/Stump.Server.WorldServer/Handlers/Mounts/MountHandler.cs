@@ -2,7 +2,6 @@
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 
 namespace Stump.Server.WorldServer.Handlers.Mounts
@@ -48,7 +47,7 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
         public static void HandleMountInformationRequestMessage(WorldClient client, MountInformationRequestMessage message)
         {
             var mount = new Mount(MountManager.Instance.GetMount((int)message.id));
-            
+
             SendMountDataMessage(client, mount.GetMountClientData());
         }
 

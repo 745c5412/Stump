@@ -2,18 +2,18 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
-using System.Linq.Expressions;
 using Stump.ORM.SubSonic.Linq.Structure;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
     /// <summary>
     /// Determines if a SelectExpression contains any aggregate expressions
     /// </summary>
-    class AggregateChecker : DbExpressionVisitor
+    internal class AggregateChecker : DbExpressionVisitor
     {
-        bool hasAggregate = false;
+        private bool hasAggregate = false;
+
         private AggregateChecker()
         {
         }

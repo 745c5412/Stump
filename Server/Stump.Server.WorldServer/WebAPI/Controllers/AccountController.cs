@@ -26,7 +26,9 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
         }
 
         public IHttpActionResult Put(int accountId) => StatusCode(HttpStatusCode.MethodNotAllowed);
+
         public IHttpActionResult Post(int accountId, string value) => StatusCode(HttpStatusCode.MethodNotAllowed);
+
         public IHttpActionResult Delete(int accountId) => StatusCode(HttpStatusCode.MethodNotAllowed);
     }
 }

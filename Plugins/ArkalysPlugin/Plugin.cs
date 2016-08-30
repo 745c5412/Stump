@@ -1,5 +1,5 @@
-using System;
 using Stump.Server.BaseServer.Plugins;
+using System;
 
 namespace ArkalysPlugin
 {
@@ -46,7 +46,6 @@ namespace ArkalysPlugin
 
         public override void Dispose()
         {
-
         }
 
         public override bool UseConfig

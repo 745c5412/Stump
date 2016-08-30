@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:46
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -19,17 +13,19 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "AlmanaxCalendars";
         public int id;
+
         [I18NField]
         public uint nameId;
+
         [I18NField]
         public uint descId;
+
         public int npcId;
 
         int ID2ORecord.Id
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -65,13 +61,13 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (AlmanaxCalendar)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             DescId = castedObj.descId;
             NpcId = castedObj.npcId;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (AlmanaxCalendar)parent : new AlmanaxCalendar();
@@ -81,10 +77,9 @@ namespace DBSynchroniser.Records
             obj.npcId = NpcId;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

@@ -1,22 +1,22 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.Extensions;
 using System;
 using System.Collections;
-using System.Data;
 using System.ComponentModel;
-using Stump.ORM.SubSonic.Extensions;
+using System.Data;
 
 namespace Stump.ORM.SubSonic.Query
 {
@@ -29,16 +29,17 @@ namespace Stump.ORM.SubSonic.Query
         /// WHERE operator
         /// </summary>
         Where,
+
         /// <summary>
         /// AND operator
         /// </summary>
         And,
+
         /// <summary>
         /// OR Operator
         /// </summary>
         Or
     }
-
 
     /// <summary>
     /// SQL Comparison Operators
@@ -64,7 +65,6 @@ namespace Stump.ORM.SubSonic.Query
         StartsWith,
         EndsWith
     }
-
 
     /// <summary>
     /// Summary for the SqlComparison class
@@ -94,8 +94,9 @@ namespace Stump.ORM.SubSonic.Query
         /// </summary>
         public SqlQuery query;
 
-        public Constraint() {}
-
+        public Constraint()
+        {
+        }
 
         #region Factory methods
 
@@ -203,8 +204,7 @@ namespace Stump.ORM.SubSonic.Query
             return new Constraint(ConstraintType.Or, columnName);
         }
 
-        #endregion
-
+        #endregion Factory methods
 
         #region props
 
@@ -319,56 +319,72 @@ namespace Stump.ORM.SubSonic.Query
         public static string GetComparisonOperator(Comparison comp)
         {
             string sOut;
-            switch(comp)
+            switch (comp)
             {
                 case Comparison.Blank:
                     sOut = SqlComparison.BLANK;
                     break;
+
                 case Comparison.GreaterThan:
                     sOut = SqlComparison.GREATER;
                     break;
+
                 case Comparison.GreaterOrEquals:
                     sOut = SqlComparison.GREATER_OR_EQUAL;
                     break;
+
                 case Comparison.LessThan:
                     sOut = SqlComparison.LESS;
                     break;
+
                 case Comparison.LessOrEquals:
                     sOut = SqlComparison.LESS_OR_EQUAL;
                     break;
+
                 case Comparison.Like:
                     sOut = SqlComparison.LIKE;
                     break;
+
                 case Comparison.NotEquals:
                     sOut = SqlComparison.NOT_EQUAL;
                     break;
+
                 case Comparison.NotLike:
                     sOut = SqlComparison.NOT_LIKE;
                     break;
+
                 case Comparison.Is:
                     sOut = SqlComparison.IS;
                     break;
+
                 case Comparison.IsNot:
                     sOut = SqlComparison.IS_NOT;
                     break;
+
                 case Comparison.OpenParentheses:
                     sOut = "(";
                     break;
+
                 case Comparison.CloseParentheses:
                     sOut = ")";
                     break;
+
                 case Comparison.In:
                     sOut = " IN ";
                     break;
+
                 case Comparison.NotIn:
                     sOut = " NOT IN ";
                     break;
-								case Comparison.StartsWith:
-										sOut = SqlComparison.LIKE;
-										break;
-								case Comparison.EndsWith:
-										sOut = SqlComparison.LIKE;
-										break;
+
+                case Comparison.StartsWith:
+                    sOut = SqlComparison.LIKE;
+                    break;
+
+                case Comparison.EndsWith:
+                    sOut = SqlComparison.LIKE;
+                    break;
+
                 default:
                     sOut = SqlComparison.EQUAL;
                     break;
@@ -376,8 +392,7 @@ namespace Stump.ORM.SubSonic.Query
             return sOut;
         }
 
-        #endregion
-
+        #endregion props
 
         /// <summary>
         /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
@@ -390,7 +405,7 @@ namespace Stump.ORM.SubSonic.Query
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
         {
-            if(obj is Constraint)
+            if (obj is Constraint)
             {
                 Constraint compareTo = (Constraint)obj;
                 return compareTo.ParameterName.Matches(parameterName) &&
@@ -525,7 +540,7 @@ namespace Stump.ORM.SubSonic.Query
         public SqlQuery In(SqlQuery selectQuery)
         {
             //validate that there is only one column in the columnlist
-            if(selectQuery.SelectColumnList.Length == 0 || selectQuery.SelectColumnList.Length > 1)
+            if (selectQuery.SelectColumnList.Length == 0 || selectQuery.SelectColumnList.Length > 1)
                 throw new InvalidOperationException("You must specify a column to return for the IN to be valid. Use Select(\"column\") to do this");
 
             InSelect = selectQuery;
@@ -577,7 +592,7 @@ namespace Stump.ORM.SubSonic.Query
 					query.Constraints.Add(this);
 				}
 			}
-            
+
 			return query;*/
         }
 
@@ -589,7 +604,7 @@ namespace Stump.ORM.SubSonic.Query
         public SqlQuery NotIn(SqlQuery selectQuery)
         {
             //validate that there is only one column in the columnlist
-            if(selectQuery.SelectColumnList.Length == 0 || selectQuery.SelectColumnList.Length > 1)
+            if (selectQuery.SelectColumnList.Length == 0 || selectQuery.SelectColumnList.Length > 1)
                 throw new InvalidOperationException("You must specify a column to return for the IN to be valid. Use Select(\"column\") to do this");
 
             InSelect = selectQuery;
@@ -623,22 +638,22 @@ namespace Stump.ORM.SubSonic.Query
             Comparison = Comparison.NotIn;
             query.Constraints.Add(this);
             return query;
-                /*
-            if(vals.Length > 0)
+            /*
+        if(vals.Length > 0)
+        {
+            if(vals[0].ToString().StartsWith("SELECT"))
             {
-                if(vals[0].ToString().StartsWith("SELECT"))
-                {
-                    Select s = (Select)vals[0];
-                    query = NotIn(s);
-                }
-                else
-                {
-                    InValues = vals;
-                    Comparison = Comparison.NotIn;
-                    query.Constraints.Add(this);
-                }
+                Select s = (Select)vals[0];
+                query = NotIn(s);
             }
-            return query;*/
+            else
+            {
+                InValues = vals;
+                Comparison = Comparison.NotIn;
+                query.Constraints.Add(this);
+            }
+        }
+        return query;*/
         }
 
         /// <summary>

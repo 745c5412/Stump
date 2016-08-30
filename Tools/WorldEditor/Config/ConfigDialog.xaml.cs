@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using Stump.ORM;
+﻿using Stump.ORM;
+using System.Windows;
 
 namespace WorldEditor.Config
 {

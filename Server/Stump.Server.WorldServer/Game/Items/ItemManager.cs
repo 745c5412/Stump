@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using NLog;
+﻿using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -19,6 +14,11 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -39,19 +39,18 @@ namespace Stump.Server.WorldServer.Game.Items
 
         private readonly Dictionary<ItemTypeEnum, PlayerItemConstructor> m_itemCtorByTypes =
             new Dictionary<ItemTypeEnum, PlayerItemConstructor>();
-        
+
         private readonly Dictionary<EffectsEnum, PlayerItemConstructor> m_itemCtorByEffects =
             new Dictionary<EffectsEnum, PlayerItemConstructor>();
 
         private delegate BasePlayerItem PlayerItemConstructor(Character owner, PlayerItemRecord record);
 
-
-        #endregion
+        #endregion Fields
 
         #region Creators
 
         public BasePlayerItem CreatePlayerItem(Character owner, int id, int amount, bool maxEffects = false)
-        {            
+        {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
@@ -62,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, int amount, bool maxEffects = false)
-        {            
+        {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
@@ -75,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         public BasePlayerItem CreatePlayerItem(Character owner, IItem item, int amount)
-        {            
+        {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
@@ -83,21 +82,21 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, int amount, List<EffectBase> effects)
-        {            
+        {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
             var guid = PlayerItemRecord.PopNextId();
             var record = new PlayerItemRecord // create the associated record
-                        {
-                            Id = guid,
-                            OwnerId = owner.Id,
-                            Template = template,
-                            Stack = (uint)amount,
-                            Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
-                            Effects = effects,
-                            IsNew = true,
-                        };
+            {
+                Id = guid,
+                OwnerId = owner.Id,
+                Template = template,
+                Stack = (uint)amount,
+                Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
+                Effects = effects,
+                IsNew = true,
+            };
 
             return CreateItemInstance(owner, record);
         }
@@ -120,19 +119,18 @@ namespace Stump.Server.WorldServer.Game.Items
                 return ctor(character, record);
             }
 
-            if (m_itemCtorById.TryGetValue((ItemIdEnum) record.ItemId, out ctor))
+            if (m_itemCtorById.TryGetValue((ItemIdEnum)record.ItemId, out ctor))
             {
                 return ctor(character, record);
             }
 
-            return m_itemCtorByTypes.TryGetValue((ItemTypeEnum) record.Template.Type.Id, out ctor) ? ctor(character, record) : new DefaultItem(character, record);
+            return m_itemCtorByTypes.TryGetValue((ItemTypeEnum)record.Template.Type.Id, out ctor) ? ctor(character, record) : new DefaultItem(character, record);
         }
 
         public MerchantItem CreateMerchantItem(Character character, BasePlayerItem item, int amount, uint price)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
-
 
             var guid = PlayerMerchantItemRecord.PopNextId();
             var record = new PlayerMerchantItemRecord // create the associated record
@@ -155,29 +153,27 @@ namespace Stump.Server.WorldServer.Game.Items
                 throw new ArgumentException("amount < 0", "amount");
             var guid = TaxCollectorItemRecord.PopNextId();
             var record = new TaxCollectorItemRecord // create the associated record
-                        {
-                            Id = guid,
-                            OwnerId = owner.GlobalId,
-                            Template = template,
-                            Stack = (uint)amount,
-                            Effects = GenerateItemEffects(template),
-                            IsNew = true,
-                        };
+            {
+                Id = guid,
+                OwnerId = owner.GlobalId,
+                Template = template,
+                Stack = (uint)amount,
+                Effects = GenerateItemEffects(template),
+                IsNew = true,
+            };
 
             return new TaxCollectorItem(record);
         }
-        
+
         public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, int id, int amount)
         {
-             if (amount < 0)
+            if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
-
 
             if (!m_itemTemplates.ContainsKey(id))
                 throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
 
             return CreateTaxCollectorItem(owner, m_itemTemplates[id], amount);
-
         }
 
         public BankItem CreateBankItem(Character character, int id, int amount)
@@ -195,7 +191,6 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
-
 
             var guid = BankItemRecord.PopNextId();
             var record = new BankItemRecord // create the associated record
@@ -216,17 +211,16 @@ namespace Stump.Server.WorldServer.Game.Items
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
-
             var guid = BankItemRecord.PopNextId();
             var record = new BankItemRecord // create the associated record
-                        {
-                            Id = guid,
-                            OwnerAccountId = character.Account.Id,
-                            Template = item.Template,
-                            Stack = (uint)amount,
-                            Effects = new List<EffectBase>(item.Effects),
-                            IsNew = true
-                        };
+            {
+                Id = guid,
+                OwnerAccountId = character.Account.Id,
+                Template = item.Template,
+                Stack = (uint)amount,
+                Effects = new List<EffectBase>(item.Effects),
+                IsNew = true
+            };
 
             return new BankItem(character, record);
         }
@@ -238,7 +232,7 @@ namespace Stump.Server.WorldServer.Game.Items
             return effects.ToList();
         }
 
-        #endregion
+        #endregion Creators
 
         #region Loading
 
@@ -260,7 +254,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         private void InitializeItemCtors()
         {
-            foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof (BasePlayerItem).IsAssignableFrom(x)))
+            foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof(BasePlayerItem).IsAssignableFrom(x)))
             {
                 var idAttr = type.GetCustomAttribute<ItemIdAttribute>();
 
@@ -273,7 +267,7 @@ namespace Stump.Server.WorldServer.Game.Items
                     }
 
                     m_itemCtorById.Add(idAttr.ItemId,
-                        type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                        type.GetConstructor(new[] { typeof(Character), typeof(PlayerItemRecord) })
                             .CreateDelegate<PlayerItemConstructor>());
                 }
 
@@ -307,7 +301,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 }
 
                 m_itemCtorByEffects.Add(effectAttr.Effect,
-                    type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                    type.GetConstructor(new[] { typeof(Character), typeof(PlayerItemRecord) })
                         .CreateDelegate<PlayerItemConstructor>());
             }
         }
@@ -317,7 +311,7 @@ namespace Stump.Server.WorldServer.Game.Items
             var attr = type.GetCustomAttribute<ItemTypeAttribute>();
 
             if (attr == null)
-            {                
+            {
                 logger.Error("Item Constructor {0} has no attribute !", type);
                 return;
             }
@@ -328,11 +322,10 @@ namespace Stump.Server.WorldServer.Game.Items
                 return;
             }
 
-            m_itemCtorByTypes.Add(attr.ItemType, type.GetConstructor(new [] {typeof(Character), typeof(PlayerItemRecord) }).CreateDelegate<PlayerItemConstructor>());
-
+            m_itemCtorByTypes.Add(attr.ItemType, type.GetConstructor(new[] { typeof(Character), typeof(PlayerItemRecord) }).CreateDelegate<PlayerItemConstructor>());
         }
 
-        #endregion
+        #endregion Loading
 
         #region Getters
 
@@ -411,7 +404,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// When @ precede the pattern, then the case is ignored
         /// * is a joker, it can be placed at the begin or at the end or both
         /// it means that characters are ignored (include letters, numbers, spaces and underscores)
-        /// 
+        ///
         /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
         /// </remarks>
         /// <example>
@@ -419,7 +412,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// list :  abc
         ///         Abd
         ///         ace
-        /// 
+        ///
         /// returns : abc and Abd
         /// </example>
         public IEnumerable<ItemTemplate> GetItemsByPattern(string pattern, IEnumerable<ItemTemplate> list)
@@ -451,7 +444,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// When @ precede the pattern, then the case is ignored
         /// * is a joker, it can be placed at the begin or at the end or both
         /// it means that characters are ignored (include letters, numbers, spaces and underscores)
-        /// 
+        ///
         /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
         /// </remarks>
         /// <example>
@@ -459,7 +452,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// list :  abc
         ///         Abd
         ///         ace
-        /// 
+        ///
         /// returns : abc and Abd
         /// </example>
         public IEnumerable<ItemTemplate> GetItemsByPattern(string pattern)
@@ -474,7 +467,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// When @ precede the pattern, then the case is ignored
         /// * is a joker, it can be placed at the begin or at the end or both
         /// it means that characters are ignored (include letters, numbers, spaces and underscores)
-        /// 
+        ///
         /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
         /// </remarks>
         /// <example>
@@ -482,7 +475,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// list :  abc
         ///         Abd
         ///         ace
-        /// 
+        ///
         /// returns : abc and Abd
         /// </example>
         public IEnumerable<BasePlayerItem> GetItemsByPattern(string pattern, IEnumerable<BasePlayerItem> list)
@@ -507,7 +500,6 @@ namespace Stump.Server.WorldServer.Game.Items
             return list.Where(entry => Regex.Match(entry.Template.Name, pattern, ignorecase ? RegexOptions.IgnoreCase : RegexOptions.None).Success);
         }
 
-
         public void AddItemTemplate(ItemTemplate template)
         {
             m_itemTemplates.Add(template.Id, template);
@@ -520,6 +512,6 @@ namespace Stump.Server.WorldServer.Game.Items
             return !m_livingObjects.TryGetValue(id, out livingObjectRecord) ? null : livingObjectRecord;
         }
 
-        #endregion
+        #endregion Getters
     }
 }

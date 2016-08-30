@@ -1,15 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-using NLog;
+﻿using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace FakeClients
 {
@@ -18,7 +18,6 @@ namespace FakeClients
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private Socket m_socket;
-
 
         private MessagePart m_currentMessage;
 
@@ -29,6 +28,7 @@ namespace FakeClients
         private long m_totalBytesReceived;
 
         public event Action<FakeClient> Connected;
+
         public event Action<FakeClient, bool> Disconnected;
 
         public FakeClient(int id)
@@ -102,7 +102,6 @@ namespace FakeClients
             }
         }
 
-
         private void OnDisconnected(bool planned)
         {
             var evnt = Disconnected;
@@ -145,7 +144,7 @@ namespace FakeClients
 
             try
             {
-                args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
+                args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int)(stream.Position));
                 args.UserToken = stream;
 
                 if (!m_socket.SendAsync(args))
@@ -161,13 +160,13 @@ namespace FakeClients
                 stream.Dispose();
                 throw;
             }
-
         }
 
         private void OnSendCompleted(object sender, SocketAsyncEventArgs e)
         {
             e.Dispose();
         }
+
         private void ResumeReceive()
         {
             if (m_socket == null || !m_socket.Connected)
@@ -260,7 +259,6 @@ namespace FakeClients
                     }
                     throw;
                 }
-
 
                 OnMessageReceived(message);
 

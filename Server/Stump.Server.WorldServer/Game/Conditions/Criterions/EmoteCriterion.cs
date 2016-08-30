@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.DofusProtocol.Enums;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
@@ -30,6 +30,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
         public override string ToString()
         {
             return FormatToString(Identifier);
-        } 
+        }
     }
 }

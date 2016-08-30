@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
@@ -35,7 +35,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
         }
     }
 
-
     /// <summary>
     /// Only used for many to many relation
     /// </summary>
@@ -55,7 +54,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             get;
             set;
         }
-        
+
         public int MonsterGradeId
         {
             get;

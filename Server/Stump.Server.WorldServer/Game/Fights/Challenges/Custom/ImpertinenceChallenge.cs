@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             }
 
             m_team = Fight.DefendersTeam is FightMonsterTeam ? Fight.DefendersTeam : Fight.ChallengersTeam;
-            if (id == (int) ChallengeEnum.COLLANT)
+            if (id == (int)ChallengeEnum.COLLANT)
                 m_team = m_team.OpposedTeam;
         }
 

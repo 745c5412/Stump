@@ -1,11 +1,11 @@
-﻿using System;
-using Stump.Core.Threading;
+﻿using Stump.Core.Threading;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -135,15 +135,17 @@ namespace Stump.Server.WorldServer.Game.Fights
                 case EffectGenerationType.MaxEffects:
                     Amount = BaseMaxDamages;
                     break;
+
                 case EffectGenerationType.MinEffects:
                     Amount = BaseMinDamages;
                     break;
-                default:
-                {
-                    var rand = new AsyncRandom();
 
-                    Amount = rand.Next(BaseMinDamages, BaseMaxDamages + 1);
-                }
+                default:
+                    {
+                        var rand = new AsyncRandom();
+
+                        Amount = rand.Next(BaseMinDamages, BaseMaxDamages + 1);
+                    }
                     break;
             }
         }

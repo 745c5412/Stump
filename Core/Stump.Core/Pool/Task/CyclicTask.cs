@@ -1,6 +1,6 @@
-﻿using System;
-using NLog;
+﻿using NLog;
 using Stump.Core.Threading;
+using System;
 
 namespace Stump.Core.Pool.Task
 {
@@ -10,7 +10,7 @@ namespace Stump.Core.Pool.Task
 
         public delegate bool Predicate();
 
-        #endregion
+        #endregion Delegates
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -89,7 +89,7 @@ namespace Stump.Core.Pool.Task
         {
             get
             {
-                return ( !m_callsLimit.HasValue || m_callsCount < m_callsLimit ) && !m_cancel;
+                return (!m_callsLimit.HasValue || m_callsCount < m_callsLimit) && !m_cancel;
             }
         }
 
@@ -105,7 +105,7 @@ namespace Stump.Core.Pool.Task
 
         private void Compute()
         {
-            var delay = (int) (m_callsCount == 0 && m_firstCallDelay != default(TimeSpan) ?
+            var delay = (int)(m_callsCount == 0 && m_firstCallDelay != default(TimeSpan) ?
                 m_firstCallDelay.TotalMilliseconds : m_intervalDelay.TotalMilliseconds);
 
             System.Threading.Tasks.Task.Factory.StartNewDelayed(delay,

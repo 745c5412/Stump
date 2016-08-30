@@ -1,11 +1,10 @@
+using Stump.Core.Extensions;
+using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Extensions;
-using Stump.Server.WorldServer.Database.Items;
-using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -53,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public delegate void ItemStackChangedEventHandler(ItemsCollection<T> sender, T item, int difference);
 
-        #endregion
+        #endregion Delegates
 
         protected ItemsCollection()
         {
@@ -130,7 +129,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
         }
 
-        #endregion
+        #endregion Events
 
         /// <summary>
         /// Add an item to the collection
@@ -208,7 +207,6 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
-
         /// <summary>
         /// Delete an item persistently.
         /// </summary>
@@ -262,7 +260,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public void DeleteAll(bool notify = true)
         {
             if (notify)
-                foreach(var item in this)
+                foreach (var item in this)
                     NotifyItemRemoved(item, true);
 
             ItemsToDelete = new Queue<T>(ItemsToDelete.Concat(Items.Values));
@@ -272,7 +270,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public virtual bool IsStackable(T item, out T stackableWith)
         {
             T stack;
-            if (( stack = TryGetItem(item.Template, item.Effects) ) != null)
+            if ((stack = TryGetItem(item.Template, item.Effects)) != null)
             {
                 stackableWith = stack;
                 return true;
@@ -312,10 +310,10 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         public T TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects)
-        {   
+        {
             var entries = from entry in Items.Values
-                                        where entry.Template.Id == template.Id && effects.CompareEnumerable(entry.Effects)
-                                        select entry;
+                          where entry.Template.Id == template.Id && effects.CompareEnumerable(entry.Effects)
+                          select entry;
 
             return entries.FirstOrDefault();
         }

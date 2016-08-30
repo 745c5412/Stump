@@ -22,7 +22,7 @@ namespace Stump.Core.Reflection
             var parameters = ctor.GetParameters().Select(param => Expression.Parameter(param.ParameterType)).ToList();
 
             var lamba = Expression.Lambda(Expression.New(ctor, parameters), parameters);
-            
+
             return lamba.Compile();
         }
 
@@ -62,7 +62,6 @@ namespace Stump.Core.Reflection
 
             ilGenerator.Emit(OpCodes.Ret);
             return dynamicMethod.CreateDelegate(Expression.GetActionType(new[] { typeof(object) }.Concat(delegParams).ToArray()));
-
         }
 
         public static Delegate CreateFuncDelegate(this MethodInfo method, Type returnType, params Type[] delegParams)
@@ -106,10 +105,8 @@ namespace Stump.Core.Reflection
                 else
                     throw new Exception(string.Format("Cannot cast {0} to {1}", method.ReturnType.Name, returnType));
 
-
             ilGenerator.Emit(OpCodes.Ret);
-            return dynamicMethod.CreateDelegate(Expression.GetFuncType(new[] { typeof(object) }.Concat(delegParams).Concat(new[] {returnType}).ToArray()));
-
+            return dynamicMethod.CreateDelegate(Expression.GetFuncType(new[] { typeof(object) }.Concat(delegParams).Concat(new[] { returnType }).ToArray()));
         }
     }
 }

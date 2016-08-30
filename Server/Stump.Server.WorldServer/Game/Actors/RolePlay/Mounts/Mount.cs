@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
@@ -14,6 +10,10 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Handlers.Mounts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 {
@@ -35,7 +35,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         [Variable(true)]
         public static int RequiredLevel = 60;
-
 
         public Mount(Character character, MountRecord record)
         {
@@ -61,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 Paddock = PaddockManager.Instance.GetPaddock(Record.PaddockId.Value);
             m_effects = MountManager.Instance.GetMountEffects(this);
         }
-        
+
         public void Save(ORM.Database database)
         {
             if (IsDirty || Record.IsNew)
@@ -91,7 +90,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             get { return Record.IsDirty; }
             set { Record.IsDirty = value; }
         }
-
 
         public int Id
         {
@@ -314,7 +312,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public int PodsMax
         {
-            get { return Record.Template.PodsBase + Record.Template.PodsPerLevel*Level; }
+            get { return Record.Template.PodsBase + Record.Template.PodsPerLevel * Level; }
         }
 
         public int FecondationTime
@@ -322,7 +320,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             get { return 0; }
         }
 
-        #endregion
+        #endregion Properties
 
         public void ApplyMountEffects(bool send = true)
         {
@@ -357,7 +355,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
             MountHandler.SendMountRenamedMessage(Owner.Client, Id, name);
         }
-        
+
         public void Sterelize(Character character)
         {
             character.EquippedMount.ReproductionCount = -1;
@@ -370,7 +368,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
             MountHandler.SendMountXpRatioMessage(character.Client, GivenExperience);
         }
-        
+
         public void AddXP(Character character, long experience)
         {
             Experience += experience;
@@ -386,7 +384,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public void AddBehavior(MountBehaviorEnum behavior)
         {
-            Record.Behaviors.Add((int) behavior);
+            Record.Behaviors.Add((int)behavior);
         }
 
         protected virtual void OnLevelChanged(Character character)
@@ -433,7 +431,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 experience = Experience,
                 experienceForLevel = ExperienceLevelFloor,
                 experienceForNextLevel = ExperienceNextLevelFloor,
-                level = (sbyte) Level,
+                level = (sbyte)Level,
                 maxPods = PodsMax,
                 stamina = Stamina,
                 staminaMax = StaminaMax,
@@ -456,8 +454,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         }
 
         public MountInformationsForPaddock GetMountInformationsForPaddock()
-            => new MountInformationsForPaddock((sbyte) TemplateId, Name, Record.OwnerName);
+            => new MountInformationsForPaddock((sbyte)TemplateId, Name, Record.OwnerName);
 
-        #endregion
+        #endregion Network
     }
 }

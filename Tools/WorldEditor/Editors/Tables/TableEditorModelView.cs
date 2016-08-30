@@ -1,38 +1,38 @@
 ﻿#region License GNU GPL
+
 // TableEditor.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using DBSynchroniser;
+using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.ORM;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
-using DBSynchroniser;
-using Stump.Core.I18N;
-using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.ORM;
-using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using WorldEditor.Database;
-using System.Linq;
 using WorldEditor.Editors.Files.D2O;
 using WorldEditor.Helpers;
 using WorldEditor.Helpers.Converters;
@@ -51,7 +51,7 @@ namespace WorldEditor.Editors.Tables
         private readonly List<string> m_searchProperties = new List<string>();
         private ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
         private readonly Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
-        private readonly Dictionary<object, EditedObject> m_editedObjects = new Dictionary<object, EditedObject>(); 
+        private readonly Dictionary<object, EditedObject> m_editedObjects = new Dictionary<object, EditedObject>();
         private readonly TableEditor m_editor;
 
         public TableEditorModelView(TableEditor editor, D2OTable table)
@@ -61,7 +61,6 @@ namespace WorldEditor.Editors.Tables
             GenerateColumns();
             LoadTable();
         }
-
 
         public ReadOnlyObservableCollection<object> Rows
         {
@@ -89,15 +88,14 @@ namespace WorldEditor.Editors.Tables
 
         private void LoadTable()
         {
-            var method = typeof (Stump.ORM.Database).GetMethodExt("Fetch", 1, new[] {typeof (Sql)});
+            var method = typeof(Stump.ORM.Database).GetMethodExt("Fetch", 1, new[] { typeof(Sql) });
             var generic = method.MakeGenericMethod(m_table.Type);
             var rows = ((IList)generic.Invoke(DatabaseManager.Instance.Database,
-                                              new object[] {new Sql("SELECT * FROM `" + m_table.TableName + "`")}));
+                                              new object[] { new Sql("SELECT * FROM `" + m_table.TableName + "`") }));
 
             m_rows = new ObservableCollection<object>(rows.OfType<object>());
             m_readOnylRows = new ReadOnlyObservableCollection<object>(m_rows);
         }
-
 
         private void GenerateColumns()
         {
@@ -141,7 +139,7 @@ namespace WorldEditor.Editors.Tables
                     element.SetValue(FrameworkElement.MarginProperty, new Thickness(1));
                 }
                 column.CellTemplateSelector = new CellTemplateSelector
-                    {
+                {
                     Template = new DataTemplate(property.PropertyType)
                     {
                         VisualTree = element
@@ -190,16 +188,16 @@ namespace WorldEditor.Editors.Tables
 
         private bool CanRemove(object parameter)
         {
-            return parameter is IList && ( (IList)parameter ).Count > 0;
+            return parameter is IList && ((IList)parameter).Count > 0;
         }
 
         private void OnRemove(object parameter)
         {
             if (parameter == null || !CanRemove(parameter))
-                return;   
-            
+                return;
+
             // copy
-            var list = ( parameter as IList ).OfType<object>().ToArray();
+            var list = (parameter as IList).OfType<object>().ToArray();
 
             foreach (var item in list)
             {
@@ -208,8 +206,7 @@ namespace WorldEditor.Editors.Tables
             }
         }
 
-        #endregion
-
+        #endregion RemoveCommand
 
         #region AddCommand
 
@@ -235,7 +232,7 @@ namespace WorldEditor.Editors.Tables
                 {
                     property.SetValue(obj, Activator.CreateInstance(property.PropertyType));
                 }
-                if (property.PropertyType == typeof (string))
+                if (property.PropertyType == typeof(string))
                 {
                     property.SetValue(obj, string.Empty);
                 }
@@ -250,8 +247,7 @@ namespace WorldEditor.Editors.Tables
             OnObjectAdded(obj);
         }
 
-        #endregion
-
+        #endregion AddCommand
 
         #region SaveCommand
 
@@ -285,9 +281,11 @@ namespace WorldEditor.Editors.Tables
                 case ObjectState.Added:
                     DatabaseManager.Instance.Database.Insert(obj.Object);
                     break;
+
                 case ObjectState.Removed:
                     DatabaseManager.Instance.Database.Delete(obj.Object);
                     break;
+
                 case ObjectState.Dirty:
                     DatabaseManager.Instance.Database.Update(obj.Object);
                     break;
@@ -296,8 +294,7 @@ namespace WorldEditor.Editors.Tables
             obj.State = ObjectState.None;
         }
 
-        #endregion
-
+        #endregion SaveCommand
 
         #region FindCommand
 
@@ -325,7 +322,7 @@ namespace WorldEditor.Editors.Tables
         {
             get
             {
-                return m_findCommand ?? ( m_findCommand = new DelegateCommand(OnFind, CanFind) );
+                return m_findCommand ?? (m_findCommand = new DelegateCommand(OnFind, CanFind));
             }
         }
 
@@ -376,8 +373,8 @@ namespace WorldEditor.Editors.Tables
                 var value = getter(m_rows[i]);
                 if (isBool)
                 {
-                    if (( searchBool.HasValue && searchBool == (bool)value ) ||
-                        ( searchInteger.HasValue && (bool)value == ( searchInteger.Value != 0 ) ))
+                    if ((searchBool.HasValue && searchBool == (bool)value) ||
+                        (searchInteger.HasValue && (bool)value == (searchInteger.Value != 0)))
                     {
                         row = m_rows[i];
                         index = i;
@@ -461,9 +458,7 @@ namespace WorldEditor.Editors.Tables
             }
         }
 
-        #endregion
-
-
+        #endregion FindCommand
 
         #region FindNextCommand
 
@@ -473,7 +468,7 @@ namespace WorldEditor.Editors.Tables
         {
             get
             {
-                return m_findNextCommand ?? ( m_findNextCommand = new DelegateCommand(OnFindNext, CanFindNext) );
+                return m_findNextCommand ?? (m_findNextCommand = new DelegateCommand(OnFindNext, CanFindNext));
             }
         }
 
@@ -501,8 +496,7 @@ namespace WorldEditor.Editors.Tables
             }
         }
 
-        #endregion
-        
+        #endregion FindNextCommand
 
         #region GenerateEnumCommand
 
@@ -535,7 +529,7 @@ namespace WorldEditor.Editors.Tables
 
             var nameProperty =
                 m_table.Type.GetProperties().FirstOrDefault(x => x.GetCustomAttribute<I18NFieldAttribute>() != null);
-            var idProperty = 
+            var idProperty =
                 m_table.Type.GetProperties().FirstOrDefault(x => x.GetCustomAttribute<PrimaryKeyAttribute>() != null);
 
             var names = new Dictionary<string, int>();
@@ -543,13 +537,13 @@ namespace WorldEditor.Editors.Tables
             {
                 var nameId = nameProperty.GetValue(row);
                 var id = (int)idProperty.GetValue(row);
-                var nameRecord = I18NDataManager.Instance.GetText(nameId is uint ? (uint) nameId : (uint) (int) nameId);
+                var nameRecord = I18NDataManager.Instance.GetText(nameId is uint ? (uint)nameId : (uint)(int)nameId);
                 if (nameRecord == null)
                     continue;
 
                 var name = !string.IsNullOrEmpty(nameRecord.English) ? nameRecord.English : nameRecord.French;
 
-                var formattedName = name.Trim().ToUpper().Replace(" ", "_").Replace("\"", "").Replace("'", "_").Replace('-','_').
+                var formattedName = name.Trim().ToUpper().Replace(" ", "_").Replace("\"", "").Replace("'", "_").Replace('-', '_').
                     Replace("(", "_").Replace(")", "_").Replace("[", "_").Replace("]", "_");
                 if (names.ContainsKey(formattedName))
                 {
@@ -561,7 +555,7 @@ namespace WorldEditor.Editors.Tables
                 else names.Add(formattedName, id);
             }
 
-            foreach(var keyPair in names.OrderBy(x => x.Value))
+            foreach (var keyPair in names.OrderBy(x => x.Value))
                 builder.AppendLine(string.Format("\t\t{0} = {1},", keyPair.Key, keyPair.Value));
 
             builder.AppendLine("\t}");
@@ -570,7 +564,6 @@ namespace WorldEditor.Editors.Tables
             File.WriteAllText("./enums/" + m_table.ClassName + "Enum.cs", builder.ToString());
         }
 
-        #endregion
-
+        #endregion GenerateEnumCommand
     }
 }

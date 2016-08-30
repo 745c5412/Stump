@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -8,6 +6,8 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Items;
+using System;
+using System.Linq;
 
 namespace ArkalysPlugin
 {
@@ -31,8 +31,6 @@ namespace ArkalysPlugin
 
         [Variable]
         public static double BossFactor = 8;
-
-
 
         [Initialization(typeof(ItemManager))]
         public static void Initialize()
@@ -97,9 +95,8 @@ namespace ArkalysPlugin
             if (monster.Monster.Grade.GradeXp == 0)
                 return 0;
 
-
-             return (uint)Math.Floor(FormulasCoefficient * (monster.Monster.Template.IsBoss ? BossFactor : 1) * Math.Pow(monster.Level, FormulasExponent)) +
-                (uint)Math.Floor(Math.Pow(Math.Log(2 * monster.Level), 0.6));
+            return (uint)Math.Floor(FormulasCoefficient * (monster.Monster.Template.IsBoss ? BossFactor : 1) * Math.Pow(monster.Level, FormulasExponent)) +
+               (uint)Math.Floor(Math.Pow(Math.Log(2 * monster.Level), 0.6));
 
             // formulas based on xp
             //return (uint) Math.Floor(FormulasCoefficient*(monster.Monster.Template.IsBoss ? BossFactor : 1)*Math.Pow(monster.Monster.Grade.GradeXp, FormulasExponent));

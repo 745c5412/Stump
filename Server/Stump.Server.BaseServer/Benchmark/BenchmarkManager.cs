@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Stump.Core.Attributes;
+using Stump.Core.Pool;
+using Stump.Core.Reflection;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using Stump.Core.Attributes;
-using Stump.Core.Pool;
-using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Benchmark
 {
@@ -64,7 +64,6 @@ namespace Stump.Server.BaseServer.Benchmark
             {
                 m_entries.RemoveRange(0, EntriesLimit / 4);
             }
-
         }
 
         public void ClearResults()
@@ -81,7 +80,7 @@ namespace Stump.Server.BaseServer.Benchmark
 
             var builder = new StringBuilder();
 
-            builder.AppendFormat("Benchmarking report - {0} entries\n", m_entries.Count);  
+            builder.AppendFormat("Benchmarking report - {0} entries\n", m_entries.Count);
 
             foreach (var group in sortedEntries.GroupBy(x => x.MessageType))
             {

@@ -1,36 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows;
-using System.Windows.Media;
-using System.Diagnostics;
-using System.ComponentModel;
 using System.Windows.Input;
-using System.Collections.ObjectModel;
+using System.Windows.Media;
 
 namespace WorldEditor.Helpers
 {
     public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     {
-
         #region Fields
 
-        UIElementCollection _children;
-        ItemsControl _itemsControl;
-        IItemContainerGenerator _generator;
+        private UIElementCollection _children;
+        private ItemsControl _itemsControl;
+        private IItemContainerGenerator _generator;
         private Point _offset = new Point(0, 0);
         private Size _extent = new Size(0, 0);
         private Size _viewport = new Size(0, 0);
-        private int firstIndex=0;
+        private int firstIndex = 0;
         private Size childSize;
         private Size _pixelMeasuredViewport = new Size(0, 0);
-        Dictionary<UIElement, Rect> _realizedChildLayout = new Dictionary<UIElement, Rect>();
-        WrapPanelAbstraction _abstractPanel;
+        private Dictionary<UIElement, Rect> _realizedChildLayout = new Dictionary<UIElement, Rect>();
+        private WrapPanelAbstraction _abstractPanel;
 
-
-        #endregion
+        #endregion Fields
 
         #region Properties
 
@@ -42,7 +40,7 @@ namespace WorldEditor.Helpers
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Dependency Properties
 
@@ -82,7 +80,7 @@ namespace WorldEditor.Helpers
         public static readonly DependencyProperty ItemWidthProperty = DependencyProperty.Register("ItemWidth", typeof(double), typeof(VirtualizingWrapPanel), new FrameworkPropertyMetadata(double.PositiveInfinity));
         public static readonly DependencyProperty OrientationProperty = StackPanel.OrientationProperty.AddOwner(typeof(VirtualizingWrapPanel), new FrameworkPropertyMetadata(Orientation.Horizontal));
 
-        #endregion
+        #endregion Dependency Properties
 
         #region Methods
 
@@ -100,7 +98,7 @@ namespace WorldEditor.Helpers
                 _abstractPanel = null;
                 MeasureOverride(_viewport);
                 SetFirstRowViewItemIndex(firstIndex);
-                firstIndex = firstIndexCache;               
+                firstIndex = firstIndexCache;
             }
         }
 
@@ -160,7 +158,6 @@ namespace WorldEditor.Helpers
             if (Orientation == Orientation.Horizontal)
             {
                 _extent.Height = _abstractPanel.SectionCount + ViewportHeight - 1;
-
             }
             else
             {
@@ -382,8 +379,7 @@ namespace WorldEditor.Helpers
             (next as UIElement).Focus();
         }
 
-
-        #endregion
+        #endregion Methods
 
         #region Override
 
@@ -395,24 +391,27 @@ namespace WorldEditor.Helpers
                     NavigateDown();
                     e.Handled = true;
                     break;
+
                 case Key.Left:
                     NavigateLeft();
                     e.Handled = true;
                     break;
+
                 case Key.Right:
                     NavigateRight();
                     e.Handled = true;
                     break;
+
                 case Key.Up:
                     NavigateUp();
                     e.Handled = true;
                     break;
+
                 default:
                     base.OnKeyDown(e);
                     break;
             }
         }
-
 
         protected override void OnItemsChanged(object sender, ItemsChangedEventArgs args)
         {
@@ -463,7 +462,7 @@ namespace WorldEditor.Helpers
                 {
                     bool newlyRealized;
 
-                    // Get or create the child                    
+                    // Get or create the child
                     UIElement child = _generator.GenerateNext(out newlyRealized) as UIElement;
                     if (newlyRealized)
                     {
@@ -535,6 +534,7 @@ namespace WorldEditor.Helpers
 
             return availableSize;
         }
+
         protected override Size ArrangeOverride(Size finalSize)
         {
             if (_children != null)
@@ -548,11 +548,12 @@ namespace WorldEditor.Helpers
             return finalSize;
         }
 
-        #endregion
+        #endregion Override
 
         #region IScrollInfo Members
 
         private bool _canHScroll = false;
+
         public bool CanHorizontallyScroll
         {
             get { return _canHScroll; }
@@ -560,6 +561,7 @@ namespace WorldEditor.Helpers
         }
 
         private bool _canVScroll = false;
+
         public bool CanVerticallyScroll
         {
             get { return _canVScroll; }
@@ -691,6 +693,7 @@ namespace WorldEditor.Helpers
         }
 
         private ScrollViewer _owner;
+
         public ScrollViewer ScrollOwner
         {
             get { return _owner; }
@@ -755,11 +758,11 @@ namespace WorldEditor.Helpers
             get { return _viewport.Width; }
         }
 
-        #endregion
+        #endregion IScrollInfo Members
 
         #region helper data structures
 
-        class ItemAbstraction
+        private class ItemAbstraction
         {
             public ItemAbstraction(WrapPanelAbstraction panel, int index)
             {
@@ -767,11 +770,12 @@ namespace WorldEditor.Helpers
                 _index = index;
             }
 
-            WrapPanelAbstraction _panel;
+            private WrapPanelAbstraction _panel;
 
             public readonly int _index;
 
-            int _sectionIndex = -1;
+            private int _sectionIndex = -1;
+
             public int SectionIndex
             {
                 get
@@ -789,7 +793,8 @@ namespace WorldEditor.Helpers
                 }
             }
 
-            int _section = -1;
+            private int _section = -1;
+
             public int Section
             {
                 get
@@ -808,7 +813,7 @@ namespace WorldEditor.Helpers
             }
         }
 
-        class WrapPanelAbstraction : IEnumerable<ItemAbstraction>
+        private class WrapPanelAbstraction : IEnumerable<ItemAbstraction>
         {
             public WrapPanelAbstraction(int itemCount)
             {
@@ -883,7 +888,7 @@ namespace WorldEditor.Helpers
                 return Items.GetEnumerator();
             }
 
-            #endregion
+            #endregion IEnumerable<ItemAbstraction> Members
 
             #region IEnumerable Members
 
@@ -892,9 +897,9 @@ namespace WorldEditor.Helpers
                 return GetEnumerator();
             }
 
-            #endregion
+            #endregion IEnumerable Members
         }
 
-        #endregion
+        #endregion helper data structures
     }
 }

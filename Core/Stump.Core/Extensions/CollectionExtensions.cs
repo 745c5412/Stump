@@ -1,9 +1,9 @@
+using Stump.Core.Threading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Stump.Core.Threading;
 
 namespace Stump.Core.Extensions
 {
@@ -27,7 +27,7 @@ namespace Stump.Core.Extensions
 
             foreach (var t in bytes)
             {
-                output.Append((char) t);
+                output.Append((char)t);
             }
 
             return output.ToString();
@@ -148,7 +148,7 @@ namespace Stump.Core.Extensions
                         elements.RemoveAt(j);
                         break;
                     }
-                } 
+                }
             }
 
             return result;

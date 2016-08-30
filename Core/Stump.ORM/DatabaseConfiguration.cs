@@ -7,7 +7,6 @@ namespace Stump.ORM
     {
         public DatabaseConfiguration()
         {
-            
         }
 
         public DatabaseConfiguration(string host, string port, string user, string password, string dbName, string providerName)

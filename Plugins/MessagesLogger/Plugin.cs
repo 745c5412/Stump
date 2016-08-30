@@ -55,7 +55,6 @@ namespace MessagesLogger
 
         public override void Dispose()
         {
-
         }
 
         public static Plugin CurrentPlugin

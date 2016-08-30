@@ -1,5 +1,5 @@
-﻿using System;
-using ProtoBuf;
+﻿using ProtoBuf;
+using System;
 
 namespace Stump.Server.BaseServer.IPC.Messages
 {
@@ -8,7 +8,6 @@ namespace Stump.Server.BaseServer.IPC.Messages
     {
         public BanClientKeyAnswerMessage()
         {
-
         }
 
         public BanClientKeyAnswerMessage(bool banned, DateTime endDate)

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Misc;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Misc
 {
@@ -27,7 +27,6 @@ namespace Stump.Server.WorldServer.Game.Misc
         {
             var announce = new AutoAnnounceMessage { Color = color?.ToArgb(), Message = message };
             announce.AssignIdentifier();
-
 
             m_announces.Add(announce.Id, announce);
 

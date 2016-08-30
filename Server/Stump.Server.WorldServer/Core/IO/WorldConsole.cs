@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Stump.Server.WorldServer.Core.IO
 {
@@ -77,6 +77,7 @@ namespace Stump.Server.WorldServer.Core.IO
         }
 
         private readonly List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
+
         public List<KeyValuePair<string, Exception>> CommandsErrors
         {
             get

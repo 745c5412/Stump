@@ -1,22 +1,22 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Extensions;
 
 namespace Stump.ORM.SubSonic.Schema
 {
@@ -30,13 +30,14 @@ namespace Stump.ORM.SubSonic.Schema
         }
 
         public DatabaseTable(string name, IDataProvider provider)
-            : this(null, name, provider, null) {}
+            : this(null, name, provider, null) { }
 
         public DatabaseTable(string name, IDataProvider provider, string classname)
-            : this(null, name, provider, classname) {}
+            : this(null, name, provider, classname) { }
 
         public DatabaseTable(string schema, string name, IDataProvider provider) :
-            this(schema, name, provider, null) {}
+            this(schema, name, provider, null)
+        { }
 
         public DatabaseTable(string schema, string name, IDataProvider provider, string classname)
         {
@@ -52,7 +53,6 @@ namespace Stump.ORM.SubSonic.Schema
         {
             get { return Columns.Where(c => c.IsPrimaryKey).ToArray(); }
         }
-
 
         #region ITable Members
 
@@ -76,15 +76,15 @@ namespace Stump.ORM.SubSonic.Schema
             get
             {
                 IColumn result = null;
-                foreach(var col in Columns)
+                foreach (var col in Columns)
                 {
-                    if(!col.IsPrimaryKey && col.IsString & !col.IsForeignKey)
+                    if (!col.IsPrimaryKey && col.IsString & !col.IsForeignKey)
                     {
                         result = col;
                         break;
                     }
                 }
-                if(result == null)
+                if (result == null)
                     result = PrimaryKey;
 
                 return result;
@@ -115,18 +115,18 @@ namespace Stump.ORM.SubSonic.Schema
         }
 
         private IRelation[] _relations;
-        
-        public IEnumerable<IRelation> Relations 
+
+        public IEnumerable<IRelation> Relations
         {
-            get 
+            get
             {
                 if (_relations == null)
                 {
                     _relations = _relationFuncs.Select(x => x()).ToArray();
                 }
 
-                return _relations; 
-            } 
+                return _relations;
+            }
         }
 
         public bool HasRelations
@@ -171,8 +171,7 @@ namespace Stump.ORM.SubSonic.Schema
             return Provider.SchemaGenerator.BuildDropColumnStatement(Name, columnName);
         }
 
-        #endregion
-
+        #endregion ITable Members
 
         public override string ToString()
         {
@@ -180,19 +179,19 @@ namespace Stump.ORM.SubSonic.Schema
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public enum TableType
         {
             /// <summary>
-            /// 
+            ///
             /// </summary>
             Table,
+
             /// <summary>
-            /// 
+            ///
             /// </summary>
             View
         }
-
     }
 }

@@ -17,7 +17,6 @@ namespace ArkalysPlugin
             {
                 if (value && !m_active && Plugin.CurrentPlugin.Initialized)
                     Initialize();
-
                 else if (!value && m_active && Plugin.CurrentPlugin.Initialized)
                     TearDown();
 
@@ -31,7 +30,7 @@ namespace ArkalysPlugin
         [Variable(true)]
         public static string MessageAuthor = "L'équipe Arkalys";
 
-        [Initialization(typeof(World), Silent=true)]
+        [Initialization(typeof(World), Silent = true)]
         public static void Initialize()
         {
             World.Instance.CharacterJoined += OnCharacterJoined;

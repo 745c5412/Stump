@@ -44,15 +44,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 case 3287:
                     baseCoef = 0.3;
                     break;
+
                 case 3288:
                     baseCoef = 0.25;
                     break;
+
                 case 3289:
                     baseCoef = 0.2;
                     break;
             }
 
-            var coef = baseCoef + (0.02*(m_spell.CurrentLevel - 1));
+            var coef = baseCoef + (0.02 * (m_spell.CurrentLevel - 1));
             m_stats.Health.Base += (int)(((Summoner.Level - 1) * 5 + 55) * coef) + (int)((Summoner.MaxLifePoints) * coef);
 
             m_stats.Intelligence.Base += (short)(Summoner.Stats.Intelligence.Base * (1 + (Summoner.Level / 100d)));
@@ -92,11 +94,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var state = ((StateBuff)buff).State;
 
-            if ((state.Id == (int) SpellStatesEnum.Fire || state.Id == (int) SpellStatesEnum.Water
-                 || state.Id == (int) SpellStatesEnum.Earth) && Monster.Template.Id != 3287)
+            if ((state.Id == (int)SpellStatesEnum.Fire || state.Id == (int)SpellStatesEnum.Water
+                 || state.Id == (int)SpellStatesEnum.Earth) && Monster.Template.Id != 3287)
                 return false;
 
-            if (state.Id == (int) SpellStatesEnum.Magnatron && Monster.Template.Id != 3289)
+            if (state.Id == (int)SpellStatesEnum.Magnatron && Monster.Template.Id != 3289)
                 return false;
 
             return true;

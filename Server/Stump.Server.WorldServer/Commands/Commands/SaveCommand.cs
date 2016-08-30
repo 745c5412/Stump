@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public SaveWorldCommand()
         {
-            Aliases = new [] { "world" };
+            Aliases = new[] { "world" };
             Description = "Save world";
             RequiredRole = RoleEnum.Administrator;
             ParentCommandType = typeof(SaveCommand);

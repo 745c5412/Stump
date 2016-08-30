@@ -1,16 +1,16 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
 using System;
 
@@ -21,15 +21,14 @@ namespace Stump.ORM.SubSonic.Extensions
     /// </summary>
     public static class Dates
     {
-
-            public const string AGO = "ago";
-            public const string DAY = "day";
-            public const string HOUR = "hour";
-            public const string MINUTE = "minute";
-            public const string MONTH = "month";
-            public const string SECOND = "second";
-            public const string SPACE = " ";
-            public const string YEAR = "year";
+        public const string AGO = "ago";
+        public const string DAY = "day";
+        public const string HOUR = "hour";
+        public const string MINUTE = "minute";
+        public const string MONTH = "month";
+        public const string SECOND = "second";
+        public const string SPACE = " ";
+        public const string YEAR = "year";
 
         #region Date Math
 
@@ -121,8 +120,7 @@ namespace Stump.ORM.SubSonic.Extensions
             return DateTime.Now.Add(t);
         }
 
-        #endregion
-
+        #endregion Date Math
 
         #region Diffs
 
@@ -148,7 +146,7 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             DateTime dtOne;
             DateTime dtTwo;
-            if(DateTime.TryParse(dateOne, out dtOne) && DateTime.TryParse(dateTwo, out dtTwo))
+            if (DateTime.TryParse(dateOne, out dtOne) && DateTime.TryParse(dateTwo, out dtTwo))
                 return Diff(dtOne, dtTwo).TotalDays;
             return 0;
         }
@@ -174,7 +172,7 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             DateTime dtOne;
             DateTime dtTwo;
-            if(DateTime.TryParse(dateOne, out dtOne) && DateTime.TryParse(dateTwo, out dtTwo))
+            if (DateTime.TryParse(dateOne, out dtOne) && DateTime.TryParse(dateTwo, out dtTwo))
                 return Diff(dtOne, dtTwo).TotalHours;
             return 0;
         }
@@ -200,7 +198,7 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             DateTime dtOne;
             DateTime dtTwo;
-            if(DateTime.TryParse(dateOne, out dtOne) && DateTime.TryParse(dateTwo, out dtTwo))
+            if (DateTime.TryParse(dateOne, out dtOne) && DateTime.TryParse(dateTwo, out dtTwo))
                 return Diff(dtOne, dtTwo).TotalMinutes;
             return 0;
         }
@@ -233,65 +231,65 @@ namespace Stump.ORM.SubSonic.Extensions
             int months = endTime.Month - startTime.Month;
             int years = endTime.Year - startTime.Year;
 
-            if(seconds < 0)
+            if (seconds < 0)
             {
                 minutes--;
                 seconds += 60;
             }
-            if(minutes < 0)
+            if (minutes < 0)
             {
                 hours--;
                 minutes += 60;
             }
-            if(hours < 0)
+            if (hours < 0)
             {
                 days--;
                 hours += 24;
             }
 
-            if(days < 0)
+            if (days < 0)
             {
                 months--;
                 int previousMonth = (endTime.Month == 1) ? 12 : endTime.Month - 1;
                 int year = (previousMonth == 12) ? endTime.Year - 1 : endTime.Year;
                 days += DateTime.DaysInMonth(year, previousMonth);
             }
-            if(months < 0)
+            if (months < 0)
             {
                 years--;
                 months += 12;
             }
 
             //put this in a readable format
-            if(years > 0)
+            if (years > 0)
             {
                 result = years.Pluralize(YEAR);
-                if(months != 0)
+                if (months != 0)
                     result += ", " + months.Pluralize(MONTH);
                 result += " ago";
             }
-            else if(months > 0)
+            else if (months > 0)
             {
                 result = months.Pluralize(MONTH);
-                if(days != 0)
+                if (days != 0)
                     result += ", " + days.Pluralize(DAY);
                 result += " ago";
             }
-            else if(days > 0)
+            else if (days > 0)
             {
-				result = days.Pluralize(DAY);
-                if(hours != 0)
+                result = days.Pluralize(DAY);
+                if (hours != 0)
                     result += ", " + hours.Pluralize(HOUR);
                 result += " ago";
             }
-            else if(hours > 0)
+            else if (hours > 0)
             {
-				result = hours.Pluralize(HOUR);
-                if(minutes != 0)
+                result = hours.Pluralize(HOUR);
+                if (minutes != 0)
                     result += ", " + minutes.Pluralize(MINUTE);
                 result += " ago";
             }
-            else if(minutes > 0)
+            else if (minutes > 0)
                 result = minutes.Pluralize(MINUTE) + " ago";
             else
                 result = seconds.Pluralize(SECOND) + " ago";
@@ -299,8 +297,7 @@ namespace Stump.ORM.SubSonic.Extensions
             return result;
         }
 
-        #endregion
-
+        #endregion Diffs
 
         // many thanks to ASP Alliance for the code below
         // http://authors.aspalliance.com/olson/methods/
@@ -316,10 +313,10 @@ namespace Stump.ORM.SubSonic.Extensions
             TimeSpan ts = endTime - startTime;
             Console.WriteLine(ts.Days);
             int cnt = 0;
-            for(int i = 0; i < ts.Days; i++)
+            for (int i = 0; i < ts.Days; i++)
             {
                 DateTime dt = startTime.AddDays(i);
-                if(IsWeekDay(dt))
+                if (IsWeekDay(dt))
                     cnt++;
             }
             return cnt;
@@ -336,10 +333,10 @@ namespace Stump.ORM.SubSonic.Extensions
             TimeSpan ts = endTime - startTime;
             Console.WriteLine(ts.Days);
             int cnt = 0;
-            for(int i = 0; i < ts.Days; i++)
+            for (int i = 0; i < ts.Days; i++)
             {
                 DateTime dt = startTime.AddDays(i);
-                if(IsWeekEnd(dt))
+                if (IsWeekEnd(dt))
                     cnt++;
             }
             return cnt;
@@ -396,29 +393,29 @@ namespace Stump.ORM.SubSonic.Extensions
             int days = endTime.Day - startTime.Day;
             int months = endTime.Month - startTime.Month;
             int years = endTime.Year - startTime.Year;
-            if(seconds < 0)
+            if (seconds < 0)
             {
                 minutes--;
                 seconds += 60;
             }
-            if(minutes < 0)
+            if (minutes < 0)
             {
                 hours--;
                 minutes += 60;
             }
-            if(hours < 0)
+            if (hours < 0)
             {
                 days--;
                 hours += 24;
             }
-            if(days < 0)
+            if (days < 0)
             {
                 months--;
                 int previousMonth = (endTime.Month == 1) ? 12 : endTime.Month - 1;
                 int year = (previousMonth == 12) ? endTime.Year - 1 : endTime.Year;
                 days += DateTime.DaysInMonth(year, previousMonth);
             }
-            if(months < 0)
+            if (months < 0)
             {
                 years--;
                 months += 12;
@@ -454,11 +451,11 @@ namespace Stump.ORM.SubSonic.Extensions
             int dayNumber = date.Day;
             string suffix = "th";
 
-            if(dayNumber == 1 || dayNumber == 21 || dayNumber == 31)
+            if (dayNumber == 1 || dayNumber == 21 || dayNumber == 31)
                 suffix = "st";
-            else if(dayNumber == 2 || dayNumber == 22)
+            else if (dayNumber == 2 || dayNumber == 22)
                 suffix = "nd";
-            else if(dayNumber == 3 || dayNumber == 23)
+            else if (dayNumber == 3 || dayNumber == 23)
                 suffix = "rd";
 
             return String.Concat(dayNumber, suffix);
@@ -473,7 +470,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <returns></returns>
         private static string FormatString(this string str, string previousStr, int t)
         {
-            if((t == 0) && (previousStr.Length == 0))
+            if ((t == 0) && (previousStr.Length == 0))
                 return String.Empty;
 
             string suffix = (t == 1) ? String.Empty : "s";

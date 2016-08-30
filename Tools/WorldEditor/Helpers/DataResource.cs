@@ -16,8 +16,8 @@ namespace WorldEditor.Helpers
         ///     The identifier for the <see cref="BindingTarget" /> dependency property.
         /// </value>
         public static readonly DependencyProperty BindingTargetProperty = DependencyProperty.Register("BindingTarget",
-                                                                                                      typeof (object),
-                                                                                                      typeof (
+                                                                                                      typeof(object),
+                                                                                                      typeof(
                                                                                                           DataResource),
                                                                                                       new UIPropertyMetadata
                                                                                                           (null));
@@ -40,7 +40,7 @@ namespace WorldEditor.Helpers
         /// </returns>
         protected override Freezable CreateInstanceCore()
         {
-            return (Freezable) Activator.CreateInstance(GetType());
+            return (Freezable)Activator.CreateInstance(GetType());
         }
 
         /// <summary>
@@ -64,7 +64,6 @@ namespace WorldEditor.Helpers
 
         public DataResourceBindingExtension()
         {
-            
         }
 
         /// <summary>
@@ -101,7 +100,7 @@ namespace WorldEditor.Helpers
         /// </returns>
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            var target = (IProvideValueTarget) serviceProvider.GetService(typeof (IProvideValueTarget));
+            var target = (IProvideValueTarget)serviceProvider.GetService(typeof(IProvideValueTarget));
 
             mTargetObject = target.TargetObject;
             mTargetProperty = target.TargetProperty;
@@ -127,7 +126,7 @@ namespace WorldEditor.Helpers
                 var depProp = mTargetProperty as DependencyProperty;
                 if (depProp != null)
                 {
-                    var depObj = (DependencyObject) mTargetObject;
+                    var depObj = (DependencyObject)mTargetObject;
                     return depObj.GetValue(depProp);
                 }
             }
@@ -138,12 +137,12 @@ namespace WorldEditor.Helpers
         private void DataResource_Changed(object sender, EventArgs e)
         {
             // Ensure that the bound object is updated when DataResource changes.
-            var dataResource = (DataResource) sender;
+            var dataResource = (DataResource)sender;
             var depProp = mTargetProperty as DependencyProperty;
 
             if (depProp != null)
             {
-                var depObj = (DependencyObject) mTargetObject;
+                var depObj = (DependencyObject)mTargetObject;
                 object value = Convert(dataResource.BindingTarget, depProp.PropertyType);
                 depObj.SetValue(depProp, value);
             }

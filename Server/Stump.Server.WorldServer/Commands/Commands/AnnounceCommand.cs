@@ -1,11 +1,11 @@
-﻿using System.Drawing;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Misc;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Misc;
+using System.Drawing;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public AnnounceCommand()
         {
-            Aliases = new[] {"announce", "a"};
+            Aliases = new[] { "announce", "a" };
             Description = "Display an announce to all players";
             RequiredRole = RoleEnum.GameMaster_Padawan;
             AddParameter<string>("message", "msg", "The announce");
@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             var msg = trigger.Get<string>("msg");
             var formatMsg = trigger is GameTrigger
-                                ? string.Format("(ANNOUNCE) {0} : {1}", ((GameTrigger) trigger).Character.Name, msg)
+                                ? string.Format("(ANNOUNCE) {0} : {1}", ((GameTrigger)trigger).Character.Name, msg)
                                 : string.Format("(ANNOUNCE) {0}", msg);
 
             if (trigger.IsArgumentDefined("target"))
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public AutoAnnounceCommand()
         {
-            Aliases = new[] {"autoannounce"};
+            Aliases = new[] { "autoannounce" };
             Description = "Add an auto announce";
             RequiredRole = RoleEnum.GameMaster;
             AddParameter<string>("message", "msg");
@@ -70,9 +70,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public AutoAnnounceRemoveCommand()
         {
-            Aliases = new[] {"autoannounceremove"};
+            Aliases = new[] { "autoannounceremove" };
             Description = "Remove an auto announce";
-            RequiredRole  = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.GameMaster;
             AddParameter<int>("id", "id");
         }
 

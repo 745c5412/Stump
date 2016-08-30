@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Threading;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
@@ -16,13 +9,20 @@ using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Threading;
 
 namespace Stump.Server.WorldServer.Game
 {
@@ -112,7 +112,6 @@ namespace Stump.Server.WorldServer.Game
             m_superAreas = Database.Query<SuperAreaRecord>(SuperAreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
 
             SetLinks();
-
         }
 
         public void SpawnSpaces()
@@ -350,14 +349,16 @@ namespace Stump.Server.WorldServer.Game
 
         public void SpawnTaxCollectors()
         {
-            foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null
+            foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns()
+                                         where spawn.Map != null
                                          select new TaxCollectorNpc(spawn, spawn.Map.GetNextContextualId()))
             {
                 taxcollector.Guild.AddTaxCollector(taxcollector);
                 taxcollector.Map.Enter(taxcollector);
             }
         }
-        #endregion
+
+        #endregion Initialization
 
         #region Maps
 
@@ -450,12 +451,13 @@ namespace Stump.Server.WorldServer.Game
 
             return superArea;
         }
+
         public SuperArea GetSuperArea(string name)
         {
             return m_superAreas.Values.FirstOrDefault(entry => entry.Name == name);
         }
 
-        #endregion
+        #endregion Maps
 
         #region Actors
 
@@ -546,10 +548,10 @@ namespace Stump.Server.WorldServer.Game
 
             var name = pattern.Remove(0, 1);
 
-
             return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
                 Select(entry => entry.Character).SingleOrDefault();
         }
+
         public IEnumerable<Character> GetCharacters()
         {
             return m_charactersById.Values;
@@ -580,7 +582,7 @@ namespace Stump.Server.WorldServer.Game
         {
             WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendServerMessage(announce)));
         }
-        
+
         public void SendAnnounce(string announce, Color color)
         {
             WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendServerMessage(announce, color)));
@@ -591,7 +593,7 @@ namespace Stump.Server.WorldServer.Game
             WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendInformationMessage(type, messageId, parameters)));
         }
 
-        #endregion
+        #endregion Actors
 
         public void RegisterSaveableInstance(ISaveable instance)
         {
@@ -653,6 +655,7 @@ namespace Stump.Server.WorldServer.Game
         }
 
         private readonly List<Area> m_pausedAreas = new List<Area>();
+
         /// <summary>
         /// Has to be called from another thread !!
         /// </summary>
@@ -683,7 +686,6 @@ namespace Stump.Server.WorldServer.Game
             }
 
             m_pausedAreas.Clear();
-
 
             WorldServer.Instance.IOTaskPool.Start();
         }

@@ -7,7 +7,7 @@ namespace FakeClients
     {
         public FakeClientCommands()
         {
-            Aliases = new[] {"fakeclient"};
+            Aliases = new[] { "fakeclient" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Simulate clients on the server";
         }
@@ -17,10 +17,10 @@ namespace FakeClients
     {
         public ConnectClientsCommand()
         {
-            Aliases = new[] {"connect"};
+            Aliases = new[] { "connect" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Connect some clients on the server";
-            ParentCommandType = typeof (FakeClientCommands);
+            ParentCommandType = typeof(FakeClientCommands);
             AddParameter("count", "c", "Number of clients to connect", 1);
         }
 

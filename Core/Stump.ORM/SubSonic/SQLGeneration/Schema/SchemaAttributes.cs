@@ -1,44 +1,46 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.Schema;
 using System;
 using System.Data;
 using System.Linq;
-using Stump.ORM.SubSonic.Schema;
 
 namespace Stump.ORM.SubSonic.SQLGeneration.Schema
 {
     public interface IClassMappingAttribute
     {
         bool Accept(ITable table);
+
         void Apply(ITable table);
     }
 
     public interface IPropertyMappingAttribute
     {
         bool Accept(IColumn column);
+
         void Apply(IColumn column);
     }
 
-	[AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class TableNameAttribute : Attribute, IClassMappingAttribute
-	{
+    {
         public string TableName { get; set; }
 
         public TableNameAttribute(string tableName)
         {
-			TableName = tableName;
+            TableName = tableName;
         }
 
         public bool Accept(ITable table)
@@ -52,29 +54,29 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
         }
     }
 
-	[AttributeUsage(AttributeTargets.Property)]
-	public class ColumnAttribute : Attribute, IPropertyMappingAttribute
-	{
-		public string ColumnName { get; set; }
+    [AttributeUsage(AttributeTargets.Property)]
+    public class ColumnAttribute : Attribute, IPropertyMappingAttribute
+    {
+        public string ColumnName { get; set; }
 
-		public ColumnAttribute(string columnName)
-		{
-			ColumnName = columnName;
-		}
+        public ColumnAttribute(string columnName)
+        {
+            ColumnName = columnName;
+        }
 
-		public bool Accept(IColumn col)
-		{
-			return true;
-		}
+        public bool Accept(IColumn col)
+        {
+            return true;
+        }
 
-		public void Apply(IColumn col)
-		{
-			col.Name = ColumnName;
-		}
-	}
+        public void Apply(IColumn col)
+        {
+            col.Name = ColumnName;
+        }
+    }
 
     [AttributeUsage(AttributeTargets.Property)]
-    public class NullStringAttribute : Attribute, IPropertyMappingAttribute 
+    public class NullStringAttribute : Attribute, IPropertyMappingAttribute
     {
         public bool Accept(IColumn column)
         {
@@ -145,7 +147,6 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
     {
         public IndexAttribute()
         {
-            
         }
 
         public IndexAttribute(string name)
@@ -170,9 +171,9 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
             if (index == null || string.IsNullOrEmpty(Name))
             {
                 index = new DatabaseColumnIndex(column)
-                    {
-                        Name = Name
-                    };
+                {
+                    Name = Name
+                };
 
                 column.Table.Indexes.Add(index);
             }
@@ -185,7 +186,7 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
     public class StringLengthAttribute : Attribute, IPropertyMappingAttribute
     {
         public int Length { get; set; }
-        
+
         public StringLengthAttribute(int length)
         {
             Length = length;

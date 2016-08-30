@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         }
                     }
 
-                    var dodged = (short)( integerEffect.Value - value );
+                    var dodged = (short)(integerEffect.Value - value);
 
                     if (dodged > 0)
                     {

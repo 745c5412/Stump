@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System.Linq;
 using MapPaddock = Stump.Server.WorldServer.Game.Maps.Paddocks.Paddock;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
@@ -44,12 +44,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             InventoryHandler.SendExchangeStartOkMountMessage(Character.Client, stabledMounts, paddockedMounts);
         }
+
         public void Close()
         {
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
         }
 
-        #endregion
+        #endregion IDialog Members
     }
 }

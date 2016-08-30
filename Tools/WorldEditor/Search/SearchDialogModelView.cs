@@ -1,17 +1,15 @@
-﻿using System;
+﻿using DBSynchroniser;
+using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.ORM.SubSonic.Extensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using DBSynchroniser;
-using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.ORM;
-using Stump.ORM.SubSonic.Extensions;
 using WorldEditor.Helpers;
-using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Search
 {
@@ -19,14 +17,13 @@ namespace WorldEditor.Search
     {
         private readonly Type m_searchType;
 
-        private static readonly CriteriaOperator[] PrimitiveOperators = new []
+        private static readonly CriteriaOperator[] PrimitiveOperators = new[]
         { CriteriaOperator.EQ, CriteriaOperator.DIFFERENT, CriteriaOperator.GREATER, CriteriaOperator.GREATER_OR_EQ, CriteriaOperator.LESSER, CriteriaOperator.LESSER_OR_EQ};
 
         private static readonly CriteriaOperator[] StringOperators = new[]
             {CriteriaOperator.EQ, CriteriaOperator.DIFFERENT, CriteriaOperator.CONTAINS};
 
-        private static readonly CriteriaOperator[] ListOperators = new[] {CriteriaOperator.CONTAINS};
-
+        private static readonly CriteriaOperator[] ListOperators = new[] { CriteriaOperator.CONTAINS };
 
         private readonly ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
         private readonly ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
@@ -126,8 +123,7 @@ namespace WorldEditor.Search
             Results = FindMatches();
         }
 
-        #endregion
-
+        #endregion UpdateResultsCommand
 
         #region AddCriteriaCommand
 
@@ -151,7 +147,7 @@ namespace WorldEditor.Search
             Criterias.Add(CreateCriteria(m_searchProperties[0]));
         }
 
-        #endregion
+        #endregion AddCriteriaCommand
 
         #region RemoveCriteriaCommand
 
@@ -173,12 +169,12 @@ namespace WorldEditor.Search
             if (parameter == null || !CanRemoveCriteria(parameter))
                 return;
 
-            var criteria = (SearchCriteria) parameter;
+            var criteria = (SearchCriteria)parameter;
 
             Criterias.Remove(criteria);
         }
 
-        #endregion
+        #endregion RemoveCriteriaCommand
 
         #region EditItemCommand
 
@@ -198,9 +194,7 @@ namespace WorldEditor.Search
         {
         }
 
-
-        #endregion
-
+        #endregion EditItemCommand
 
         #region CopyItemCommand
 
@@ -220,7 +214,7 @@ namespace WorldEditor.Search
         {
         }
 
-        #endregion
+        #endregion CopyItemCommand
 
         protected void LoadAvailableCriterias()
         {
@@ -235,13 +229,12 @@ namespace WorldEditor.Search
                 if (property.GetCustomAttribute<BinaryFieldAttribute>() != null)
                     continue;
 
-                if (property.PropertyType.IsPrimitive || property.PropertyType == typeof (string))
+                if (property.PropertyType.IsPrimitive || property.PropertyType == typeof(string))
                 {
                     var del = (Func<object, object>)property.GetGetMethod().CreateFuncDelegate(typeof(object));
                     m_searchProperties.Add(property.Name);
                     m_propertiesType.Add(property.Name, property.PropertyType);
 
-                    
                     if (property.GetCustomAttribute<I18NFieldAttribute>() != null)
                     {
                         var textPropertyName = property.Name.Replace("Id", "");
@@ -252,12 +245,13 @@ namespace WorldEditor.Search
                 }
             }
         }
+
         public virtual SearchCriteria CreateCriteria(string propertyName)
         {
             var criteria = new SearchCriteria
-                {
-                    ComparedProperty = propertyName,
-                };
+            {
+                ComparedProperty = propertyName,
+            };
 
             UpdateCriteria(criteria);
 
@@ -265,7 +259,6 @@ namespace WorldEditor.Search
 
             return criteria;
         }
-
 
         public virtual void UpdateCriteria(SearchCriteria searchCriteria)
         {
@@ -275,7 +268,7 @@ namespace WorldEditor.Search
             var property = m_searchType.GetProperty(searchCriteria.ComparedProperty);
 
             var isI18N = m_i18nProperties.ContainsKey(searchCriteria.ComparedProperty);
-            var type =  isI18N ? typeof(string) : property.PropertyType;
+            var type = isI18N ? typeof(string) : property.PropertyType;
             var operators = GetOperators(type);
 
             if (operators.Length == 0)
@@ -306,7 +299,7 @@ namespace WorldEditor.Search
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                foreach(SearchCriteria criteria in e.OldItems)
+                foreach (SearchCriteria criteria in e.OldItems)
                     criteria.PropertyChanged -= OnCriteriaPropertyChanged;
             }
         }
@@ -322,13 +315,13 @@ namespace WorldEditor.Search
         {
             if (type.IsPrimitive)
                 return PrimitiveOperators;
-            if (type == typeof (string))
+            if (type == typeof(string))
                 return StringOperators;
 
-            if (type.HasInterface(typeof (IList)) && type.IsGenericType)
+            if (type.HasInterface(typeof(IList)) && type.IsGenericType)
             {
                 var args = type.GetGenericArguments();
-                if (args.Length == 1 && args[0].IsPrimitive || args[0] == typeof (string))
+                if (args.Length == 1 && args[0].IsPrimitive || args[0] == typeof(string))
                     return ListOperators;
             }
 

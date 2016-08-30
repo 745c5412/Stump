@@ -3,8 +3,8 @@
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.IO;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -13,7 +13,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class DbExpressionWriter : ExpressionWriter
     {
-        Dictionary<TableAlias, int> aliasMap = new Dictionary<TableAlias, int>();
+        private Dictionary<TableAlias, int> aliasMap = new Dictionary<TableAlias, int>();
 
         protected DbExpressionWriter(TextWriter writer)
             : base(writer)
@@ -41,14 +41,19 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             {
                 case DbExpressionType.Projection:
                     return this.VisitProjection((ProjectionExpression)exp);
+
                 case DbExpressionType.ClientJoin:
                     return this.VisitClientJoin((ClientJoinExpression)exp);
+
                 case DbExpressionType.Select:
                     return this.VisitSelect((SelectExpression)exp);
+
                 case DbExpressionType.OuterJoined:
                     return this.VisitOuterJoined((OuterJoinedExpression)exp);
+
                 case DbExpressionType.Column:
                     return this.VisitColumn((ColumnExpression)exp);
+
                 default:
                     if (exp is DbExpression)
                     {
@@ -129,7 +134,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         protected virtual Expression VisitColumn(ColumnExpression column)
         {
             int iAlias;
-            string aliasName = 
+            string aliasName =
                 this.aliasMap.TryGetValue(column.Alias, out iAlias)
                 ? "A" + iAlias
                 : "A?";
@@ -143,4 +148,3 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         }
     }
 }
- 

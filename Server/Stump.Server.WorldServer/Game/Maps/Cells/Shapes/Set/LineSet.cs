@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Stump.DofusProtocol.Enums;
+using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
 {
@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
                 var vector = m_vectors[Direction];
                 for (var i = 0; i < Length; i++)
                 {
-                    yield return new MapPoint(Start.X + vector.X*i, Start.Y + vector.Y*i);
+                    yield return new MapPoint(Start.X + vector.X * i, Start.Y + vector.Y * i);
                 }
             }
         }
@@ -104,8 +104,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         {
             double dx = B.X - A.X;
             double dy = B.Y - A.Y;
-            var projection = dy*point.X - dx*point.Y + B.X*A.Y - B.Y*A.X;
-            return projection*projection/(dy*dy + dx*dx);
+            var projection = dy * point.X - dx * point.Y + B.X * A.Y - B.Y * A.X;
+            return projection * projection / (dy * dy + dx * dx);
         }
 
         private IEnumerable<MapPoint> Raytracing()

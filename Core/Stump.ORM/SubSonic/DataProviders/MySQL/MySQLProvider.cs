@@ -1,15 +1,15 @@
-﻿using System;
-using Stump.ORM.SubSonic.Query;
+﻿using Stump.ORM.SubSonic.Query;
 using Stump.ORM.SubSonic.Schema;
+using System;
 
 namespace Stump.ORM.SubSonic.DataProviders.MySQL
 {
-    class MySqlProvider : DbDataProvider
+    internal class MySqlProvider : DbDataProvider
     {
         public override string InsertionIdentityFetchString { get { return String.Empty; } }
 
         public MySqlProvider(string connectionString, string providerName) : base(connectionString, providerName)
-        {}
+        { }
 
         public override string QualifyTableName(ITable table)
         {
@@ -21,7 +21,7 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
             string qualifiedFormat;
 
             qualifiedFormat = String.IsNullOrEmpty(column.SchemaName) ? "`{2}`" : "`{0}`.`{1}`.`{2}`";
-        
+
             return String.Format(qualifiedFormat, column.Table.SchemaName, column.Table.Name, column.Name);
         }
 

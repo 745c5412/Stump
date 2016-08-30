@@ -1,22 +1,19 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
+using System.Text;
 
 namespace Stump.DofusProtocol.Types
 {
     public class HouseInformationsInside
     {
         public const short Id = 218;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int houseId;
         public short modelId;
         public int ownerId;
@@ -25,11 +22,11 @@ namespace Stump.DofusProtocol.Types
         public short worldY;
         public uint price;
         public bool isLocked;
-        
+
         public HouseInformationsInside()
         {
         }
-        
+
         public HouseInformationsInside(int houseId, short modelId, int ownerId, string ownerName, short worldX, short worldY, uint price, bool isLocked)
         {
             this.houseId = houseId;
@@ -41,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             this.price = price;
             this.isLocked = isLocked;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(houseId);
@@ -53,7 +50,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUInt(price);
             writer.WriteBoolean(isLocked);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             houseId = reader.ReadInt();
@@ -75,12 +72,10 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 4294967295");
             isLocked = reader.ReadBoolean();
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short) + sizeof(short) + sizeof(uint) + sizeof(bool);
         }
-        
     }
-    
 }

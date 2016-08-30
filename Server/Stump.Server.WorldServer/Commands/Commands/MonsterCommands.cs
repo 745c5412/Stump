@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Patterns;
@@ -7,12 +5,13 @@ using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Monsters;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
+using System.Collections.Generic;
+using System.Linq;
 using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -42,7 +41,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             AddParameter<short>("cell", "cell", "Cell id", isOptional: true);
             AddParameter("direction", "dir", "Direction", isOptional: true, converter: ParametersConverter.GetEnumConverter<DirectionsEnum>());
         }
-
 
         public override void Execute(TriggerBase trigger)
         {
@@ -114,7 +112,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             AddParameter<sbyte>("grade", "g", "Monster grade", isOptional: true);
         }
 
-
         public override void Execute(TriggerBase trigger)
         {
             var template = trigger.Get<MonsterTemplate>("monster");
@@ -152,7 +149,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             AddParameter("subarea", "subarea", "If defined spawn a monster on each map", isOptional: true, converter: ParametersConverter.SubAreaConverter);
         }
 
-
         public override void Execute(TriggerBase trigger)
         {
             Map map = null;
@@ -188,7 +184,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 else
                     trigger.ReplyError("Spawns limit reached");
             }
-
             else if (subarea != null)
             {
                 var i = subarea.Maps.Select(subMap => subMap.SpawningPools.OfType<ClassicalSpawningPool>().FirstOrDefault()).Where(pool => pool != null).Count(pool => pool.SpawnNextGroup());
@@ -249,22 +244,20 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 foreach (var monster in subarea.Maps.SelectMany(x => x.Actors.OfType<MonsterGroup>()))
                 {
-                    monster.AgeBonus = (short) bonus;
+                    monster.AgeBonus = (short)bonus;
                 }
-
             }
             else
             {
                 foreach (var monster in World.Instance.GetMaps().SelectMany(x => x.Actors.OfType<MonsterGroup>()))
                 {
-                    monster.AgeBonus = (short) bonus;
+                    monster.AgeBonus = (short)bonus;
                 }
             }
 
             trigger.Reply("Monsters stars set to " + bonus);
         }
     }
-
 
     #region Static Monsters
 
@@ -374,7 +367,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Map map;
             if (!trigger.IsArgumentDefined("map"))
                 if (trigger is GameTrigger)
-                    map = ((GameTrigger) trigger).Character.Map;
+                    map = ((GameTrigger)trigger).Character.Map;
                 else
                 {
                     trigger.ReplyError("No map defined");
@@ -434,7 +427,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Map map;
             if (!trigger.IsArgumentDefined("map"))
                 if (trigger is GameTrigger)
-                    map = ((GameTrigger) trigger).Character.Map;
+                    map = ((GameTrigger)trigger).Character.Map;
                 else
                 {
                     trigger.ReplyError("No map defined");
@@ -490,6 +483,5 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    #endregion
-
+    #endregion Static Monsters
 }

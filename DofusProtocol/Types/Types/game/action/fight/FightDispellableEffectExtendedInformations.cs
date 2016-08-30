@@ -1,37 +1,33 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class FightDispellableEffectExtendedInformations
     {
         public const short Id = 208;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public short actionId;
         public int sourceId;
         public Types.AbstractFightDispellableEffect effect;
-        
+
         public FightDispellableEffectExtendedInformations()
         {
         }
-        
+
         public FightDispellableEffectExtendedInformations(short actionId, int sourceId, Types.AbstractFightDispellableEffect effect)
         {
             this.actionId = actionId;
             this.sourceId = sourceId;
             this.effect = effect;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(actionId);
@@ -39,7 +35,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(effect.TypeId);
             effect.Serialize(writer);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             actionId = reader.ReadShort();
@@ -49,12 +45,10 @@ namespace Stump.DofusProtocol.Types
             effect = Types.ProtocolTypeManager.GetInstance<Types.AbstractFightDispellableEffect>(reader.ReadShort());
             effect.Deserialize(reader);
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + sizeof(int) + sizeof(short) + effect.GetSerializationSize();
         }
-        
     }
-    
 }

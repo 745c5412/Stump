@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
 {
@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
             if (!(Fighter is SummonedMonster))
                 return;
 
-            var barrel = (SummonedMonster) Fighter;
+            var barrel = (SummonedMonster)Fighter;
 
             var spellBeuverie = barrel.Spells.FirstOrDefault(x => x.Value.Template.Id == (int)SpellIdEnum.BEUVERIE).Value;
             var spellTournee = barrel.Spells.FirstOrDefault(x => x.Value.Template.Id == (int)SpellIdEnum.TOURNÉE_GÉNÉRALE).Value;
@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
                 return;
             }
 
-            if (!barrel.Summoner.HasState((int) SpellStatesEnum.Drunk) ||
+            if (!barrel.Summoner.HasState((int)SpellStatesEnum.Drunk) ||
                 !barrel.Summoner.Position.Point.IsOnSameLine(barrel.Position.Point))
                 return;
 

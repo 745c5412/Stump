@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
@@ -15,6 +10,11 @@ using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 
 namespace Stump.Server.AuthServer.Managers
 {
@@ -39,6 +39,7 @@ namespace Stump.Server.AuthServer.Managers
         [Variable(true)]
 #if DEBUG
         public static bool CheckPassword;
+
 #else
         public static bool CheckPassword = true;
 #endif
@@ -113,16 +114,16 @@ namespace Stump.Server.AuthServer.Managers
         public WorldServer CreateWorld(WorldServerData worldServerData)
         {
             var record = new WorldServer
-                              {
-                                  Id = worldServerData.Id,
-                                  Name = worldServerData.Name,
-                                  RequireSubscription = worldServerData.RequireSubscription,
-                                  RequiredRole = worldServerData.RequiredRole,
-                                  CharCapacity = worldServerData.Capacity,
-                                  ServerSelectable = true,
-                                  Address = worldServerData.Address,
-                                  Port = worldServerData.Port,
-                              };
+            {
+                Id = worldServerData.Id,
+                Name = worldServerData.Name,
+                RequireSubscription = worldServerData.RequireSubscription,
+                RequiredRole = worldServerData.RequiredRole,
+                CharCapacity = worldServerData.Capacity,
+                ServerSelectable = true,
+                Address = worldServerData.Address,
+                Port = worldServerData.Port,
+            };
 
             if (!m_realmlist.TryAdd(record.Id, record))
                 throw new Exception("Server already registered");
@@ -231,8 +232,8 @@ namespace Stump.Server.AuthServer.Managers
 
         public GameServerInformations GetServerInformation(AuthClient client, WorldServer world)
         {
-            return new GameServerInformations((ushort) world.Id, (sbyte) world.Status,
-                                              (sbyte) world.Completion,
+            return new GameServerInformations((ushort)world.Id, (sbyte)world.Status,
+                                              (sbyte)world.Completion,
                                               world.ServerSelectable,
                                               client.Account.GetCharactersCountByWorld(world.Id),
                                               DateTime.Now.GetUnixTimeStampLong());
@@ -267,7 +268,6 @@ namespace Stump.Server.AuthServer.Managers
 
                 logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
             }
-
         }
 
         /// <summary>

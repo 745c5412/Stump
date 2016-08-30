@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Stump.Server.WorldServer.Game.Conditions.Criterions;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Stump.Server.WorldServer.Game.Conditions.Criterions;
 
 namespace Stump.Server.WorldServer.Game.Conditions
 {
@@ -90,7 +90,6 @@ namespace Stump.Server.WorldServer.Game.Conditions
                 {
                     builder.Append(String[i]);
                 }
-
                 else
                 {
                     if (String[i] != ' ')

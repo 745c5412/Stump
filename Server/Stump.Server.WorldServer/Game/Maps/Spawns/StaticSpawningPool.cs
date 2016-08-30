@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Maps.Spawns
 {
@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected override int GetNextSpawnInterval()
         {
-            return Interval*1000;
+            return Interval * 1000;
         }
 
         protected override MonsterGroup DequeueNextGroupToSpawn()

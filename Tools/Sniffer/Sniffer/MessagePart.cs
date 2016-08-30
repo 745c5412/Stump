@@ -1,5 +1,5 @@
-using System;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.Tools.Sniffer
 {
@@ -58,6 +58,7 @@ namespace Stump.Tools.Sniffer
             get { return m_data; }
             private set { m_data = value; }
         }
+
         /// <summary>
         /// Build or continue building the message. Returns true if the resulted message is valid and ready to be parsed
         /// </summary>
@@ -88,7 +89,7 @@ namespace Stump.Tools.Sniffer
                 // 3..0 or 2..0 or 1..0
                 for (int i = LengthBytesCount.Value - 1; i >= 0; i--)
                 {
-                    Length |= reader.ReadByte() << ( i * 8 );
+                    Length |= reader.ReadByte() << (i * 8);
                 }
             }
 
@@ -121,7 +122,7 @@ namespace Stump.Tools.Sniffer
                     //Debug.WriteLine("BytesAvailable = " + reader.BytesAvailable + " ; Data.Length = " + Data.Length);
 
                     int lastLength = m_data.Length;
-                    Array.Resize(ref m_data, (int)( Data.Length + reader.BytesAvailable ));
+                    Array.Resize(ref m_data, (int)(Data.Length + reader.BytesAvailable));
                     var array = reader.ReadBytes((int)reader.BytesAvailable);
                     //Debug.WriteLine("array content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
 

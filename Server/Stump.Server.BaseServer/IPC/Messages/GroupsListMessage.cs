@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using ProtoBuf;
+﻿using ProtoBuf;
 using Stump.Server.BaseServer.IPC.Objects;
+using System.Collections.Generic;
 
 namespace Stump.Server.BaseServer.IPC.Messages
 {
@@ -9,7 +9,6 @@ namespace Stump.Server.BaseServer.IPC.Messages
     {
         public GroupsListMessage()
         {
-            
         }
 
         public GroupsListMessage(List<UserGroupData> groups)

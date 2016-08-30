@@ -1,16 +1,16 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
 using System;
 using System.Globalization;
@@ -57,7 +57,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsAlphaNumeric(this string evalString, bool allowSpaces)
         {
-            if(allowSpaces)
+            if (allowSpaces)
                 return !Regex.IsMatch(evalString, RegexPattern.ALPHA_NUMERIC_SPACE);
             return IsAlphaNumeric(evalString);
         }
@@ -230,7 +230,6 @@ namespace Stump.ORM.SubSonic.Extensions
             return Regex.IsMatch(password, RegexPattern.STRONG_PASSWORD);
         }
 
-
         #region Credit Cards
 
         /// <summary>
@@ -242,7 +241,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardAny(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_AMERICAN_EXPRESS) ||
@@ -266,7 +265,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardBigFour(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_AMERICAN_EXPRESS) ||
@@ -286,7 +285,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardAmericanExpress(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_AMERICAN_EXPRESS);
@@ -303,7 +302,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardCarteBlanche(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_CARTE_BLANCHE);
@@ -320,7 +319,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardDinersClub(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_DINERS_CLUB);
@@ -337,7 +336,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardDiscover(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_DISCOVER);
@@ -354,7 +353,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardEnRoute(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_EN_ROUTE);
@@ -371,7 +370,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardJCB(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_JCB);
@@ -388,7 +387,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardMasterCard(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_MASTER_CARD);
@@ -405,7 +404,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// </returns>
         public static bool IsCreditCardVisa(this string creditCard)
         {
-            if(CreditPassesFormatCheck(creditCard))
+            if (CreditPassesFormatCheck(creditCard))
             {
                 creditCard = CleanCreditCardNumber(creditCard);
                 return Regex.IsMatch(creditCard, RegexPattern.CREDIT_CARD_VISA);
@@ -433,10 +432,10 @@ namespace Stump.ORM.SubSonic.Extensions
         private static bool CreditPassesFormatCheck(this string creditCardNumber)
         {
             creditCardNumber = CleanCreditCardNumber(creditCardNumber);
-            if(creditCardNumber.IsInteger())
+            if (creditCardNumber.IsInteger())
             {
                 int[] numArray = new int[creditCardNumber.Length];
-                for(int i = 0; i < numArray.Length; i++)
+                for (int i = 0; i < numArray.Length; i++)
                     numArray[i] = Convert.ToInt16(creditCardNumber[i].ToString());
 
                 return IsValidLuhn(numArray);
@@ -455,12 +454,12 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             int sum = 0;
             bool alt = false;
-            for(int i = digits.Length - 1; i >= 0; i--)
+            for (int i = digits.Length - 1; i >= 0; i--)
             {
-                if(alt)
+                if (alt)
                 {
                     digits[i] *= 2;
-                    if(digits[i] > 9)
+                    if (digits[i] > 9)
                         digits[i] -= 9; // equivalent to adding the value of digits
                 }
                 sum += digits[i];
@@ -482,6 +481,6 @@ namespace Stump.ORM.SubSonic.Extensions
             return (double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out result));
         }
 
-        #endregion
+        #endregion Credit Cards
     }
 }

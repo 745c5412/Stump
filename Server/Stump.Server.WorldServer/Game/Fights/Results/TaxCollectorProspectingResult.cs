@@ -74,7 +74,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             return team is FightPlayerTeam;
         }
 
-
         public FightLoot Loot
         {
             get;
@@ -97,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public FightResultListEntry GetFightResultListEntry()
         {
-            return new FightResultTaxCollectorListEntry((short) Outcome, Loot.GetFightLoot(), Id, Alive,
+            return new FightResultTaxCollectorListEntry((short)Outcome, Loot.GetFightLoot(), Id, Alive,
                 TaxCollector.Guild.Level, TaxCollector.Guild.GetBasicGuildInformations(), Experience);
         }
 
@@ -129,7 +128,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             if (TaxCollector.GatheredExperience > TaxCollectorNpc.MaxGatheredXPTotal)
                 return;
 
-            var XP = (int) (experience * 0.1d); // own only a percent
+            var XP = (int)(experience * 0.1d); // own only a percent
 
             Experience += XP > TaxCollectorNpc.MaxGatheredXPFight ? TaxCollectorNpc.MaxGatheredXPFight : XP;
         }

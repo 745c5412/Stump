@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Attributes;
-using Stump.Core.Extensions;
+﻿using Stump.Core.Attributes;
 using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
-using Stump.Server.WorldServer.Game.Maps.Paddocks;
-using Stump.Server.WorldServer.Handlers.Mounts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 {
@@ -98,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public List<EffectInteger> GetMountEffects(Mount mount)
         {
-            return mount.Template.Bonuses.Select(x => new EffectInteger((EffectsEnum) x.EffectId, GetBonusByLevel(x.Amount, mount.Level))).ToList();
+            return mount.Template.Bonuses.Select(x => new EffectInteger((EffectsEnum)x.EffectId, GetBonusByLevel(x.Amount, mount.Level))).ToList();
         }
 
         public Mount CreateMount(Character owner, MountTemplate template)
@@ -124,7 +119,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
             return new Mount(owner, record);
         }
-        
+
         public BasePlayerItem StoreMount(Character character, Mount mount)
         {
             // null effect bypass initialization
@@ -136,7 +131,5 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             item.InitializeEffects(mount);
             return character.Inventory.AddItem(item);
         }
-        
-      
     }
 }

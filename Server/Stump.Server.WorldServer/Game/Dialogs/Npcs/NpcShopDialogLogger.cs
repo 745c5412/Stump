@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 {
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         public override bool BuyItem(int itemId, int amount)
         {
-            if (!base.BuyItem(itemId, amount)) 
+            if (!base.BuyItem(itemId, amount))
                 return false;
 
             var itemToSell = Items.FirstOrDefault(entry => entry.Item.Id == itemId);

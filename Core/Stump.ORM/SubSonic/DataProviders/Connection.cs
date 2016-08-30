@@ -1,16 +1,16 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
@@ -45,7 +45,7 @@ namespace Stump.ORM.SubSonic.DataProviders
         /// <summary>
         /// Indicates to the default DataProvider that it should use a per-thread shared connection.
         /// </summary>
-        public SharedDbConnectionScope() : this(ProviderFactory.GetProvider()) {}
+        public SharedDbConnectionScope() : this(ProviderFactory.GetProvider()) { }
 
         /// <summary>
         /// Indicates to the default DataProvider that it should use a per-thread shared connection using the given connection string.
@@ -63,18 +63,16 @@ namespace Stump.ORM.SubSonic.DataProviders
         /// <param name="dataProvider">The data provider.</param>
         public SharedDbConnectionScope(IDataProvider dataProvider)
         {
-            if(dataProvider == null)
+            if (dataProvider == null)
                 throw new ArgumentNullException("dataProvider");
 
             _dataProvider = dataProvider;
             _dataProvider.InitializeSharedConnection();
 
-            if(__instances == null)
+            if (__instances == null)
                 __instances = new Stack<SharedDbConnectionScope>();
             __instances.Push(this);
         }
-
-
 
         /// <summary>
         /// Provides access to underlying connection that is shared per thread
@@ -84,7 +82,6 @@ namespace Stump.ORM.SubSonic.DataProviders
         {
             get { return _dataProvider.CurrentSharedConnection; }
         }
-
 
         #region IDisposable Members
 
@@ -97,8 +94,7 @@ namespace Stump.ORM.SubSonic.DataProviders
             GC.SuppressFinalize(this);
         }
 
-        #endregion
-
+        #endregion IDisposable Members
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -106,15 +102,15 @@ namespace Stump.ORM.SubSonic.DataProviders
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         public void Dispose(bool disposing)
         {
-            if(!_disposed)
+            if (!_disposed)
             {
-                if(disposing)
+                if (disposing)
                 {
                     // remove this instance from the stack
                     __instances.Pop();
 
                     // if we are the last instance, reset the connection
-                    if(__instances.Count == 0)
+                    if (__instances.Count == 0)
                         _dataProvider.ResetSharedConnection();
 
                     _disposed = true;
@@ -144,10 +140,10 @@ namespace Stump.ORM.SubSonic.DataProviders
         /// <param name="provider">The provider.</param>
         public AutomaticConnectionScope(IDataProvider provider)
         {
-            if(provider == null)
+            if (provider == null)
                 throw new ArgumentNullException("provider");
 
-            if(provider.CurrentSharedConnection != null)
+            if (provider.CurrentSharedConnection != null)
             {
                 _dbConnection = provider.CurrentSharedConnection;
                 _isUsingSharedConnection = true;
@@ -176,7 +172,6 @@ namespace Stump.ORM.SubSonic.DataProviders
             get { return _isUsingSharedConnection; }
         }
 
-
         #region IDisposable Members
 
         /// <summary>
@@ -188,8 +183,7 @@ namespace Stump.ORM.SubSonic.DataProviders
             GC.SuppressFinalize(this);
         }
 
-        #endregion
-
+        #endregion IDisposable Members
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -197,12 +191,12 @@ namespace Stump.ORM.SubSonic.DataProviders
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         public void Dispose(bool disposing)
         {
-            if(!_disposed)
+            if (!_disposed)
             {
-                if(disposing)
+                if (disposing)
                 {
                     // only dispose the connection if it is not a shared one
-                    if(!_isUsingSharedConnection)
+                    if (!_isUsingSharedConnection)
                         _dbConnection.Dispose();
                     _disposed = true;
                 }

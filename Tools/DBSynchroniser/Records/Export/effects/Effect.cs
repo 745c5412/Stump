@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:47
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -19,8 +13,10 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "Effects";
         public int id;
+
         [I18NField]
         public uint descriptionId;
+
         public int iconId;
         public int characteristic;
         public uint category;
@@ -39,7 +35,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -152,7 +147,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Effect)obj;
-            
+
             Id = castedObj.id;
             DescriptionId = castedObj.descriptionId;
             IconId = castedObj.iconId;
@@ -169,7 +164,7 @@ namespace DBSynchroniser.Records
             UseInFight = castedObj.useInFight;
             EffectPriority = castedObj.effectPriority;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Effect)parent : new Effect();
@@ -190,10 +185,9 @@ namespace DBSynchroniser.Records
             obj.effectPriority = EffectPriority;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

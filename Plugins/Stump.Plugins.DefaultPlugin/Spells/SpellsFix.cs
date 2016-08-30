@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -8,6 +6,8 @@ using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Linq;
 
 namespace Stump.Plugins.DefaultPlugin.Spells
 {
@@ -31,7 +31,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
             FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Delay = 1);
 
-            #endregion
+            #endregion FECA
 
             #region IOP
 
@@ -74,7 +74,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Precipitation (149)
             FixEffectOnAllLevels(149, 2, (level, effect, critical) => effect.Delay = 1, false);
 
-            #endregion
+            #endregion IOP
 
             #region SADIDA
 
@@ -86,9 +86,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // new skin 671 => 893 (todo find relation)
             FixEffectOnAllLevels(197, EffectsEnum.Effect_ChangeAppearance, (level, effect, critical) => effect.Value = 893);
 
-            #endregion
+            #endregion SADIDA
 
             #region CRA
+
             // punitive arrow (171)
             // duration buff = 3
             FixEffectOnAllLevels(171, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 3);
@@ -96,7 +97,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // atonement arrow (167)
             // duration buff = 4
             FixEffectOnAllLevels(167, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 4);
-            #endregion
+
+            #endregion CRA
 
             #region XELOR
 
@@ -104,7 +106,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // new skin 729 => 113 (todo find relation)
             FixEffectOnAllLevels(99, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 113);
 
-            #endregion
+            #endregion XELOR
 
             #region ENIRIPSA
 
@@ -128,7 +130,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // new skin -672 => -923 (todo find relation)
             FixEffectOnAllLevels(1679, EffectsEnum.Effect_ChangeAppearance, (level, effect, critical) => effect.Value = -923);
 
-            #endregion
+            #endregion ENIRIPSA
 
             #region ENUTROF
 
@@ -149,7 +151,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(425, 3, (level, effect, critical) => effect.Delay = 1, false);
             FixEffectOnAllLevels(425, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
 
-            #endregion
+            #endregion ENUTROF
 
             #region OSAMODAS
 
@@ -164,7 +166,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                     SpellTargetType.ENEMY_SUMMONS) : 0);
             });
 
-            #endregion
+            #endregion OSAMODAS
 
             #region ECAFLIP
 
@@ -190,7 +192,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Roulette (101)
             FixEffectOnAllLevels(101, 15, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
-            #endregion
+            #endregion ECAFLIP
 
             #region SRAM
 
@@ -198,7 +200,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // duration steal = 0
             FixEffectOnAllLevels(62, EffectsEnum.Effect_StealHPFire, (level, effect, critical) => effect.Duration = 0);
 
-            #endregion
+            #endregion SRAM
 
             #region SACRIEUR
 
@@ -211,7 +213,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(445, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
             //FixEffectOnAllLevels(445, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
 
-            #endregion
+            #endregion SACRIEUR
 
             #region PANDAWA
 
@@ -226,8 +228,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(689, 0, (level, effect, critical) => level.Effects.Move(effect, 1), false);
             FixCriticalEffectOnAllLevels(689, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 1));
 
-
-            #endregion
+            #endregion PANDAWA
 
             #region ROUBLARD
 
@@ -287,7 +288,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2795, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
 
             // Aimantation (2801)
-            //RemoveEffectOnAllLevels(2801, 1, false);            
+            //RemoveEffectOnAllLevels(2801, 1, false);
             // first effect for bombs only, second for all but self and bombs
             FixEffectOnAllLevels(2801, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS, false);
             FixEffectOnAllLevels(2801, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
@@ -338,7 +339,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Kaboom (2815)
             FixEffectOnAllLevels(2815, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
 
-            #endregion
+            #endregion ROUBLARD
 
             #region ZOBAL
 
@@ -409,7 +410,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2896, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             FixEffectOnAllLevels(2896, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
-            #endregion
+            #endregion ZOBAL
 
             #region STEAMER
 
@@ -619,7 +620,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(3282, 0, (level, effect, critical) => effect.Value = 3281, false);
             FixEffectOnAllLevels(3282, 1, (level, effect, critical) => effect.Value = 3282, false);
 
-            #endregion
+            #endregion STEAMER
 
             #region Elementary
 
@@ -630,9 +631,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(364, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
             FixEffectOnAllLevels(364, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
 
-            #endregion
+            #endregion Elementary
 
-            #region Monsters    
+            #region Monsters
 
             #region Boss
 
@@ -650,7 +651,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2701, EffectsEnum.Effect_Kill,
                 (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
-            #endregion
+            #endregion Korriandre
 
             #region Mansot Royal
 
@@ -659,7 +660,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2607, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
             RemoveEffectOnAllLevels(2607, 1, false);
 
-            #endregion
+            #endregion Mansot Royal
 
             #region Glourséleste
 
@@ -669,7 +670,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2261, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
             FixEffectOnAllLevels(2261, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
 
-            #endregion
+            #endregion Glourséleste
 
             #region Père Fwetar
 
@@ -690,9 +691,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // NONE => ONLY_SELF
             FixEffectOnAllLevels(2792, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
 
-            #endregion
+            #endregion Père Fwetar
 
-            #endregion
+            #endregion Boss
 
             #region Summon
 
@@ -701,28 +702,28 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Guigne (487)
             FixEffectOnAllLevels(487, EffectsEnum.Effect_HealHP_108, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
 
-            #endregion
+            #endregion Chaton
 
             #region Lapino
 
             // Lapino Boost (582)
             FixEffectOnAllLevels(582, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_SUMMONER);
 
-            #endregion
+            #endregion Lapino
 
             #region Tonneau
 
             // Beuverie (1674)
             FixEffectOnAllLevels(1674, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_SUMMONER, false);
 
-            #endregion
+            #endregion Tonneau
 
             #region LifeTree
 
             // Soin Sylvestre (1687)
             FixEffectOnAllLevels(1687, 0, (level, effect, critical) => effect.Duration = -1, false);
 
-            #endregion
+            #endregion LifeTree
 
             #region LivingChest
 
@@ -731,9 +732,16 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(495, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
             FixEffectOnAllLevels(495, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
 
-            #endregion
+            #endregion LivingChest
 
-            #endregion
+            #region Boar
+
+            // Skewering(2002)
+            FixEffectOnAllLevels(2002, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            #endregion Boar
+
+            #endregion Summon
 
             #region Monsters
 
@@ -745,7 +753,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(1999, EffectsEnum.Effect_StealAgility,
                 (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
 
-            #endregion
+            #endregion TOFU
 
             #region Boulglours
 
@@ -757,7 +765,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // ENEMY_ALL => ALLY_ALL
             FixEffectOnAllLevels(2485, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
-            #endregion
+            #endregion Boulglours
 
             #region Glouragan
 
@@ -779,7 +787,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // ENEMY_ALL => ALL
             FixEffectOnAllLevels(2490, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL, false);
 
-            #endregion
+            #endregion Glouragan
 
             #region Glourmand
 
@@ -788,7 +796,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2510, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
             FixEffectOnAllLevels(2510, 0, (level, effect, critical) => effect.Duration = 2, false);
 
-            #endregion
+            #endregion Glourmand
 
             #region Gloursaya
 
@@ -797,7 +805,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2258, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             FixEffectOnAllLevels(2258, 0, (level, effect, critical) => effect.Duration = 2);
 
-            #endregion
+            #endregion Gloursaya
 
             #region Meliglours
 
@@ -810,7 +818,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // ALLY_ALL => ENEMY_ALL
             FixEffectOnAllLevels(2494, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
 
-            #endregion
+            #endregion Meliglours
 
             #region Fistulor
 
@@ -822,7 +830,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // NONE => ALLY_ALL
             FixEffectOnAllLevels(2689, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
 
-            #endregion
+            #endregion Fistulor
 
             #region Fongeur
 
@@ -830,7 +838,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // NONE => ALLY_ALL
             FixEffectOnAllLevels(2690, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
-            #endregion
+            #endregion Fongeur
 
             #region Fu Mansot
 
@@ -838,7 +846,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2241, 2, (level, effect, critical) => level.Effects.Move(effect, 0), false);
             FixCriticalEffectOnAllLevels(2241, 2, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
 
-            #endregion
+            #endregion Fu Mansot
 
             #region Mansobèse
 
@@ -846,7 +854,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2237, 1, (level, effect, critical) => level.Effects.Move(effect, 0), false);
             FixCriticalEffectOnAllLevels(2237, 1, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
 
-            #endregion
+            #endregion Mansobèse
 
             #region Shamansot
 
@@ -854,7 +862,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2232, 2, (level, effect, critical) => level.Effects.Move(effect, 0), false);
             FixCriticalEffectOnAllLevels(2232, 2, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
 
-            #endregion
+            #endregion Shamansot
 
             #region Mérulette
 
@@ -862,7 +870,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // NONE => ALLY_ALL | SELF
             FixEffectOnAllLevels(2698, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
 
-            #endregion
+            #endregion Mérulette
 
             #region Boufmouth de Guerre
 
@@ -875,7 +883,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2220, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             FixEffectOnAllLevels(2220, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
 
-            #endregion
+            #endregion Boufmouth de Guerre
 
             #region Bouboule de Neige
 
@@ -883,7 +891,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // NONE => ENEMY_ALL
             FixEffectOnAllLevels(2220, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
-            #endregion
+            #endregion Bouboule de Neige
 
             #region Peluche Wabbit
 
@@ -897,21 +905,21 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2773, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
             FixCriticalEffectOnAllLevels(2773, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
 
-            #endregion
+            #endregion Peluche Wabbit
 
             #region Cadob'Omb
 
             // Jalousie maladive (893)
             FixEffectOnAllLevels(893, 5, (level, effect, critical) => level.Effects.Move(effect, 0), false);
 
-            #endregion
+            #endregion Cadob'Omb
 
             #region Tronkoblop
 
             // Blopzone (1167)
             FixEffectOnAllLevels(1167, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
 
-            #endregion
+            #endregion Tronkoblop
 
             #region Gloutoblop
 
@@ -919,7 +927,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(1164, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
             FixCriticalEffectOnAllLevels(1164, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
 
-            #endregion
+            #endregion Gloutoblop
 
             #region Poutch Ingball
 
@@ -930,12 +938,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(411, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
             FixEffectOnAllLevels(411, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
 
-            #endregion
+            #endregion Poutch Ingball
 
-            #endregion
+            #endregion Monsters
 
-            #endregion
-
+            #endregion Monsters
         }
 
         public static void FixSpellsTargets()
@@ -1065,7 +1072,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                 level.Effects.RemoveAt(effectIndex);
                 if (critical)
                     level.CriticalEffects.RemoveAt(effectIndex);
-
             }
         }
 

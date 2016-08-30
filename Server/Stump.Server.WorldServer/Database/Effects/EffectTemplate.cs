@@ -1,5 +1,5 @@
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Database.Effects
 
         public void AssignFields(object d2oObject)
         {
-            var effect = (Effect) d2oObject;
+            var effect = (Effect)d2oObject;
 
             Id = effect.id;
             DescriptionId = effect.descriptionId;
@@ -123,6 +123,6 @@ namespace Stump.Server.WorldServer.Database.Effects
             UseInFight = effect.useInFight;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -16,6 +12,10 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Stump.Server.WorldServer.Handlers.Approach
 {
@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                     }
                 }
             }
-            finally 
+            finally
             {
                 m_queueRefresherTask = Task.Factory.StartNewDelayed(3000, RefreshQueue);
             }
@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                 return;
             }
 
-            IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage { Ticket = message.ticket }, 
+            IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage { Ticket = message.ticket },
                 msg => WorldServer.Instance.IOTaskPool.AddMessage(() => OnAccountReceived(msg, client)), error => client.Disconnect());
         }
 
@@ -138,9 +138,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             /* Just to get console AutoCompletion */
             if (client.UserGroup.IsGameMaster)
                 SendConsoleCommandsListMessage(client, CommandManager.Instance.AvailableCommands.Where(x => client.UserGroup.IsCommandAvailable(x)));
-
-
         }
+
         public static void SendStartupActionsListMessage(IPacketReceiver client)
         {
             client.Send(new StartupActionsListMessage());
@@ -158,15 +157,16 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                             false,
                             (short)client.Account.BreedFlags,
                             (short)BreedManager.Instance.AvailableBreedsFlags,
-                            (sbyte) client.UserGroup.Role));
+                            (sbyte)client.UserGroup.Role));
         }
 
         public static void SendConsoleCommandsListMessage(IPacketReceiver client, IEnumerable<CommandBase> commands)
         {
             var commandsInfos = (from command in commands
-                                 let aliases = command.GetFullAliases() 
-                                 let usage = command.GetSafeUsage() 
-                                 from alias in aliases select Tuple.Create(alias, usage, command.Description ?? string.Empty)).ToList();
+                                 let aliases = command.GetFullAliases()
+                                 let usage = command.GetSafeUsage()
+                                 from alias in aliases
+                                 select Tuple.Create(alias, usage, command.Description ?? string.Empty)).ToList();
 
             client.Send(
                 new ConsoleCommandsListMessage(

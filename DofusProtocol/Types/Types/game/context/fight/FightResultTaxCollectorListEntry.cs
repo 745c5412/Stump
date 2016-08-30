@@ -1,30 +1,26 @@
-
-
 // Generated on 03/02/2014 20:42:59
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class FightResultTaxCollectorListEntry : FightResultFighterListEntry
     {
         public const short Id = 84;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public byte level;
         public Types.BasicGuildInformations guildInfo;
         public int experienceForGuild;
-        
+
         public FightResultTaxCollectorListEntry()
         {
         }
-        
+
         public FightResultTaxCollectorListEntry(short outcome, Types.FightLoot rewards, int id, bool alive, byte level, Types.BasicGuildInformations guildInfo, int experienceForGuild)
          : base(outcome, rewards, id, alive)
         {
@@ -32,7 +28,7 @@ namespace Stump.DofusProtocol.Types
             this.guildInfo = guildInfo;
             this.experienceForGuild = experienceForGuild;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -40,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             guildInfo.Serialize(writer);
             writer.WriteInt(experienceForGuild);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -51,12 +47,10 @@ namespace Stump.DofusProtocol.Types
             guildInfo.Deserialize(reader);
             experienceForGuild = reader.ReadInt();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(byte) + guildInfo.GetSerializationSize() + sizeof(int);
         }
-        
     }
-    
 }

@@ -1,18 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
-using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps.Cells;
-using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
@@ -78,7 +76,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 return castCell != null;
             }
 
-
             castCell = null;
             return false;
         }
@@ -90,15 +87,16 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         private IEnumerable<TargetCell> ExpandZone(Cell center, SpellShapeEnum shape, int minRange, int maxRange)
         {
-            Set set;
             switch (shape)
             {
                 case SpellShapeEnum.X:
                     return new CrossSet(new MapPoint(center), maxRange, minRange).
                         EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId]));
+
                 case SpellShapeEnum.C:
                     return new LozengeSet(new MapPoint(center), maxRange, minRange).
                         EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId]));
+
                 case SpellShapeEnum.L:
                     return new LineSet(new MapPoint(center).GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_EAST, minRange), maxRange, DirectionsEnum.DIRECTION_NORTH_EAST).
                         EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId], DirectionFlagEnum.DIRECTION_SOUTH_WEST)).
@@ -111,11 +109,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         Union(new LineSet(new MapPoint(center).GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_WEST, minRange),
                             maxRange, DirectionsEnum.DIRECTION_NORTH_WEST).EnumerateValidPoints().
                         Select(x => new TargetCell(Fighter.Map.Cells[x.CellId], DirectionFlagEnum.DIRECTION_SOUTH_EAST)));
+
                 case SpellShapeEnum.I:
                     return new Complement(new LozengeSet(center, maxRange, minRange), new AllPoints())
                         .EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId]));
+
                 default:
-                    return new[] {new TargetCell(center)};
+                    return new[] { new TargetCell(center) };
             }
         }
 
@@ -189,7 +189,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         Cell cell;
                         if (!CanReach(target, spell, out cell))
                             continue;
-                        
+
                         if (Fighter.CanCastSpell(spell, target.Cell, cell) != SpellCastResult.OK)
                             continue;
 
@@ -231,7 +231,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     var category = SpellIdentifier.GetSpellCategories(possibleCast.Spell);
 
                     var dummy = possibleCast;
-                    if (( category & priority.Key ) == 0 || casts.Any(x => x.Spell == dummy.Spell)) // spell already used
+                    if ((category & priority.Key) == 0 || casts.Any(x => x.Spell == dummy.Spell)) // spell already used
                         continue;
 
                     if (Fighter.AP - minUsedAP < possibleCast.Spell.CurrentSpellLevel.ApCost)
@@ -239,15 +239,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
                     if (possibleCast.IsSummoningSpell)
                     {
-                        var target = new SpellTarget() {Target = new TargetCell(possibleCast.SummonCell), CastCell = Fighter.Cell, AffectedCells = new []{possibleCast.SummonCell}};
+                        var target = new SpellTarget() { Target = new TargetCell(possibleCast.SummonCell), CastCell = Fighter.Cell, AffectedCells = new[] { possibleCast.SummonCell } };
                         casts.Add(new SpellCast(possibleCast.Spell, target));
                         minUsedAP += (int)possibleCast.Spell.CurrentSpellLevel.ApCost;
                         continue;
-
                     }
 
                     // find best target
-                    foreach(var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
+                    foreach (var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
                     {
                         if (impactComparer.GetScore(impact) <= 0)
                             continue;
@@ -282,7 +281,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             {
                 // check if the second spell can be casted before
                 var max = MaxConsecutiveSpellCast(casts[0].Spell, Fighter.AP);
-                if (casts[1].Spell.CurrentSpellLevel.ApCost <= Fighter.AP - max*casts[0].Spell.CurrentSpellLevel.ApCost &&
+                if (casts[1].Spell.CurrentSpellLevel.ApCost <= Fighter.AP - max * casts[0].Spell.CurrentSpellLevel.ApCost &&
                     casts[0].MoveBefore != null)
                 {
                     if (casts[1].MoveBefore == null)
@@ -304,7 +303,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             if (spell.CurrentSpellLevel.GlobalCooldown > 0)
                 return 1;
 
-            var max = (int)(ap/spell.CurrentSpellLevel.ApCost);
+            var max = (int)(ap / spell.CurrentSpellLevel.ApCost);
             var category = SpellIdentifier.GetSpellCategories(spell);
 
             if ((category & SpellCategory.Summoning) != 0)
@@ -330,12 +329,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             cast.CastCell = castCell;
             if (!cast.Initialize())
                 return null;
-            
+
             foreach (var handler in cast.GetEffectHandlers())
             {
                 if (!handler.CanApply())
                     return null;
-                       
+
                 handler.CastCell = castCell;
                 foreach (var target in handler.GetAffectedActors())
                 {
@@ -357,7 +356,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var isFriend = Fighter.Team.Id == target.Team.Id;
             var result = new SpellTarget();
 
-             var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
+            var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
 
             if (category == 0)
                 return;
@@ -367,22 +366,22 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 isFriend = category == SpellCategory.Healing;
             }
 
-            var chanceToHappen = 1.0; // 
+            var chanceToHappen = 1.0; //
 
-            // When chances to happen is under 100%, then we reduce spellImpact accordingly, for simplicity, but after having apply damage bonus & reduction. 
-            // So average damage should remain exact even if Min and Max are not. 
+            // When chances to happen is under 100%, then we reduce spellImpact accordingly, for simplicity, but after having apply damage bonus & reduction.
+            // So average damage should remain exact even if Min and Max are not.
             if (effect.Random > 0)
                 chanceToHappen = effect.Random / 100.0;
 
             if ((target is SummonedFighter))
-                chanceToHappen /= 2; // It's much better to hit non-summoned foes => effect on summons (except allies summon for Osa) is divided by 2. 
+                chanceToHappen /= 2; // It's much better to hit non-summoned foes => effect on summons (except allies summon for Osa) is divided by 2.
 
             uint min;
             uint max;
 
             if (handler is DamagePerHPLost)
             {
-                min = max = (uint) Math.Round(((Fighter.Stats.Health.DamageTaken*effect.DiceNum)/100d));
+                min = max = (uint)Math.Round(((Fighter.Stats.Health.DamageTaken * effect.DiceNum) / 100d));
             }
             else if (handler is Kill)
             {
@@ -390,11 +389,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             }
             else
             {
-                min = (uint) Math.Min(effect.DiceNum, effect.DiceFace);
-                max = (uint) Math.Max(effect.DiceNum, effect.DiceFace);
+                min = (uint)Math.Min(effect.DiceNum, effect.DiceFace);
+                max = (uint)Math.Max(effect.DiceNum, effect.DiceFace);
             }
 
-            if (( category & SpellCategory.DamagesNeutral ) > 0)
+            if ((category & SpellCategory.DamagesNeutral) > 0)
                 AdjustDamage(result, min, max, SpellCategory.DamagesNeutral, chanceToHappen,
                     Fighter.Stats.GetTotal(PlayerFields.NeutralDamageBonus) + Fighter.Stats.GetTotal(PlayerFields.DamageBonus) + Fighter.Stats.GetTotal(PlayerFields.PhysicalDamage),
                     Fighter.Stats.GetTotal(PlayerFields.DamageBonusPercent) + Fighter.Stats.GetTotal(PlayerFields.Strength),
@@ -402,7 +401,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     target.Stats.GetTotal(PlayerFields.NeutralResistPercent),
                     isFriend);
 
-            if (( category & SpellCategory.DamagesFire ) > 0)
+            if ((category & SpellCategory.DamagesFire) > 0)
                 AdjustDamage(result, min, max, SpellCategory.DamagesNeutral, chanceToHappen,
                     Fighter.Stats.GetTotal(PlayerFields.FireDamageBonus) + Fighter.Stats.GetTotal(PlayerFields.DamageBonus) + Fighter.Stats.GetTotal(PlayerFields.MagicDamage),
                     Fighter.Stats.GetTotal(PlayerFields.DamageBonusPercent) + Fighter.Stats.GetTotal(PlayerFields.Intelligence),
@@ -410,8 +409,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     target.Stats.GetTotal(PlayerFields.FireResistPercent),
                     isFriend);
 
-
-            if (( category & SpellCategory.DamagesAir ) > 0)
+            if ((category & SpellCategory.DamagesAir) > 0)
                 AdjustDamage(result, min, max, SpellCategory.DamagesNeutral, chanceToHappen,
                      Fighter.Stats.GetTotal(PlayerFields.AirDamageBonus) + Fighter.Stats.GetTotal(PlayerFields.DamageBonus) + Fighter.Stats.GetTotal(PlayerFields.MagicDamage),
                      Fighter.Stats.GetTotal(PlayerFields.DamageBonusPercent) + Fighter.Stats.GetTotal(PlayerFields.Agility),
@@ -419,7 +417,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                      target.Stats.GetTotal(PlayerFields.AirResistPercent),
                      isFriend);
 
-            if (( category & SpellCategory.DamagesWater ) > 0)
+            if ((category & SpellCategory.DamagesWater) > 0)
                 AdjustDamage(result, min, max, SpellCategory.DamagesNeutral, chanceToHappen,
                      Fighter.Stats.GetTotal(PlayerFields.WaterDamageBonus) + Fighter.Stats.GetTotal(PlayerFields.DamageBonus) + Fighter.Stats.GetTotal(PlayerFields.MagicDamage),
                      Fighter.Stats.GetTotal(PlayerFields.DamageBonusPercent) + Fighter.Stats.GetTotal(PlayerFields.Chance),
@@ -427,7 +425,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                      target.Stats.GetTotal(PlayerFields.WaterResistPercent),
                      isFriend);
 
-            if (( category & SpellCategory.DamagesEarth ) > 0)
+            if ((category & SpellCategory.DamagesEarth) > 0)
                 AdjustDamage(result, min, max, SpellCategory.DamagesNeutral, chanceToHappen,
                      Fighter.Stats.GetTotal(PlayerFields.EarthDamageBonus) + Fighter.Stats.GetTotal(PlayerFields.DamageBonus) + Fighter.Stats.GetTotal(PlayerFields.PhysicalDamage),
                      Fighter.Stats.GetTotal(PlayerFields.DamageBonusPercent) + Fighter.Stats.GetTotal(PlayerFields.Strength),
@@ -435,13 +433,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                      target.Stats.GetTotal(PlayerFields.EarthResistPercent),
                      isFriend);
 
-            if (( category & SpellCategory.Healing ) > 0)
+            if ((category & SpellCategory.Healing) > 0)
             {
-                var steal = ( category & SpellCategory.Damages ) > 0;
+                var steal = (category & SpellCategory.Damages) > 0;
                 if (steal)
                     target = Fighter; // Probably hp steal
 
-                var hptoHeal = (uint)( Math.Max(0, target.MaxLifePoints - target.LifePoints) ); // Can't heal over max
+                var hptoHeal = (uint)(Math.Max(0, target.MaxLifePoints - target.LifePoints)); // Can't heal over max
                 if (steal)
                 {
                     result.MinHeal = Math.Min(hptoHeal, Math.Abs(result.MinDamage));
@@ -466,13 +464,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 }
             }
 
-            if (( category & SpellCategory.Buff ) > 0)
+            if ((category & SpellCategory.Buff) > 0)
                 if (isFriend)
                     result.Boost += spell.CurrentLevel * chanceToHappen;
                 else
                     result.Boost -= spell.CurrentLevel * chanceToHappen;
 
-            if (( category & SpellCategory.Curse ) > 0)
+            if ((category & SpellCategory.Curse) > 0)
             {
                 var ratio = spell.CurrentLevel * chanceToHappen;
 
@@ -485,10 +483,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     result.Curse += ratio;
             }
             if (isFriend)
-                result.Add(result); // amplify (double) effects on friends. 
+                result.Add(result); // amplify (double) effects on friends.
 
-
-            if (!isFriend && ( ( category & SpellCategory.Damages ) > 0 ) && result.MinDamage > target.LifePoints) // Enough damage to kill the target => affect an arbitrary 50% of max heal (with at least current health), so strong spells are not favored anymore. 
+            if (!isFriend && ((category & SpellCategory.Damages) > 0) && result.MinDamage > target.LifePoints) // Enough damage to kill the target => affect an arbitrary 50% of max heal (with at least current health), so strong spells are not favored anymore.
             {
                 double ratio = Math.Max(target.MaxLifePoints / 2d, target.LifePoints) / result.MinDamage;
                 result.Multiply(ratio);
@@ -507,12 +504,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             double maxDamage = damage1 >= damage2 ? damage1 : damage2;
             if (reduceDamagePercent >= 100)
                 return; // No damage
-            minDamage = ( ( minDamage * ( 1 + ( addDamagePercent / 100.0 ) ) + addDamage ) - reduceDamage ) * ( 1 - ( reduceDamagePercent / 100.0 ) ) * chanceToHappen;
-            maxDamage = ( ( maxDamage * ( 1 + ( addDamagePercent / 100.0 ) ) + addDamage ) - reduceDamage ) * ( 1 - ( reduceDamagePercent / 100.0 ) ) * chanceToHappen;
+            minDamage = ((minDamage * (1 + (addDamagePercent / 100.0)) + addDamage) - reduceDamage) * (1 - (reduceDamagePercent / 100.0)) * chanceToHappen;
+            maxDamage = ((maxDamage * (1 + (addDamagePercent / 100.0)) + addDamage) - reduceDamage) * (1 - (reduceDamagePercent / 100.0)) * chanceToHappen;
 
             if (minDamage < 0) minDamage = 0;
             if (maxDamage < 0) maxDamage = 0;
-
 
             if (negativ) // or IsFriend
             {
@@ -526,22 +522,27 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     damages.MinNeutral += minDamage;
                     damages.MaxNeutral += maxDamage;
                     break;
+
                 case SpellCategory.DamagesFire:
                     damages.MinFire += minDamage;
                     damages.MaxAir += maxDamage;
                     break;
+
                 case SpellCategory.DamagesAir:
                     damages.MinAir += minDamage;
                     damages.MaxAir += maxDamage;
                     break;
+
                 case SpellCategory.DamagesWater:
                     damages.MinWater += minDamage;
                     damages.MaxWater += maxDamage;
                     break;
+
                 case SpellCategory.DamagesEarth:
                     damages.MinEarth += minDamage;
                     damages.MaxEarth += maxDamage;
                     break;
+
                 case SpellCategory.Healing:
                     damages.MinHeal += minDamage;
                     damages.MaxHeal += maxDamage;
@@ -553,7 +554,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
     public class SpellCastComparer : IComparer<SpellCastInformations>
     {
         private readonly Dictionary<SpellCategory, Func<SpellCastInformations, SpellCastInformations, int>> m_comparers;
-            
 
         private readonly SpellSelector m_spellSelector;
 
@@ -598,7 +598,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var efficiency1 = GetEfficiency(cast1);
             var efficiency2 = GetEfficiency(cast2);
 
-            return ( max1 * efficiency1 ).CompareTo(max2 * efficiency2);
+            return (max1 * efficiency1).CompareTo(max2 * efficiency2);
         }
 
         public int CompareDamage(SpellCastInformations cast1, SpellCastInformations cast2)
@@ -611,7 +611,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var efficiency1 = GetEfficiency(cast1);
             var efficiency2 = GetEfficiency(cast2);
 
-            return ( max1 * efficiency1 ).CompareTo(max2 * efficiency2);
+            return (max1 * efficiency1).CompareTo(max2 * efficiency2);
         }
 
         public int CompareHeal(SpellCastInformations cast1, SpellCastInformations cast2)
@@ -624,7 +624,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var efficiency1 = GetEfficiency(cast1);
             var efficiency2 = GetEfficiency(cast2);
 
-            return ( max1 * efficiency1 ).CompareTo(max2 * efficiency2);
+            return (max1 * efficiency1).CompareTo(max2 * efficiency2);
         }
 
         public int CompareCurse(SpellCastInformations cast1, SpellCastInformations cast2)
@@ -637,7 +637,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var efficiency1 = GetEfficiency(cast1);
             var efficiency2 = GetEfficiency(cast2);
 
-            return ( max1 * efficiency1 ).CompareTo(max2 * efficiency2);
+            return (max1 * efficiency1).CompareTo(max2 * efficiency2);
         }
 
         // numer of cast possible with the current ap
@@ -649,7 +649,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
     public class SpellImpactComparer : IComparer<SpellTarget>
     {
-        private static readonly Dictionary<SpellCategory, Func<SpellTarget, SpellTarget, int>> m_comparers = 
+        private static readonly Dictionary<SpellCategory, Func<SpellTarget, SpellTarget, int>> m_comparers =
             new Dictionary<SpellCategory, Func<SpellTarget, SpellTarget, int>>()
             {
                 {SpellCategory.Buff, CompareBoost},
@@ -680,7 +680,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var scoreComparaison = m_comparers[Category](cast1, cast2);
             if (scoreComparaison != 0)
                 return scoreComparaison;
-            
+
             // if scores are the same we choose the nearest reachable cell
             // note : inverse comparaison (smaller better not bigger better)
             return new MapPoint(cast2.CastCell).ManhattanDistanceTo(m_spellSelector.Fighter.Position.Point).CompareTo(

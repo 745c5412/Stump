@@ -1,13 +1,13 @@
-﻿using System;
+﻿using NLog;
+using Stump.Core.Collections;
+using Stump.Core.Timers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
-using Stump.Core.Collections;
-using Stump.Core.Timers;
 
 namespace Stump.Core.Threading
 {
@@ -171,8 +171,8 @@ namespace Stump.Core.Threading
             long timerStart = 0;
             // get the time at the start of our task processing
             timerStart = m_queueTimer.ElapsedMilliseconds;
-            var updateDt = (int) (timerStart - m_lastUpdate);
-            m_lastUpdate = (int) timerStart;
+            var updateDt = (int)(timerStart - m_lastUpdate);
+            m_lastUpdate = (int)timerStart;
 
             int msgCount = 0;
             int timersCount = 0;
@@ -199,14 +199,14 @@ namespace Stump.Core.Threading
                         return;
                     }
                 }
-                
+
                 foreach (var timer in m_pausedTimers.Where(timer => timer.Enabled))
                 {
                     m_timers.Push(timer);
                 }
 
                 TimedTimerEntry peek;
-                while (( peek = m_timers.Peek() ) != null && peek.NextTick <= DateTime.Now)
+                while ((peek = m_timers.Peek()) != null && peek.NextTick <= DateTime.Now)
                 {
                     timersCount++;
                     var timer = m_timers.Pop();
@@ -231,8 +231,6 @@ namespace Stump.Core.Threading
                         }
                     }
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -256,7 +254,7 @@ namespace Stump.Core.Threading
                     {
                         try
                         {
-                            return ((dynamic) x).ElapsedTime;
+                            return ((dynamic)x).ElapsedTime;
                         }
                         catch
                         {
@@ -272,7 +270,7 @@ namespace Stump.Core.Threading
                 if (IsRunning)
                 {
                     // re-register the Update-callback
-                    m_updateTask = Task.Factory.StartNewDelayed((int) callbackTimeout, ProcessCallback, this);
+                    m_updateTask = Task.Factory.StartNewDelayed((int)callbackTimeout, ProcessCallback, this);
                 }
                 else
                 {

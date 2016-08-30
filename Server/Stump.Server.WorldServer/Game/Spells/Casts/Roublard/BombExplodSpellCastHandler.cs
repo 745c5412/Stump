@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 {
@@ -44,17 +44,17 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
                 var affectedActors = handler.GetAffectedActors(x => !x.IsFriendlyWith(Caster) || !x.HasState((int)SpellStatesEnum.Kaboom));
 
                 if (handler is DirectDamage)
-                    handler.Efficiency = 1 + DamageBonus/100d;
+                    handler.Efficiency = 1 + DamageBonus / 100d;
 
                 if (handler is APBuff || handler is MPBuff || handler is StatsBuff)
                     affectedActors = handler.GetAffectedActors(x => x != Caster && x.IsFriendlyWith(Caster) && x.HasState((int)SpellStatesEnum.Kaboom));
-                    
+
                 if (handler is APDebuffNonFix || handler is MPDebuffNonFix)
                     affectedActors = affectedActors.Where(x => x != Caster);
 
                 if (handler is ReduceBuffDuration)
                 {
-                    if (handler.Dice.DiceNum == 1 && !Caster.HasState((int) SpellStatesEnum.Load))
+                    if (handler.Dice.DiceNum == 1 && !Caster.HasState((int)SpellStatesEnum.Load))
                         affectedActors = new FightActor[0];
 
                     if (handler.Dice.DiceNum == 2 && !Caster.HasState((int)SpellStatesEnum.Unload))

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Drawing;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
+using System;
+using System.Drawing;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -80,6 +80,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Unjail a player";
             AddTargetParameter();
         }
+
         public override void Execute(TriggerBase trigger)
         {
             if (!IPCAccessor.Instance.IsConnected)

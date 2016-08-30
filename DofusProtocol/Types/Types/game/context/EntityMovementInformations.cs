@@ -1,35 +1,32 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
+using Stump.Core.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class EntityMovementInformations
     {
         public const short Id = 63;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int id;
         public IEnumerable<sbyte> steps;
-        
+
         public EntityMovementInformations()
         {
         }
-        
+
         public EntityMovementInformations(int id, IEnumerable<sbyte> steps)
         {
             this.id = id;
             this.steps = steps;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(id);
@@ -38,16 +35,15 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in steps)
             {
-                 writer.WriteSByte(entry);
-                 steps_count++;
+                writer.WriteSByte(entry);
+                steps_count++;
             }
             var steps_after = writer.Position;
             writer.Seek((int)steps_before);
             writer.WriteUShort((ushort)steps_count);
             writer.Seek((int)steps_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             id = reader.ReadInt();
@@ -55,16 +51,14 @@ namespace Stump.DofusProtocol.Types
             var steps_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 steps_[i] = reader.ReadSByte();
+                steps_[i] = reader.ReadSByte();
             }
             steps = steps_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + steps.Sum(x => sizeof(sbyte));
         }
-        
     }
-    
 }

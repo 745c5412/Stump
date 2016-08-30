@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using NLog;
 using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
-using NLog;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Core.Network
 {
@@ -20,7 +20,6 @@ namespace Stump.Server.WorldServer.Core.Network
 
         public WorldClientCollection()
         {
-            
         }
 
         public WorldClientCollection(IEnumerable<WorldClient> clients)
@@ -58,7 +57,7 @@ namespace Stump.Server.WorldServer.Core.Network
                         var writer = new BigEndianWriter(stream);
                         message.Pack(writer);
                         stream.Segment.Uses = m_underlyingList.Count(x => x != null && x.Connected);
-                        
+
                         foreach (WorldClient worldClient in m_underlyingList)
                         {
                             if (worldClient != null)
@@ -75,7 +74,6 @@ namespace Stump.Server.WorldServer.Core.Network
                     }
                     finally
                     {
-                        
                     }
 
                     foreach (var client in disconnectedClients)

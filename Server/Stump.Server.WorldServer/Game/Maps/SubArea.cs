@@ -1,10 +1,10 @@
+using Stump.Core.Threading;
+using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database.World;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using Stump.Core.Threading;
-using Stump.Server.WorldServer.Database.Monsters;
-using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {
@@ -248,9 +248,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                 difficulty = Difficulty.Normal;
 
             if (Record.CustomSpawnInterval.HasValue)
-                return (int) Record.CustomSpawnInterval.Value;
+                return (int)Record.CustomSpawnInterval.Value;
 
-            return (int) MonsterSpawnInterval[difficulty];
+            return (int)MonsterSpawnInterval[difficulty];
         }
 
         private void RefreshMapsSpawnInterval()

@@ -1,33 +1,30 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
+using System.Text;
 
 namespace Stump.DofusProtocol.Types
 {
     public class PartyGuestInformations
     {
         public const short Id = 374;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int guestId;
         public int hostId;
         public string name;
         public Types.EntityLook guestLook;
         public sbyte breed;
         public bool sex;
-        
+
         public PartyGuestInformations()
         {
         }
-        
+
         public PartyGuestInformations(int guestId, int hostId, string name, Types.EntityLook guestLook, sbyte breed, bool sex)
         {
             this.guestId = guestId;
@@ -37,7 +34,7 @@ namespace Stump.DofusProtocol.Types
             this.breed = breed;
             this.sex = sex;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(guestId);
@@ -47,7 +44,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             guestId = reader.ReadInt();
@@ -62,12 +59,10 @@ namespace Stump.DofusProtocol.Types
             breed = reader.ReadSByte();
             sex = reader.ReadBoolean();
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + guestLook.GetSerializationSize() + sizeof(sbyte) + sizeof(bool);
         }
-        
     }
-    
 }

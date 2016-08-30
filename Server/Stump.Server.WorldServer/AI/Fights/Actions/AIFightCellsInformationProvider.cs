@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
         }
 
         public override bool IsCellWalkable(short cell)
-        {            
+        {
             // ignore the cell where the fighter already is (in case we perform pathfinding with others cells and suppose the fighter has already moved)
             return Fighter.Cell.Id == cell || base.IsCellWalkable(cell);
         }

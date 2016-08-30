@@ -1,17 +1,17 @@
-﻿using System;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.Core.Threading;
 using Stump.ORM;
 using Stump.Server.BaseServer.Initialization;
+using System;
 
 namespace Stump.Server.BaseServer.Logging
 {
     public class MongoLogger : Singleton<MongoLogger>
     {
-        [Variable(Priority = 10, DefinableRunning = true)] 
+        [Variable(Priority = 10, DefinableRunning = true)]
         public static bool IsMongoLoggerEnabled = false;
 
         [Variable(Priority = 10, DefinableRunning = true)]
@@ -24,7 +24,7 @@ namespace Stump.Server.BaseServer.Logging
             Password = ""
         };
 
-        private SelfRunningTaskPool m_taskPool; 
+        private SelfRunningTaskPool m_taskPool;
 
         private MongoDatabase m_database;
 
@@ -45,7 +45,7 @@ namespace Stump.Server.BaseServer.Logging
         }
 
         public bool Insert(string collection, BsonDocument document)
-        {            
+        {
             if (!IsMongoLoggerEnabled)
             {
                 if (m_database == null)

@@ -1,5 +1,5 @@
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -37,12 +37,12 @@ namespace Stump.Server.WorldServer.Database.World.Maps
 
         public void AssignFields(object d2oObject)
         {
-            var map = (MapReference) d2oObject;
+            var map = (MapReference)d2oObject;
             Id = map.id;
             MapId = map.mapId;
             CellId = map.cellId;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

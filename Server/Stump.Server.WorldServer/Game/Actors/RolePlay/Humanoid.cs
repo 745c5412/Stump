@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 {
@@ -41,8 +41,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
                 Enumerable.Empty<HumanOption>()); // todo
         }
 
-        #endregion 
+        #endregion HumanInformations
 
-	    #endregion
+        #endregion Network
     }
 }

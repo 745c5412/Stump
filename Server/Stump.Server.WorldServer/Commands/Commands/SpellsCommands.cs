@@ -1,21 +1,21 @@
 ﻿#region License GNU GPL
+
 // SpellsCommands.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
-using System.Linq;
+#endregion License GNU GPL
+
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
@@ -24,6 +24,7 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -31,7 +32,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public SpellsCommands()
         {
-            Aliases = new[] {"spell"};
+            Aliases = new[] { "spell" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Manage spells";
         }
@@ -41,9 +42,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public LearnSpellCommand()
         {
-            Aliases = new[] {"learn", "add"};
+            Aliases = new[] { "learn", "add" };
             RequiredRole = RoleEnum.Administrator;
-            ParentCommandType = typeof (SpellsCommands);
+            ParentCommandType = typeof(SpellsCommands);
             Description = "Learn the given spell";
             AddParameter("spell", "spell", "Given spell to learn", converter: ParametersConverter.SpellTemplateConverter);
             AddTargetParameter(true);
@@ -68,13 +69,13 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public UnLearnSpellCommand()
         {
-            Aliases = new[] {"unlearn", "forget", "remove"};
+            Aliases = new[] { "unlearn", "forget", "remove" };
             RequiredRole = RoleEnum.Administrator;
             ParentCommandType = typeof(SpellsCommands);
             Description = "Forget the given spell";
             AddParameter("spell", "spell", "Given spell to forget", converter: ParametersConverter.SpellTemplateConverter);
             AddTargetParameter(true);
-            AddParameter<bool>("keep", "keep", "If true, keep the spell but reset it to level 1", isOptional:true);
+            AddParameter<bool>("keep", "keep", "If true, keep the spell but reset it to level 1", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -89,7 +90,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     trigger.Get<bool>("keep") ? " (but kept it)" : string.Empty);
             else
                 trigger.ReplyError("Spell {0} not unlearned. {1} may not have this spell", trigger.Bold(spell.Name), trigger.Bold(target));
-
         }
     }
 
@@ -121,11 +121,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
         }
     }
+
     public class ListSpellsCommand : TargetSubCommand
     {
         public ListSpellsCommand()
         {
-            Aliases = new[] {"list"};
+            Aliases = new[] { "list" };
             RequiredRole = RoleEnum.Administrator;
             ParentCommandType = typeof(SpellsCommands);
             Description = "List the spells of the target";
@@ -147,7 +148,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public SetSpellLevelCommand()
         {
-            Aliases = new[] {"level"};
+            Aliases = new[] { "level" };
             RequiredRole = RoleEnum.Administrator;
             ParentCommandType = typeof(SpellsCommands);
             Description = "Set the level of the given spell of the target";

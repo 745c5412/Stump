@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.Server.BaseServer.Handler;
+﻿using Stump.Server.BaseServer.Handler;
+using System;
 
 namespace FakeClients.Handlers
 {

@@ -1,27 +1,21 @@
 ﻿#region License GNU GPL
 
 // IPCAccessor.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#endregion
+#endregion License GNU GPL
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
@@ -33,6 +27,11 @@ using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
 
 namespace Stump.Server.WorldServer.Core.IPC
 {
@@ -49,23 +48,29 @@ namespace Stump.Server.WorldServer.Core.IPC
         /// <summary>
         ///     In seconds
         /// </summary>
-        [Variable(DefinableRunning = true)] public static int DefaultRequestTimeout = 60;
+        [Variable(DefinableRunning = true)]
+        public static int DefaultRequestTimeout = 60;
 
         /// <summary>
         ///     In milliseconds
         /// </summary>
-        [Variable(DefinableRunning = true)] public static int TaskPoolInterval = 150;
+        [Variable(DefinableRunning = true)]
+        public static int TaskPoolInterval = 150;
 
         /// <summary>
         ///     In milliseconds
         /// </summary>
-        [Variable(DefinableRunning = true)] public static int UpdateInterval = 10000;
+        [Variable(DefinableRunning = true)]
+        public static int UpdateInterval = 10000;
 
-        [Variable] public static int BufferSize = 8192;
+        [Variable]
+        public static int BufferSize = 8192;
 
-        [Variable] public static string RemoteHost = "localhost";
+        [Variable]
+        public static string RemoteHost = "localhost";
 
-        [Variable] public static int RemotePort = 9100;
+        [Variable]
+        public static int RemotePort = 9100;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static IPCAccessor m_instance;
@@ -139,9 +144,13 @@ namespace Stump.Server.WorldServer.Core.IPC
         }
 
         public event Action<IPCAccessor, IPCMessage> MessageReceived;
+
         public event Action<IPCAccessor, IPCMessage> MessageSent;
+
         public event Action<IPCAccessor> Connected;
+
         public event Action<IPCAccessor> Disconnected;
+
         public event Action<IPCAccessor> Granted;
 
         private void OnMessageReceived(IPCMessage message)
@@ -180,8 +189,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             var handler = Disconnected;
             if (handler != null)
                 handler(this);
-        }        
-
+        }
 
         public void Start()
         {
@@ -276,7 +284,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 catch (Exception ex)
                 {
                     logger.Error("Connection to {0}:{1} failed. Try again in {2}s", RemoteHost, RemotePort,
-                        UpdateInterval/1000);
+                        UpdateInterval / 1000);
                     return;
                 }
 
@@ -289,7 +297,6 @@ namespace Stump.Server.WorldServer.Core.IPC
                 // update server
                 Send(new ServerUpdateMessage(WorldServer.Instance.ClientManager.Count));
         }
-
 
         public override void Send(IPCMessage message)
         {
@@ -352,15 +359,14 @@ namespace Stump.Server.WorldServer.Core.IPC
                 if (BuildMessage(m_bufferSegment))
                 {
                     m_writeOffset = m_readOffset = 0;
-					if (m_bufferSegment.Length != BufferSize)
-					{
-						m_bufferSegment.DecrementUsage();
-						m_bufferSegment = BufferManager.GetSegment(BufferSize);
-					}
+                    if (m_bufferSegment.Length != BufferSize)
+                    {
+                        m_bufferSegment.DecrementUsage();
+                        m_bufferSegment = BufferManager.GetSegment(BufferSize);
+                    }
                 }
 
                 ResumeReceive();
-
             }
             catch (Exception ex)
             {
@@ -408,12 +414,12 @@ namespace Stump.Server.WorldServer.Core.IPC
                 {
                     logger.Debug("Message = {0}", m_messagePart.Data.ToString(" "));
                     logger.Error("Error while deserializing IPC Message : " + ex);
-                    
+
                     m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
                     m_writeOffset = m_readOffset = (int)reader.Position - buffer.Offset;
                     m_messagePart = null;
 
-                   return m_remainingLength <= 0 || BuildMessage(buffer);
+                    return m_remainingLength <= 0 || BuildMessage(buffer);
                 }
 
                 TaskPool.AddMessage(() => ProcessMessage(message));
@@ -462,7 +468,6 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             return false;
         }
-
 
         protected override void ProcessAnswer(IIPCRequest request, IPCMessage answer)
         {
@@ -527,16 +532,15 @@ namespace Stump.Server.WorldServer.Core.IPC
             {
                 logger.Warn("Account {0} blocked, waiting release", message.AccountId);
                 Action<Character> ev = null;
-                    ev = chr =>
-                    {
-                        character.AccountUnblocked -= ev;
-                        ReplyRequest(new DisconnectedClientMessage(true), message);    
-                    };
+                ev = chr =>
+                {
+                    character.AccountUnblocked -= ev;
+                    ReplyRequest(new DisconnectedClientMessage(true), message);
+                };
                 character.AccountUnblocked += ev;
             }
             else if (!isLogged)
                 ReplyRequest(new DisconnectedClientMessage(clients.Any()), message);
-
         }
 
         private void OnCharacterSaved(DisconnectClientMessage request)

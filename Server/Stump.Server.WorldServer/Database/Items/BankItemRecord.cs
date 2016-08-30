@@ -3,7 +3,6 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace Stump.Server.WorldServer.Database.Items
 {
-
     public class BankItemRelator
     {
         public static string FetchQuery = "SELECT * FROM accounts_items_bank";
@@ -19,7 +18,6 @@ namespace Stump.Server.WorldServer.Database.Items
     {
         public BankItemRecord()
         {
-            
         }
 
         private int m_ownerAccountId;

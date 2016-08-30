@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (integerEffect == null)
                 return false;
 
-            var template = SpellManager.Instance.GetSpellTemplate((uint) integerEffect.Value);
+            var template = SpellManager.Instance.GetSpellTemplate((uint)integerEffect.Value);
             if (template == null)
                 return false;
 

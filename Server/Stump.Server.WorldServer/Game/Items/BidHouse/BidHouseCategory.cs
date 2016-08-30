@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Collections;
+﻿using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.BidHouse
 {
@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         public bool IsEmpty() => !Items.Any();
 
-        #endregion
+        #endregion Functions
 
         #region Network
 
@@ -96,6 +96,6 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return new BidExchangerObjectInfo(Id, 0, false, Effects.Select(x => x.GetObjectEffect()), GetPrices());
         }
 
-        #endregion
+        #endregion Network
     }
 }

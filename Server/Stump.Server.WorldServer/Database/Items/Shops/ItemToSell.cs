@@ -1,4 +1,3 @@
-using Stump.DofusProtocol.Types;
 using Stump.ORM;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;

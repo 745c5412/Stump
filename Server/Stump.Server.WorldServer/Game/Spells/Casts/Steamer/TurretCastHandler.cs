@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Steamer
 {
@@ -37,10 +37,10 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Steamer
 
             return !Handlers.Any(handler =>
                 handler.GetAffectedActors().Any(actor =>
-                    (actor.HasState((int) SpellStatesEnum.Corselet) && Caster.IsFriendlyWith(actor) &&
+                    (actor.HasState((int)SpellStatesEnum.Corselet) && Caster.IsFriendlyWith(actor) &&
                      handler.Category != SpellCategory.Healing)
                     ||
-                    (actor.HasState((int) SpellStatesEnum.Dreadnaut) && !Caster.IsFriendlyWith(actor) &&
+                    (actor.HasState((int)SpellStatesEnum.Dreadnaut) && !Caster.IsFriendlyWith(actor) &&
                      handler.Category == SpellCategory.Healing)));
         }
     }

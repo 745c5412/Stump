@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
@@ -14,6 +11,9 @@ using Stump.Server.WorldServer.Database.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.BidHouse
 {
@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         public static IEnumerable<int> Quantities = new[] { 1, 10, 100 };
 
-        #endregion
+        #endregion Fields
 
         #region Creators
 
@@ -42,7 +42,6 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
-
 
             var guid = BidHouseItemRecord.PopNextId();
             var record = new BidHouseItemRecord // create the associated record
@@ -60,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return new BidHouseItem(record);
         }
 
-        #endregion
+        #endregion Creators
 
         #region Loading
 
@@ -86,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             World.Instance.RegisterSaveableInstance(this);
         }
 
-        #endregion
+        #endregion Loading
 
         #region Getters
 
@@ -136,7 +135,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return (int)Math.Round(items.Average());
         }
 
-        #endregion
+        #endregion Getters
 
         #region Functions
 
@@ -197,7 +196,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
                 handler(item, category, categoryDeleted);
         }
 
-        #endregion
+        #endregion Functions
 
         public void Save()
         {

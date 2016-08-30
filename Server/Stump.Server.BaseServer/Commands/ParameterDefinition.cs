@@ -1,6 +1,5 @@
-
-using System;
 using Stump.Core.Reflection;
+using System;
 
 namespace Stump.Server.BaseServer.Commands
 {
@@ -48,7 +47,6 @@ namespace Stump.Server.BaseServer.Commands
             private set;
         }
 
-
         /// <summary>
         /// A parameter is optional whenever the DefaultValue has been set
         /// </summary>
@@ -66,7 +64,7 @@ namespace Stump.Server.BaseServer.Commands
 
         public Type ValueType
         {
-            get { return typeof (T); }
+            get { return typeof(T); }
         }
 
         public object ConvertString(string value, TriggerBase trigger)
@@ -107,7 +105,7 @@ namespace Stump.Server.BaseServer.Commands
             return !IsOptional ? usage : "[" + usage + "]";
         }
 
-        #endregion
+        #endregion ICommandParameter<T> Members
 
         public override string ToString()
         {

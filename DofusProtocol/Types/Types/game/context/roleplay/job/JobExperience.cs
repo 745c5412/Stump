@@ -1,32 +1,28 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class JobExperience
     {
         public const short Id = 98;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte jobId;
         public sbyte jobLevel;
         public double jobXP;
         public double jobXpLevelFloor;
         public double jobXpNextLevelFloor;
-        
+
         public JobExperience()
         {
         }
-        
+
         public JobExperience(sbyte jobId, sbyte jobLevel, double jobXP, double jobXpLevelFloor, double jobXpNextLevelFloor)
         {
             this.jobId = jobId;
@@ -35,7 +31,7 @@ namespace Stump.DofusProtocol.Types
             this.jobXpLevelFloor = jobXpLevelFloor;
             this.jobXpNextLevelFloor = jobXpNextLevelFloor;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
@@ -44,7 +40,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteDouble(jobXpLevelFloor);
             writer.WriteDouble(jobXpNextLevelFloor);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             jobId = reader.ReadSByte();
@@ -63,12 +59,10 @@ namespace Stump.DofusProtocol.Types
             if (jobXpNextLevelFloor < 0)
                 throw new Exception("Forbidden value on jobXpNextLevelFloor = " + jobXpNextLevelFloor + ", it doesn't respect the following condition : jobXpNextLevelFloor < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(sbyte) + sizeof(sbyte) + sizeof(double) + sizeof(double) + sizeof(double);
         }
-        
     }
-    
 }

@@ -6,8 +6,11 @@ namespace Stump.Core.Collections
     public interface IPriorityQueue<T>
     {
         int Push(T item);
+
         T Pop();
+
         T Peek();
+
         void Update(int i);
     }
 
@@ -62,7 +65,7 @@ namespace Stump.Core.Collections
             {
                 if (p == 0)
                     break;
-                var p2 = (p - 1)/2;
+                var p2 = (p - 1) / 2;
                 if (OnCompare(p, p2) < 0)
                 {
                     SwitchElements(p, p2);
@@ -87,8 +90,8 @@ namespace Stump.Core.Collections
             do
             {
                 var pn = p;
-                var p1 = 2*p + 1;
-                var p2 = 2*p + 2;
+                var p1 = 2 * p + 1;
+                var p2 = 2 * p + 2;
 
                 if (InnerList.Count > p1 && OnCompare(p, p1) > 0)
                     p = p1;
@@ -119,7 +122,7 @@ namespace Stump.Core.Collections
             {
                 if (p == 0)
                     break;
-                p2 = (p - 1)/2;
+                p2 = (p - 1) / 2;
                 if (OnCompare(p, p2) < 0)
                 {
                     SwitchElements(p, p2);
@@ -133,8 +136,8 @@ namespace Stump.Core.Collections
             do
             {
                 var pn = p;
-                var p1 = 2*p + 1;
-                p2 = 2*p + 2;
+                var p1 = 2 * p + 1;
+                p2 = 2 * p + 2;
                 if (InnerList.Count > p1 && OnCompare(p, p1) > 0)
                     p = p1;
                 if (InnerList.Count > p2 && OnCompare(p, p2) > 0)
@@ -155,7 +158,7 @@ namespace Stump.Core.Collections
             return InnerList.Count > 0 ? InnerList[0] : default(T);
         }
 
-        #endregion
+        #endregion IPriorityQueue<T> Members
 
         protected void SwitchElements(int i, int j)
         {

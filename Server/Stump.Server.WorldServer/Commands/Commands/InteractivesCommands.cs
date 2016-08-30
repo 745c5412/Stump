@@ -1,8 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using Stump.Core.Mathematics;
+﻿using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
@@ -14,6 +10,10 @@ using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using System;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {
                     World.Instance.Resume();
                 }
-               
+
                 World.Instance.SpawnInteractives();
                 World.Instance.SpawnCellTriggers();
 

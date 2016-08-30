@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -8,6 +7,7 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Characters;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             if (PvpData != null)
                 additionalDatas.Add(PvpData.GetFightResultAdditionalData());
 
-            return new FightResultPlayerListEntry((short) Outcome, Loot.GetFightLoot(), Id, Alive, Level,
+            return new FightResultPlayerListEntry((short)Outcome, Loot.GetFightLoot(), Id, Alive, Level,
                 additionalDatas);
         }
 
@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
             if (Character.GuildMember != null && Character.GuildMember.GivenPercent > 0)
             {
-                var xp = (int)(experience*(Character.GuildMember.GivenPercent*0.01));
+                var xp = (int)(experience * (Character.GuildMember.GivenPercent * 0.01));
                 var guildXp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
 
                 guildXp = guildXp > Guild.MaxGuildXP ? Guild.MaxGuildXP : guildXp;
@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             PvpData.DishonorDelta = dishonor;
             PvpData.Honor = Character.Honor;
             PvpData.Dishonor = Character.Dishonor;
-            PvpData.Grade = (byte) Character.AlignmentGrade;
+            PvpData.Grade = (byte)Character.AlignmentGrade;
             PvpData.MinHonorForGrade = Character.LowerBoundHonor;
             PvpData.MaxHonorForGrade = Character.UpperBoundHonor;
         }

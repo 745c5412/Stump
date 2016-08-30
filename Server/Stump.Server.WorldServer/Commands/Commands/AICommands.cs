@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Stump.Core.Reflection;
+﻿using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.AI.Fights.Spells;
@@ -13,8 +12,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public AICommands()
         {
-            Aliases = new[] {"ai"};
-            RequiredRole=RoleEnum.GameMaster;
+            Aliases = new[] { "ai" };
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Provides commands to manage and debug the ai";
         }
     }
@@ -23,10 +22,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public AIDebugCommand()
         {
-            Aliases = new[] {"debug"};
-            RequiredRole=RoleEnum.GameMaster;
+            Aliases = new[] { "debug" };
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Enable/disable ai debug mode in current fight";
-            ParentCommandType = typeof (AICommands);
+            ParentCommandType = typeof(AICommands);
         }
 
         public override void Execute(GameTrigger trigger)
@@ -43,13 +42,13 @@ namespace Stump.Server.WorldServer.Commands.Commands
     }
 
     public class AIPassCommand : InGameSubCommand
-    {        
+    {
         public AIPassCommand()
         {
-            Aliases = new[] {"pass"};
-            RequiredRole=RoleEnum.GameMaster;
+            Aliases = new[] { "pass" };
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Pass current monster turn";
-            ParentCommandType = typeof (AICommands);
+            ParentCommandType = typeof(AICommands);
         }
 
         public override void Execute(GameTrigger trigger)
@@ -78,13 +77,13 @@ namespace Stump.Server.WorldServer.Commands.Commands
     }
 
     public class AIActionsInfoCommand : InGameSubCommand
-    {        
+    {
         public AIActionsInfoCommand()
         {
-            Aliases = new[] {"actions"};
-            RequiredRole=RoleEnum.GameMaster;
+            Aliases = new[] { "actions" };
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Get all possible actions of current ai";
-            ParentCommandType = typeof (AICommands);
+            ParentCommandType = typeof(AICommands);
         }
 
         public override void Execute(GameTrigger trigger)
@@ -114,26 +113,27 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 trigger.Reply("(#1) Spell {0} ({1}) :: {2}", cast.Spell.Template.Name, cast.Spell.Id, SpellIdentifier.GetSpellCategories(cast.Spell));
 
                 var dumper = new ObjectDumper(8)
-                    {
-                        MemberPredicate = (member) => !member.Name.Contains("Target")
-                    };
+                {
+                    MemberPredicate = (member) => !member.Name.Contains("Target")
+                };
 
-                     trigger.Reply("\t{0} Targets", cast.Impacts.Count);
-                    foreach (var impact in cast.Impacts)
-                    {
-                        trigger.Reply(dumper.DumpElement(impact));
-                    }
+                trigger.Reply("\t{0} Targets", cast.Impacts.Count);
+                foreach (var impact in cast.Impacts)
+                {
+                    trigger.Reply(dumper.DumpElement(impact));
+                }
             }
         }
     }
+
     public class AIActionExecuteCommand : InGameSubCommand
-    {        
+    {
         public AIActionExecuteCommand()
         {
-            Aliases = new[] {"exec"};
-            RequiredRole=RoleEnum.GameMaster;
+            Aliases = new[] { "exec" };
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Force an ai to execute an action";
-            ParentCommandType = typeof (AICommands);
+            ParentCommandType = typeof(AICommands);
             AddParameter("action", "a", "Index of the action to execute", 0);
         }
 
@@ -176,13 +176,13 @@ namespace Stump.Server.WorldServer.Commands.Commands
     public class AIShowMovesCommand : InGameSubCommand
     {
         public AIShowMovesCommand()
-          {
-            Aliases = new[] {"showmoves"};
-            RequiredRole=RoleEnum.GameMaster;
+        {
+            Aliases = new[] { "showmoves" };
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Show different possibles moves";
-            ParentCommandType = typeof (AICommands);
+            ParentCommandType = typeof(AICommands);
             AddParameter("los", "los", "Show LoS", true, true);
-          }
+        }
 
         public override void Execute(GameTrigger trigger)
         {
@@ -208,7 +208,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             trigger.Character.ClearHighlight();
 
-            var enemy =aiFighter.Brain.Environment.GetNearestEnemy();
+            var enemy = aiFighter.Brain.Environment.GetNearestEnemy();
 
             if (trigger.IsArgumentDefined("los"))
                 trigger.Reply(trigger.Color("Cast with LoS", trigger.Character.HighlightCells(aiFighter.Brain.Environment.GetCellsWithLoS(enemy.Cell))));
@@ -222,9 +222,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             var fleeCell = aiFighter.Brain.Environment.GetCellToFlee();
             trigger.Reply(trigger.Color("Flee cell", trigger.Character.HighlightCell(fleeCell)));
-
         }
     }
-
-
 }

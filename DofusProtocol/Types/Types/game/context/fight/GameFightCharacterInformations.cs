@@ -1,30 +1,26 @@
-
-
 // Generated on 03/02/2014 20:42:59
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GameFightCharacterInformations : GameFightFighterNamedInformations
     {
         public const short Id = 46;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public short level;
         public Types.ActorAlignmentInformations alignmentInfos;
         public sbyte breed;
-        
+
         public GameFightCharacterInformations()
         {
         }
-        
+
         public GameFightCharacterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, bool alive, Types.GameFightMinimalStats stats, string name, short level, Types.ActorAlignmentInformations alignmentInfos, sbyte breed)
          : base(contextualId, look, disposition, teamId, alive, stats, name)
         {
@@ -32,7 +28,7 @@ namespace Stump.DofusProtocol.Types
             this.alignmentInfos = alignmentInfos;
             this.breed = breed;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -40,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             alignmentInfos.Serialize(writer);
             writer.WriteSByte(breed);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -51,12 +47,10 @@ namespace Stump.DofusProtocol.Types
             alignmentInfos.Deserialize(reader);
             breed = reader.ReadSByte();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(short) + alignmentInfos.GetSerializationSize() + sizeof(sbyte);
         }
-        
     }
-    
 }

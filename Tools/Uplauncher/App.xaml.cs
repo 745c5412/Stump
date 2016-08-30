@@ -17,7 +17,6 @@ namespace Uplauncher
             DispatcherUnhandledException += OnUnhandledException;
         }
 
-
         private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             Clipboard.SetText(e.Exception.ToString());

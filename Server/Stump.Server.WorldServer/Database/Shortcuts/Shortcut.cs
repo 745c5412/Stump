@@ -66,6 +66,7 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
         }
 
         public abstract DofusProtocol.Types.Shortcut GetNetworkShortcut();
+
         public void BeforeSave(bool insert)
         {
             IsDirty = false;

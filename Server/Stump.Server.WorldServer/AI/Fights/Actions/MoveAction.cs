@@ -100,7 +100,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
                 lastPos = Fighter.Cell.Id;
                 tries++; // avoid infinite loops
             }
-            
+
             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
 
             return success ? RunStatus.Success : RunStatus.Failure;

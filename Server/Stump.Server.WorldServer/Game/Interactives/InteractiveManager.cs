@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Pool;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Interactives;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Interactives
 {
@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
             spawn.GetMap().UnSpawnInteractive(new InteractiveObject(spawn));
 
             Database.Delete(spawn);
-            m_interactivesSpawns.Remove(spawn.Id);     
+            m_interactivesSpawns.Remove(spawn.Id);
         }
     }
 }

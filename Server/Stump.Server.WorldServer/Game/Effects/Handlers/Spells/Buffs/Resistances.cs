@@ -25,8 +25,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
             foreach (var actor in GetAffectedActors())
             {
-                var buff = new ResistancesBuff(actor.PopNextBuffId(), actor, Caster, integerEffect, Spell, 
-                    (short) ((Effect.EffectId == EffectsEnum.Effect_SubResistances) ? -integerEffect.Value : integerEffect.Value),
+                var buff = new ResistancesBuff(actor.PopNextBuffId(), actor, Caster, integerEffect, Spell,
+                    (short)((Effect.EffectId == EffectsEnum.Effect_SubResistances) ? -integerEffect.Value : integerEffect.Value),
                     false, true);
 
                 actor.AddAndApplyBuff(buff);

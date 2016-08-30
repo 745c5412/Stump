@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.AuthServer.Handlers.Connection
 {
     public partial class ConnectionHandler
     {
-
         [AuthHandler(AcquaintanceSearchMessage.Id)]
         public static void HandleAcquaintanceSearchMessage(AuthClient client, AcquaintanceSearchMessage message)
         {
@@ -31,8 +30,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendAcquaintanceSearchErrorMessage(AuthClient client, AcquaintanceErrorEnum reason)
         {
-            client.Send(new AcquaintanceSearchErrorMessage((sbyte) reason));
+            client.Send(new AcquaintanceSearchErrorMessage((sbyte)reason));
         }
-
     }
 }

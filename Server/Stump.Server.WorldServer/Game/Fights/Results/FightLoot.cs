@@ -1,7 +1,7 @@
+using Stump.Server.WorldServer.Game.Items;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {

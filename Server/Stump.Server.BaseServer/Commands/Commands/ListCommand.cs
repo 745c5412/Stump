@@ -1,7 +1,7 @@
+using Stump.DofusProtocol.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -9,7 +9,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public ListCommand()
         {
-            Aliases = new [] { "commandslist" };
+            Aliases = new[] { "commandslist" };
             RequiredRole = RoleEnum.Player;
             Description = "List all available commands";
             Parameters = new List<IParameterDefinition>
@@ -43,7 +43,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
                 if (command is SubCommandContainer)
                     availableCommands = (command as SubCommandContainer); // if a command is specified we display his childrens
                 else
-                    availableCommands = new []{command};
+                    availableCommands = new[] { command };
             }
 
             var commands = from entry in availableCommands
@@ -52,7 +52,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
             trigger.Reply(string.Join(", ", from entry in commands
                                             select (entry is SubCommandContainer ?
-                                                string.Format(trigger.CanFormat ? "<b>{0}</b>({1})" : "{0}({1})", entry.Aliases.First(), ( entry as SubCommandContainer ).Count)
+                                                string.Format(trigger.CanFormat ? "<b>{0}</b>({1})" : "{0}({1})", entry.Aliases.First(), (entry as SubCommandContainer).Count)
                                                 : entry.Aliases.First())));
         }
     }

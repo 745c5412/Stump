@@ -1,11 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Social;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Friends
 {
@@ -167,7 +167,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
             client.Send(new FriendsListMessage(friends.Select(entry => entry.GetFriendInformations())));
         }
 
-        public static void SendIgnoredAddFailureMessage(IPacketReceiver client,  ListAddFailureEnum reason)
+        public static void SendIgnoredAddFailureMessage(IPacketReceiver client, ListAddFailureEnum reason)
         {
             client.Send(new IgnoredAddFailureMessage((sbyte)reason));
         }

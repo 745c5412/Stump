@@ -36,6 +36,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             return new CellInformation(Fight.Map.Cells[cell], IsCellWalkable(cell), true);
         }
 
-        #endregion
+        #endregion ICellsInformationProvider Members
     }
 }

@@ -1,18 +1,20 @@
 ﻿#region License GNU GPL
+
 // UplauncherModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
+
+#endregion License GNU GPL
 
 using System;
 using System.Collections.Generic;
@@ -48,7 +50,6 @@ namespace Uplauncher
         private readonly FileSizeFormatProvider m_bytesFormatProvider = new FileSizeFormatProvider();
         private MetaFile m_metaFile;
 
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private readonly BackgroundWorker m_MD5Worker = new BackgroundWorker();
@@ -58,17 +59,17 @@ namespace Uplauncher
             m_lastUpdateCheck = lastUpdateCheck;
 
             NotifyIcon = new NotifyIcon
-                {
-                    Visible = true,
-                    Icon = Resources.dofus_icon_48,
-                    ContextMenu = new ContextMenu(new[]
-                        { 
+            {
+                Visible = true,
+                Icon = Resources.dofus_icon_48,
+                ContextMenu = new ContextMenu(new[]
+                        {
                             new MenuItem("Ouvrir", OnTrayClickShow),
                             new MenuItem("Lancer le Jeu", OnTrayClickGame),
                             new MenuItem("Voter", OnTrayClickVote),
                             new MenuItem("Quitter", OnTrayClickExit)
                         })
-                };
+            };
 
             NotifyIcon.DoubleClick += OnTrayDoubleClick;
 
@@ -79,7 +80,6 @@ namespace Uplauncher
         {
             get { return m_client; }
         }
-
 
         #region PlayCommand
 
@@ -116,7 +116,7 @@ namespace Uplauncher
                 StartRegApp();
 
             var process = new Process
-                {
+            {
                 StartInfo = new ProcessStartInfo(Constants.DofusExePath, m_soundProxy.Started ? "--reg-client-port=" + m_soundProxy.ClientPort : string.Empty),
             };
 
@@ -140,7 +140,7 @@ namespace Uplauncher
             }
 
             m_regProcess = new Process
-                {
+            {
                 StartInfo = new ProcessStartInfo(Constants.DofusRegExePath, "--reg-engine-port=" + m_soundProxy.RegPort),
             };
 
@@ -150,7 +150,7 @@ namespace Uplauncher
             }
         }
 
-        #endregion
+        #endregion PlayCommand
 
         #region VoteCommand
 
@@ -173,7 +173,7 @@ namespace Uplauncher
             LastVote = DateTime.Now;
         }
 
-        #endregion
+        #endregion VoteCommand
 
         #region SiteCommand
 
@@ -194,11 +194,10 @@ namespace Uplauncher
             if (!CanSite(parameter))
                 return;
 
-
             Process.Start(Constants.SiteURL);
         }
 
-        #endregion
+        #endregion SiteCommand
 
         #region CloseCommand
 
@@ -222,7 +221,7 @@ namespace Uplauncher
             HideWindowInTrayIcon();
         }
 
-        #endregion
+        #endregion CloseCommand
 
         #region RepairGameCommand
 
@@ -261,7 +260,7 @@ namespace Uplauncher
             CheckUpdates();
         }
 
-        #endregion
+        #endregion RepairGameCommand
 
         #region ChangeLanguageCommand
 
@@ -283,7 +282,7 @@ namespace Uplauncher
                 return;
         }
 
-        #endregion
+        #endregion ChangeLanguageCommand
 
         #region TrayIcon
 
@@ -324,7 +323,7 @@ namespace Uplauncher
             System.Windows.Application.Current.Shutdown();
         }
 
-        #endregion
+        #endregion TrayIcon
 
         #region Vote Timer
 
@@ -340,7 +339,7 @@ namespace Uplauncher
             Task.Factory.StartNew(CheckVoteTiming);
         }
 
-        #endregion
+        #endregion Vote Timer
 
         public void CheckUpdates()
         {
@@ -357,7 +356,7 @@ namespace Uplauncher
             m_client.DownloadStringCompleted += OnPatchDownloaded;
             try
             {
-                 m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemotePatchFile), Constants.RemotePatchFile);
+                m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemotePatchFile), Constants.RemotePatchFile);
             }
             catch (SocketException)
             {
@@ -406,21 +405,21 @@ namespace Uplauncher
 
             var filesNames = new HashSet<string>(m_metaFile.Tasks.Select(x => x.LocalURL));
             var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).
-                Where(x => filesNames.Contains(GetRelativePath(Path.GetFullPath(x), Path.GetFullPath("./")))). 
+                Where(x => filesNames.Contains(GetRelativePath(Path.GetFullPath(x), Path.GetFullPath("./")))).
                 OrderBy(p => p).ToList();
 
             var md5 = MD5.Create();
-            
+
             var startDate = DateTime.Now;
             long bytesComputed = 0;
             var filesChecked = 0;
             // process in parallel each file but the last
-            foreach(var file in files.Take(files.Count - 1))
+            foreach (var file in files.Take(files.Count - 1))
             {
                 var relativePath = file.Substring(path.Length + 1);
                 var pathBytes = Encoding.UTF8.GetBytes(relativePath.ToLower());
                 md5.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
-                
+
                 Interlocked.Add(ref bytesComputed, pathBytes.Length);
 
                 var contentBytes = File.ReadAllBytes(file);
@@ -428,8 +427,8 @@ namespace Uplauncher
                 Interlocked.Add(ref bytesComputed, contentBytes.Length);
                 Interlocked.Increment(ref filesChecked);
 
-                var percentProgress = (filesChecked*100)/files.Count;
-                m_MD5Worker.ReportProgress(percentProgress, bytesComputed/(DateTime.Now - startDate).TotalSeconds);
+                var percentProgress = (filesChecked * 100) / files.Count;
+                m_MD5Worker.ReportProgress(percentProgress, bytesComputed / (DateTime.Now - startDate).TotalSeconds);
             }
 
             if (files.Count > 0)
@@ -437,7 +436,6 @@ namespace Uplauncher
                 var lastFileBytes = File.ReadAllBytes(files.Last());
                 md5.TransformFinalBlock(lastFileBytes, 0, lastFileBytes.Length);
             }
-
 
             LocalChecksum = files.Count > 0 ? BitConverter.ToString(md5.Hash).Replace("-", "").ToLower() : string.Empty;
             File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
@@ -492,7 +490,6 @@ namespace Uplauncher
                 HandleDownloadError(false, ex, Constants.UpdateSiteURL + Constants.RemotePatchFile);
             }
         }
-
 
         private void ProcessTask()
         {
@@ -556,25 +553,24 @@ namespace Uplauncher
             OnUpdateEnded(false);
         }
 
-
         private DateTime? m_lastProgressChange;
         private long m_lastGlobalDownloadedBytes;
         private long m_lastFileDownloadedBytes;
+
         private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             if (!GlobalDownloadProgress)
             {
-                DownloadProgress = ((double) e.BytesReceived/e.TotalBytesToReceive)*100;
+                DownloadProgress = ((double)e.BytesReceived / e.TotalBytesToReceive) * 100;
 
                 if (m_lastProgressChange != null &&
                     (DateTime.Now - m_lastProgressChange.Value) > TimeSpan.FromSeconds(1))
                 {
                     ProgressDownloadSpeedInfo = string.Format(m_bytesFormatProvider, "{0:fs} / {1:fs} ({2:fs}/s)",
                         (e.BytesReceived), e.TotalBytesToReceive,
-                        (e.BytesReceived - m_lastFileDownloadedBytes)/
+                        (e.BytesReceived - m_lastFileDownloadedBytes) /
                         (DateTime.Now - m_lastProgressChange.Value).TotalSeconds);
 
-                    
                     m_lastProgressChange = DateTime.Now;
                     m_lastFileDownloadedBytes = e.BytesReceived;
                 }
@@ -585,10 +581,9 @@ namespace Uplauncher
                 {
                     ProgressDownloadSpeedInfo = string.Format(m_bytesFormatProvider, "{0:fs} / {1:fs} ({2:fs}/s)",
                         (TotalDownloadedBytes + e.BytesReceived), TotalBytesToDownload,
-                        ((TotalDownloadedBytes + e.BytesReceived) - m_lastGlobalDownloadedBytes)/
+                        ((TotalDownloadedBytes + e.BytesReceived) - m_lastGlobalDownloadedBytes) /
                         (DateTime.Now - m_lastProgressChange.Value).TotalSeconds);
 
-                    
                     m_lastProgressChange = DateTime.Now;
                     m_lastGlobalDownloadedBytes = TotalDownloadedBytes + e.BytesReceived;
                 }
@@ -688,7 +683,7 @@ namespace Uplauncher
             set;
         }
 
-        static string GetRelativePath(string fullPath, string relativeTo)
+        private static string GetRelativePath(string fullPath, string relativeTo)
         {
             var foldersSplitted = fullPath.Split(new[] { relativeTo.Replace("/", "\\").Replace("\\\\", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
 

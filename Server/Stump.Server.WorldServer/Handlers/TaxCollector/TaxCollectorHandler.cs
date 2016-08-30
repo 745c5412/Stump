@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
@@ -9,6 +7,8 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Handlers.Context;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.TaxCollector
 {
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
         [WorldHandler(GuildFightLeaveRequestMessage.Id)]
         public static void HandleGuildFightLeaveRequestMessage(WorldClient client, GuildFightLeaveRequestMessage message)
         {
-             if (client.Character.Guild == null)
+            if (client.Character.Guild == null)
                 return;
 
             var taxCollector =
@@ -89,13 +89,13 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
         public static void SendTaxCollectorListMessage(IPacketReceiver client, Guild guild)
         {
             client.Send(new TaxCollectorListMessage((sbyte)guild.MaxTaxCollectors, guild.HireCost,
-                guild.TaxCollectors.Select(x => x.GetNetworkTaxCollector()), 
+                guild.TaxCollectors.Select(x => x.GetNetworkTaxCollector()),
                 guild.TaxCollectors.Where(x => x.IsFighting).Select(x => x.Fighter.GetTaxCollectorFightersInformation())));
         }
 
         public static void SendTaxCollectorAttackedMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
         {
-            client.Send(new TaxCollectorAttackedMessage(taxCollector.FirstNameId, taxCollector.LastNameId, (short) taxCollector.Map.Position.X, (short) taxCollector.Map.Position.Y,
+            client.Send(new TaxCollectorAttackedMessage(taxCollector.FirstNameId, taxCollector.LastNameId, (short)taxCollector.Map.Position.X, (short)taxCollector.Map.Position.Y,
                 taxCollector.Map.Id, (short)taxCollector.Map.SubArea.Id));
         }
 

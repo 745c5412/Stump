@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
@@ -36,12 +36,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Apply()
         {
-            
         }
 
         public override void Dispell()
         {
-
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
@@ -88,27 +86,32 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             switch (type)
             {
                 case EffectSchoolEnum.Neutral:
-                    specificArmor = (int) actors.Average(x => x.Stats[PlayerFields.NeutralDamageArmor].TotalSafe);
+                    specificArmor = (int)actors.Average(x => x.Stats[PlayerFields.NeutralDamageArmor].TotalSafe);
                     break;
+
                 case EffectSchoolEnum.Earth:
                     specificArmor = (int)actors.Average(x => x.Stats[PlayerFields.EarthDamageArmor].TotalSafe);
                     break;
+
                 case EffectSchoolEnum.Air:
                     specificArmor = (int)actors.Average(x => x.Stats[PlayerFields.AirDamageArmor].TotalSafe);
                     break;
+
                 case EffectSchoolEnum.Water:
                     specificArmor = (int)actors.Average(x => x.Stats[PlayerFields.WaterDamageArmor].TotalSafe);
                     break;
+
                 case EffectSchoolEnum.Fire:
                     specificArmor = (int)actors.Average(x => x.Stats[PlayerFields.FireDamageArmor].TotalSafe);
                     break;
+
                 default:
                     return 0;
             }
 
             return specificArmor + (int)actors.Average(x => x.Stats[PlayerFields.GlobalDamageReduction].Total);
         }
-        
+
         private static int GetAveragePercentResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
         {
             switch (type)
@@ -187,7 +190,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
     {
         public FractionDamage(int amount) : base(amount)
         {
-
         }
     }
 }

@@ -2,15 +2,14 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using System.IO;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -19,9 +18,9 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class ExpressionWriter : ExpressionVisitor
     {
-        TextWriter writer;
-        int indent = 2;
-        int depth;
+        private TextWriter writer;
+        private int indent = 2;
+        private int depth;
 
         protected ExpressionWriter(TextWriter writer)
         {
@@ -64,6 +63,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         }
 
         private static readonly char[] splitters = new char[] { '\n', '\r' };
+
         protected void Write(string text)
         {
             if (text.IndexOf('\n') >= 0)
@@ -103,49 +103,69 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             {
                 case ExpressionType.Not:
                     return "!";
+
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
                     return "+";
+
                 case ExpressionType.Negate:
                 case ExpressionType.NegateChecked:
                 case ExpressionType.Subtract:
                 case ExpressionType.SubtractChecked:
                     return "-";
+
                 case ExpressionType.Multiply:
                 case ExpressionType.MultiplyChecked:
                     return "*";
+
                 case ExpressionType.Divide:
                     return "/";
+
                 case ExpressionType.Modulo:
                     return "%";
+
                 case ExpressionType.And:
                     return "&";
+
                 case ExpressionType.AndAlso:
                     return "&&";
+
                 case ExpressionType.Or:
                     return "|";
+
                 case ExpressionType.OrElse:
                     return "||";
+
                 case ExpressionType.LessThan:
                     return "<";
+
                 case ExpressionType.LessThanOrEqual:
                     return "<=";
+
                 case ExpressionType.GreaterThan:
                     return ">";
+
                 case ExpressionType.GreaterThanOrEqual:
                     return ">=";
+
                 case ExpressionType.Equal:
                     return "==";
+
                 case ExpressionType.NotEqual:
                     return "!=";
+
                 case ExpressionType.Coalesce:
                     return "??";
+
                 case ExpressionType.RightShift:
                     return ">>";
+
                 case ExpressionType.LeftShift:
                     return "<<";
+
                 case ExpressionType.ExclusiveOr:
                     return "^";
+
                 default:
                     return null;
             }
@@ -161,6 +181,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                     this.Visit(b.Right);
                     this.Write("]");
                     break;
+
                 case ExpressionType.Power:
                     this.Write("POW(");
                     this.Visit(b.Left);
@@ -168,6 +189,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                     this.Visit(b.Right);
                     this.Write(")");
                     break;
+
                 default:
                     this.Visit(b.Left);
                     this.Write(" ");
@@ -191,21 +213,26 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                     this.Visit(u.Operand);
                     this.Write(")");
                     break;
+
                 case ExpressionType.ArrayLength:
                     this.Visit(u.Operand);
                     this.Write(".Length");
                     break;
+
                 case ExpressionType.Quote:
                     this.Visit(u.Operand);
                     break;
+
                 case ExpressionType.TypeAs:
                     this.Visit(u.Operand);
                     this.Write(" as ");
                     this.Write(this.GetTypeName(u.Type));
                     break;
+
                 case ExpressionType.UnaryPlus:
                     this.Visit(u.Operand);
                     break;
+
                 default:
                     this.Write(this.GetOperator(u.NodeType));
                     this.Visit(u.Operand);
@@ -277,7 +304,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
         protected override Expression VisitConstant(ConstantExpression c)
         {
-            if (c.Value == null) 
+            if (c.Value == null)
             {
                 this.Write("null");
             }

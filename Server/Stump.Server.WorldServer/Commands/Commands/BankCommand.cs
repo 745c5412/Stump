@@ -3,7 +3,6 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -12,7 +11,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public BankCommands()
         {
-            Aliases = new[] {"bank"};
+            Aliases = new[] { "bank" };
             Description = "Gives commands to manage bank";
             RequiredRole = RoleEnum.GameMaster;
         }
@@ -22,10 +21,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public BankOpenCommand()
         {
-            Aliases = new[] {"open"};
+            Aliases = new[] { "open" };
             Description = "Open target bank";
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommandType = typeof (BankCommands);
+            ParentCommandType = typeof(BankCommands);
             AddParameter("target", "t", "Bank Owner nam",
                     converter: ParametersConverter.CharacterConverter, isOptional: true);
         }

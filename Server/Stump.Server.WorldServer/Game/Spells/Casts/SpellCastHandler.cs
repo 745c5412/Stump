@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Stump.Server.WorldServer.Database.Spells;
+﻿using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
@@ -7,6 +6,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
@@ -79,7 +79,6 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         {
             get { return m_customCastCell ?? (MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell); }
             set { m_customCastCell = value; }
-
         }
 
         public MapPoint CastPoint
@@ -99,6 +98,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         }
 
         public abstract bool Initialize();
+
         public abstract void Execute();
 
         public virtual IEnumerable<SpellEffectHandler> GetEffectHandlers()

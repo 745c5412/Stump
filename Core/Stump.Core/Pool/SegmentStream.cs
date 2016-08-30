@@ -15,6 +15,7 @@ namespace Stump.Core.Pool
         private BufferSegment m_segment;
 
         private int m_length;
+
         public SegmentStream(BufferSegment segment)
         {
             m_segment = segment;
@@ -38,9 +39,11 @@ namespace Stump.Core.Pool
                 case SeekOrigin.Begin:
                     Position = (int)offset;
                     break;
+
                 case SeekOrigin.Current:
                     Position += (int)offset;
                     break;
+
                 case SeekOrigin.End:
                     Position = (int)(Length - offset);
                     break;
@@ -94,7 +97,6 @@ namespace Stump.Core.Pool
 #endif
             if (m_position == Length + m_segment.Offset)
                 throw new ArgumentOutOfRangeException("Exceed buffer size");
-
 
             return m_segment.Buffer.Array[m_position++];
         }

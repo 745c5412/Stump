@@ -28,7 +28,8 @@
         </GroupBox>
         <Button Margin="3" Command="{Binding OpenConfigCommand}">
             <StackPanel Orientation="Horizontal">
-                <Image Source="pack://application:,,,/Images/gear_32xLG.png" /><TextBlock Text="Modify config" VerticalAlignment="Center" />
+                <Image Source="pack://application:,,,/Images/gear_32xLG.png" />
+                <TextBlock Text="Modify config" VerticalAlignment="Center" />
             </StackPanel>
         </Button>
     </StackPanel>

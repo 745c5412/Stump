@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
@@ -14,6 +10,10 @@ using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -24,14 +24,18 @@ namespace Stump.Server.WorldServer.Game.Fights
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        [Variable] public static int PvTAttackersPlacementPhaseTime = 30000;
-        [Variable] public static int PvTDefendersPlacementPhaseTime = 10000;
+        [Variable]
+        public static int PvTAttackersPlacementPhaseTime = 30000;
+
+        [Variable]
+        public static int PvTDefendersPlacementPhaseTime = 10000;
+
         private bool m_isAttackersPlacementPhase;
 
         private readonly List<Character> m_defendersQueue = new List<Character>();
         private readonly Dictionary<FightActor, Map> m_defendersMaps = new Dictionary<FightActor, Map>();
 
-        public FightPvT(int id, Map fightMap, FightTaxCollectorDefenderTeam defendersTeam,  FightTaxCollectorAttackersTeam challengersTeam)
+        public FightPvT(int id, Map fightMap, FightTaxCollectorDefenderTeam defendersTeam, FightTaxCollectorAttackersTeam challengersTeam)
             : base(id, fightMap, defendersTeam, challengersTeam)
         {
         }
@@ -42,44 +46,30 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public ReadOnlyCollection<Character> DefendersQueue
-        {
-            get
-            {
-                return m_defendersQueue.AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<Character> DefendersQueue => m_defendersQueue.AsReadOnly();
 
         public bool IsAttackersPlacementPhase
         {
-            get { return m_isAttackersPlacementPhase && (State == FightState.Placement ||State == FightState.NotStarted); }
+            get { return m_isAttackersPlacementPhase && (State == FightState.Placement || State == FightState.NotStarted); }
             private set { m_isAttackersPlacementPhase = value; }
         }
 
         public bool IsDefendersPlacementPhase
         {
-            get { return !m_isAttackersPlacementPhase && (State == FightState.Placement ||State == FightState.NotStarted); }            
+            get { return !m_isAttackersPlacementPhase && (State == FightState.Placement || State == FightState.NotStarted); }
             private set { m_isAttackersPlacementPhase = !value; }
         }
 
-        public override FightTypeEnum FightType
-        {
-            get { return FightTypeEnum.FIGHT_TYPE_PvT; }
-        }
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_PvT;
 
-        public override bool IsPvP
-        {
-            get { return true; }
-        }
-        public override bool IsMultiAccountRestricted
-        {
-            get { return true; }
-        }
+        public override bool IsPvP => true;
+
+        public override bool IsMultiAccountRestricted => true;
 
         public override void StartPlacement()
         {
             base.StartPlacement();
-            
+
             m_isAttackersPlacementPhase = true;
             m_placementTimer = Map.Area.CallDelayed(PvTAttackersPlacementPhaseTime, StartDefendersPlacement);
 
@@ -90,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void StartDefendersPlacement()
         {
-             if (State != FightState.Placement)
+            if (State != FightState.Placement)
                 return;
 
             m_placementTimer.Dispose();
@@ -121,14 +111,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                             m_placementTimer = Map.Area.CallDelayed(PvTDefendersPlacementPhaseTime, StartFighting);
                     });
                 });
-                
             }
         }
 
-        protected override bool CanKickFighter(FightActor kicker, FightActor kicked)
-        {
-            return false;
-        }
+        protected override bool CanKickFighter(FightActor kicker, FightActor kicked) => false;
 
         public override void StartFighting()
         {
@@ -159,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
             m_defendersQueue.Add(character);
-            character.SetDefender(this);  
+            character.SetDefender(this);
 
             TaxCollectorHandler.SendGuildFightPlayersHelpersJoinMessage(character.Guild.Clients, TaxCollector.TaxCollectorNpc, character);
 
@@ -177,16 +163,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             return true;
         }
 
-        public int GetDefendersLeftSlot()
-        {
-            return 7 - m_defendersQueue.Count > 0 ? 7 - m_defendersQueue.Count : 0;
-        }
+        public int GetDefendersLeftSlot() => 7 - m_defendersQueue.Count > 0 ? 7 - m_defendersQueue.Count : 0;
 
-        public override bool CanChangePosition(FightActor fighter, Cell cell)
-        {
-            return base.CanChangePosition(fighter, cell) && 
+        public override bool CanChangePosition(FightActor fighter, Cell cell) => base.CanChangePosition(fighter, cell) &&
                 ((IsAttackersPlacementPhase && fighter.Team == ChallengersTeam) || (IsDefendersPlacementPhase && fighter.Team == DefendersTeam));
-        }
 
         protected override void OnFighterAdded(FightTeam team, FightActor actor)
         {
@@ -198,7 +178,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
                 else
                 {
-                    TaxCollector = (TaxCollectorFighter) actor;
+                    TaxCollector = (TaxCollectorFighter)actor;
                     TaxCollector.Dead += OnTaxCollectorDeath;
                 }
             }
@@ -240,12 +220,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (team == ChallengersTeam && actor is CharacterFighter)
                 {
                     TaxCollectorHandler.SendGuildFightPlayersEnemyRemoveMessage(
-                        TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc, ((CharacterFighter) actor).Character);
+                        TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc, ((CharacterFighter)actor).Character);
                 }
             }
 
             if (actor is TaxCollectorFighter && actor.IsAlive())
-                ((TaxCollectorFighter) actor).TaxCollectorNpc.RejoinMap();
+                ((TaxCollectorFighter)actor).TaxCollectorNpc.RejoinMap();
 
             base.OnFighterRemoved(team, actor);
         }
@@ -300,7 +280,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             // dispatch loots
             foreach (var looter in looters)
             {
-                var count = i + (int) Math.Ceiling(TaxCollector.Items.Count*((double) looter.Prospecting/teamPP));
+                var count = i + (int)Math.Ceiling(TaxCollector.Items.Count * ((double)looter.Prospecting / teamPP));
                 for (; i < count && i < TaxCollector.Items.Count; i++)
                 {
                     looter.Loot.AddItem(TaxCollector.Items[i]);
@@ -312,8 +292,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            var timer = (int) GetPlacementTimeLeft(fighter).TotalMilliseconds;
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), 
+            var timer = (int)GetPlacementTimeLeft(fighter).TotalMilliseconds;
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(),
                 (fighter.Team == ChallengersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase), false,
                 IsStarted, timer, FightType);
         }
@@ -323,23 +303,17 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, true, IsStarted, 0, FightType);
         }
 
-        protected override bool CanCancelFight()
-        {
-            return false;
-        }
+        protected override bool CanCancelFight() => false;
 
         public TimeSpan GetAttackersPlacementTimeLeft()
         {
             if (IsAttackersPlacementPhase)
                 return (m_placementTimer.NextTick - DateTime.Now);
-           
+
             return TimeSpan.Zero;
         }
 
-        public TimeSpan GetDefendersWaitTimeForPlacement()
-        {
-            return TimeSpan.FromMilliseconds(PvTAttackersPlacementPhaseTime);
-        }
+        public TimeSpan GetDefendersWaitTimeForPlacement() => TimeSpan.FromMilliseconds(PvTAttackersPlacementPhaseTime);
 
         public TimeSpan GetPlacementTimeLeft(FightActor fighter)
         {
@@ -355,6 +329,5 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             return TimeSpan.Zero;
         }
-
     }
 }

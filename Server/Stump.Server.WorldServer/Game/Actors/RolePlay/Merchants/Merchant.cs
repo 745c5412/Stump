@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Accounts;
@@ -11,6 +7,10 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 {
@@ -22,29 +22,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
         private readonly List<MerchantShopDialog> m_openedDialogs = new List<MerchantShopDialog>();
         private bool m_isRecordDirty;
 
-
         public Merchant(Character character)
         {
             var look = character.RealLook.Clone();
 
             look.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MERCHANT_BAG,
                                              new ActorLook
-                                                 {
-                                                     BonesID = BAG_SKIN
-                                                 }));
+                                             {
+                                                 BonesID = BAG_SKIN
+                                             }));
 
             m_record = new WorldMapMerchantRecord
-                {
-                    CharacterId = character.Id,
-                    AccountId = character.Account.Id,
-                    Name = character.Name,
-                    Map = character.Map,
-                    Cell = character.Cell.Id,
-                    Direction = (int) character.Direction,
-                    EntityLook = look,
-                    IsActive = true,
-                    MerchantSince = DateTime.Now,
-                };
+            {
+                CharacterId = character.Id,
+                AccountId = character.Account.Id,
+                Name = character.Name,
+                Map = character.Map,
+                Cell = character.Cell.Id,
+                Direction = (int)character.Direction,
+                EntityLook = look,
+                IsActive = true,
+                MerchantSince = DateTime.Now,
+            };
 
             Bag = new MerchantBag(this, character.MerchantBag);
             Position = character.Position.Clone();
@@ -172,7 +171,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             return new GameRolePlayMerchantInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), Name, 0);
         }
 
-        #endregion
+        #endregion Network
 
         public override string ToString()
         {

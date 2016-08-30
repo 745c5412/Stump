@@ -1,6 +1,6 @@
+using Stump.DofusProtocol.Enums;
 using System;
 using System.IO;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -8,7 +8,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public ConfigCommand()
         {
-            Aliases = new [] { "config" };
+            Aliases = new[] { "config" };
             Description = "Provide commands to manage the config file";
             RequiredRole = RoleEnum.Administrator;
         }
