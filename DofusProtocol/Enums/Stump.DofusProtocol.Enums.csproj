@@ -150,6 +150,7 @@
     <Compile Include="Custom\OptionalFeaturesEnum.cs" />
     <Compile Include="Custom\OrnamentEnum.cs" />
     <Compile Include="Custom\PartyFightReasonEnum.cs" />
+    <Compile Include="Custom\QuestObjectiveTypeEnum.cs" />
     <Compile Include="Custom\SpellShapeEnum.cs" />
     <Compile Include="Custom\StableExchangeActionsEnum.cs" />
     <Compile Include="Custom\StatsBoostTypeEnum.cs" />
