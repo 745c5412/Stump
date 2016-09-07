@@ -15,7 +15,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public Character Owner
         {
             get;
-            private set;
         }
 
         public bool IsLoaded

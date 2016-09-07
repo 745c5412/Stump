@@ -21,149 +21,145 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         [WorldHandler(ChatClientPrivateMessage.Id)]
         public static void HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
         {
-            if (String.IsNullOrEmpty(message.content))
+            if (string.IsNullOrEmpty(message.content))
                 return;
 
             var chr = World.Instance.GetCharacter(message.receiver);
 
-            if (chr != null)
-            {
-                if (client.Character.IsMuted())
-                {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123,
-                        (int)client.Character.GetMuteRemainingTime().TotalSeconds);
-                }
-                else
-                {
-                    if (client.Character != chr)
-                    {
-                        if (!chr.FriendsBook.IsIgnored(client.Account.Id))
-                        {
-                            if (!chr.IsAway || chr.FriendsBook.IsFriend(client.Account.Id))
-                            {
-                                if (client.Character.IsAway)
-                                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
-
-                                var document = new BsonDocument
-                                        {
-                                            { "SenderId", client.Character.Id },
-                                            { "SenderName", client.Character.Name },
-                                            { "SenderAccountId", client.Account.Id },
-                                            { "ReceiverId", chr.Id },
-                                            { "ReceiverName", chr.Name },
-                                            { "ReceiverAccountId", chr.Account.Id },
-                                            { "Message", message.content },
-                                            { "Channel", (int)ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE },
-                                            { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-                                        };
-
-                                MongoLogger.Instance.Insert("Chats", document);
-
-                                // send a copy to sender
-                                SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                    message.content);
-
-                                // Send to receiver
-                                SendChatServerMessage(chr.Client, client.Character,
-                                    ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                    message.content);
-                            }
-                            else
-                            {
-                                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
-                                    chr.Name);
-                            }
-                        }
-                        else
-                        {
-                            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
-                                chr.Name);
-                        }
-                    }
-                    else
-                    {
-                        SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
-                    }
-                }
-            }
-            else
+            if (chr == null)
             {
                 SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND);
+                return;
             }
+
+            if (client.Character.IsMuted())
+            {
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int)client.Character.GetMuteRemainingTime().TotalSeconds);
+                return;
+            }
+
+            if (client.Character == chr)
+            {
+                SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
+                return;
+            }
+
+            if (chr.FriendsBook.IsIgnored(client.Account.Id))
+            {
+                //Le joueur %1 était absent et n'a donc pas reçu votre message.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, chr.Name);
+                return;
+            }
+
+            if (chr.IsAway && !chr.FriendsBook.IsFriend(client.Account.Id))
+            {
+                //Le joueur %1 était absent et n'a donc pas reçu votre message.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, chr.Name);
+                return;
+            }
+
+            if (chr.IsMuted())
+                client.Character.SendServerMessage("Cette personne est actuellement réduite au silence, elle risque donc de ne pas pouvoir vous répondre...");
+
+            //Vous êtes actuellement absent, cette personne risque de ne pas pouvoir vous répondre...
+            if (client.Character.IsAway)
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
+
+            var document = new BsonDocument
+                           {
+                                { "SenderId", client.Character.Id },
+                                { "SenderName", client.Character.Name },
+                                { "SenderAccountId", client.Account.Id },
+                                { "ReceiverId", chr.Id },
+                                { "ReceiverName", chr.Name },
+                                { "ReceiverAccountId", chr.Account.Id },
+                                { "Message", message.content },
+                                { "Channel", (int)ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE },
+                                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                           };
+
+            MongoLogger.Instance.Insert("Chats", document);
+
+            // send a copy to sender
+            SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                message.content);
+
+            // Send to receiver
+            SendChatServerMessage(chr.Client, client.Character,
+                ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                message.content);
         }
 
         [WorldHandler(ChatClientPrivateWithObjectMessage.Id)]
         public static void HandleChatClientPrivateWithObjectMessage(WorldClient client, ChatClientPrivateWithObjectMessage message)
         {
-            if (String.IsNullOrEmpty(message.content))
+            if (string.IsNullOrEmpty(message.content))
                 return;
 
             var chr = World.Instance.GetCharacter(message.receiver);
 
-            if (chr != null)
-            {
-                if (client.Character.IsMuted())
-                {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123,
-                        (int)client.Character.GetMuteRemainingTime().TotalSeconds);
-                }
-                else
-                {
-                    if (client.Character != chr)
-                    {
-                        if (!chr.FriendsBook.IsIgnored(client.Account.Id))
-                        {
-                            if (!chr.IsAway || chr.FriendsBook.IsFriend(client.Account.Id))
-                            {
-                                if (client.Character.IsAway)
-                                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
-
-                                var document = new BsonDocument
-                                        {
-                                            { "SenderId", client.Character.Id },
-                                            { "SenderName", client.Character.Name },
-                                            { "SenderAccountId", client.Account.Id },
-                                            { "ReceiverId", chr.Id },
-                                            { "ReceiverName", chr.Name },
-                                            { "ReceiverAccountId", chr.Account.Id },
-                                            { "Message", message.content },
-                                            { "Channel", (int)ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE },
-                                            { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-                                        };
-
-                                MongoLogger.Instance.Insert("Chats", document);
-
-                                // send a copy to sender
-                                SendChatServerCopyWithObjectMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                    message.content, message.objects);
-
-                                // Send to receiver
-                                SendChatServerWithObjectMessage(chr.Client, client.Character,
-                                    ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                    message.content, "", message.objects);
-                            }
-                            else
-                            {
-                                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
-                                    chr.Name);
-                            }
-                        }
-                        else
-                        {
-                            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
-                                chr.Name);
-                        }
-                    }
-                    else
-                    {
-                        SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
-                    }
-                }
-            }
-            else
+            if (chr == null)
             {
                 SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND);
+                return;
             }
+
+            if (client.Character.IsMuted())
+            {
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int)client.Character.GetMuteRemainingTime().TotalSeconds);
+                return;
+            }
+
+            if (client.Character == chr)
+            {
+                SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
+                return;
+            }
+
+            if (chr.FriendsBook.IsIgnored(client.Account.Id))
+            {
+                //Le joueur %1 était absent et n'a donc pas reçu votre message.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, chr.Name);
+                return;
+            }
+
+            if (chr.IsAway && !chr.FriendsBook.IsFriend(client.Account.Id))
+            {
+                //Le joueur %1 était absent et n'a donc pas reçu votre message.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, chr.Name);
+                return;
+            }
+
+            if (chr.IsMuted())
+                client.Character.SendServerMessage("Cette personne est actuellement réduite au silence, elle risque donc de ne pas pouvoir vous répondre...");
+
+            //Vous êtes actuellement absent, cette personne risque de ne pas pouvoir vous répondre...
+            if (client.Character.IsAway)
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
+
+            var document = new BsonDocument
+                           {
+                                { "SenderId", client.Character.Id },
+                                { "SenderName", client.Character.Name },
+                                { "SenderAccountId", client.Account.Id },
+                                { "ReceiverId", chr.Id },
+                                { "ReceiverName", chr.Name },
+                                { "ReceiverAccountId", chr.Account.Id },
+                                { "Message", message.content },
+                                { "Channel", (int)ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE },
+                                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                           };
+
+            MongoLogger.Instance.Insert("Chats", document);
+
+            // send a copy to sender
+            SendChatServerCopyWithObjectMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                message.content, message.objects);
+
+            // Send to receiver
+            SendChatServerWithObjectMessage(chr.Client, client.Character,
+                ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                message.content, "", message.objects);
         }
 
         [WorldHandler(ChatClientMultiMessage.Id)]
@@ -213,7 +209,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
         public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message, int timestamp, string fingerprint)
         {
-            if (String.IsNullOrEmpty(message))
+            if (string.IsNullOrEmpty(message))
                 return;
 
             if (sender.UserGroup.Role <= RoleEnum.Moderator)
@@ -265,7 +261,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                       int timestamp, string fingerprint, int senderId, string senderName,
                                                       int accountId)
         {
-            if (!String.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(message))
             {
                 client.Send(new ChatAdminServerMessage((sbyte)channel,
                                                        message,

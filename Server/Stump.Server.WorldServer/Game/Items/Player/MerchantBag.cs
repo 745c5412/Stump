@@ -53,10 +53,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             set;
         }
 
-        public override int Count
-        {
-            get { return Items.Count(x => x.Value.Stack != 0); }
-        }
+        public override int Count => Items.Count(x => x.Value.Stack != 0);
 
         protected override void OnItemStackChanged(MerchantItem item, int difference, bool removeMsg = true)
         {
