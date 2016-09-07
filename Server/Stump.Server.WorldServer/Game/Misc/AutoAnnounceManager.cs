@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Misc
 
             m_announces.Add(announce.Id, announce);
 
-            WorldServer.Instance.IOTaskPool.ExecuteInContext(() => Database.Save(announce));
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() => Database.Insert(announce));
 
             return announce.Id;
         }

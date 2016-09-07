@@ -56,13 +56,24 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Add an auto announce";
             RequiredRole = RoleEnum.GameMaster;
             AddParameter<string>("message", "msg");
+            AddParameter<string>("color", "c", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var msg = trigger.Get<string>("msg");
+            var msg = trigger.Get<string>("message");
+            var color = Color.Red;
 
-            trigger.Reply($"Announce {AutoAnnounceManager.Instance.AddAnnounce(msg)} added");
+            if (trigger.IsArgumentDefined("color"))
+                color = Color.FromName(trigger.Get<string>("message"));
+
+            if (string.IsNullOrEmpty(msg))
+            {
+                trigger.ReplyError("You must enter an announce !");
+                return;
+            }
+
+            trigger.Reply($"Announce {AutoAnnounceManager.Instance.AddAnnounce(msg, color)} added");
         }
     }
 
