@@ -76,10 +76,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             return Teleport(destination);
         }
 
-        public virtual bool Teleport(Map map, Cell cell)
-        {
-            return Teleport(new ObjectPosition(map, cell));
-        }
+        public virtual bool Teleport(Map map, Cell cell) => Teleport(new ObjectPosition(map, cell));
 
         public virtual bool Teleport(ObjectPosition destination, bool performCheck = true)
         {
@@ -114,10 +111,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             return true;
         }
 
-        public virtual bool CanChangeMap()
-        {
-            return Map != null && Map.IsActor(this);
-        }
+        public virtual bool CanChangeMap() => Map != null && Map.IsActor(this);
 
         #endregion Teleport
 

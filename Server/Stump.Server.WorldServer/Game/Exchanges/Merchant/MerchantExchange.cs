@@ -17,18 +17,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
         public Character Character
         {
             get;
-            private set;
         }
 
-        public ExchangeTypeEnum ExchangeType
-        {
-            get { return ExchangeTypeEnum.SHOP_STOCK; }
-        }
+        public ExchangeTypeEnum ExchangeType => ExchangeTypeEnum.SHOP_STOCK;
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         #region IDialog Members
 
