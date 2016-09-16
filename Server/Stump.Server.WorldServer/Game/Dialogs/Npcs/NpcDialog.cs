@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             CurrentMessage = message;
 
             var replies = message.Replies.
-                Where(entry => entry.CriteriaExpression == null || entry.CriteriaExpression.Eval(Character)).
+                Where(entry => entry.CanExecute(Npc, Character)).
                 Select(entry => (short)entry.ReplyId).Distinct();
 
             ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, replies);
