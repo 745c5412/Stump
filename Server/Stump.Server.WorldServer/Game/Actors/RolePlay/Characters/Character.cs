@@ -2602,9 +2602,36 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public ReadOnlyCollection<Quest> Quests => m_quests.AsReadOnly();
 
-        public void AddQuest(QuestTemplate template)
+        public void LoadQuests()
         {
-            var 
+            var database = QuestManager.Instance.Database;
+
+            m_quests = database.Query<QuestRecord>(string.Format(QuestRecordRelator.FetchByOwner, Id)).Select(x => new Quest(this, x)).ToList();
+        }
+
+        public void StartQuest(int questStepId)
+        {
+            var step = QuestManager.Instance.GetQuestStep(questStepId);
+
+            if (step == null)
+                throw new Exception($"Step {questStepId} not found");
+
+            StartQuest(step);
+        }
+
+        public void StartQuest(QuestStepTemplate questStep)
+        {
+            var quest = m_quests.FirstOrDefault(x => x.Template.Steps.Contains(questStep));
+
+            if (quest == null)
+            {
+                quest = new Quest(this, questStep);
+                m_quests.Add(quest);
+            }
+            else
+            {
+                quest.ChangeQuestStep(questStep);
+            }
         }
          
         #endregion
@@ -3447,6 +3474,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             FriendsBook.Load();
 
             ChatHistory = new ChatHistory(this);
+
+            LoadQuests();
 
             m_recordLoaded = true;
         }
