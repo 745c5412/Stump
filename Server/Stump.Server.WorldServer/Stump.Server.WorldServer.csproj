@@ -636,6 +636,7 @@
     <Compile Include="Game\Actors\RolePlay\Mounts\MountManager.cs" />
     <Compile Include="Game\Misc\AutoAnnounceManager.cs" />
     <Compile Include="Game\Quests\Objectives\BringItemsToObjective.cs" />
+    <Compile Include="Game\Quests\Objectives\DefeatMonstersObjective.cs" />
     <Compile Include="Game\Quests\Quest.cs" />
     <Compile Include="Game\Quests\QuestManager.cs" />
     <Compile Include="Game\Quests\QuestObjective.cs" />
