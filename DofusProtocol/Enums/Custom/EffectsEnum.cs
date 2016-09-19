@@ -1360,7 +1360,7 @@
         /// <summary>
         /// #1 : #3
         /// </summary>
-        Effect_717 = 717,
+        Effect_MonsterKilledCount = 717,
 
         /// <summary>
         /// Number of victims: #2

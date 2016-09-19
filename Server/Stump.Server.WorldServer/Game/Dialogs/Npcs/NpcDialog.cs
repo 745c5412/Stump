@@ -89,15 +89,19 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 ChangeMessage(message);
         }
 
-        public virtual void ChangeMessage(NpcMessage message)
+        public void ChangeMessage(NpcMessage message)
         {
-            CurrentMessage = message;
-
             var replies = message.Replies.
                 Where(entry => entry.CanExecute(Npc, Character)).
-                Select(entry => (short)entry.ReplyId).Distinct();
+                Select(entry => entry.ReplyId).Distinct().ToArray();
+            ChangeMessage(message, replies);
+        }
 
-            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, replies);
+        public virtual void ChangeMessage(NpcMessage message, int[] replies, params string[] parameters)
+        {
+            CurrentMessage = message;
+            
+            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, replies.Select(x => (short)x), parameters);
         }
     }
 }

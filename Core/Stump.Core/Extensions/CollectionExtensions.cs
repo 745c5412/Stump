@@ -98,8 +98,11 @@ namespace Stump.Core.Extensions
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable)
         {
-            var rand = new AsyncRandom();
+            return Shuffle<T>(enumerable, new AsyncRandom());
+        }
 
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable, Random rand)
+        {
             var elements = enumerable.ToArray();
             // Note i > 0 to avoid final pointless iteration
             for (var i = elements.Length - 1; i > 0; i--)
@@ -156,7 +159,11 @@ namespace Stump.Core.Extensions
 
         public static T RandomElementOrDefault<T>(this IEnumerable<T> enumerable)
         {
-            var rand = new Random();
+            return RandomElementOrDefault<T>(enumerable, new Random());
+        }
+    
+        public static T RandomElementOrDefault<T>(this IEnumerable<T> enumerable, Random rand)
+        {
             int count = enumerable.Count();
 
             if (count <= 0)

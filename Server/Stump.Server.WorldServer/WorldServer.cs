@@ -98,6 +98,10 @@ namespace Stump.Server.WorldServer
             logger.Info("Initializing Database...");
             DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
             DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
+
+            foreach (var plugin in PluginManager.Instance.GetPlugins())
+                DBAccessor.RegisterMappingAssembly(plugin.PluginAssembly);
+
             InitializationManager.Initialize(InitializationPass.Database);
             DBAccessor.Initialize();
 

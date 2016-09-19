@@ -112,6 +112,11 @@
     <Compile Include="Commands\GiveCommand.cs" />
     <Compile Include="Commands\TeleportCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
+    <Compile Include="Daily\ContractInfo.cs" />
+    <Compile Include="Daily\ContractItem.cs" />
+    <Compile Include="Daily\DailyObjectiveRecord.cs" />
+    <Compile Include="Daily\DailyQuestManager.cs" />
+    <Compile Include="Daily\NpcDailyQuest.cs" />
     <Compile Include="Npcs\NpcAlignement.cs" />
     <Compile Include="Npcs\NpcClassChange.cs" />
     <Compile Include="Npcs\NpcDofus.cs" />
