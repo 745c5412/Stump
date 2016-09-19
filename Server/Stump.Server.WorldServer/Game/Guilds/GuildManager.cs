@@ -104,6 +104,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     Name = name,
                     CreationDate = DateTime.Now,
                     IsNew = true,
+                    Spells = new int[0],
                     Experience = 0,
                     Boost = 0,
                     Prospecting = 100,
