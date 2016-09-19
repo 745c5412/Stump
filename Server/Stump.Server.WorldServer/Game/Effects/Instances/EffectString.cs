@@ -8,21 +8,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
     [Serializable]
     public class EffectString : EffectBase
     {
-        protected string m_value;
-
         public EffectString()
         {
         }
 
         public EffectString(EffectString copy)
-            : this(copy.Id, copy.m_value, copy)
+            : this(copy.Id, copy.Text, copy)
         {
         }
 
         public EffectString(short id, string value, EffectBase effect)
             : base(id, effect)
         {
-            m_value = value;
+            Text = value;
         }
 
         public EffectString(EffectsEnum id, string value)
@@ -33,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectString(EffectInstanceString effect)
             : base(effect)
         {
-            m_value = effect.text;
+            Text = effect.text;
         }
 
         public override int ProtocoleId
@@ -49,16 +47,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
         }
 
-        public string Text => m_value;
+        public string Text
+        {
+            get;
+            set;
+        }
 
         public override object[] GetValues()
         {
-            return new object[] { m_value };
+            return new object[] { Text };
         }
 
         public override ObjectEffect GetObjectEffect()
         {
-            return new ObjectEffectString(Id, m_value);
+            return new ObjectEffectString(Id, Text);
         }
 
         public override EffectInstance GetEffectInstance()
@@ -77,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
                 zoneShape = (uint)ZoneShape,
-                text = m_value
+                text = Text
             };
         }
 
@@ -90,21 +92,21 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             base.InternalSerialize(ref writer);
 
-            writer.Write(m_value);
+            writer.Write(Text);
         }
 
         protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
         {
             base.InternalDeserialize(ref reader);
 
-            m_value = reader.ReadString();
+            Text = reader.ReadString();
         }
 
         public override bool Equals(object obj)
         {
             if (!(obj is EffectString))
                 return false;
-            return base.Equals(obj) && m_value == (obj as EffectString).m_value;
+            return base.Equals(obj) && Text == (obj as EffectString).Text;
         }
 
         public static bool operator ==(EffectString a, EffectString b)
@@ -127,14 +129,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return base.Equals(other) && Equals(other.m_value, m_value);
+            return base.Equals(other) && Equals(other.Text, Text);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return (base.GetHashCode() * 397) ^ (m_value != null ? m_value.GetHashCode() : 0);
+                return (base.GetHashCode() * 397) ^ (Text != null ? Text.GetHashCode() : 0);
             }
         }
     }

@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new object[]
                 {
                     m_year.ToString(), m_month.ToString("00") + m_day.ToString("00"),
-                    m_hour.ToString("00") + m_minute.ToString("00")
+                    m_hour.ToString("00") + m_minute.ToString("00"), m_month, m_day
                 };
         }
 

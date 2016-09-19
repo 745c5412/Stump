@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             var item = client.Character.Inventory.TryGetItem(message.objectUID);
 
-            if (item == null)
+            if (item == null || !item.CanBeDestroyed())
                 return;
 
             client.Character.Inventory.RemoveItem(item, message.quantity);
