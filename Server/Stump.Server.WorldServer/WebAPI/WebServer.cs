@@ -2,6 +2,11 @@
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Initialization;
 using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace Stump.Server.WorldServer.WebAPI
 {
@@ -24,6 +29,28 @@ namespace Stump.Server.WorldServer.WebAPI
             catch (Exception ex)
             {
                 throw new Exception($"Cannot start WebAPI: {ex.ToString()}");
+            }
+        }
+
+        public class ErrorMessageResult : IHttpActionResult
+        {
+            private readonly string Message;
+            private readonly HttpStatusCode StatusCode;
+
+            public ErrorMessageResult(string message, HttpStatusCode statusCode)
+            {
+                Message = message;
+                StatusCode = statusCode;
+            }
+
+            public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
+            {
+                var response = new HttpResponseMessage(StatusCode)
+                {
+                    Content = new StringContent(Message)
+                };
+
+                return Task.FromResult(response);
             }
         }
     }

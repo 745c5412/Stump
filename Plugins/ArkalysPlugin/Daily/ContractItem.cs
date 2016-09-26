@@ -26,13 +26,10 @@ namespace ArkalysPlugin.Daily
 
     public class ContractItem : BasePlayerItem
     {
-        [Variable]
         public static readonly EffectsEnum EffectDescription = (EffectsEnum) 2002;
 
-        [Variable]
         public static readonly EffectsEnum EffectContractItem = (EffectsEnum) 2000;
 
-        [Variable]
         public static readonly EffectsEnum EffectContractValidated = (EffectsEnum) 2001;
 
         private int[] m_completions;

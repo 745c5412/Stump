@@ -13,33 +13,9 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var character = World.Instance.GetCharacter(characterId);
 
             if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
-            return Json(character);
-        }
-
-        [HttpPut]
-        [Route("Character/{characterId:int}/AddTokens/{amount:int}")]
-        public IHttpActionResult AddTokens(int characterId, int amount)
-        {
-            var character = World.Instance.GetCharacter(characterId);
-
-            if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
-
-            var tokens = character.Inventory.Tokens;
-
-            if (tokens != null)
-            {
-                tokens.Stack += (uint)amount;
-                character.Inventory.RefreshItem(tokens);
-            }
-            else
-            {
-                character.Inventory.CreateTokenItem(amount);
-            }
-
-            return Json(character);
+            return Json(character.Record);
         }
 
         public IHttpActionResult Put(int characterId) => StatusCode(HttpStatusCode.MethodNotAllowed);

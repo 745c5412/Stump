@@ -94,10 +94,7 @@ namespace ArkalysPlugin.Daily
 
     public class NpcDailyQuestScript : NpcAction
     {
-        public override NpcActionTypeEnum[] ActionType
-        {
-            get { return new[] {NpcActionTypeEnum.ACTION_TALK}; }
-        }
+        public override NpcActionTypeEnum[] ActionType => new[] { NpcActionTypeEnum.ACTION_TALK };
 
         public override void Execute(Npc npc, Character character)
         {

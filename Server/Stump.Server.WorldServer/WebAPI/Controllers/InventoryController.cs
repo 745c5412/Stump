@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var character = World.Instance.GetCharacter(characterId);
 
             if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             return Json(character.Inventory.GetItems().Select(x => x.GetObjectItem()));
         }
@@ -26,12 +26,12 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var character = World.Instance.GetCharacter(characterId);
 
             if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             var item = character.Inventory.TryGetItem(guid);
 
             if (item == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             return Json(item.GetObjectItem());
         }
@@ -44,17 +44,17 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var character = World.Instance.GetCharacter(characterId);
 
             if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             var item = ItemManager.Instance.CreatePlayerItem(character, itemId, amount);
 
             if (item == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return StatusCode(HttpStatusCode.InternalServerError);
 
             var playerItem = character.Inventory.AddItem(item);
 
             if (playerItem == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return StatusCode(HttpStatusCode.InternalServerError);
 
             return Ok();
         }
@@ -65,12 +65,12 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var character = World.Instance.GetCharacter(characterId);
 
             if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             var item = character.Inventory.TryGetItem(guid);
 
             if (item == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             character.Inventory.UnStackItem(item, amount);
 

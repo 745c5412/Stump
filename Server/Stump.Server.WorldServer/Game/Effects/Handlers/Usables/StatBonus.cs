@@ -32,16 +32,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 
             var bonus = AdjustBonusStat((short)(effect.Value * NumberOfUses));
 
-            if (bonus == 0 || bonus + Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Base > StatBonusLimit)
+            if (bonus == 0)
             {
-                Target.SendServerMessage(string.Format("Bonus limit reached : {0}", StatBonusLimit), Color.Red);
+                //Vos caractéristiques ne conviennent pas
+                Target.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 202);
                 return false;
             }
 
             Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Base += bonus;
-            UsedItems = (uint)Math.Ceiling((double)bonus / effect.Value);
             UpdatePermanentStatField(bonus);
             Target.RefreshStats();
+
+            UsedItems = NumberOfUses;
 
             return true;
         }
@@ -110,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (actualPts >= StatBonusLimit)
                 return 0;
 
-            return actualPts + bonus > StatBonusLimit ? StatBonusLimit : bonus;
+            return actualPts + bonus > StatBonusLimit ? (short)(StatBonusLimit - Math.Abs((actualPts + bonus) - StatBonusLimit)) : bonus;
         }
 
         private void UpdatePermanentStatField(short bonus)

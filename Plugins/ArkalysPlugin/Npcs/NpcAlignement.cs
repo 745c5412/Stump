@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using System.Linq;
 
@@ -114,10 +115,62 @@ namespace ArkalysPlugin.Npcs
         {
             if (replyId == NpcAlignement.ReplyBecomeAngel)
             {
+                var template = ItemManager.Instance.TryGetTemplate((int)ItemIdEnum.TwiggySword);
+                if (template == null)
+                {
+                    Close();
+                    return;
+                }
+
+                var item = Character.Inventory.TryGetItem(template);
+
+                if (item == null)
+                {
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 4);
+
+                    Close();
+                    return;
+                }
+
+                if (item.Stack < 10)
+                {
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
+
+                    Close();
+                    return;
+                }
+
+                Character.Inventory.RemoveItem(item, 10);
                 Character.ChangeAlignementSide(AlignmentSideEnum.ALIGNMENT_ANGEL);
             }
             else if (replyId == NpcAlignement.ReplyBecomeEvil)
             {
+                var template = ItemManager.Instance.TryGetTemplate((int)ItemIdEnum.TwiggyDaggers);
+                if (template == null)
+                {
+                    Close();
+                    return;
+                }
+
+                var item = Character.Inventory.TryGetItem(template);
+
+                if (item == null)
+                {
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 4);
+
+                    Close();
+                    return;
+                }
+
+                if (item.Stack < 10)
+                {
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
+
+                    Close();
+                    return;
+                }
+
+                Character.Inventory.RemoveItem(item, 10);
                 Character.ChangeAlignementSide(AlignmentSideEnum.ALIGNMENT_EVIL);
             }
             else if (replyId == NpcAlignement.ReplyBecomeNeutre)

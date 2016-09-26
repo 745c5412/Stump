@@ -744,7 +744,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         private void UnEquipedDouble(IItem itemToEquip)
         {
-            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS || itemToEquip.Template.Type.ItemType == ItemTypeEnum.TROPHY || itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS_SHOP)
+            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS || itemToEquip.Template.Type.ItemType == ItemTypeEnum.TROPHY)
             {
                 var item = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.Template.Id == itemToEquip.Template.Id);
 
