@@ -110,9 +110,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return false;
             }
 
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    21, amount, itemId);
-
             var item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
 
             Character.Inventory.AddItem(item);

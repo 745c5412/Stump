@@ -77,9 +77,6 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
-        public int LastConnectionTimeStamp
-        {
-            get { return LastConnection.HasValue ? (int)(DateTime.Now - LastConnection.Value).TotalHours : 0; }
-        }
+        public int LastConnectionTimeStamp => LastConnection.HasValue ? (int)(DateTime.Now - LastConnection.Value).TotalHours : 0;
     }
 }

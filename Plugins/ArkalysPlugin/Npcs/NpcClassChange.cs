@@ -118,10 +118,7 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcClassChangeScript : NpcAction
     {
-        public override NpcActionTypeEnum[] ActionType
-        {
-            get { return new[] { NpcActionTypeEnum.ACTION_TALK }; }
-        }
+        public override NpcActionTypeEnum[] ActionType => new[] { NpcActionTypeEnum.ACTION_TALK };
 
         public override void Execute(Npc npc, Character character)
         {
@@ -144,7 +141,7 @@ namespace ArkalysPlugin.Npcs
         {
             base.Open();
 
-            m_price = 700 + (40 * Character.PrestigeRank);
+            m_price = 100 + (2 * ((Character.PrestigeRank + 1) * Character.Level));
 
             if (Character.Inventory.Tokens == null || Character.Inventory.Tokens.Stack < m_price)
             {

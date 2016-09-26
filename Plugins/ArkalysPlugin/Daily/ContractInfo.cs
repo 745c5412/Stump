@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using Stump.Server.WorldServer.Database.Monsters;
+﻿using System.Linq;
 
 namespace ArkalysPlugin.Daily
 {
@@ -17,10 +14,7 @@ namespace ArkalysPlugin.Daily
         {
             get;
         }
-        
-        public override string ToString()
-        {
-            return string.Join("\r\n", Objectives.Select(x => $" -  {x.Amount} * {x.Name}"));
-        }
+
+        public override string ToString() => string.Join("<br>", Objectives.Select(x => $" -  {x.Amount} * {x.Name}"));
     }
 }

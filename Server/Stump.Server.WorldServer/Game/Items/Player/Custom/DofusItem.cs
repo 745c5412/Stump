@@ -6,7 +6,6 @@ using System.Linq;
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
     [ItemType(ItemTypeEnum.DOFUS)]
-    [ItemType(ItemTypeEnum.DOFUS_SHOP)]
     [ItemType(ItemTypeEnum.TROPHY)]
     public class DofusItem : BasePlayerItem
     {

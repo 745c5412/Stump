@@ -13,16 +13,43 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var account = World.Instance.GetConnectedAccount(accountId);
 
             if (account == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             return Json(account);
         }
 
-        [HttpGet]
-        [Route("Account/{accountId:int}/Test")]
-        public IHttpActionResult Test(int accountId)
+        [HttpPut]
+        [Route("Account/{accountId:int}/AddTokens/{amount:int}")]
+        public IHttpActionResult AddTokens(int accountId, int amount)
         {
-            return Json("OK");
+            var account = World.Instance.GetConnectedAccount(accountId);
+
+            if (account == null)
+                return NotFound();
+
+            if (!account.ConnectedCharacter.HasValue)
+                return NotFound();
+
+            var character = World.Instance.GetCharacter(account.ConnectedCharacter.Value);
+
+            if (character == null)
+                return NotFound();
+
+            var tokens = character.Inventory.Tokens;
+
+            if (tokens != null)
+            {
+                tokens.Stack += (uint)amount;
+                character.Inventory.RefreshItem(tokens);
+            }
+            else
+            {
+                character.Inventory.CreateTokenItem(amount);
+            }
+
+            character.SendServerMessage($"Vous venez de recevoir votre achat de {amount} Ogrines !");
+
+            return Ok();
         }
 
         public IHttpActionResult Put(int accountId) => StatusCode(HttpStatusCode.MethodNotAllowed);

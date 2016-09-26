@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var character = World.Instance.GetCharacter(x => x.Account.Id == accountId);
 
             if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             return Json(character.Bank.Select(x => x.GetObjectItem()));
         }
@@ -26,12 +26,12 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var character = World.Instance.GetCharacter(x => x.Account.Id == accountId);
 
             if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             var item = character.Bank.TryGetItem(guid);
 
             if (item == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             return Json(item.GetObjectItem());
         }
@@ -44,17 +44,17 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var character = World.Instance.GetCharacter(x => x.Account.Id == accountId);
 
             if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             var item = ItemManager.Instance.CreateBankItem(character, itemId, amount);
 
             if (item == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return StatusCode(HttpStatusCode.InternalServerError);
 
             var playerItem = character.Bank.AddItem(item);
 
             if (playerItem == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return StatusCode(HttpStatusCode.InternalServerError);
 
             //TEXT_INFORMATION_POPUP		21		Des objets ont été déposés dans votre banque.
 
@@ -67,12 +67,12 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             var character = World.Instance.GetCharacter(x => x.Account.Id == accountId);
 
             if (character == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             var item = character.Bank.TryGetItem(guid);
 
             if (item == null)
-                return StatusCode(HttpStatusCode.BadRequest);
+                return NotFound();
 
             character.Bank.UnStackItem(item, amount);
 

@@ -3,18 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
-using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Database.Monsters;
-using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
-using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace ArkalysPlugin.Daily
@@ -88,15 +81,14 @@ namespace ArkalysPlugin.Daily
 
             var objectives = new List<DailyObjectiveRecord>();
 
-            int i = 0;
+            var i = 0;
             var difficulty = 0d;
             while (i < possibleObjectives.Length && difficulty < DailyQuestDifficulty)
             {
                 objectives.Add(possibleObjectives[i]);
                 difficulty += possibleObjectives[i].Difficulty;
                 i++;
-            }
-            
+            }       
 
             return new ContractInfo(objectives.ToArray());
         }

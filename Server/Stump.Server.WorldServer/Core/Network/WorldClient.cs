@@ -124,16 +124,17 @@ namespace Stump.Server.WorldServer.Core.Network
         protected override void OnDisconnect()
         {
             if (Character != null)
-            {
                 Character.LogOut();
-            }
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
                 if (WorldAccount == null)
                     return;
 
+                var account = AccountManager.Instance.FindById(WorldAccount.Id);
+
                 WorldAccount.ConnectedCharacter = null;
+                WorldAccount.NewTokens = account.NewTokens;
 
                 WorldServer.Instance.DBAccessor.Database.Update(WorldAccount);
             });
@@ -141,9 +142,6 @@ namespace Stump.Server.WorldServer.Core.Network
             base.OnDisconnect();
         }
 
-        public override string ToString()
-        {
-            return base.ToString() + (Account != null ? " (" + Account.Login + ")" : "");
-        }
+        public override string ToString() => base.ToString() + (Account != null ? " (" + Account.Login + ")" : "");
     }
 }
