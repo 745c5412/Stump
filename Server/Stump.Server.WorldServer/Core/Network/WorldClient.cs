@@ -131,10 +131,7 @@ namespace Stump.Server.WorldServer.Core.Network
                 if (WorldAccount == null)
                     return;
 
-                var account = AccountManager.Instance.FindById(WorldAccount.Id);
-
                 WorldAccount.ConnectedCharacter = null;
-                WorldAccount.NewTokens = account.NewTokens;
 
                 WorldServer.Instance.DBAccessor.Database.Update(WorldAccount);
             });
