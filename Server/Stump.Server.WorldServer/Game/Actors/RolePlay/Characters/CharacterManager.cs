@@ -102,7 +102,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool DoesNameExist(string name)
         {
             WorldServer.Instance.IOTaskPool.EnsureContext();
-            return Database.ExecuteScalar<object>("SELECT 1 FROM characters WHERE Name=@0", name) != null;
+            return Database.ExecuteScalar<object>("SELECT 1 FROM characters WHERE Name=@0 AND DeletedDate IS NULL", name) != null;
         }
 
         public void CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
