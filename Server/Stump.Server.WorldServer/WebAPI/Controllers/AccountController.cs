@@ -1,4 +1,8 @@
-﻿using Stump.Server.WorldServer.Game;
+﻿using MongoDB.Bson;
+using Stump.Server.BaseServer.Logging;
+using Stump.Server.WorldServer.Game;
+using System;
+using System.Globalization;
 using System.Net;
 using System.Web.Http;
 
@@ -47,7 +51,20 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
                 character.Inventory.CreateTokenItem(amount);
             }
 
+            var document = new BsonDocument
+            {
+                { "AcctId", accountId },
+                { "AcctName", character.Account.Login },
+                { "CharacterId", character.Id },
+                { "CharacterName", character.Name },
+                { "Amount", amount },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            MongoLogger.Instance.Insert("Transactions", document);
+
             character.SendServerMessage($"Vous venez de recevoir votre achat de {amount} Ogrines !");
+            character.SaveLater();
 
             return Ok();
         }

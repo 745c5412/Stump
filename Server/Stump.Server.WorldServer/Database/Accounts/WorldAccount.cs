@@ -17,6 +17,11 @@ namespace Stump.Server.WorldServer.Database.Accounts
         /// Use parameters
         /// </summary>
         public static string FetchByNickname = "SELECT * FROM accounts WHERE Nickname=@0";
+
+        /// <summary>
+        /// Use string.Format
+        /// </summary>
+        public static string UpdateNewTokens = "UPDATE accounts SET NewTokens={0}";
     }
 
     [TableName("accounts")]
@@ -71,6 +76,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
+        [ResultColumn("NewTokens")]
         public int NewTokens
         {
             get;

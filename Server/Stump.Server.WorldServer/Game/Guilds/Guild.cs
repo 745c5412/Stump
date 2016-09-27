@@ -468,15 +468,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return true;
         }
 
-        public ReadOnlyCollection<Spell> GetTaxCollectorSpells()
-        {
-            return m_spells.Where(x => x != null).ToList().AsReadOnly();
-        }
-
-        public int[] GetTaxCollectorSpellsLevels() // faster
-        {
-            return m_spells.Select(x => x == null ? 0 : x.CurrentLevel).ToArray();
-        }
+        public ReadOnlyCollection<Spell> GetTaxCollectorSpells() => m_spells.Where(x => x != null).ToList().AsReadOnly();
+        public int[] GetTaxCollectorSpellsLevels() => m_spells.Select(x => x == null ? 0 : x.CurrentLevel).ToArray();
 
         public GuildCreationResultEnum SetGuildName(Character character, string name)
         {

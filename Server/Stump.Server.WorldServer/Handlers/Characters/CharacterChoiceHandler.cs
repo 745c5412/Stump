@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -253,6 +254,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.WorldAccount.LastIp = client.IP;
             client.WorldAccount.ConnectedCharacter = character.Id;
 
+            WorldServer.Instance.DBAccessor.Database.Execute(string.Format(WorldAccountRelator.UpdateNewTokens, 0));
             WorldServer.Instance.DBAccessor.Database.Update(client.WorldAccount);
 
             character.LastUsage = DateTime.Now;
