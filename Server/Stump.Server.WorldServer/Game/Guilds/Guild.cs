@@ -579,7 +579,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (!from.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) && !leave)
                 return false;
 
-            if (kickedMember.IsBoss)
+            if (kickedMember.IsBoss && !leave)
                 return false;
 
             if (!RemoveMember(kickedMember))
