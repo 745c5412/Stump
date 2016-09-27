@@ -19,13 +19,8 @@ namespace ArkalysPlugin.Npcs
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [Variable]
-        public static double OrbFactor = 5;
-
-        [Variable]
         public static int NpcId = 3000;
 
-        //Approche jeune aventurier, je sais que tu as fait de mauvais choix, et je peux t’aider à tout oublier … contre suffisamment d’orbes bien entendu.
-        //Donnes moi #1 orbes et tu auras une autre chance de choisir ta voie
         [Variable]
         public static int MessageId = 20003;
 
@@ -39,7 +34,7 @@ namespace ArkalysPlugin.Npcs
         public static short ReplySpellForgetPanelId = 20033;
 
         [Variable]
-        public static short ReplyNoOrbsId = 20012;
+        public static short ReplyNoKamasId = 20012;
 
         public static NpcMessage Message;
 
@@ -71,16 +66,6 @@ namespace ArkalysPlugin.Npcs
             m_scriptDisabled = true;
         }
 
-        [Initialization(typeof(OrbsManager), Silent = true)]
-        public static void InitializeItem()
-        {
-            if (OrbsManager.OrbItemTemplate != null)
-                return;
-
-            logger.Error("No orb item, script is disabled");
-            m_scriptDisabled = true;
-        }
-
         private static void OnNpcSpawned(NpcTemplate template, Npc npc)
         {
             if (m_scriptDisabled)
@@ -107,12 +92,12 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcRestatDialog : NpcDialog
     {
-        private readonly int m_requieredOrbs;
+        private readonly int m_requieredKamas;
 
         public NpcRestatDialog(Character character, Npc npc)
             : base(character, npc)
         {
-            m_requieredOrbs = (int)Math.Floor(Character.Level * NpcRestatScript.OrbFactor);
+            m_requieredKamas = (int)Math.Floor(Character.Level * 2500.0);
             CurrentMessage = NpcRestatScript.Message;
         }
 
@@ -120,36 +105,31 @@ namespace ArkalysPlugin.Npcs
         {
             base.Open();
 
-            var orbs = Character.Inventory.TryGetItem(OrbsManager.OrbItemTemplate);
-
-            if (orbs != null && orbs.Stack >= m_requieredOrbs)
-                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcRestatScript.ReplyRestatId, NpcRestatScript.ReplySpellForgetId, NpcRestatScript.ReplySpellForgetPanelId }, m_requieredOrbs.ToString());
+            if (Character.Kamas >= m_requieredKamas)
+                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcRestatScript.ReplyRestatId, NpcRestatScript.ReplySpellForgetId, NpcRestatScript.ReplySpellForgetPanelId }, m_requieredKamas.ToString());
             else
-                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcRestatScript.ReplyNoOrbsId }, m_requieredOrbs.ToString());
+                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcRestatScript.ReplyNoKamasId }, m_requieredKamas.ToString());
         }
 
         public override void Reply(short replyId)
         {
-            var orbs = Character.Inventory.TryGetItem(OrbsManager.OrbItemTemplate);
-
             if (replyId == NpcRestatScript.ReplyRestatId)
             {
-                if (orbs == null || orbs.Stack < m_requieredOrbs)
+                if (Character.Kamas < m_requieredKamas)
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
                 else
                 {
-                    Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
-
+                    Character.Inventory.SubKamas(m_requieredKamas);
                     Character.ResetStats();
                 }
             }
             else if (replyId == NpcRestatScript.ReplySpellForgetId)
             {
-                if (orbs == null || orbs.Stack < m_requieredOrbs)
+                if (Character.Kamas < m_requieredKamas)
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
                 else
                 {
-                    Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
+                    Character.Inventory.SubKamas(m_requieredKamas);
 
                     var points = (Character.Spells.CountSpentBoostPoint() + Character.SpellsPoints);
 
@@ -162,11 +142,11 @@ namespace ArkalysPlugin.Npcs
             }
             else if (replyId == NpcRestatScript.ReplySpellForgetPanelId)
             {
-                if (orbs == null || orbs.Stack < m_requieredOrbs)
+                if (Character.Kamas < m_requieredKamas)
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
                 else
                 {
-                    Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
+                    Character.Inventory.SubKamas(m_requieredKamas);
 
                     var panel = new SpellForgetPanel(Character);
                     panel.Open();
