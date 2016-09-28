@@ -49,6 +49,7 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             else
             {
                 character.Inventory.CreateTokenItem(amount);
+                character.Inventory.RefreshItem(character.Inventory.Tokens);
             }
 
             var document = new BsonDocument

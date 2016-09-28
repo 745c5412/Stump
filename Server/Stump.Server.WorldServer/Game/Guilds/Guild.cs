@@ -266,7 +266,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool IsDirty
         {
-            get { return m_isDirty || Emblem.IsDirty; }
+            get { return m_isDirty || Emblem.IsDirty || Members.Any(x => x.IsDirty || x.IsNew); }
             set
             {
                 m_isDirty = value;
