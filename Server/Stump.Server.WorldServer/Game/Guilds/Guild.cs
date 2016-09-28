@@ -710,6 +710,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         protected virtual void OnMemberAdded(GuildMember member)
         {
+            IsDirty = true;
+
             BindMemberEvents(member);
             GuildManager.Instance.RegisterGuildMember(member);
 
@@ -726,6 +728,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         protected virtual void OnMemberRemoved(GuildMember member)
         {
+            IsDirty = true;
+
             GuildManager.Instance.DeleteGuildMember(member);
             UnBindMemberEvents(member);
 
