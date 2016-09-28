@@ -1,5 +1,4 @@
-﻿using NLog;
-using Stump.Core.IO;
+﻿using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
@@ -12,8 +11,6 @@ namespace Stump.Server.WorldServer.Core.Network
 {
     public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>, IDisposable
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         private WorldClient m_singleClient; // avoid new object allocation
         private readonly List<WorldClient> m_underlyingList = new List<WorldClient>();
         private readonly List<SegmentStream> m_usedStream = new List<SegmentStream>();
@@ -32,10 +29,7 @@ namespace Stump.Server.WorldServer.Core.Network
             m_singleClient = client;
         }
 
-        public int Count
-        {
-            get { return m_singleClient != null ? 1 : m_underlyingList.Count; }
-        }
+        public int Count => m_singleClient != null ? 1 : m_underlyingList.Count;
 
         public void Send(Message message)
         {
@@ -51,7 +45,7 @@ namespace Stump.Server.WorldServer.Core.Network
                         return;
 
                     var disconnectedClients = new List<WorldClient>();
-                    SegmentStream stream = BufferManager.Default.CheckOutStream();
+                    var stream = BufferManager.Default.CheckOutStream();
                     try
                     {
                         var writer = new BigEndianWriter(stream);
@@ -112,21 +106,11 @@ namespace Stump.Server.WorldServer.Core.Network
             }
         }
 
-        public IEnumerator<WorldClient> GetEnumerator()
-        {
-            // not thread safe
-            return m_singleClient != null ? new[] { m_singleClient }.AsEnumerable().GetEnumerator() : m_underlyingList.GetEnumerator();
-        }
+        public IEnumerator<WorldClient> GetEnumerator() => m_singleClient != null ? new[] { m_singleClient }.AsEnumerable().GetEnumerator() : m_underlyingList.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public static implicit operator WorldClientCollection(WorldClient client)
-        {
-            return new WorldClientCollection(client);
-        }
+        public static implicit operator WorldClientCollection(WorldClient client) => new WorldClientCollection(client);
 
         public void Dispose()
         {

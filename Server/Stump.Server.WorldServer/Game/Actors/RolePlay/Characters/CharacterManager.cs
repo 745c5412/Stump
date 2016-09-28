@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                                            IEnumerable<int> colors, int headId, Action successCallback, Action<CharacterCreationResultEnum> failCallback)
         {
             WorldServer.Instance.IOTaskPool.EnsureContext();
-            if (client.Characters.Count >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
+            if (client.Characters.Count(x => !x.IsDeleted) >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
             {
                 failCallback(CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS);
                 return;

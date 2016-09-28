@@ -97,7 +97,7 @@ namespace ArkalysPlugin.Npcs
         public NpcRestatDialog(Character character, Npc npc)
             : base(character, npc)
         {
-            m_requieredKamas = (int)Math.Floor(Character.Level * 2500.0);
+            m_requieredKamas = (int)Math.Floor(Character.Level * 5000.0);
             CurrentMessage = NpcRestatScript.Message;
         }
 
