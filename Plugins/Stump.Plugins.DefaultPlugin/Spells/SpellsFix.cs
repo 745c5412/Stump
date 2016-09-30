@@ -192,6 +192,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Roulette (101)
             FixEffectOnAllLevels(101, 15, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
+            // Perception (113)
+            FixEffectOnAllLevels(113, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
             #endregion ECAFLIP
 
             #region SRAM
