@@ -1,8 +1,13 @@
 ﻿using MongoDB.Bson;
 using Stump.Server.BaseServer.Logging;
+using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Accounts;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Web.Http;
 
@@ -26,46 +31,80 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
         [Route("Account/{accountId:int}/AddTokens/{amount:int}")]
         public IHttpActionResult AddTokens(int accountId, int amount)
         {
-            var account = World.Instance.GetConnectedAccount(accountId);
+            var account = ClientManager.Instance.Clients.Select(x => x as WorldClient).FirstOrDefault(x => x.Account.Id == accountId);
 
             if (account == null)
-                return NotFound();
+            {
+                var worldAccount = AccountManager.Instance.FindById(accountId);
 
-            if (!account.ConnectedCharacter.HasValue)
-                return NotFound();
+                if (worldAccount == null)
+                    return NotFound();
 
-            var character = World.Instance.GetCharacter(account.ConnectedCharacter.Value);
+                worldAccount.Tokens += amount;
+                WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Save(worldAccount));
 
-            if (character == null)
-                return NotFound();
+                var documentAccount = new BsonDocument
+                {
+                    { "AcctId", accountId },
+                    { "AcctName", "" },
+                    { "CharacterId", 0 },
+                    { "CharacterName", "" },
+                    { "Amount", amount },
+                    { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                };
 
-            var tokens = character.Inventory.Tokens;
+                MongoLogger.Instance.Insert("Transactions", documentAccount);
+
+                return Ok();
+            }
+
+            if (account.Character == null)
+            {
+                account.WorldAccount.Tokens += amount;
+                WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Save(account.WorldAccount));
+
+                var documentAccount = new BsonDocument
+                {
+                    { "AcctId", accountId },
+                    { "AcctName", account.Account.Login },
+                    { "CharacterId", 0 },
+                    { "CharacterName", "" },
+                    { "Amount", amount },
+                    { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                };
+
+                MongoLogger.Instance.Insert("Transactions", documentAccount);
+
+                return Ok();
+            }
+
+            var tokens = account.Character.Inventory.Tokens;
 
             if (tokens != null)
             {
                 tokens.Stack += (uint)amount;
-                character.Inventory.RefreshItem(tokens);
+                account.Character.Inventory.RefreshItem(tokens);
             }
             else
             {
-                character.Inventory.CreateTokenItem(amount);
-                character.Inventory.RefreshItem(character.Inventory.Tokens);
+                account.Character.Inventory.CreateTokenItem(amount);
+                account.Character.Inventory.RefreshItem(account.Character.Inventory.Tokens);
             }
 
             var document = new BsonDocument
             {
                 { "AcctId", accountId },
-                { "AcctName", character.Account.Login },
-                { "CharacterId", character.Id },
-                { "CharacterName", character.Name },
+                { "AcctName", account.Character.Account.Login },
+                { "CharacterId", account.Character.Id },
+                { "CharacterName", account.Character.Name },
                 { "Amount", amount },
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
             };
 
             MongoLogger.Instance.Insert("Transactions", document);
 
-            character.SendServerMessage($"Vous venez de recevoir votre achat de {amount} Ogrines !");
-            character.SaveLater();
+            account.Character.SendServerMessage($"Vous venez de recevoir votre achat de {amount} Ogrines !");
+            account.Character.SaveLater();
 
             return Ok();
         }

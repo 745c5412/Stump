@@ -235,7 +235,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set
             {
                 m_compressedCells = value;
-                byte[] uncompressedCells = ZipHelper.Uncompress(m_compressedCells);
+                var uncompressedCells = ZipHelper.Uncompress(m_compressedCells);
 
                 Cells = new Cell[uncompressedCells.Length / Cell.StructSize];
                 for (int i = 0, j = 0; i < uncompressedCells.Length; i += Cell.StructSize, j++)
@@ -252,7 +252,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set
             {
                 m_compressedElements = value;
-                byte[] uncompressedElements = ZipHelper.Uncompress(m_compressedElements);
+                var uncompressedElements = ZipHelper.Uncompress(m_compressedElements);
 
                 Elements = new MapElement[uncompressedElements.Length / MapElement.Size];
                 for (int i = 0, j = 0; i < uncompressedElements.Length; i += MapElement.Size, j++)
@@ -274,6 +274,12 @@ namespace Stump.Server.WorldServer.Database.World.Maps
 
         [Ignore]
         public Cell[] Cells
+        {
+            get;
+            set;
+        }
+
+        public bool SpawnDisabled
         {
             get;
             set;

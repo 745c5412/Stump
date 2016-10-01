@@ -111,7 +111,6 @@
   <ItemGroup>
     <Compile Include="Commands\GiveCommand.cs" />
     <Compile Include="Commands\TeleportCommand.cs" />
-    <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Daily\ContractInfo.cs" />
     <Compile Include="Daily\ContractItem.cs" />
     <Compile Include="Daily\DailyObjectiveRecord.cs" />
@@ -128,7 +127,6 @@
     <Compile Include="PVPTitles.cs" />
     <Compile Include="SmithMagic\SmithMagicPotionItem.cs" />
     <Compile Include="Votes\VoteChecker.cs" />
-    <Compile Include="WelcomeMessage.cs" />
     <Compile Include="Npcs\NpcShops.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
