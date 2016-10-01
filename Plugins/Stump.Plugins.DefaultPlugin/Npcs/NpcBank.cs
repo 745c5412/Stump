@@ -118,7 +118,7 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
                 {
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 82);
                 }
-                else
+                else if (!Character.IsBusy())
                 {
                     Character.Inventory.SubKamas(accessPrice);
 
