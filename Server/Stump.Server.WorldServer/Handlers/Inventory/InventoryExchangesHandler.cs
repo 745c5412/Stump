@@ -214,6 +214,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (merchant == null || merchant.Cell.Id != message.humanVendorCell)
                 return;
 
+            if (client.Character.IsBusy())
+                return;
+
             var shop = new MerchantShopDialog(merchant, client.Character);
             shop.Open();
         }
@@ -222,6 +225,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeRequestOnTaxCollectorMessage(WorldClient client, ExchangeRequestOnTaxCollectorMessage message)
         {
             if (client.Character.Guild == null)
+                return;
+
+            if (client.Character.IsBusy() || client.Character.IsTrading())
                 return;
 
             var taxCollectorNpc = client.Character.Map.TaxCollector;

@@ -102,6 +102,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (dialoguer.Map != Position.Map)
                 return false;
 
+            if (dialoguer.IsBusy())
+                return false;
+
             return Actions.Count > 0 && Actions.Any(entry => entry.ActionType.Contains(action) && entry.CanExecute(this, dialoguer));
         }
 
