@@ -13,8 +13,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
     [EffectHandler(EffectsEnum.Effect_Illusions)]
     public class Illusions : SpellEffectHandler
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         public Illusions(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {

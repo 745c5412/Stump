@@ -33,10 +33,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             m_mounts = Database.Query<MountRecord>(MountRecordRelator.FetchQuery).ToDictionary(x => x.Id);
         }
 
-        public MountTemplate[] GetTemplates()
-        {
-            return m_mountTemplates.Values.ToArray();
-        }
+        public MountTemplate[] GetTemplates() => m_mountTemplates.Values.ToArray();
 
         public MountTemplate GetTemplate(int id)
         {
@@ -44,10 +41,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             return !m_mountTemplates.TryGetValue(id, out result) ? null : result;
         }
 
-        public MountTemplate GetTemplateByScrollId(int scrollId)
-        {
-            return m_mountTemplates.FirstOrDefault(x => x.Value.ScrollId == scrollId).Value;
-        }
+        public MountTemplate GetTemplateByScrollId(int scrollId) => m_mountTemplates.FirstOrDefault(x => x.Value.ScrollId == scrollId).Value;
 
         public void AddMount(MountRecord record)
         {
@@ -86,15 +80,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             return record;
         }
 
-        private static short GetBonusByLevel(int finalBonus, int level)
-        {
-            return (short)Math.Floor(finalBonus * level / 100d);
-        }
+        private static short GetBonusByLevel(int finalBonus, int level) => (short)Math.Floor(finalBonus * level / 100d);
 
-        public List<EffectInteger> GetMountEffects(Mount mount)
-        {
-            return mount.Template.Bonuses.Select(x => new EffectInteger((EffectsEnum)x.EffectId, GetBonusByLevel(x.Amount, mount.Level))).ToList();
-        }
+        public List<EffectInteger> GetMountEffects(Mount mount) => mount.Template.Bonuses.Select(x => new EffectInteger((EffectsEnum)x.EffectId, GetBonusByLevel(x.Amount, mount.Level))).ToList();
 
         public Mount CreateMount(Character owner, MountTemplate template)
         {
@@ -104,7 +92,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public Mount CreateMount(Character owner, MountTemplate template, bool sex)
         {
-            var record = new MountRecord()
+            var record = new MountRecord
             {
                 IsNew = true,
                 TemplateId = template.Id,

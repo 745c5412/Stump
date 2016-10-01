@@ -137,30 +137,29 @@ namespace Stump.Server.WorldServer.Commands.Commands
             foreach (var character in GetTargets(trigger))
             {
                 trigger.ReplyBold("{0} ({1})", character.Name, character.Id);
-                trigger.ReplyBold("Account : {0}/{1} ({2}) - {3}", character.Account.Login, character.Account.Nickname,
-                    character.Account.Id, character.UserGroup.Name);
+                trigger.ReplyBold("Account : {0}/{1} ({2}) - {3}", character.Account.Login, character.Account.Nickname, character.Account.Id, character.UserGroup.Name);
                 trigger.ReplyBold("ClientKey : {0}", character.Account.LastClientKey);
                 trigger.ReplyBold("Ip : {0}", character.UserGroup.Role == RoleEnum.Administrator ? "127.0.0.1" : character.Client.IP);
                 trigger.ReplyBold("Level : {0}", character.Level);
-                trigger.ReplyBold("Map : {0}, Cell : {1}, Direction : {2}", character.Map.Id, character.Cell.Id,
-                    character.Direction);
+                trigger.ReplyBold("Map : {0}, Cell : {1}, Direction : {2}", character.Map.Id, character.Cell.Id, character.Direction);
                 trigger.ReplyBold("Kamas : {0}", character.Inventory.Kamas);
                 trigger.ReplyBold("Items : {0}", character.Inventory.Count);
                 trigger.ReplyBold("Spells : {0}", character.Spells.Count());
-                trigger.ReplyBold("Tokens : {0}", character.Inventory.Tokens);
+
+                if (character.Inventory.Tokens != null)
+                    trigger.ReplyBold("Tokens : {0}", character.Inventory.Tokens);
+
                 trigger.ReplyBold("Fight : {0}",
                     character.IsFighting() ? character.Fight.Id.ToString(CultureInfo.InvariantCulture) : "Not fighting");
 
                 if (!trigger.Get<bool>("stats"))
                     return;
 
-                trigger.ReplyBold("Spells Points : {0}, Stats Points : {1}", character.SpellsPoints,
-                    character.StatsPoints);
+                trigger.ReplyBold("Spells Points : {0}, Stats Points : {1}", character.SpellsPoints, character.StatsPoints);
                 trigger.ReplyBold("Health : {0}/{1}", character.Stats.Health.Total, character.Stats.Health.TotalMax);
                 trigger.ReplyBold("AP : {0}, PM : {1}", character.Stats.AP, character.Stats.MP);
                 trigger.ReplyBold("Vitality : {0}, Wisdom : {1}", character.Stats.Vitality, character.Stats.Wisdom);
-                trigger.ReplyBold("Strength : {0}, Intelligence : {1}", character.Stats.Strength,
-                    character.Stats.Intelligence);
+                trigger.ReplyBold("Strength : {0}, Intelligence : {1}", character.Stats.Strength, character.Stats.Intelligence);
                 trigger.ReplyBold("Agility : {0}, Chance : {1}", character.Stats.Agility, character.Stats.Chance);
             }
         }
