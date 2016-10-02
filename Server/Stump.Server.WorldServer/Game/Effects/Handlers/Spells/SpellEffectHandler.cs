@@ -136,61 +136,63 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             get { return Fight.Map; }
         }
 
-        public bool IsValidTarget(FightActor actor)
+        public bool IsValidTarget(FightActor target) => IsValidTarget(Targets, Caster, target);
+
+        public static bool IsValidTarget(SpellTargetType targets, FightActor caster, FightActor target)
         {
-            if (Targets == SpellTargetType.NONE)
-                // return false; note : wtf, why is there spells with Targets = NONE ?
+            if (targets == SpellTargetType.NONE)
+                // return false; note : wtf, why is there spells with targets = NONE ?
                 return true;
 
-            if (Targets == SpellTargetType.ALL)
+            if (targets == SpellTargetType.ALL)
                 return true;
 
-            if (Caster == actor && Targets.HasFlag(SpellTargetType.SELF))
+            if (caster == target && targets.HasFlag(SpellTargetType.SELF))
                 return true;
 
-            if (Targets.HasFlag(SpellTargetType.ONLY_SELF) && actor != Caster)
+            if (targets.HasFlag(SpellTargetType.ONLY_SELF) && target != caster)
                 return false;
 
-            if (Caster.IsFriendlyWith(actor) && Caster != actor)
+            if (caster.IsFriendlyWith(target) && caster != target)
             {
-                if ((Targets.HasFlag(SpellTargetType.ALLY_1) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_2)) && !(actor is SummonedFighter) && !(actor is SlaveFighter) && !(actor is SummonedBomb))
+                if ((targets.HasFlag(SpellTargetType.ALLY_1) ||
+                    targets.HasFlag(SpellTargetType.ALLY_2)) && !(target is SummonedFighter) && !(target is SlaveFighter) && !(target is SummonedBomb))
                     return true;
 
-                if (Targets.HasFlag(SpellTargetType.ALLY_SUMMONER) && Caster is SummonedFighter &&
-                    ((SummonedFighter)Caster).Summoner == actor)
+                if (targets.HasFlag(SpellTargetType.ALLY_SUMMONER) && caster is SummonedFighter &&
+                    ((SummonedFighter)caster).Summoner == target)
                     return true;
 
-                if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && (actor is SummonedFighter || actor is SlaveFighter) && !(actor is SummonedTurret))
+                if ((targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
+                    targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && (target is SummonedFighter || target is SlaveFighter) && !(target is SummonedTurret))
                     return true;
 
-                if (Targets.HasFlag(SpellTargetType.ALLY_BOMBS) && actor is SummonedBomb)
+                if (targets.HasFlag(SpellTargetType.ALLY_BOMBS) && target is SummonedBomb)
                     return true;
 
-                if (Targets.HasFlag(SpellTargetType.ALLY_TURRETS) && actor is SummonedTurret)
+                if (targets.HasFlag(SpellTargetType.ALLY_TURRETS) && target is SummonedTurret)
                     return true;
             }
 
-            if (!Caster.IsEnnemyWith(actor))
+            if (!caster.IsEnnemyWith(target))
                 return false;
 
-            if ((Targets.HasFlag(SpellTargetType.ENEMY_1) ||
-                 Targets.HasFlag(SpellTargetType.ENEMY_2)) && !(actor is SummonedFighter) && !(actor is SlaveFighter) && !(actor is SummonedBomb))
+            if ((targets.HasFlag(SpellTargetType.ENEMY_1) ||
+                 targets.HasFlag(SpellTargetType.ENEMY_2)) && !(target is SummonedFighter) && !(target is SlaveFighter) && !(target is SummonedBomb))
                 return true;
 
-            if (Targets.HasFlag(SpellTargetType.ENEMY_SUMMONER) && Caster is SummonedFighter &&
-                ((SummonedFighter)Caster).Summoner == actor)
+            if (targets.HasFlag(SpellTargetType.ENEMY_SUMMONER) && caster is SummonedFighter &&
+                ((SummonedFighter)caster).Summoner == target)
                 return true;
 
-            if ((Targets.HasFlag(SpellTargetType.ENEMY_SUMMONS) ||
-                 Targets.HasFlag(SpellTargetType.ENEMY_STATIC_SUMMONS)) && (actor is SummonedFighter || actor is SlaveFighter))
+            if ((targets.HasFlag(SpellTargetType.ENEMY_SUMMONS) ||
+                 targets.HasFlag(SpellTargetType.ENEMY_STATIC_SUMMONS)) && (target is SummonedFighter || target is SlaveFighter))
                 return true;
 
-            if (Targets.HasFlag(SpellTargetType.ENEMY_BOMBS) && actor is SummonedBomb)
+            if (targets.HasFlag(SpellTargetType.ENEMY_BOMBS) && target is SummonedBomb)
                 return true;
 
-            if (Targets.HasFlag(SpellTargetType.ENEMY_TURRETS) && actor is SummonedTurret)
+            if (targets.HasFlag(SpellTargetType.ENEMY_TURRETS) && target is SummonedTurret)
                 return true;
 
             return false;

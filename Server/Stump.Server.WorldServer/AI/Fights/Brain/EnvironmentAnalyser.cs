@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
@@ -186,10 +187,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         {
             return GetNearestFighter(entry => entry.IsFriendlyWith(Fighter) && entry != Fighter);
         }
-
-        public FightActor GetNearestEnemy()
+        
+        public FightActor GetNearestEnemy(bool affectedBySpell = true)
         {
-            return GetNearestFighter(entry => entry.IsEnnemyWith(Fighter));
+            return GetNearestFighter(entry => entry.IsEnnemyWith(Fighter) && (!affectedBySpell || IsAffectedBySpell(entry)));
         }
 
         public FightActor GetNearestFighter(Predicate<FightActor> predicate)
@@ -201,6 +202,20 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         public IEnumerable<FightActor> GetVisibleEnemies()
         {
             return Fighter.OpposedTeam.GetAllFighters(entry => entry.IsVisibleFor(Fighter));
+        }
+
+        
+        public bool IsAffectedBySpell(FightActor actor)
+        {
+            if (actor.IsEnnemyWith(Fighter))
+            {
+                return Fighter.Spells.Values.Any(x => (SpellIdentifier.GetSpellCategories(x) & (SpellCategory.Damages | SpellCategory.Curse)) != 0 && 
+                    x.CurrentSpellLevel.Effects.Any(y => SpellEffectHandler.IsValidTarget(y.Targets, Fighter, actor)));
+            }
+
+            return Fighter.Spells.Values.Any(x => (SpellIdentifier.GetSpellCategories(x) & (SpellCategory.Healing | SpellCategory.Buff)) != 0 && 
+                x.CurrentSpellLevel.Effects.Any(y => SpellEffectHandler.IsValidTarget(y.Targets, Fighter, actor)));
+
         }
     }
 }
