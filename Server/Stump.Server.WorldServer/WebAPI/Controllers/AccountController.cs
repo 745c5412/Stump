@@ -9,6 +9,8 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace Stump.Server.WorldServer.WebAPI.Controllers
@@ -31,82 +33,110 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
         [Route("Account/{accountId:int}/AddTokens/{amount:int}")]
         public IHttpActionResult AddTokens(int accountId, int amount)
         {
-            var account = ClientManager.Instance.Clients.Select(x => x as WorldClient).FirstOrDefault(x => x.Account.Id == accountId);
-
-            if (account == null)
+            IHttpActionResult result = null;
+            bool timeout = false;
+            var resetEvent = new ManualResetEventSlim();
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
             {
-                var worldAccount = AccountManager.Instance.FindById(accountId);
-
-                if (worldAccount == null)
-                    return NotFound();
-
-                worldAccount.Tokens += amount;
-                WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Save(worldAccount));
-
-                var documentAccount = new BsonDocument
+                if (timeout)
                 {
-                    { "AcctId", accountId },
-                    { "AcctName", "" },
-                    { "CharacterId", 0 },
-                    { "CharacterName", "" },
-                    { "Amount", amount },
-                    { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    return;
+                }
+
+                var account = ClientManager.Instance.Clients.Select(x => x as WorldClient).FirstOrDefault(x => x.Account.Id == accountId);
+
+                if (account == null)
+                {
+                    var worldAccount = AccountManager.Instance.FindById(accountId);
+
+                    if (worldAccount == null)
+                    {
+                        result = NotFound();
+                        resetEvent.Set();
+                        return;
+                    }
+
+                    worldAccount.Tokens += amount;
+                    WorldServer.Instance.DBAccessor.Database.Save(worldAccount);
+
+                    var documentAccount = new BsonDocument
+                    {
+                        {"AcctId", accountId},
+                        {"AcctName", ""},
+                        {"CharacterId", 0},
+                        {"CharacterName", ""},
+                        {"Amount", amount},
+                        {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
+                    };
+
+                    MongoLogger.Instance.Insert("Transactions", documentAccount);
+
+                    result = Ok();
+                    resetEvent.Set();
+                    return;
+                }
+
+                if (account.Character == null)
+                {
+                    account.WorldAccount.Tokens += amount;
+                    WorldServer.Instance.DBAccessor.Database.Save(account.WorldAccount);
+
+                    var documentAccount = new BsonDocument
+                    {
+                        {"AcctId", accountId},
+                        {"AcctName", account.Account.Login},
+                        {"CharacterId", 0},
+                        {"CharacterName", ""},
+                        {"Amount", amount},
+                        {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
+                    };
+
+                    MongoLogger.Instance.Insert("Transactions", documentAccount);
+
+                    result = Ok();
+                    resetEvent.Set();
+                    return;
+                }
+
+                var tokens = account.Character.Inventory.Tokens;
+
+                if (tokens != null)
+                {
+                    tokens.Stack += (uint) amount;
+                    account.Character.Inventory.RefreshItem(tokens);
+                }
+                else
+                {
+                    account.Character.Inventory.CreateTokenItem(amount);
+                    account.Character.Inventory.RefreshItem(account.Character.Inventory.Tokens);
+                }
+
+                var document = new BsonDocument
+                {
+                    {"AcctId", accountId},
+                    {"AcctName", account.Character.Account.Login},
+                    {"CharacterId", account.Character.Id},
+                    {"CharacterName", account.Character.Name},
+                    {"Amount", amount},
+                    {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
                 };
 
-                MongoLogger.Instance.Insert("Transactions", documentAccount);
+                MongoLogger.Instance.Insert("Transactions", document);
 
-                return Ok();
+                account.Character.SendServerMessage($"Vous venez de recevoir votre achat de {amount} Ogrines !");
+                account.Character.SaveLater();
+
+                result = Ok();
+                resetEvent.Set();
+            });
+
+            if (!resetEvent.Wait(15 * 1000))
+            {
+                timeout = true;
+                return InternalServerError(new TimeoutException());
             }
 
-            if (account.Character == null)
-            {
-                account.WorldAccount.Tokens += amount;
-                WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Save(account.WorldAccount));
-
-                var documentAccount = new BsonDocument
-                {
-                    { "AcctId", accountId },
-                    { "AcctName", account.Account.Login },
-                    { "CharacterId", 0 },
-                    { "CharacterName", "" },
-                    { "Amount", amount },
-                    { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-                };
-
-                MongoLogger.Instance.Insert("Transactions", documentAccount);
-
-                return Ok();
-            }
-
-            var tokens = account.Character.Inventory.Tokens;
-
-            if (tokens != null)
-            {
-                tokens.Stack += (uint)amount;
-                account.Character.Inventory.RefreshItem(tokens);
-            }
-            else
-            {
-                account.Character.Inventory.CreateTokenItem(amount);
-                account.Character.Inventory.RefreshItem(account.Character.Inventory.Tokens);
-            }
-
-            var document = new BsonDocument
-            {
-                { "AcctId", accountId },
-                { "AcctName", account.Character.Account.Login },
-                { "CharacterId", account.Character.Id },
-                { "CharacterName", account.Character.Name },
-                { "Amount", amount },
-                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-            };
-
-            MongoLogger.Instance.Insert("Transactions", document);
-
-            account.Character.SendServerMessage($"Vous venez de recevoir votre achat de {amount} Ogrines !");
-            account.Character.SaveLater();
-
-            return Ok();
+            return result;
         }
 
         public IHttpActionResult Put(int accountId) => StatusCode(HttpStatusCode.MethodNotAllowed);
