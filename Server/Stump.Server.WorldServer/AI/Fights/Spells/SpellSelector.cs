@@ -338,7 +338,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 handler.CastCell = castCell;
                 foreach (var target in handler.GetAffectedActors())
                 {
-                    if (target != Fighter || handler.AffectedCells.Contains(castCell)) // we take in account the movement of the caster before the spell cast
+                    if (target != Fighter || (handler.AffectedCells.Contains(castCell) && (!spell.CurrentSpellLevel.NeedTakenCell || targetCell == castCell))) // we take in account the movement of the caster before the spell cast
                         CumulEffects(handler, ref damages, target, spell);
                 }
             }
@@ -549,6 +549,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     break;
             }
         }
+
+        
     }
 
     public class SpellCastComparer : IComparer<SpellCastInformations>
