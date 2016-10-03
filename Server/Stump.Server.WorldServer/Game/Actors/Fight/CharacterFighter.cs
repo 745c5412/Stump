@@ -153,9 +153,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
 
             // weapon attack
-            if (spell.Id != 0 ||
-                Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
+            if (spell.Id != 0 || Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
                 return base.CastSpell(spell, cell, force, apFree);
+
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             var weaponTemplate = weapon.Template as WeaponTemplate;
 

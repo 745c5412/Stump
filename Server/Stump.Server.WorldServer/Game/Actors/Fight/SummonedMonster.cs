@@ -37,46 +37,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Wisdom.Base = (short)(m_stats.Wisdom.Base * (1 + (Summoner.Level / 100d)));
         }
 
-        public override int CalculateArmorValue(int reduction)
-        {
-            return (int)(reduction * (100 + 5 * Summoner.Level) / 100d);
-        }
+        public override int CalculateArmorValue(int reduction) => (int)(reduction * (100 + 5 * Summoner.Level) / 100d);
 
         public MonsterGrade Monster
         {
             get;
-            private set;
         }
 
-        public override ObjectPosition MapPosition
-        {
-            get { return Position; }
-        }
+        public override ObjectPosition MapPosition => Position;
 
-        public override byte Level
-        {
-            get { return (byte)Monster.Level; }
-        }
+        public override byte Level => (byte)Monster.Level;
 
-        public override StatsFields Stats
-        {
-            get { return m_stats; }
-        }
+        public override StatsFields Stats => m_stats;
 
-        public override string GetMapRunningFighterName()
-        {
-            return Monster.Id.ToString(CultureInfo.InvariantCulture);
-        }
+        public override string GetMapRunningFighterName() => Monster.Id.ToString(CultureInfo.InvariantCulture);
 
-        public override string Name
-        {
-            get { return Monster.Template.Name; }
-        }
+        public override string Name => Monster.Template.Name;
 
-        public override FightTeamMemberInformations GetFightTeamMemberInformations()
-        {
-            return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
-        }
+        public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {

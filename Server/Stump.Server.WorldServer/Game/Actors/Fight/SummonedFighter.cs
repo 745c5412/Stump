@@ -37,15 +37,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             protected set;
         }
 
-        public override int GetTackledAP()
-        {
-            return 0;
-        }
+        public override int GetTackledAP() => 0;
 
-        public override int GetTackledMP()
-        {
-            return 0;
-        }
+        public override int GetTackledMP() => 0;
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {

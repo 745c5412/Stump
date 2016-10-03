@@ -17,10 +17,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         {
         }
 
-        public override TeamTypeEnum TeamType
-        {
-            get { return TeamTypeEnum.TEAM_TYPE_PLAYER; }
-        }
+        public override TeamTypeEnum TeamType => TeamTypeEnum.TEAM_TYPE_PLAYER;
 
         public override FighterRefusedReasonEnum CanJoin(Character character)
         {
