@@ -385,7 +385,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             var item = TryGetItem(template);
 
-            if (item != null && !item.IsEquiped())
+            if (item != null && !item.IsEquiped() && IsStackable(item, out item))
             {
                 if (!item.OnAddItem())
                     return null;
