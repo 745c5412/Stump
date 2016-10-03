@@ -156,6 +156,7 @@ namespace Stump.DofusProtocol.Enums
         PEBBLE = 152,
         KWISMAS = 153,
         WRAPPING_PAPER = 154,
+        KAMAS_POUCH = 170,
 		END
 	}
 

@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected virtual void OnAutoSpawnEnabled()
         {
-            SpawnNextGroup();
+            //SpawnNextGroup();
         }
 
         public void StopAutoSpawn()

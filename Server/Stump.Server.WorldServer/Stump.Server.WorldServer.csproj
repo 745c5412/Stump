@@ -592,6 +592,7 @@
     <Compile Include="Game\Items\Player\Custom\DofusItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
+    <Compile Include="Game\Items\Player\Custom\KamasPouch.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\MountCertificate.cs" />
     <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
