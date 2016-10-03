@@ -49,7 +49,10 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
             var record = MountManager.Instance.GetMount((int) message.id);
 
             if (record == null)
+            {
                 client.Send(new MountDataErrorMessage(0));
+                return;
+            }
 
             var mount = new Mount(record);
 
