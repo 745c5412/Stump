@@ -31,9 +31,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     IsCritical = Critical
                 };
 
-                var percent = 100 - ((Caster.Stats.MP.Total / Caster.Stats.MP.TotalMax) * 100);
-                damages.BaseMaxDamages = damages.BaseMaxDamages * ((100 - percent) / 100);
-                damages.BaseMinDamages = damages.BaseMinDamages * ((100 - percent) / 100);
+                damages.BaseMaxDamages = (int) Math.Floor(damages.BaseMaxDamages*(Caster.Stats.MP.Total/(double) Caster.Stats.MP.TotalMax));
+                damages.BaseMinDamages = (int) Math.Floor(damages.BaseMinDamages*(Caster.Stats.MP.Total/(double) Caster.Stats.MP.TotalMax));
 
                 actor.InflictDamage(damages);
             }
