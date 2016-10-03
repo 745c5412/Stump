@@ -1444,7 +1444,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendChallengeInfoMessage(spectator.Client, Challenge);
 
             // Spectator 'X' joined
-            BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 36, spectator.Character.Name);
+            if (!spectator.Character.Invisible)
+                BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 36, spectator.Character.Name);
 
             if (TimeLine.Current != null)
             {

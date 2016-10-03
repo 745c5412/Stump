@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var list = World.Instance.GetCharacters(x => x.Account.UserGroupId > (int)RoleEnum.Player);
+            var list = World.Instance.GetCharacters(x => x.Account.UserGroupId > (int)RoleEnum.Player && !x.Invisible).ToList();
 
             if (!list.Any())
             {
