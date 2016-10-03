@@ -183,14 +183,11 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
 
-            if (State == FightState.Placement)
+            if (State == FightState.Placement && team == ChallengersTeam)
             {
-                if (team == ChallengersTeam)
-                {
-                    TaxCollectorHandler.SendGuildFightPlayersEnemiesListMessage(
-                        TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc,
-                        ChallengersTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character));
-                }
+                TaxCollectorHandler.SendGuildFightPlayersEnemiesListMessage(
+                    TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc,
+                    ChallengersTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character));
             }
 
             base.OnFighterAdded(team, actor);

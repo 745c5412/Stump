@@ -51,6 +51,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             HealHpPercent(actor, heal);
             actor.Position.Cell = cell;
 
+            var slave = actor as SlaveFighter;
+            if (slave != null)
+            {
+                Caster.AddSlave(slave);
+                slave.RegisterEvents();
+            }
+            else if(actor is SummonedFighter)
+            {
+                Caster.AddSummon(actor as SummonedFighter);
+            }
+
             ActionsHandler.SendGameActionFightReviveMessage(Fight.Clients, Caster, actor);
             ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
 
