@@ -124,19 +124,23 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 
         public static void SendGameActionFightCloseCombatMessage(IPacketReceiver client, FightActor source, FightActor target, Cell cell, FightSpellCastCriticalEnum castCritical, bool silentCast, WeaponTemplate weapon)
         {
+            SendGameActionFightCloseCombatMessage(client, source, target, cell, castCritical, silentCast, (short)weapon.Id);
+        }
+
+        public static void SendGameActionFightCloseCombatMessage(IPacketReceiver client, FightActor source, FightActor target, Cell cell, FightSpellCastCriticalEnum castCritical, bool silentCast, short weaponId)
+        {
             var action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT;
             switch (castCritical)
             {
                 case FightSpellCastCriticalEnum.CRITICAL_FAIL:
                     action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT_CRITICAL_MISS;
                     break;
-
                 case FightSpellCastCriticalEnum.CRITICAL_HIT:
                     action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT_CRITICAL_HIT;
                     break;
             }
 
-            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)castCritical, silentCast, weapon.Id));
+            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)castCritical, silentCast, weaponId));
         }
 
         public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, ActorLook look)

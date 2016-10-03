@@ -37,8 +37,7 @@ namespace MessagesLogger
         {
             var worldClient = client as WorldClient;
             var objectDumper = new ObjectDumper(2);
-            File.AppendAllText($"./log-{worldClient.Account.Login}.txt", string.Concat(new string[]
-            {
+            File.AppendAllText($"./log-{worldClient.Account.Login}.txt", string.Concat(new[] {
                 DateTime.Now.ToString(),
                 " - ",
                 worldClient.Character.Name,

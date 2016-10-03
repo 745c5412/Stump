@@ -35,6 +35,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Initialize(template);
             AdjustStats();
 
+            RegisterEvents();
+        }
+
+        public void RegisterEvents()
+        {
             Fight.TurnStarted += OnTurnStarted;
             Fight.TurnStopped += OnTurnStopped;
         }
@@ -57,13 +62,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void OnTurnStopped(IFight fight, FightActor player)
         {
-            if (player == this && IsAlive() && Monster.Id == 3120) //Roublabot
+            if (player == this && IsAlive() && Monster.Template.Id == 3120) //Roublabot
                 Die();
         }
 
         protected override void OnTurnPassed()
         {
-            if (IsAlive() && Monster.Id == 3120) //Roublabot
+            if (IsAlive() && Monster.Template.Id == 3120) //Roublabot
                 Die();
         }
 
@@ -96,59 +101,30 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public FightActor Summoner
         {
             get;
-            private set;
         }
 
         public MonsterGrade Monster
         {
             get;
-            private set;
         }
 
-        public override ObjectPosition MapPosition
-        {
-            get { return Position; }
-        }
+        public override ObjectPosition MapPosition => Position;
 
-        public override byte Level
-        {
-            get { return (byte)Monster.Level; }
-        }
+        public override byte Level => (byte)Monster.Level;
 
-        public override StatsFields Stats
-        {
-            get { return m_stats; }
-        }
+        public override StatsFields Stats => m_stats;
 
-        public override string GetMapRunningFighterName()
-        {
-            return Monster.Id.ToString(CultureInfo.InvariantCulture);
-        }
+        public override string GetMapRunningFighterName() => Monster.Id.ToString(CultureInfo.InvariantCulture);
 
-        public string Name
-        {
-            get { return Monster.Template.Name; }
-        }
+        public string Name => Monster.Template.Name;
 
-        public IEnumerable<Spell> Spells
-        {
-            get { return Monster.Spells; }
-        }
+        public IEnumerable<Spell> Spells => Monster.Spells;
 
-        public override Spell GetSpell(int id)
-        {
-            return Spells.FirstOrDefault(x => x.Template.Id == id);
-        }
+        public override Spell GetSpell(int id) => Spells.FirstOrDefault(x => x.Template.Id == id);
 
-        public override bool HasSpell(int id)
-        {
-            return Spells.Any(x => x.Template.Id == id);
-        }
+        public override bool HasSpell(int id) => Spells.Any(x => x.Template.Id == id);
 
-        public override FightTeamMemberInformations GetFightTeamMemberInformations()
-        {
-            return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
-        }
+        public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
