@@ -123,11 +123,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 if (cast.MoveBefore != null)
                 {
                     Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+                    var destinationId = cast.MoveBefore.EndCell.Id;
                     var success = Fighter.StartMove(cast.MoveBefore);
                     var lastPos = Fighter.Cell.Id;
 
                     var tries = 0;
-                    var destinationId = cast.MoveBefore.EndCell.Id;
                     // re-attempt to move if we didn't reach the cell i.e as we trigger a trap
                     while (success && Fighter.Cell.Id != destinationId && Fighter.CanMove() && tries <= MaxMovesTries)
                     {
