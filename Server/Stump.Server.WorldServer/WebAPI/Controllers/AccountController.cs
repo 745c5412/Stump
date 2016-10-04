@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
                     return;
                 }
 
-                var account = ClientManager.Instance.Clients.Select(x => x as WorldClient).FirstOrDefault(x => x.Account.Id == accountId);
+                var account = ClientManager.Instance.Clients.OfType<WorldClient>().FirstOrDefault(x => x.Account.Id == accountId);
 
                 if (account == null)
                 {
