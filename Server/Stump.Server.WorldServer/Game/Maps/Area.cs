@@ -53,7 +53,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         private DateTime m_lastUpdateTime;
         private bool m_running;
         private int m_updateDelay;
-        private TimedTimerEntry m_checkDCtimer;
 
         public Area(AreaRecord record)
         {
@@ -149,15 +148,9 @@ namespace Stump.Server.WorldServer.Game.Maps
             set { Interlocked.Exchange(ref m_updateDelay, value); }
         }
 
-        public DateTime LastUpdateTime
-        {
-            get { return m_lastUpdateTime; }
-        }
+        public DateTime LastUpdateTime => m_lastUpdateTime;
 
-        public bool IsUpdating
-        {
-            get { return m_isUpdating; }
-        }
+        public bool IsUpdating => m_isUpdating;
 
         public float AverageUpdateTime
         {
@@ -171,10 +164,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             private set;
         }
 
-        public int CurrentThreadId
-        {
-            get { return m_currentThreadId; }
-        }
+        public int CurrentThreadId => m_currentThreadId;
 
         #region IContextHandler Members
 
@@ -222,7 +212,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnStarted()
         {
-            m_checkDCtimer = CallPeriodically((int)TimeSpan.FromMinutes(5).TotalMilliseconds, CheckDC);
+            CallPeriodically((int)TimeSpan.FromMinutes(5).TotalMilliseconds, CheckDC);
 
             var handler = Started;
             if (handler != null)
