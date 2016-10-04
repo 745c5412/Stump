@@ -46,7 +46,15 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
         [WorldHandler(MountInformationRequestMessage.Id)]
         public static void HandleMountInformationRequestMessage(WorldClient client, MountInformationRequestMessage message)
         {
-            var mount = new Mount(MountManager.Instance.GetMount((int)message.id));
+            var record = MountManager.Instance.GetMount((int) message.id);
+
+            if (record == null)
+            {
+                client.Send(new MountDataErrorMessage(0));
+                return;
+            }
+
+            var mount = new Mount(record);
 
             SendMountDataMessage(client, mount.GetMountClientData());
         }
