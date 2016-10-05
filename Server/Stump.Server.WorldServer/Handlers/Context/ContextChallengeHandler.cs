@@ -26,6 +26,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (challenge.Target == null)
                 return;
 
+            if (!challenge.Target.IsVisibleFor(client.Character))
+                return;
+
             SendChallengeTargetsListMessage(challenge.Fight.Clients, new[] { challenge.Target.Id }, new[] { challenge.Target.Cell.Id });
         }
 
