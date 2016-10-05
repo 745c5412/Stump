@@ -6,7 +6,9 @@ using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -19,10 +21,17 @@ namespace Stump.Server.BaseServer.Network
         public static bool LogPackets = false;
 
         [Variable(DefinableRunning = true)]
-        public static int HistoryEntriesLimit = 20;
+        public static int MessagesEntriesLimit = 20;
 
         [Variable(DefinableRunning = true)]
-        public static double FloodFactor = 6.66;
+        public static double FloodMinTime = 3.0;
+
+        [Variable(DefinableRunning = true)]
+        public readonly static List<string> MessagesWhitelist = new List<string>
+            {
+                "GameActionAcknowledgementMessage",
+                "GameFightTurnReadyMessage"
+            };
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -41,7 +50,7 @@ namespace Stump.Server.BaseServer.Network
         private BufferSegment m_bufferSegment;
         private long m_totalBytesReceived;
 
-        private readonly LimitedStack<Pair<DateTime, Message>> m_messagesHistory = new LimitedStack<Pair<DateTime, Message>>(HistoryEntriesLimit);
+        private readonly LimitedStack<Pair<DateTime, Message>> m_messagesHistory = new LimitedStack<Pair<DateTime, Message>>(MessagesEntriesLimit);
 
         protected BaseClient(Socket socket)
         {
@@ -77,12 +86,11 @@ namespace Stump.Server.BaseServer.Network
         }
 
         /// <summary>
-        /// Last activity as a socket client (last received packet or sent packet)
+        /// Last activity as a socket client (last received packets)
         /// </summary>
         public DateTime LastActivity
         {
-            get;
-            private set;
+            get { return m_messagesHistory.Peek().First; }
         }
 
         #region IPacketReceiver Members
@@ -130,7 +138,6 @@ namespace Stump.Server.BaseServer.Network
                     stream.Dispose();
                     ObjectPoolMgr.ReleaseObject(args);
                 }
-                LastActivity = DateTime.Now;
             }
             catch
             {
@@ -273,23 +280,22 @@ namespace Stump.Server.BaseServer.Network
                     throw;
                 }
 
-                LastActivity = DateTime.Now;
-
-                m_messagesHistory.Push(new Pair<DateTime, Message>(DateTime.Now, message));
+                if (!MessagesWhitelist.Contains(message.ToString()))
+                    m_messagesHistory.Push(new Pair<DateTime, Message>(DateTime.Now, message));
 
                 var time = m_messagesHistory.Last.Value.First.Subtract(m_messagesHistory.First.Value.First);
 
-                //Flood check,
-                if (m_messagesHistory.Count == m_messagesHistory.MaxItems && time.TotalSeconds < (m_messagesHistory.MaxItems / FloodFactor))
+                //Flood check, 
+                if (m_messagesHistory.Count == m_messagesHistory.MaxItems && time.TotalSeconds < FloodMinTime)
                 {
-                    logger.Error($"Forced disconnection {this}: Flood: {m_messagesHistory.Count} messages in {time.TotalSeconds} seconds ! - LastMsg: {message}");
+                    logger.Error($"Forced disconnection {this}: Flood: {m_messagesHistory.Count} messages in {time.TotalSeconds} seconds ! - LastMessages: {m_messagesHistory.Select(x => x.Second).ToCSV(",")}");
                     Disconnect();
 
                     return false;
                 }
 
                 if (LogPackets)
-                    Console.WriteLine("(RECV) {0} : {1}", this, message);
+                    Console.WriteLine($"(RECV) {this} : {message}");
 
                 OnMessageReceived(message);
 
