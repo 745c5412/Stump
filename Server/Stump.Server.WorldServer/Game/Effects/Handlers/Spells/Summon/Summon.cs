@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Fight.Customs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
@@ -30,24 +31,31 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                 return false;
             }
 
-            if (!Caster.CanSummon())
+            if (monster.Template.UseSummonSlot && !Caster.CanSummon())
                 return false;
 
-            if (monster.Template.Id == 3287 || monster.Template.Id == 3288 || monster.Template.Id == 3289)
+            SummonedFighter summon;
+            if (monster.Template.Id == 3287 || monster.Template.Id == 3288 || monster.Template.Id == 3289) //Turrets
+                summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, Spell, TargetedCell);
+            else if (monster.Template.Id == 285) //Coffre animé
             {
-                var summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, Spell, TargetedCell);
+                summon = null;
 
-                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
+                var slave = new LivingChest(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
 
-                Caster.AddSummon(summon);
-                Caster.Team.AddFighter(summon);
+                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, slave);
 
-                Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
+                Caster.AddSlave(slave);
+                Caster.Team.AddFighter(slave);
+
+                Fight.TriggerMarks(slave.Cell, slave, TriggerType.MOVE);
             }
             else
             {
                 if (Caster is CharacterFighter && monster.Template.CanPlay)
                 {
+                    summon = null;
+
                     var slave = new SlaveFighter(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
 
                     ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, slave);
@@ -59,15 +67,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                 }
                 else
                 {
-                    var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
-
-                    ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
-
-                    Caster.AddSummon(summon);
-                    Caster.Team.AddFighter(summon);
-
-                    Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
+                    summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
                 }
+            }
+
+            if (summon != null)
+            {
+                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
+
+                Caster.AddSummon(summon);
+                Caster.Team.AddFighter(summon);
+
+                Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
             }
 
             return true;
