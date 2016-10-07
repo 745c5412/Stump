@@ -17,30 +17,15 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
         }
 
-        public override FightTypeEnum FightType
-        {
-            get { return FightTypeEnum.FIGHT_TYPE_PVP_ARENA; }
-        }
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_PVP_ARENA;
 
-        public override bool IsPvP
-        {
-            get { return false; } // don't know why
-        }
+        public override bool IsPvP => false;
 
-        public override bool IsMultiAccountRestricted
-        {
-            get { return true; }
-        }
+        public override bool IsMultiAccountRestricted => true;
 
-        public override bool IsDeathTemporarily
-        {
-            get { return true; }
-        }
+        public override bool IsDeathTemporarily => true;
 
-        public override bool CanKickPlayer
-        {
-            get { return false; }
-        }
+        public override bool CanKickPlayer => false;
 
         public override void StartPlacement()
         {
@@ -77,10 +62,8 @@ namespace Stump.Server.WorldServer.Game.Arena
             return (int)timeleft;
         }
 
-        protected override IEnumerable<IFightResult> GenerateResults()
+        protected override List<IFightResult> GetResults()
         {
-            base.GenerateResults();
-
             var challengersRank =
                 (int)ChallengersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
             var defendersRank =
@@ -89,9 +72,9 @@ namespace Stump.Server.WorldServer.Game.Arena
             return (from fighter in GetFightersAndLeavers().OfType<CharacterFighter>()
                     let outcome = fighter.GetFighterOutcome()
                     select new ArenaFightResult(fighter, outcome, fighter.Loot,
-ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
-fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
-outcome == FightOutcomeEnum.RESULT_VICTORY)));
+                    ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
+                    fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
+                    outcome == FightOutcomeEnum.RESULT_VICTORY)) as IFightResult).ToList();
         }
 
         protected override IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver, out IFightResult leaverResult)

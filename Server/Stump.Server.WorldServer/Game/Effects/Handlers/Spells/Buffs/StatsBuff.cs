@@ -42,6 +42,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddEarthResistPercent)]
     [EffectHandler(EffectsEnum.Effect_AddWaterResistPercent)]
     [EffectHandler(EffectsEnum.Effect_AddNeutralResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddProspecting)]
     public class StatsBuff : SpellEffectHandler
     {
         public StatsBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -162,6 +163,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                 case EffectsEnum.Effect_AddNeutralResistPercent:
                     return PlayerFields.NeutralResistPercent;
+
+                case EffectsEnum.Effect_AddProspecting:
+                    return PlayerFields.Prospecting;
 
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));

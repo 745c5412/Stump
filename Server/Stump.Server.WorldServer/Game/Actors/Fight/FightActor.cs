@@ -1962,6 +1962,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return GetFightResult(GetFighterOutcome());
         }
 
+        public virtual bool HasResult => true;
+
         public FightOutcomeEnum GetFighterOutcome()
         {
             /*if (HasLeft())

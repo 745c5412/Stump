@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public sealed class SummonedMonster : SummonedFighter
+    public class SummonedMonster : SummonedFighter
     {
         private readonly StatsFields m_stats;
 

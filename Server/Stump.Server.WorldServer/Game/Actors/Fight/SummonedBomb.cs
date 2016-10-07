@@ -118,15 +118,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             protected set;
         }
 
-        public override ObjectPosition MapPosition
-        {
-            get { return Position; }
-        }
+        public override bool HasResult => false;
+
+        public override ObjectPosition MapPosition => Position;
 
         public MonsterGrade MonsterBombTemplate
         {
             get;
-            private set;
         }
 
         public FightActor Summoner
@@ -138,19 +136,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public SpellBombTemplate SpellBombTemplate
         {
             get;
-            private set;
         }
 
         public Spell ExplodSpell
         {
             get;
-            private set;
         }
 
         public Spell WallSpell
         {
             get;
-            private set;
         }
 
         public int DamageBonusPercent
@@ -165,45 +160,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
-        public override bool IsVisibleInTimeline
-        {
-            get { return false; }
-        }
+        public override bool IsVisibleInTimeline => false;
 
-        public override byte Level
-        {
-            get { return (byte)MonsterBombTemplate.Level; }
-        }
+        public override byte Level => (byte)MonsterBombTemplate.Level;
 
-        public override StatsFields Stats
-        {
-            get { return m_stats; }
-        }
+        public override StatsFields Stats => m_stats;
 
-        public ReadOnlyCollection<WallsBinding> Walls
-        {
-            get { return m_wallsBinding.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<WallsBinding> Walls => m_wallsBinding.AsReadOnly();
 
         public override Spell GetSpell(int id)
         {
             throw new NotImplementedException();
         }
 
-        public override bool HasSpell(int id)
-        {
-            return false;
-        }
+        public override bool HasSpell(int id) => false;
 
-        public override string GetMapRunningFighterName()
-        {
-            return MonsterBombTemplate.Id.ToString(CultureInfo.InvariantCulture);
-        }
+        public override string GetMapRunningFighterName() => MonsterBombTemplate.Id.ToString(CultureInfo.InvariantCulture);
 
-        public string Name
-        {
-            get { return MonsterBombTemplate.Template.Name; }
-        }
+        public string Name => MonsterBombTemplate.Template.Name;
 
         public override int CalculateDamage(int damage, EffectSchoolEnum type, bool critical)
         {
