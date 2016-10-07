@@ -33,35 +33,24 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.StartFighting();
         }
 
-        public override FightTypeEnum FightType
-        {
-            get { return FightTypeEnum.FIGHT_TYPE_AGRESSION; }
-        }
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_AGRESSION;
 
-        public override bool IsPvP
-        {
-            get { return true; }
-        }
+        public override bool IsPvP => true;
 
-        public override bool IsMultiAccountRestricted
-        {
-            get { return true; }
-        }
+        public override bool IsMultiAccountRestricted => true;
 
-        protected override void ApplyResults(IEnumerable<IFightResult> results)
+        protected override void ApplyResults()
         {
-            foreach (var fightResult in results)
+            foreach (var fightResult in Results)
             {
                 fightResult.Apply();
             }
         }
 
-        protected override IEnumerable<IFightResult> GenerateResults()
+        protected override List<IFightResult> GetResults()
         {
-            base.GenerateResults();
-
-            var results = GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)).
-                Select(fighter => fighter.GetFightResult()).ToArray();
+            var results = GetFightersAndLeavers().Where(entry => entry.HasResult).
+                 Select(fighter => fighter.GetFightResult()).ToList();
 
             foreach (var playerResult in results.OfType<FightPlayerResult>())
             {
