@@ -207,6 +207,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         
         public bool IsAffectedBySpell(FightActor actor)
         {
+            if (Fighter.Spells.Count == 0)
+                return true;
+
             if (actor.IsEnnemyWith(Fighter))
             {
                 return Fighter.Spells.Values.Any(x => (SpellIdentifier.GetSpellCategories(x) & (SpellCategory.Damages | SpellCategory.Curse)) != 0 && 
