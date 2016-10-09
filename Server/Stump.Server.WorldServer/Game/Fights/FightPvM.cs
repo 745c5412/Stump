@@ -72,6 +72,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return false; }
         }
 
+        public bool IsPvMArenaFight
+        {
+            get;
+            set;
+        }
+
         protected override List<IFightResult> GetResults()
         {
             var results = new List<IFightResult>();
