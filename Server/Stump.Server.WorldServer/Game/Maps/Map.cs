@@ -1475,8 +1475,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (monster != null)
                 monster.FightWith(character);
-
-            Refresh(character);
+            else
+                Refresh(character);
         }
 
         #endregion Actor Actions
