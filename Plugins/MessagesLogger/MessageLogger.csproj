@@ -7,8 +7,8 @@
     <ProjectGuid>{10831821-4E87-46A7-969B-EFF63C8E89C2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MessagesLogger</RootNamespace>
-    <AssemblyName>MessagesLogger</AssemblyName>
+    <RootNamespace>MessageLogger</RootNamespace>
+    <AssemblyName>MessageLogger</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageLogCommand.cs" />
+    <Compile Include="MessageLogger.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

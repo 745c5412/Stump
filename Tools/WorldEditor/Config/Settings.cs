@@ -38,6 +38,7 @@ namespace WorldEditor.Config
             User = "root",
             Password = "",
             ProviderName = "MySql.Data.MySqlClient",
+            Port = "1485"
             //UpdateFileDir = "./sql_update/",
         };
 
