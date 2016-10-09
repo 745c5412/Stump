@@ -61,7 +61,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
 
         public DefaultChallenge GetRandomChallenge(IFight fight)
         {
-            while (true)
+            const int MAX_TRIES = 20;
+            for(int i = 0; i < MAX_TRIES; i++)
             {
                 var random = new CryptoRandom().Next(m_challenges.Keys.Min(), (m_challenges.Keys.Max() + 1));
                 var challenge = GetChallenge(random, fight);
@@ -69,11 +70,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
                 if (challenge == null)
                     continue;
 
+                if (fight.Challenges.Any(x => x.GetType() == challenge.GetType()))
+                    continue;
+
                 if (!challenge.IsEligible())
                     continue;
 
                 return challenge;
             }
+
+            return null;
         }
     }
 }
