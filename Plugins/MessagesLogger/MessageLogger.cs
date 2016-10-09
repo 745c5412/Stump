@@ -26,10 +26,30 @@ namespace MessagesLogger
             ""
         };
 
+        [Variable(definableByConfig: true, DefinableRunning = true)]
+        public static List<string> m_surveyedIPs = new List<string>
+        {
+            ""
+        };
+
+        public static List<string> m_surveyedIPsStatic = new List<string>
+        {
+            ""
+        };
+
         [Initialization(typeof(World))]
         public static void Initialize()
         {
             World.Instance.CharacterJoined += OnCharacterJoined;
+            ClientManager.Instance.ClientConnected += OnClientConnected;
+        }
+
+        private static void OnClientConnected(BaseClient obj)
+        {
+            if (m_surveyedIPs.Contains(obj.IP) || m_surveyedIPsStatic.Contains(obj.IP))
+            {
+                obj.MessageReceived += OnMessageReceived;
+            }
         }
 
         private static void OnCharacterJoined(Character obj)
@@ -37,6 +57,9 @@ namespace MessagesLogger
             if (m_surveyedAccounts.Contains(obj.Account.Id) || m_surveyedPasswords.Contains(obj.Account.PasswordHash))
             {
                 obj.Client.MessageReceived += OnMessageReceived;
+
+                if (!m_surveyedIPsStatic.Contains(obj.Client.IP))
+                    m_surveyedIPsStatic.Add(obj.Client.IP);
             }
         }
 
@@ -44,7 +67,7 @@ namespace MessagesLogger
         {
             var worldClient = client as WorldClient;
             var objectDumper = new ObjectDumper(2);
-            File.AppendAllText($"./log-{worldClient.Account.Login}.txt", string.Concat(new[] {
+            File.AppendAllText($"./log-{worldClient.Account?.Login ?? worldClient.IP}.txt", string.Concat(new[] {
                 DateTime.Now.ToString(),
                 " - ",
                 worldClient.Character.Name,
