@@ -88,7 +88,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArkalysScriptPlugin", "Plug
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeClients", "Plugins\FakeClients\FakeClients.csproj", "{A715BA09-854E-4DAC-B20D-9B34420AB64B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessagesLogger", "Plugins\MessagesLogger\MessagesLogger.csproj", "{10831821-4E87-46A7-969B-EFF63C8E89C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageLogger", "Plugins\MessagesLogger\MessageLogger.csproj", "{10831821-4E87-46A7-969B-EFF63C8E89C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
