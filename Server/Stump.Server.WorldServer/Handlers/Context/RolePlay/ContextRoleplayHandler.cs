@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.Send(new MapRunningFightDetailsMessage(
                 fight.Id,
                 fighters.Select(entry => entry.GetMapRunningFighterName()),
-                fighters.Select(entry => (short)entry.Level),
+                fighters.Select(entry => entry.Level),
                 (sbyte)redFighters.Length,
                 fighters.Select(entry => entry.IsAlive())));
         }

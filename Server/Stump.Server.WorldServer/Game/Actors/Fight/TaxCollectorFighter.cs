@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return TaxCollectorNpc.Position; }
         }
 
-        public override byte Level
+        public override short Level
         {
             get { return TaxCollectorNpc.Level; }
         }

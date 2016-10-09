@@ -126,9 +126,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Position; }
         }
 
-        public override byte Level
+        public override short Level
         {
-            get { return (byte)Monster.Level; }
+            get { return (short)Monster.Level; }
         }
 
         public override ActorLook Look

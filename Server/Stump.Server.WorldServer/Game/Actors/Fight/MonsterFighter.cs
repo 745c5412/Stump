@@ -57,11 +57,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Monster.Group.Position; }
         }
 
-        public override byte Level
+        public override short Level
         {
             get
             {
-                return (byte)Monster.Grade.Level;
+                return (short)Monster.Grade.Level;
             }
         }
 

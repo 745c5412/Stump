@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override ObjectPosition MapPosition => Position;
 
-        public override byte Level => (byte)Monster.Level;
+        public override short Level => (short)Monster.Level;
 
         public override StatsFields Stats => m_stats;
 

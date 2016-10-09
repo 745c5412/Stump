@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return Name;
         }
 
-        public override byte Level
+        public override short Level
         {
             get { return Caster.Level; }
         }
