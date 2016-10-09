@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.Core.Network
 
                 WorldAccount.ConnectedCharacter = null;
 
-                WorldServer.Instance.DBAccessor.Database.Update(WorldAccount);
+                WorldServer.Instance.DBAccessor.Database.Update(WorldAccount, new[] { "ConnectedCharacter" });
             });
 
             base.OnDisconnect();

@@ -3294,6 +3294,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             lock (LoggoutSync)
             {
+                if (!IsLoggedIn)
+                    return;
+
                 IsLoggedIn = false;
 
                 try
