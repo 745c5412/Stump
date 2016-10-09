@@ -1,7 +1,7 @@
 ﻿using Stump.Server.BaseServer.Plugins;
 using System;
 
-namespace MessagesLogger
+namespace MessageLogger
 {
     public class Plugin : PluginBase
     {
@@ -13,7 +13,7 @@ namespace MessagesLogger
 
         public override string Name
         {
-            get { return "MessagesLogger"; }
+            get { return "MessageLogger"; }
         }
 
         public override string Description
@@ -23,17 +23,22 @@ namespace MessagesLogger
 
         public override string Author
         {
-            get { return "Orochi"; }
+            get { return "AZOTE"; }
         }
 
         public override bool AllowConfigUpdate
         {
-            get { return false; }
+            get { return true; }
         }
 
         public override bool UseConfig
         {
-            get { return false; }
+            get { return true; }
+        }
+
+        public override string ConfigFileName
+        {
+            get { return "message_logger.xml"; }
         }
 
         public override Version Version
