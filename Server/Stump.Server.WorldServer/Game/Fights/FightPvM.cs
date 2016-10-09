@@ -43,6 +43,11 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+
+            // no challenge found
+            if (challenge == null)
+                return;
+
             challenge.Initialize();
 
             AddChallenge(challenge);
@@ -50,6 +55,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (Map.IsDungeon())
             {
                 challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+                
+                // no challenge found
+                if (challenge == null)
+                    return;
+
                 challenge.Initialize();
 
                 AddChallenge(challenge);
