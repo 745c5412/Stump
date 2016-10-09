@@ -178,6 +178,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             if (character.IsDeleted)
                 return;
 
+            if (client.Character != null)
+                return;
+
             // Check if we also have a world account
             if (client.WorldAccount == null)
             {
