@@ -145,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        DefaultChallenge Challenge
+        ReadOnlyCollection<DefaultChallenge> Challenges
         {
             get;
         }
@@ -330,7 +330,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         void FreeTriggerId(int id);
 
-        void SetChallenge(DefaultChallenge challenge);
+        void AddChallenge(DefaultChallenge challenge);
 
         int GetChallengeBonus();
 
@@ -615,11 +615,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return TimeLine.Current; }
         }
 
-        public DefaultChallenge Challenge
-        {
-            get;
-            private set;
-        }
+        private List<DefaultChallenge> m_challenges = new List<DefaultChallenge>();
+
+        public ReadOnlyCollection<DefaultChallenge> Challenges => m_challenges.AsReadOnly();
 
         public DateTime TurnStartTime
         {
@@ -1460,8 +1458,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             CharacterHandler.SendCharacterStatsListMessage(spectator.Client);
 
-            if (Challenge != null)
-                ContextHandler.SendChallengeInfoMessage(spectator.Client, Challenge);
+            foreach(var challenge in Challenges)
+                ContextHandler.SendChallengeInfoMessage(spectator.Client, challenge);
 
             // Spectator 'X' joined
             if (!spectator.Character.Invisible)
@@ -2322,21 +2320,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Challenges
 
-        public void SetChallenge(DefaultChallenge challenge)
+        public void AddChallenge(DefaultChallenge challenge)
         {
-            if (Challenge != null)
-                return;
-
-            Challenge = challenge;
+            m_challenges.Add(challenge);
             ContextHandler.SendChallengeInfoMessage(Clients, challenge);
         }
 
         public int GetChallengeBonus()
         {
-            if (Challenge == null)
-                return 0;
-
-            return Challenge.Status == ChallengeStatusEnum.SUCCESS ? Challenge.Bonus : 1;
+            return m_challenges.Where(x => x.Status == ChallengeStatusEnum.SUCCESS).Aggregate(1, (x,challenge) => challenge.Bonus * x);
         }
 
         #endregion Challenges
