@@ -1209,7 +1209,7 @@
         /// <summary>
         /// Summons: #3
         /// </summary>
-        Effect_623 = 623,
+        Effect_SoulStoneSummon = 623,
 
         /// <summary>
         /// Makes you forget one level of the spell #3
@@ -1330,7 +1330,7 @@
         /// <summary>
         /// #1% chance of capturing a power #3 soul
         /// </summary>
-        Effect_705 = 705,
+        Effect_SoulStone = 705,
 
         /// <summary>
         /// #1% chance of capturing a mount
