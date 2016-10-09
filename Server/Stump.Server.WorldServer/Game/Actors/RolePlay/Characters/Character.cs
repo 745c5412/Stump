@@ -2817,8 +2817,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Fighter.Fight.RejoinFightFromDisconnection(Fighter);
             OnCharacterContextChanged(true);
 
-            if (Fight.Challenge != null)
-                ContextHandler.SendChallengeInfoMessage(Client, Fight.Challenge);
+            foreach(var challenge in Fight.Challenges)
+                ContextHandler.SendChallengeInfoMessage(Client, challenge);
 
             return Fighter;
         }
