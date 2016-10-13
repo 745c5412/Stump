@@ -69,6 +69,8 @@ using Stump.Server.WorldServer.Database.Quests;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Quests;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
+using Stump.Core.Extensions;
+using Stump.Core.Collections;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -846,14 +848,31 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     playerLook = mountLook;
                 }
 
-                if (!IsInMovement && Direction == DirectionsEnum.DIRECTION_SOUTH && Level >= 100)
+                if (LastEmoteUsed != null)
                 {
-                    var auraLook = new ActorLook
-                    {
-                        BonesID = Level == 200 ? (short)170 : (short)169
-                    };
+                    var auraLook = new ActorLook();
 
-                    playerLook.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, auraLook));
+                    switch (LastEmoteUsed.First)
+                    {
+                        case EmotesEnum.EMOTE_AURA_DE_PUISSANCE:
+                            auraLook.BonesID = Level == 200 ? (short)170 : (short)169;
+                            break;
+
+                        case EmotesEnum.EMOTE_AURA_VAMPYRIQUE:
+                            auraLook.BonesID = 171;
+                            break;
+
+                        case EmotesEnum.EMOTE_AURA_BLEUTÉE_DE_L_ORNITHORYNQUE_ANCESTRAL:
+                            auraLook.BonesID = 1465;
+                            break;
+
+                        case EmotesEnum.EMOTE_AURA_DE_NELWEEN:
+                            auraLook.BonesID = 1501;
+                            break;
+                    }
+
+                    if (auraLook.BonesID != 0)
+                        playerLook.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, auraLook));
                 }
 
                 return playerLook;
@@ -1190,11 +1209,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 Stats.AP.Base++;
                 AddOrnament((short)OrnamentEnum.NIVEAU_100);
+                AddEmote(EmotesEnum.EMOTE_AURA_DE_PUISSANCE);
             }
             else if (currentLevel < 100 && currentLevel - difference >= 100)
             {
                 Stats.AP.Base--;
                 RemoveOrnament((short)OrnamentEnum.NIVEAU_100);
+                RemoveEmote(EmotesEnum.EMOTE_AURA_DE_PUISSANCE);
             }
 
             if (currentLevel >= 160 && currentLevel - difference < 160)
@@ -1203,9 +1224,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 RemoveOrnament((short)OrnamentEnum.NIVEAU_160);
 
             if (currentLevel >= 200 && currentLevel - difference < 200)
+            {
                 AddOrnament((short)OrnamentEnum.NIVEAU_200);
+            }
             else if (currentLevel < 200 && currentLevel - difference >= 200)
+            {
                 RemoveOrnament((short)OrnamentEnum.NIVEAU_200);
+            }
 
             var shortcuts = Shortcuts.SpellsShortcuts;
             foreach (var spell in Breed.Spells)
@@ -2887,6 +2912,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             StartRegen((byte)(20f / Rates.RegenRate));
         }
 
+        public void StartRegenSit()
+        {
+            var rate = Rates.RegenRate * 2;
+            StartRegen((byte)(10f / rate));
+        }
+
         public void StartRegen(byte timePerHp)
         {
             if (IsRegenActive())
@@ -3018,6 +3049,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void PlayEmote(EmotesEnum emote)
         {
+            if (LastEmoteUsed != null && (DateTime.Now - LastEmoteUsed.Second).TotalMilliseconds < 500)
+                return;
+
+            if (emote == EmotesEnum.EMOTE_S_ASSEOIR)
+                StartRegenSit();
+
+            LastEmoteUsed = new Pair<EmotesEnum, DateTime>(emote, DateTime.Now);
+            RefreshActor();
+
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
         }
 
@@ -3700,6 +3740,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (SelectedOrnament != null)
                 options.Add(new HumanOptionOrnament(SelectedOrnament.Value));
+
+            if (LastEmoteUsed != null)
+                options.Add(new HumanOptionEmote((sbyte)LastEmoteUsed.First, LastEmoteUsed.Second.GetUnixTimeStampLong()));
 
             human.options = options;
             return human;

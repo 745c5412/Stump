@@ -80,15 +80,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_ageBonusDefined = true;
         }
 
-        public override FightTypeEnum FightType
-        {
-            get { return FightTypeEnum.FIGHT_TYPE_PvM; }
-        }
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_PvM;
 
-        public override bool IsPvP
-        {
-            get { return false; }
-        }
+        public override bool IsPvP => false;
 
         public bool IsPvMArenaFight
         {
@@ -109,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 IEnumerable<FightActor> droppers = team.OpposedTeam.GetAllFighters(entry => entry.IsDead() && entry.CanDrop()).ToList();
                 var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorProspectingResult ? -1 : entry.Prospecting); // tax collector loots at the end
                 var teamPP = team.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
-                var kamas = droppers.Sum(entry => entry.GetDroppedKamas()) * team.GetAllFighters<CharacterFighter>().Count();
+                var kamas = Winners == team ? droppers.Sum(entry => entry.GetDroppedKamas()) * team.GetAllFighters<CharacterFighter>().Count() : 0;
 
                 foreach (var looter in looters)
                 {
@@ -143,10 +137,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, !IsStarted, true, IsStarted, GetPlacementTimeLeft(), FightType);
         }
 
-        protected override bool CanCancelFight()
-        {
-            return false;
-        }
+        protected override bool CanCancelFight() => false;
 
         public override int GetPlacementTimeLeft()
         {

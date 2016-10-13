@@ -1,3 +1,5 @@
+using Stump.Core.Collections;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
@@ -32,10 +34,13 @@ namespace Stump.Server.WorldServer.Game.Actors
             set;
         }
 
-        public virtual ICharacterContainer CharacterContainer
+        public virtual Pair<EmotesEnum, DateTime> LastEmoteUsed
         {
-            get { return Position.Map; }
+            get;
+            set;
         }
+
+        public virtual ICharacterContainer CharacterContainer => Position.Map;
 
         public override ObjectPosition Position
         {
