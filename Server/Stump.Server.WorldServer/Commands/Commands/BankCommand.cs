@@ -3,6 +3,7 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Exchanges.Bank;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -17,7 +18,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    public class BankOpenCommand : InGameSubCommand
+    public class BankOpenCommand : TargetSubCommand
     {
         public BankOpenCommand()
         {
@@ -25,19 +26,24 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Open target bank";
             RequiredRole = RoleEnum.GameMaster;
             ParentCommandType = typeof(BankCommands);
-            AddParameter("target", "t", "Bank Owner nam",
-                    converter: ParametersConverter.CharacterConverter, isOptional: true);
+            AddTargetParameter();
         }
-
-        public override void Execute(GameTrigger trigger)
+        
+        public override void Execute(TriggerBase trigger)
         {
-            if (trigger.IsArgumentDefined("target"))
-            {
-                var target = trigger.Get<Character>("target");
-                var source = trigger.Character.Client;
+            var target = GetTarget(trigger);
+            var source = (trigger as GameTrigger).Character;
 
-                InventoryHandler.SendExchangeStartedMessage(source, ExchangeTypeEnum.STORAGE);
-                InventoryHandler.SendStorageInventoryContentMessage(source, target.Bank);
+            if (target != source)
+            {
+                InventoryHandler.SendExchangeStartedMessage(source.Client, ExchangeTypeEnum.STORAGE);
+                InventoryHandler.SendStorageInventoryContentMessage(source.Client, target.Bank);
+
+            }
+            else
+            {
+                var dialog = new BankDialog(target);
+                dialog.Open();
             }
         }
     }
