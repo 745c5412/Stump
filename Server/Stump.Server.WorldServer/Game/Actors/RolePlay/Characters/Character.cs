@@ -2287,6 +2287,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool StartMove(Path movementPath)
         {
+            StartRegen();
+
             if (IsFighting() || MustBeJailed() || !IsInJail())
                 return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
 
@@ -2294,20 +2296,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return false;
         }
 
-        public override bool StopMove()
-        {
-            return IsFighting() ? Fighter.StopMove() : base.StopMove();
-        }
+        public override bool StopMove() => IsFighting() ? Fighter.StopMove() : base.StopMove();
 
-        public override bool MoveInstant(ObjectPosition destination)
-        {
-            return IsFighting() ? Fighter.MoveInstant(destination) : base.MoveInstant(destination);
-        }
+        public override bool MoveInstant(ObjectPosition destination) => IsFighting() ? Fighter.MoveInstant(destination) : base.MoveInstant(destination);
 
-        public override bool StopMove(ObjectPosition currentObjectPosition)
-        {
-            return IsFighting() ? Fighter.StopMove(currentObjectPosition) : base.StopMove(currentObjectPosition);
-        }
+        public override bool StopMove(ObjectPosition currentObjectPosition) => IsFighting() ? Fighter.StopMove(currentObjectPosition) : base.StopMove(currentObjectPosition);
 
         public override bool Teleport(MapNeighbour mapNeighbour)
         {
@@ -2902,10 +2895,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Regen
 
-        public bool IsRegenActive()
-        {
-            return RegenStartTime.HasValue;
-        }
+        public bool IsRegenActive() => RegenStartTime.HasValue;
 
         public void StartRegen()
         {
@@ -2922,6 +2912,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (IsRegenActive())
                 StopRegen();
+
+            if (IsFighting())
+                return;
 
             RegenStartTime = DateTime.Now;
             RegenSpeed = timePerHp;
@@ -3049,6 +3042,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void PlayEmote(EmotesEnum emote)
         {
+            StartRegen();
+
             if (LastEmoteUsed != null && (DateTime.Now - LastEmoteUsed.Second).TotalMilliseconds < 500)
                 return;
 

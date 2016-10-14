@@ -2328,7 +2328,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public int GetChallengeBonus()
         {
-            return m_challenges.Where(x => x.Status == ChallengeStatusEnum.SUCCESS).Aggregate(1, (x,challenge) => challenge.Bonus * x);
+            return m_challenges.Where(x => x.Status == ChallengeStatusEnum.SUCCESS).Aggregate(1, (x,challenge) => challenge.Bonus);
         }
 
         #endregion Challenges
