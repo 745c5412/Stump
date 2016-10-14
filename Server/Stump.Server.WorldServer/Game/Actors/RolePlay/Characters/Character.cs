@@ -64,6 +64,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Database.Quests;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
@@ -3387,6 +3388,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                 Delete();
                             }
                         });
+                    
                 }
             }
         }
