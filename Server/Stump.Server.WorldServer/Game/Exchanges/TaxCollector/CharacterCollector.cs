@@ -1,6 +1,7 @@
 ﻿using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 {
@@ -16,13 +17,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
         public TaxCollectorNpc TaxCollector
         {
             get;
-            private set;
         }
 
         public Character Character
         {
             get;
-            private set;
         }
 
         public override bool MoveItem(int id, int quantity)
@@ -33,22 +32,29 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
                 return false;
             }
 
-            quantity = -quantity;
+            quantity = Math.Abs(quantity);
 
             var taxCollectorItem = TaxCollector.Bag.TryGetItem(id);
             if (taxCollectorItem == null)
                 return false;
 
             if (TaxCollector.Bag.MoveToInventory(taxCollectorItem, Character, quantity))
-                Character.Client.Send(new StorageObjectRemoveMessage(id));
+            {
+                if (TaxCollector.Bag.HasItem(taxCollectorItem))
+                    Character.Client.Send(new StorageObjectUpdateMessage(taxCollectorItem.GetObjectItem()));
+                else
+                    Character.Client.Send(new StorageObjectRemoveMessage(id));
+            }
 
             return true;
         }
 
         public override bool SetKamas(int amount)
         {
-            if (amount < 0)
+            if (amount > 0)
                 return false;
+
+            amount = Math.Abs(amount);
 
             if (TaxCollector.GatheredKamas <= 0)
                 amount = 0;
@@ -59,6 +65,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
             TaxCollector.GatheredKamas -= amount;
             Character.Inventory.AddKamas(amount);
             Character.Client.Send(new StorageKamasUpdateMessage(TaxCollector.GatheredKamas));
+
+            if (TaxCollector.Bag.Count == 0 && TaxCollector.GatheredKamas == 0)
+                TaxCollector.Delete();
 
             return true;
         }

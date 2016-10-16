@@ -1,4 +1,5 @@
-﻿using Stump.Server.WorldServer.Database.Characters;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -72,6 +73,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             m_spells.Add(spell.Id, spell);
 
             ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
+            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 3, spell.Id);
 
             return spell;
         }
