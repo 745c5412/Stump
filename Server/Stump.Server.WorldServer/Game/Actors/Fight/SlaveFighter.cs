@@ -26,7 +26,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Id = id;
             Summoner = summoner;
+
             Position = summoner.Position.Clone();
+            FightStartPosition = Position;
+
             Cell = cell;
             Monster = template;
             Look = Monster.Template.EntityLook;
