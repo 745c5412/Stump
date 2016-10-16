@@ -11,7 +11,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             : base(team, spells)
         {
             Id = id;
+
             Position = summoner.Position.Clone();
+            FightStartPosition = Position;
+
             Cell = cell;
             Summoner = summoner;
         }
@@ -20,7 +23,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             : base(team, spells, identifier)
         {
             Id = id;
+
             Position = summoner.Position.Clone();
+            FightStartPosition = Position;
+
             Cell = cell;
             Summoner = summoner;
         }

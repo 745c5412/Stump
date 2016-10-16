@@ -23,6 +23,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             {
                 var newCell = fighter.FightStartPosition?.Cell;
 
+                if (newCell == null)
+                    continue;
+
                 var oldFighter = Fight.GetOneFighter(newCell);
                 if (oldFighter != null)
                     fighter.ExchangePositions(oldFighter);

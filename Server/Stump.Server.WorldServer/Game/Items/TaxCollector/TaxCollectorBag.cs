@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         {
             IsDirty = true;
 
-            if (Count == 0)
+            if (Count == 0 && Owner.GatheredKamas == 0)
                 Owner.Delete();
 
             base.OnItemRemoved(item, removeItemMsg);
