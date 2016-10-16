@@ -85,6 +85,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             return base.OnEquipItem(unequip);
         }
 
+        public override bool OnRemoveItem()
+        {
+            UnsubscribeEvents();
+            return base.OnRemoveItem();
+        }
+
         public int? Probability => m_soulStoneEffect?.DiceNum;
         public int? Power => m_soulStoneEffect?.Value;
     }

@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             if (m_items.ContainsKey(item.ItemId))
                 m_items[item.ItemId].Amount += item.Amount;
             else
-                m_items.Add(item.ItemId, new DroppedItem(item.ItemId, item.Amount));
+                m_items.Add(item.ItemId, item);
         }
 
         public DofusProtocol.Types.FightLoot GetFightLoot() => new DofusProtocol.Types.FightLoot(m_items.Values.SelectMany(entry => new[] { (short)entry.ItemId, (short)entry.Amount }), Kamas);
