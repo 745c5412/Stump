@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 false, // todo : over max
                 Effects.Where(entry => !entry.Hidden).Select(entry => entry.GetObjectEffect()),
                 Guid,
-                (int)(Stack-1));
+                (int)(Stack));
         }
     }
 }
