@@ -19,7 +19,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
         public BankCustomer Customer
         {
             get;
-            private set;
         }
 
         public ExchangeTypeEnum ExchangeType

@@ -907,12 +907,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 Owner.RefreshStats();
         }
 
-        protected override void DeleteItem(BasePlayerItem item)
+        protected override void DeleteItem(BasePlayerItem item, bool sendMessage = true)
         {
             if (item == Tokens)
                 return;
 
-            base.DeleteItem(item);
+            base.DeleteItem(item, sendMessage);
         }
 
         protected override void OnItemAdded(BasePlayerItem item, bool addItemMsg)

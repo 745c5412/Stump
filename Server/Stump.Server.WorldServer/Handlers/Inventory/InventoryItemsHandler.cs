@@ -1,9 +1,11 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects;
 using System;
@@ -96,6 +98,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ObjectFeedMessage.Id)]
         public static void HandleObjectFeedMessage(WorldClient client, ObjectFeedMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             var item = client.Character.Inventory.TryGetItem(message.objectUID);
             var food = client.Character.Inventory.TryGetItem(message.foodUID);
 
@@ -118,6 +123,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(LivingObjectChangeSkinRequestMessage.Id)]
         public static void HandleLivingObjectChangeSkinRequestMessage(WorldClient client, LivingObjectChangeSkinRequestMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             var item = client.Character.Inventory.TryGetItem(message.livingUID);
 
             if (!(item is CommonLivingObject))
@@ -129,6 +137,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(LivingObjectDissociateMessage.Id)]
         public static void HandleLivingObjectDissociateMessage(WorldClient client, LivingObjectDissociateMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             var item = client.Character.Inventory.TryGetItem(message.livingUID);
 
             if (!(item is BoundLivingObjectItem))
@@ -174,14 +185,19 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeKamaModifiedMessage(remote, kamasAmount));
         }
 
-        public static void SendObjectAddedMessage(IPacketReceiver client, BasePlayerItem addedItem)
+        public static void SendObjectAddedMessage(IPacketReceiver client, IItem addedItem)
         {
             client.Send(new ObjectAddedMessage(addedItem.GetObjectItem()));
         }
 
-        public static void SendObjectsAddedMessage(IPacketReceiver client, IEnumerable<BasePlayerItem> addeditems)
+        public static void SendObjectsAddedMessage(IPacketReceiver client, IEnumerable<ObjectItem> addeditems)
         {
-            client.Send(new ObjectsAddedMessage(addeditems.Select(entry => entry.GetObjectItem())));
+            client.Send(new ObjectsAddedMessage(addeditems));
+        }
+
+        public static void SendObjectsQuantityMessage(IPacketReceiver client, IEnumerable<ObjectItemQuantity> itemQuantity)
+        {
+            client.Send(new ObjectsQuantityMessage(itemQuantity));
         }
 
         public static void SendObjectDeletedMessage(IPacketReceiver client, int guid)
@@ -194,7 +210,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ObjectsDeletedMessage(guids.Select(entry => entry).ToList()));
         }
 
-        public static void SendObjectModifiedMessage(IPacketReceiver client, BasePlayerItem item)
+        public static void SendObjectModifiedMessage(IPacketReceiver client, IItem item)
         {
             client.Send(new ObjectModifiedMessage(item.GetObjectItem()));
         }
