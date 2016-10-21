@@ -1,4 +1,5 @@
-﻿using Stump.Server.WorldServer.Game;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Items;
 using System.Linq;
 using System.Net;
@@ -56,7 +57,8 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             if (playerItem == null)
                 return StatusCode(HttpStatusCode.InternalServerError);
 
-            //TEXT_INFORMATION_POPUP		21		Des objets ont été déposés dans votre banque.
+            //Des objets ont été déposés dans votre banque.
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 21);
 
             return Ok();
         }

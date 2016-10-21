@@ -126,6 +126,7 @@ namespace ArkalysPlugin.Npcs
 
                 if (item == null)
                 {
+                    //Vous ne possédez pas l'objet nécessaire.
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 4);
 
                     Close();
@@ -134,6 +135,7 @@ namespace ArkalysPlugin.Npcs
 
                 if (item.Stack < 10)
                 {
+                    //Vous ne possédez pas l'objet en quantité suffisante.
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
 
                     Close();
@@ -156,6 +158,7 @@ namespace ArkalysPlugin.Npcs
 
                 if (item == null)
                 {
+                    //Vous ne possédez pas l'objet nécessaire.
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 4);
 
                     Close();
@@ -164,6 +167,7 @@ namespace ArkalysPlugin.Npcs
 
                 if (item.Stack < 10)
                 {
+                    //Vous ne possédez pas l'objet en quantité suffisante.
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
 
                     Close();

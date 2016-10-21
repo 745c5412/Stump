@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.OnItemAdded(item, false);
         }
 
-        public override int RemoveItem(MerchantItem item, int amount, bool delete = true)
+        public override int RemoveItem(MerchantItem item, int amount, bool delete = true, bool removeItemMsg = true)
         {
             if (!HasItem(item) || item.Stack == 0)
                 return 0;

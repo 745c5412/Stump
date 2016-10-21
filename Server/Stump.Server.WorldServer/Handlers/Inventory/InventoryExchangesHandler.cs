@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges.Bank;
 using Stump.Server.WorldServer.Game.Exchanges.BidHouse;
 using Stump.Server.WorldServer.Game.Exchanges.Merchant;
 using Stump.Server.WorldServer.Game.Exchanges.Paddock;
@@ -411,6 +412,66 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             //Lot acheté.
             client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 68);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertAllFromInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertAllFromInvMessage(WorldClient client, ExchangeObjectTransfertAllFromInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(true, new int[0], true, false);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertExistingFromInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertExistingFromInvMessage(WorldClient client, ExchangeObjectTransfertExistingFromInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(true, new int[0], false, true);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertListFromInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertListFromInvMessage(WorldClient client, ExchangeObjectTransfertListFromInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(true, message.ids, false, false);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertAllToInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertAllToInvMessage(WorldClient client, ExchangeObjectTransfertAllToInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(false, new int[0], true, false);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertExistingToInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertExistingToInvMessage(WorldClient client, ExchangeObjectTransfertExistingToInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(false, new int[0], false, true);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertListToInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertListToInvMessage(WorldClient client, ExchangeObjectTransfertListToInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(false, message.ids, false, false);
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
