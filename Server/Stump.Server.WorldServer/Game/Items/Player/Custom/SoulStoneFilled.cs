@@ -58,7 +58,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             }
 
             Invalidate();
-            Owner.Inventory.RefreshItem(this);
         }
 
         public IEnumerable<MonsterGrade> GetMonsterGroup()
