@@ -3,6 +3,7 @@ using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -15,7 +16,7 @@ using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 {
-    public class MountManager : DataManager<MountManager>
+    public class MountManager : DataManager<MountManager>, ISaveable
     {
         [Variable]
         public static int MountStorageValidityDays = 40;
@@ -28,9 +29,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
         {
-            m_mountTemplates = Database.Query<MountTemplate, MountBonus, MountTemplate>(new MountTemplateRelator().Map, MountTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            Database.Execute(string.Format(MountRecordRelator.DeleteStoredSince, (DateTime.Now - MountStorageValidity).ToString("yyyy-MM-dd HH:mm:ss.fff")));
+            m_mountTemplates = Database.Query<MountTemplate>(MountTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            var mountBonus = Database.Query<MountBonus>(MountBonusRelator.FetchQuery).ToDictionary(entry => entry.Id);
+
+            foreach (var mountTemplate in m_mountTemplates)
+            {
+                mountTemplate.Value.Bonuses.AddRange(mountBonus.Where(x => x.Value.MountTemplateId == mountTemplate.Key)
+                    .Select(x => x.Value));
+            }
+
+            //Database.Execute(string.Format(MountRecordRelator.DeleteStoredSince, (DateTime.Now - MountStorageValidity).ToString("yyyy-MM-dd HH:mm:ss.fff")));
             m_mounts = Database.Query<MountRecord>(MountRecordRelator.FetchQuery).ToDictionary(x => x.Id);
+
+            World.Instance.RegisterSaveableInstance(this);
         }
 
         public MountTemplate[] GetTemplates() => m_mountTemplates.Values.ToArray();
@@ -80,6 +91,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             return record;
         }
 
+        public List<MountRecord> GetMounts(int ownerId) => m_mounts.Where(x => x.Value.OwnerId == ownerId).Select(x => x.Value).ToList();
+
         private static short GetBonusByLevel(int finalBonus, int level) => (short)Math.Floor(finalBonus * level / 100d);
 
         public List<EffectInteger> GetMountEffects(Mount mount) => mount.Template.Bonuses.Select(x => new EffectInteger((EffectsEnum)x.EffectId, GetBonusByLevel(x.Amount, mount.Level))).ToList();
@@ -118,6 +131,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
             item.InitializeEffects(mount);
             return character.Inventory.AddItem(item);
+        }
+
+        public void Save()
+        {
+            foreach (var mount in m_mounts)
+                SaveMount(mount.Value);
         }
     }
 }

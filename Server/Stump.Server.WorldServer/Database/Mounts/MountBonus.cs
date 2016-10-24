@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
 {
     public class MountBonusRelator
     {
-        public static string FecthQuery = "SELECT * FROM mounts_bonus";
+        public static string FetchQuery = "SELECT * FROM mounts_bonus";
     }
 
     [TableName("mounts_bonus")]
