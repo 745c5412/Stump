@@ -20,23 +20,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public WallsBinding WallBinding
         {
             get;
-            private set;
         }
 
-        public override GameActionMarkTypeEnum Type
-        {
-            get { return GameActionMarkTypeEnum.WALL; }
-        }
+        public override GameActionMarkTypeEnum Type => GameActionMarkTypeEnum.WALL;
 
-        public override TriggerType TriggerType
-        {
-            get { return TriggerType.MOVE | TriggerType.TURN_BEGIN | TriggerType.TURN_END; }
-        }
+        public override TriggerType TriggerType => TriggerType.MOVE | TriggerType.TURN_BEGIN | TriggerType.TURN_END;
 
-        public SummonedBomb[] Bombs
-        {
-            get { return new[] { WallBinding.Bomb1, WallBinding.Bomb2 }; }
-        }
+        public SummonedBomb[] Bombs => new[] { WallBinding.Bomb1, WallBinding.Bomb2 };
 
         public override void Trigger(FightActor trigger)
         {
@@ -48,7 +38,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, CastedSpell, trigger.Cell, false);
             handler.MarkTrigger = this;
             handler.Initialize();
-            var bonus = Bombs.Sum(x => x.DamageBonusPercent);
+            var boundedBombs = Bombs.First().GetBombsBoundedWith();
+            var bonus = boundedBombs.Sum(x => x.DamageBonusPercent);
 
             foreach (var effect in handler.GetEffectHandlers().OfType<DirectDamage>())
             {
@@ -56,27 +47,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             }
 
             handler.Execute();
+
+            if (Fight.FighterPlaying != trigger)
+                Caster.SpellHistory.RegisterCastedSpell(CastedSpell.CurrentSpellLevel, trigger);
         }
 
-        public override GameActionMark GetGameActionMark()
-        {
-            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte)Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
-        }
-
-        public override GameActionMark GetHiddenGameActionMark()
-        {
-            return GetGameActionMark();
-        }
-
-        public override bool DoesSeeTrigger(FightActor fighter)
-        {
-            return true;
-        }
-
-        public override bool DecrementDuration()
-        {
-            return false;
-        }
+        public override GameActionMark GetGameActionMark() => new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte)Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
+        public override GameActionMark GetHiddenGameActionMark() => GetGameActionMark();
+        public override bool DoesSeeTrigger(FightActor fighter) => true;
+        public override bool DecrementDuration() => false;
 
         public override bool IsAffected(FightActor actor)
         {
@@ -95,11 +74,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 if (bomb.MonsterBombTemplate == triggerBomb.MonsterBombTemplate)
                     return false;
             }
-            else if (actor.HasState((int)SpellStatesEnum.Kaboom))
-            {
-                if (bomb.IsFriendlyWith(actor))
-                    return false;
-            }
+            else if (actor.HasState((int)SpellStatesEnum.Kaboom) && bomb.IsFriendlyWith(actor))
+                return false;
+
+            if (Fight.FighterPlaying != actor && Caster.SpellHistory.GetEntries(x => x.Target == actor &&
+                x.CastRound == Fight.TimeLine.RoundNumber && x.Spell.SpellId == CastedSpell.Id).Any())
+                return false;
 
             return true;
         }
