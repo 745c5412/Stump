@@ -1118,10 +1118,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             set { m_record.Energy = value; }
         }
 
-        public int LifePoints
-        {
-            get { return Stats.Health.Total; }
-        }
+        public int LifePoints => Stats.Health.Total;
 
         public int MaxLifePoints
         {
@@ -1351,27 +1348,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void LoadMounts()
         {
-            var database = MountManager.Instance.Database;
-
-            m_stabledMounts = database.Query<MountRecord>(string.Format(MountRecordRelator.FindByOwnerStabled, Id)).Select(x => new Mount(this, x)).ToList();
-            m_publicPaddockedMounts = database.Query<MountRecord>(string.Format(MountRecordRelator.FindByOwnerPublicPaddocked, Id)).Select(x => new Mount(this, x)).ToList();
+            m_stabledMounts = MountManager.Instance.GetMounts(Id).Where(x => x.IsInStable && x.PaddockId != null).Select(x => new Mount(this, x)).ToList();
+            m_publicPaddockedMounts = MountManager.Instance.GetMounts(Id).Where(x => !x.IsInStable && x.PaddockId != null).Select(x => new Mount(this, x)).ToList();
 
             if (Record.EquippedMount.HasValue)
-                EquippedMount = new Mount(this, database.Single<MountRecord>(string.Format(MountRecordRelator.FindById, Record.EquippedMount.Value)));
+            {
+                var mountRecord = MountManager.Instance.GetMount(Record.EquippedMount.Value);
+                if (mountRecord != null)
+                    EquippedMount = new Mount(this, mountRecord);
+                else
+                    EquippedMount = null;
+            }
         }
 
         private void SaveMounts()
         {
-            var database = MountManager.Instance.Database;
-            if (EquippedMount != null && (EquippedMount.IsDirty || EquippedMount.Record.IsNew))
-                EquippedMount.Save(database);
-
-            foreach (var mount in m_publicPaddockedMounts.Where(x => x.IsDirty || x.Record.IsNew))
-                mount.Save(database);
-
-            foreach (var mount in m_stabledMounts.Where(x => x.IsDirty || x.Record.IsNew))
-                mount.Save(database);
-
             while (m_releaseMounts.Count > 0)
             {
                 var deletedMount = m_releaseMounts.Dequeue();
@@ -1411,10 +1402,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return (petSkin?.Item1 != null && !petSkin.Item2) ? petSkin.Item1.Value : -1;
         }
 
-        public bool HasEquippedMount()
-        {
-            return EquippedMount != null;
-        }
+        public bool HasEquippedMount() => EquippedMount != null;
 
         public bool EquipMount(Mount mount)
         {
@@ -1453,10 +1441,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return true;
         }
 
-        public bool Dismount()
-        {
-            return IsRiding && ToggleRiding();
-        }
+        public bool Dismount() => IsRiding && ToggleRiding();
 
         public bool ToggleRiding()
         {
