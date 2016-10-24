@@ -4,11 +4,14 @@ using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Social;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
@@ -17,11 +20,12 @@ using Stump.Server.WorldServer.Handlers.Chat;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace Stump.Server.WorldServer.Game.Social
 {
-    public class ChatManager : Singleton<ChatManager>
+    public class ChatManager : DataManager<ChatManager>, ISaveable
     {
         #region Delegates
 
@@ -74,6 +78,8 @@ namespace Stump.Server.WorldServer.Game.Social
         [Variable]
         public static int AntiFloodMuteTime = 10;
 
+        public List<BadWordRecord> BadWords;
+
         /// <summary>
         ///   Chat handler for each channel Id.
         /// </summary>
@@ -90,6 +96,20 @@ namespace Stump.Server.WorldServer.Game.Social
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_SEEK, SaySeek);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_ADMIN, SayAdministrators);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_TEAM, SayTeam);
+
+            BadWords = Database.Query<BadWordRecord>(BadWordRelator.FetchQuery).ToList();
+            World.Instance.RegisterSaveableInstance(this);
+        }
+
+        public string CanSendMessage(string message)
+        {
+            foreach (var badWord in BadWords)
+            {
+                if (message.ToLower().Trim().Contains(badWord.Text.ToLower()))
+                    return badWord.Text;
+            }
+
+            return string.Empty;
         }
 
         public bool CanUseChannel(Character character, ChatActivableChannelsEnum channel)
@@ -169,6 +189,13 @@ namespace Stump.Server.WorldServer.Game.Social
             {
                 if (!CanUseChannel(client.Character, channel))
                     return;
+
+                var badword = CanSendMessage(message);
+                if (badword != string.Empty)
+                {
+                    client.Character.SendServerMessage($"Message non envoyé. Le terme <b>{badword}</b> est interdit sur le serveur !");
+                    return;
+                }
 
                 if (client.Character.IsMuted())
                     client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 124,
@@ -408,5 +435,16 @@ namespace Stump.Server.WorldServer.Game.Social
         }
 
         #endregion Handlers
+
+        public void Save()
+        {
+            foreach (var badWord in BadWords.Where(x => x.IsDirty || x.IsNew))
+            {
+                if (badWord.IsNew)
+                    Database.Insert(badWord);
+                else
+                    Database.Update(badWord);
+            }
+        }
     }
 }

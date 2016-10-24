@@ -116,6 +116,13 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 return;
             }
 
+            var badword = ChatManager.Instance.CanSendMessage(message.content);
+            if (badword != string.Empty)
+            {
+                client.Character.SendServerMessage($"Message non envoyé. Le terme <b>{badword}</b> est interdit sur le serveur !");
+                return;
+            }
+
             if (chr.FriendsBook.IsIgnored(client.Account.Id))
             {
                 //Le joueur %1 était absent et n'a donc pas reçu votre message.
