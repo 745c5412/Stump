@@ -285,6 +285,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2795, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
 
             // all allies but self
+            FixEffectOnAllLevels(2795, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => level.Effects.Move(effect, 0));
             FixEffectOnAllLevels(2795, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
 
             // Aimantation (2801)
@@ -1001,7 +1002,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             foreach (var level in spellLevels)
             {
-                foreach (var spellEffect in level.Effects.Where(entry => entry.EffectId == effect))
+                foreach (var spellEffect in level.Effects.Where(entry => entry.EffectId == effect).ToArray())
                 {
                     fixer(level, spellEffect, false);
                 }

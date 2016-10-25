@@ -156,7 +156,11 @@ namespace Stump.DofusProtocol.Enums
         PEBBLE = 152,
         KWISMAS = 153,
         WRAPPING_PAPER = 154,
+
+        //Custom
         KAMAS_POUCH = 170,
+        EXO_POTION = 171,
+
 		END
 	}
 

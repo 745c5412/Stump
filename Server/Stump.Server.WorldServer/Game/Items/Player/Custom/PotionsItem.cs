@@ -70,12 +70,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
             if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
             {
-                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
+                //Action impossible. Un changement de nom, de sexe, de couleurs ou de visage est déjà en attente pour ce personnage.
+                Owner.SendSystemMessage(43, true);
                 return 0;
             }
 
             Owner.Record.Rename = true;
-            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 41);
+            //Vous pourrez choisir le nouveau nom de votre personnage lors de votre prochaine connexion.
+            Owner.SendSystemMessage(41, true);
 
             return 1;
         }
@@ -93,12 +95,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
             if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
             {
-                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
+                //Action impossible. Un changement de nom, de sexe, de couleurs ou de visage est déjà en attente pour ce personnage.
+                Owner.SendSystemMessage(43, true);
                 return 0;
             }
 
             Owner.Record.Recolor = true;
-            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 42);
+            //Vous pourrez choisir les nouvelles couleurs de votre personnage lors de votre prochaine connexion.
+            Owner.SendSystemMessage(42, true);
 
             return 1;
         }
@@ -116,12 +120,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
             if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
             {
-                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
+                //Action impossible. Un changement de nom, de sexe, de couleurs ou de visage est déjà en attente pour ce personnage.
+                Owner.SendSystemMessage(43, true);
                 return 0;
             }
 
             Owner.Record.Relook = 1;
-            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 58);
+            //Vous pourrez changer l'apparence du visage de votre personnage lors de votre prochaine connexion.
+            Owner.SendSystemMessage(58, true);
 
             return 1;
         }
@@ -139,13 +145,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
             if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
             {
-                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
+                //Action impossible. Un changement de nom, de sexe, de couleurs ou de visage est déjà en attente pour ce personnage.
+                Owner.SendSystemMessage(43, true);
                 return 0;
             }
 
             Owner.Record.Relook = 2;
-            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 44);
-
+            //Votre personnage changera de sexe lors de votre prochaine connexion.
+            Owner.SendSystemMessage(44, true);
             return 1;
         }
     }
