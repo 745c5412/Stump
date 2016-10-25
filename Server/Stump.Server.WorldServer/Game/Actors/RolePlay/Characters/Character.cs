@@ -1355,7 +1355,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 var mountRecord = MountManager.Instance.GetMount(Record.EquippedMount.Value);
                 if (mountRecord != null)
+                {
                     EquippedMount = new Mount(this, mountRecord);
+                    EquippedMount.ApplyMountEffects();
+                }
                 else
                     EquippedMount = null;
             }
