@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
                 return StatusCode(HttpStatusCode.InternalServerError);
 
             //Des objets ont été déposés dans votre banque.
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 21);
+            character.SendSystemMessage(21, true);
 
             return Ok();
         }

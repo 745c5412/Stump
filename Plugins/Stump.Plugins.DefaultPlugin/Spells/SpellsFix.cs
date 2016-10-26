@@ -68,8 +68,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(146, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             FixEffectOnAllLevels(146, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 3);
 
-            // Putsch (147)
+            // Putsch (147, 3355)
             FixEffectOnAllLevels(147, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3355, 0, (level, effect, critical) => effect.Duration = 2, false);
 
             // Precipitation (149)
             FixEffectOnAllLevels(149, 2, (level, effect, critical) => effect.Delay = 1, false);
