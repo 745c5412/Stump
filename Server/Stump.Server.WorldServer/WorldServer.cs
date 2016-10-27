@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer
             base.Initialize();
             ConsoleInterface = new WorldConsole();
             VirtualConsoleInterface = new WorldVirtualConsole();
-            ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
+            ConsoleBase.SetTitle($"#Stump World Server - {Version} : {ServerInformation.Name}");
 
             logger.Info("Initializing Database...");
             DBAccessor = new DatabaseAccessor(DatabaseConfiguration);

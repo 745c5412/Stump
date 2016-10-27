@@ -2733,7 +2733,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null && target.IsTaxCollectorOwner(GuildMember))
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
-            if (target.IsBusy() || IsFighting() || IsSpectator() || !IsInWorld)
+            if (IsFighting() || IsSpectator() || !IsInWorld || IsBusy())
+                return FighterRefusedReasonEnum.IM_OCCUPIED;
+
+            if (target.IsBusy() || target.IsFighting || !target.IsInWorld)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
             if (target.Map != Map)
