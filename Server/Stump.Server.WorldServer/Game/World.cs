@@ -1,7 +1,9 @@
+using MongoDB.Bson;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
@@ -21,6 +23,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 
@@ -580,24 +583,25 @@ namespace Stump.Server.WorldServer.Game
 
         public void SendAnnounce(string announce)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendServerMessage(announce)));
+            ForEachCharacter(character => character.SendServerMessage(announce));
         }
 
         public void SendAnnounce(string announce, Color color)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendServerMessage(announce, color)));
+            ForEachCharacter(character => character.SendServerMessage(announce, color));
         }
 
         public void SendAnnounce(TextInformationTypeEnum type, short messageId, params object[] parameters)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendInformationMessage(type, messageId, parameters)));
+            ForEachCharacter(character => character.SendInformationMessage(type, messageId, parameters));
         }
 
         #endregion Actors
 
         public void RegisterSaveableInstance(ISaveable instance)
         {
-            m_saveablesInstances.Add(instance);
+            if (!m_saveablesInstances.Contains(instance))
+                m_saveablesInstances.Add(instance);
         }
 
         public void Save()
@@ -641,6 +645,16 @@ namespace Stump.Server.WorldServer.Game
 
                 if (WorldServer.SaveMessage)
                     SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 165);
+
+                var document = new BsonDocument
+                    {
+                        { "Id", WorldServer.ServerInformation.Id },
+                        { "Name", WorldServer.ServerInformation.Name },
+                        { "Players", WorldServer.Instance.ClientManager.Count },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+                MongoLogger.Instance.Insert("WorldStats", document);
 
                 logger.Info("World server saved ! ({0} ms)", sw.ElapsedMilliseconds);
             }

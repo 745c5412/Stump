@@ -15,7 +15,7 @@ namespace Stump.Core.Extensions
             if (string.IsNullOrEmpty(source))
                 return string.Empty;
 
-            char[] letters = source.ToCharArray();
+            var letters = source.ToCharArray();
             letters[0] = char.ToUpper(letters[0]);
 
             return new string(letters);
@@ -134,9 +134,16 @@ namespace Stump.Core.Extensions
 
         public static string GetMD5(this string encryptString)
         {
-            byte[] passByteCrypt = new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(encryptString));
+            var passByteCrypt = new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(encryptString));
 
             return passByteCrypt.ByteArrayToString();
+        }
+
+        public static string RemoveWhitespace(this string input)
+        {
+            return new string(input.ToCharArray()
+                .Where(c => !Char.IsWhiteSpace(c))
+                .ToArray());
         }
     }
 }
