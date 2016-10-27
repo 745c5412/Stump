@@ -39,6 +39,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         #region Functions
 
+        public bool IsExo() => GetExoEffects().Any();
+
+        public EffectBase[] GetExoEffects() => Effects.Where(x => !Template.Effects.Exists(y => x.EffectId == y.EffectId)).ToArray();
+
         public virtual bool AreConditionFilled(Character character)
         {
             try

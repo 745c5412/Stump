@@ -14,6 +14,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         {
             APPLY,
             UNAPPLY,
+            NONAPPLY
         }
 
         protected ItemEffectHandler(EffectBase effect, Character target, BasePlayerItem item)

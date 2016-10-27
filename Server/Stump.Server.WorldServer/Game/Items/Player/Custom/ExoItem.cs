@@ -43,15 +43,33 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 return false;
             }
 
-            if (dropOnItem.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_AddMP || x.EffectId == EffectsEnum.Effect_AddMP_128 || x.EffectId == EffectsEnum.Effect_AddAP_111))
+            if (Effects.Any(x => x.EffectId == EffectsEnum.Effect_AddRange || x.EffectId == EffectsEnum.Effect_AddRange_136))
             {
-                Owner.SendServerMessage("L'amélioration a échouée : L'objet possède déjà un PA ou un PM.");
-                return false;
+                if (dropOnItem.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_AddRange || x.EffectId == EffectsEnum.Effect_AddRange_136))
+                {
+                    Owner.SendServerMessage("L'amélioration a échouée : L'objet possède déjà un PO.");
+                    return false;
+                }
+            }
+            else
+            {
+                if (dropOnItem.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_AddMP
+                    || x.EffectId == EffectsEnum.Effect_AddMP_128
+                    || x.EffectId == EffectsEnum.Effect_AddAP_111))
+                {
+                    Owner.SendServerMessage("L'amélioration a échouée : L'objet possède déjà un PA, ou un PM.");
+                    return false;
+                }
             }
 
+            var previousPosition = dropOnItem.Position;
+            Owner.Inventory.MoveItem(dropOnItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
             dropOnItem.Effects.AddRange(Effects);
+            dropOnItem.Invalidate();
+
+            Owner.Inventory.MoveItem(dropOnItem, previousPosition);
             Owner.Inventory.RefreshItem(dropOnItem);
-            Owner.Inventory.ApplyItemEffects(dropOnItem);
 
             Owner.SendServerMessage("Votre objet a été amélioré avec succès !");
 

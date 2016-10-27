@@ -226,13 +226,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             var records = ItemManager.Instance.FindPlayerItems(Owner.Id);
 
-            Items = records.Select(entry => ItemManager.Instance.LoadPlayerItem(Owner, entry)).ToDictionary(entry => entry.Guid);
-            foreach (var item in this)
+            var items = records.Select(entry => ItemManager.Instance.LoadPlayerItem(Owner, entry)).ToDictionary(entry => entry.Guid);
+            foreach (var item in items)
             {
-                m_itemsByPosition[item.Position].Add(item);
+                Items.Add(item.Key, item.Value);
 
-                if (item.IsEquiped())
-                    ApplyItemEffects(item, false);
+                m_itemsByPosition[item.Value.Position].Add(item.Value);
+
+                if (item.Value.IsEquiped())
+                    ApplyItemEffects(item.Value, false);
             }
 
             foreach (var itemSet in GetEquipedItems().
@@ -823,6 +825,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (send)
                 BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 3);
+
             return false;
         }
 
@@ -882,16 +885,31 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void ApplyItemEffects(BasePlayerItem item, bool send = true, bool forceApply = false)
         {
+            var exoError = false;
+
             foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, item)))
             {
                 if (forceApply)
                     handler.Operation = ItemEffectHandler.HandlerOperation.APPLY;
+
+                if (GetEquipedItems().Any(x => x != item && x.GetExoEffects().ToList().Exists(y => item.GetExoEffects().Any(z => z == y)))
+                    && item.GetExoEffects().Any(x => x == handler.Effect))
+                {
+                    exoError = true;
+                    handler.Operation = ItemEffectHandler.HandlerOperation.NONAPPLY;
+                }
 
                 handler.Apply();
             }
 
             if (send)
                 Owner.RefreshStats();
+
+            if (exoError)
+            {
+                //Impossible de cumuler des bonus de forgemagie supérieurs à 1 PA, 1 PM et 1 PO, ou de dépasser 12 PA, 6 PM ou 6 PO via l'équipement.
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 255);
+            }
         }
 
         private void ApplyItemSetEffects(ItemSetTemplate itemSet, int count, bool apply, bool send = true)

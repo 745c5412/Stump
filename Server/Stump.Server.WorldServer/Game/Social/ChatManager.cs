@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -88,6 +89,8 @@ namespace Stump.Server.WorldServer.Game.Social
         [Initialization(InitializationPass.First)]
         public void Initialize()
         {
+            ChatHandlers.Clear();
+
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_GLOBAL, SayGlobal);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_GUILD, SayGuild);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_PARTY, SayParty);
@@ -105,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Social
         {
             foreach (var badWord in BadWords)
             {
-                if (message.ToLower().Trim().Contains(badWord.Text.ToLower()))
+                if (message.ToLower().RemoveWhitespace().Contains(badWord.Text.ToLower()))
                     return badWord.Text;
             }
 
@@ -444,6 +447,9 @@ namespace Stump.Server.WorldServer.Game.Social
                     Database.Insert(badWord);
                 else
                     Database.Update(badWord);
+
+                badWord.IsNew = false;
+                badWord.IsDirty = false;
             }
         }
     }

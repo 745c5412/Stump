@@ -1,4 +1,6 @@
 ﻿using NLog;
+using SharpRaven;
+using SharpRaven.Data;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Threading;
@@ -44,6 +46,18 @@ namespace Stump.Server.BaseServer
 
         [Variable]
         public static string CommandsInfoFilePath = "./commands.xml";
+
+        [Variable(Priority = 10, DefinableRunning = true)]
+        public static bool IsExceptionLoggerEnabled = false;
+
+        [Variable(Priority = 10)]
+        public static string ExceptionLoggerDSN = "";
+
+        public RavenClient ExceptionLogger
+        {
+            get;
+            protected set;
+        }
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -251,6 +265,18 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
+
+            if (IsExceptionLoggerEnabled)
+            {
+                ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
+            }
+        }
+
+        public static void PushLogWithRaven(string levelStr, string message)
+        {
+            ErrorLevel level;
+            if (Enum.TryParse(levelStr, out level))
+                InstanceAsBase.ExceptionLogger.CaptureMessage(new SentryMessage(message), level);
         }
 
         public virtual void UpdateConfigFiles()
