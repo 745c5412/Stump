@@ -190,10 +190,21 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public string Version
+        {
+            get;
+            protected set;
+        }
+
         public virtual void Initialize()
         {
             InstanceAsBase = this;
             Initializing = true;
+
+            Version = ((AssemblyInformationalVersionAttribute)System.Reflection.Assembly.GetExecutingAssembly()
+                        .GetCustomAttributes<AssemblyInformationalVersionAttribute>().FirstOrDefault())
+                        .InformationalVersion;
+                    
 
             /* Initialize Logger */
             NLogHelper.DefineLogProfile(true, true);
@@ -269,6 +280,12 @@ namespace Stump.Server.BaseServer
             if (IsExceptionLoggerEnabled)
             {
                 ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
+                ExceptionLogger.Release = Version;
+#if DEBUG
+                ExceptionLogger.Environment = "DEBUG";
+#else
+                ExceptionLogger.Environment = "RELEASE";
+#endif
             }
         }
 
