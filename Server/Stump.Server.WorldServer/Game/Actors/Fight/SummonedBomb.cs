@@ -55,9 +55,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private static readonly Dictionary<int, Color> wallsColors = new Dictionary<int, Color>()
         {
-            {2, Color.Red},
-            {3, Color.Green},
-            {4, Color.Blue}
+            {2, Color.FromArgb(255, 0, 0)},
+            {3, Color.FromArgb(128, 128, 0)},
+            {4, Color.FromArgb(128, 128, 255)}
         };
 
         private readonly List<WallsBinding> m_wallsBinding = new List<WallsBinding>();
@@ -414,6 +414,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Unmovable);
                 RemoveState(state);
+
+                Explode();
             }
 
             base.OnDead(killedBy, passTurn);
