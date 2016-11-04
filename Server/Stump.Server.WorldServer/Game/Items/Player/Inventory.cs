@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
     public sealed class Inventory : ItemsStorage<BasePlayerItem>, IDisposable
     {
         [Variable(true)]
-        private const int MaxInventoryKamas = 150000000;
+        private const int MaxInventoryKamas = 2000000000;
 
         [Variable(true)]
         private const int MaxPresets = 8;
@@ -346,9 +346,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             if (amount >= MaxInventoryKamas)
             {
-                Kamas = MaxInventoryKamas;
-                //344	Vous avez atteint le seuil maximum de kamas dans votre inventaire.
+                amount = MaxInventoryKamas;
+                //Vous avez atteint le seuil maximum de kamas dans votre inventaire.
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 344);
+            }
+            else if (amount >= (MaxInventoryKamas - 50000000))
+            {
+                //Un de vos inventaires (banque, inventaire du personnage) va dépasser le seuil de 2 milliards de Kamas, les kamas supplémentaires seront donc perdus. Surveillez vos stocks de kamas et vos ventes (mode marchand, enclos, maisons, hdv).
+                Owner.SendSystemMessage(55, true);
             }
 
             base.SetKamas(amount);
@@ -605,6 +610,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 return true;
+
+            if (item.Template.TypeId == (uint)ItemTypeEnum.EXO_POTION)
+                return false;
 
             if (!GetItemPossiblePositions(item).Contains(position))
                 return false;
