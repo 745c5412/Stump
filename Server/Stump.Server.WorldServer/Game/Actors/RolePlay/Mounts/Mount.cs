@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 {
                     if (Record.IsNew)
                         database.Insert(Record);
-                    else
+                    else if (Record.IsDirty)
                         database.Update(Record);
 
                     IsDirty = false;

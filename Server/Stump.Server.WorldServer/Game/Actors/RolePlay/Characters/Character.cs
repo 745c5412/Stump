@@ -71,6 +71,7 @@ using Stump.Server.WorldServer.Game.Quests;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 using Stump.Core.Extensions;
 using Stump.Core.Collections;
+using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -1310,8 +1311,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Mount
 
-        private List<Mount> m_stabledMounts = new List<Mount>();
-        private List<Mount> m_publicPaddockedMounts = new List<Mount>();
+        private List<Mount> m_ownedMounts = new List<Mount>();
         private Queue<Mount> m_releaseMounts = new Queue<Mount>();
 
         public Mount EquippedMount
@@ -1333,70 +1333,71 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set { Record.IsRiding = value; }
         }
 
-        public ReadOnlyCollection<Mount> PublicPaddockedMounts => m_publicPaddockedMounts.AsReadOnly();
-        public ReadOnlyCollection<Mount> StabledMounts => m_stabledMounts.AsReadOnly();
+
+        public ReadOnlyCollection<Mount> OwnedMounts => m_ownedMounts.AsReadOnly(); 
 
         public Mount GetStabledMount(int mountId)
         {
-            return m_stabledMounts.FirstOrDefault(x => x.Id == mountId);
+            return m_ownedMounts.FirstOrDefault(x => x.Paddock != null && x.IsInStable && x.Id == mountId);
         }
 
         public Mount GetPublicPaddockedMount(int mountId)
         {
-            return m_publicPaddockedMounts.FirstOrDefault(x => x.Id == mountId);
+            return m_ownedMounts.FirstOrDefault(x => x.Paddock != null && !x.IsInStable && x.Id == mountId);
         }
 
         private void LoadMounts()
         {
-            m_stabledMounts = MountManager.Instance.GetMounts(Id).Where(x => x.IsInStable && x.PaddockId != null).Select(x => new Mount(this, x)).ToList();
-            m_publicPaddockedMounts = MountManager.Instance.GetMounts(Id).Where(x => !x.IsInStable && x.PaddockId != null).Select(x => new Mount(this, x)).ToList();
+            m_ownedMounts = MountManager.Instance.GetMounts(Id).Select(x => new Mount(this, x)).ToList();
+            EquippedMount = m_ownedMounts.FirstOrDefault(x => x.Id == Record.EquippedMount);
+            EquippedMount?.ApplyMountEffects();
 
-            if (Record.EquippedMount.HasValue)
-            {
-                var mountRecord = MountManager.Instance.GetMount(Record.EquippedMount.Value);
-                if (mountRecord != null)
-                {
-                    EquippedMount = new Mount(this, mountRecord);
-                    EquippedMount.ApplyMountEffects();
-                }
-                else
-                    EquippedMount = null;
-            }
+            if (EquippedMount == null && Record.EquippedMount != null)
+                Record.EquippedMount = null;
         }
 
-        private void SaveMounts()
+        private void SaveMounts(ORM.Database database)
         {
+            foreach (var mount in m_ownedMounts)
+            {
+                mount.Save(database);
+            }
+
             while (m_releaseMounts.Count > 0)
             {
                 var deletedMount = m_releaseMounts.Dequeue();
-                MountManager.Instance.DeleteMount(deletedMount.Record);
+                database.Delete(deletedMount.Record);
             }
         }
 
-        public void AddStabledMount(Mount mount)
+        public void AddStabledMount(Mount mount, Paddock paddock)
         {
-            mount.Owner = this;
-            m_stabledMounts.Add(mount);
+            if (mount.Owner != this)
+                SetOwnedMount(mount);
+
+            mount.Paddock = paddock;
+            mount.IsInStable = true;
         }
 
         public void RemoveStabledMount(Mount mount)
         {
-            m_stabledMounts.Remove(mount);
-        }
+            if (mount.Owner != this)
+                SetOwnedMount(mount);
 
-        public void AddPublicPaddockedMount(Mount mount)
-        {
-            m_publicPaddockedMounts.Add(mount);
-        }
-
-        public void RemovePublicPaddockedMount(Mount mount)
-        {
-            m_publicPaddockedMounts.Remove(mount);
+            mount.Paddock = null;
+            mount.IsInStable = false;
         }
 
         public void SetOwnedMount(Mount mount)
         {
-            mount.Owner = this;
+            if (mount.Owner != this)
+            {
+                mount.Owner?.m_ownedMounts.Remove(mount);
+                mount.Owner = this;
+            }
+
+            if (!m_ownedMounts.Contains(mount))
+                m_ownedMounts.Add(mount);
         }
 
         public int GetEquippedMountSkin()
@@ -3402,7 +3403,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         Shortcuts.Save();
                         FriendsBook.Save();
 
-                        SaveMounts();
+                        SaveMounts(database);
 
                         m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
                         m_record.CellId = Cell.Id;

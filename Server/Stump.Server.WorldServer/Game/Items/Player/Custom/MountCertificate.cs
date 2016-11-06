@@ -80,10 +80,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
                 if (record != null)
                     Mount = new Mount(Owner, record);
-
-                if (Mount == null)
+                
+                if (record == null)
                 {
-                    logger.Error($"Invalid certificate mount id {m_mountEffect.MountId} doesn't exist");
+                    logger.Error($"Invalid certificate mount id {m_mountEffect.MountId} doesn't exist or doesn't belong to ${Owner} (${Owner.Id})");
                     CreateMount();
                 }
             }
@@ -139,12 +139,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             return base.GetObjectItem();
         }
-
-        public override void OnPersistantItemAdded()
-        {
-            if (Mount != null)
-                MountManager.Instance.SaveMount(Mount.Record);
-        }
+        
 
         public override bool OnRemoveItem()
         {

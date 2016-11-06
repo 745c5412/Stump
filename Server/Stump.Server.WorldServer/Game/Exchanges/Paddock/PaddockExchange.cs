@@ -39,8 +39,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
         {
             Character.SetDialoger(m_paddockExchanger);
 
-            var stabledMounts = Character.StabledMounts.Where(x => x.Paddock == Paddock).ToList();
-            var paddockedMounts = Paddock.IsPublicPaddock() ? Character.PublicPaddockedMounts.Where(x => x.Paddock == Paddock) : Paddock.PaddockedMounts;
+            var stabledMounts = Character.OwnedMounts.Where(x => x.Paddock == Paddock && x.IsInStable).ToList();
+            var paddockedMounts = Paddock.IsPublicPaddock() ? Character.OwnedMounts.Where(x => x.Paddock == Paddock && !x.IsInStable) : Paddock.PaddockedMounts;
 
             InventoryHandler.SendExchangeStartOkMountMessage(Character.Client, stabledMounts, paddockedMounts);
         }

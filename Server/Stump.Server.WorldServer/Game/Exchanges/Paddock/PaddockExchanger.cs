@@ -86,8 +86,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             var mount = Character.EquippedMount;
             Character.UnEquipMount();
-            Character.AddStabledMount(mount);
-            Paddock.AddMountToStable(mount);
+            Character.AddStabledMount(mount, Paddock);
             InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, mount);
 
             return true;
@@ -127,8 +126,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
                 return false;
 
             Paddock.RemoveMountFromPaddock(mount);
-            Character.AddStabledMount(mount);
-            Paddock.AddMountToStable(mount);
+            Character.SetOwnedMount(mount);
+            Character.AddStabledMount(mount, Paddock);
             InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, mount);
             InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
 
@@ -143,9 +142,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             if (!HasMountRight(mount))
                 return false;
-
-            Character.RemoveStabledMount(mount);
-            Paddock.RemoveMountFromStable(mount);
+            
             Paddock.AddMountToPaddock(mount);
             InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, mount);
             InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
@@ -170,7 +167,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
                 return false;
 
             Character.RemoveStabledMount(mount);
-            Paddock.RemoveMountFromStable(mount);
             EquipMount(mount);
 
             InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
@@ -188,7 +184,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
                 return false;
 
             Character.RemoveStabledMount(mount);
-            Paddock.RemoveMountFromStable(mount);
             MountManager.Instance.StoreMount(Character, mount);
             InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
 
@@ -239,8 +234,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
                 return false;
 
             Character.Inventory.RemoveItem(item);
-            Character.AddStabledMount(item.Mount);
-            Paddock.AddMountToStable(item.Mount);
+            Character.AddStabledMount(item.Mount, Paddock);
 
             InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, item.Mount);
 

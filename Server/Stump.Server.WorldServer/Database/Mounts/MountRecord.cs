@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
 
         public static string FetchByPaddockId = "SELECT * FROM mounts WHERE PaddockId={0} AND IsInStable=0";
 
-        public static string DeleteStoredSince = "DELETE FROM mounts WHERE StoredSince IS NOT NULL AND StoredSince > \"{0}\"";
+        public static string DeleteStoredSince = "DELETE FROM mounts WHERE StoredSince IS NOT NULL AND StoredSince < \"{0}\"";
     }
 
     [TableName("mounts")]
@@ -172,7 +172,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
             get;
             set;
         }
-
+        
         public override void BeforeSave(bool insert)
         {
             BehaviorsCSV = Behaviors.ToCSV(",");

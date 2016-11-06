@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         public static TimeSpan MountStorageValidity => TimeSpan.FromDays(MountStorageValidityDays);
 
         private Dictionary<int, MountTemplate> m_mountTemplates;
-        private Dictionary<int, MountRecord> m_mounts;
+        private ConcurrentDictionary<int, MountRecord> m_mounts;
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
@@ -38,8 +39,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                     .Select(x => x.Value));
             }
 
-            //Database.Execute(string.Format(MountRecordRelator.DeleteStoredSince, (DateTime.Now - MountStorageValidity).ToString("yyyy-MM-dd HH:mm:ss.fff")));
-            m_mounts = Database.Query<MountRecord>(MountRecordRelator.FetchQuery).ToDictionary(x => x.Id);
+            Database.Execute(string.Format(MountRecordRelator.DeleteStoredSince, (DateTime.Now - MountStorageValidity).ToString("yyyy-MM-dd HH:mm:ss.fff")));
+            m_mounts = new ConcurrentDictionary<int, MountRecord>(Database.Query<MountRecord>(MountRecordRelator.FetchQuery).ToDictionary(x => x.Id));
 
             World.Instance.RegisterSaveableInstance(this);
         }
@@ -57,19 +58,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         public void AddMount(MountRecord record)
         {
             if (!m_mounts.ContainsKey(record.Id))
-                m_mounts.Add(record.Id, record);
+                m_mounts.TryAdd(record.Id, record);
         }
 
         public void RemoveMount(MountRecord record)
         {
-            m_mounts.Remove(record.Id);
+            MountRecord dummy;
+            m_mounts.TryRemove(record.Id, out dummy);
         }
 
         public void SaveMount(MountRecord record)
         {
             if (record.IsNew)
                 Database.Insert(record);
-            else
+            else if (record.IsDirty)
                 Database.Update(record);
 
             record.IsDirty = false;
@@ -91,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             return record;
         }
 
-        public List<MountRecord> GetMounts(int ownerId) => m_mounts.Where(x => x.Value.OwnerId == ownerId).Select(x => x.Value).ToList();
+        public MountRecord[] GetMounts(int ownerId) => m_mounts.Values.Where(x => x.OwnerId == ownerId).ToArray();
 
         private static short GetBonusByLevel(int finalBonus, int level) => (short)Math.Floor(finalBonus * level / 100d);
 
@@ -118,7 +120,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
             AddMount(record);
 
-            return new Mount(owner, record);
+            var mount = new Mount(owner, record);
+            owner.SetOwnedMount(mount);
+
+            return mount;
         }
 
         public BasePlayerItem StoreMount(Character character, Mount mount)
@@ -135,8 +140,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public void Save()
         {
-            foreach (var mount in m_mounts)
-                SaveMount(mount.Value);
+            foreach (var mount in m_mounts.Values.Where(x => x.IsDirty || x.IsNew))
+                SaveMount(mount);
         }
     }
 }
