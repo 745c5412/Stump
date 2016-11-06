@@ -46,17 +46,20 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
         [WorldHandler(MountInformationRequestMessage.Id)]
         public static void HandleMountInformationRequestMessage(WorldClient client, MountInformationRequestMessage message)
         {
-            var record = MountManager.Instance.GetMount((int) message.id);
-
-            if (record == null)
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
             {
-                client.Send(new MountDataErrorMessage(0));
-                return;
-            }
+                var record = MountManager.Instance.GetMount((int) message.id);
 
-            var mount = new Mount(record);
+                if (record == null)
+                {
+                    client.Send(new MountDataErrorMessage(0));
+                    return;
+                }
 
-            SendMountDataMessage(client, mount.GetMountClientData());
+                var mount = new Mount(record);
+
+                SendMountDataMessage(client, mount.GetMountClientData());
+            });
         }
 
         public static void SendMountDataMessage(IPacketReceiver client, MountClientData mountClientData)

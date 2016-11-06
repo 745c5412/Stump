@@ -142,58 +142,30 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
             return character.Guild?.Id == Guild.Id;
         }
 
-        public void AddMountToStable(Mount mount)
-        {
-            if (mount.Paddock == null && !mount.IsInStable)
-            {
-                mount.Paddock = this;
-                mount.IsInStable = true;
-            }
-        }
-
-        public void RemoveMountFromStable(Mount mount)
-        {
-            if (mount.Paddock == this)
-            {
-                mount.Paddock = null;
-                mount.IsInStable = false;
-            }
-        }
-
         public void AddMountToPaddock(Mount mount)
         {
-            if (!mount.IsInStable)
+            if (!IsPublicPaddock())
             {
+                m_mounts.Add(mount);
+                Record.Mounts.Add(mount.Record);
                 IsRecordDirty = true;
-
-                if (!IsPublicPaddock())
-                {
-                    m_mounts.Add(mount);
-                    Record.Mounts.Add(mount.Record);
-                }
-                else
-                    mount.Owner.AddPublicPaddockedMount(mount);
-
-                mount.Paddock = this;
             }
+
+            mount.Paddock = this;
+            mount.IsInStable = false;
         }
 
         public void RemoveMountFromPaddock(Mount mount)
         {
-            if (mount.Paddock == this && !mount.IsInStable)
+            if (!IsPublicPaddock())
             {
+                m_mounts.Remove(mount);
+                Record.Mounts.Remove(mount.Record);
                 IsRecordDirty = true;
-
-                if (!IsPublicPaddock())
-                {
-                    m_mounts.Remove(mount);
-                    Record.Mounts.Remove(mount.Record);
-                }
-                else
-                    mount.Owner.RemovePublicPaddockedMount(mount);
-
-                mount.Paddock = null;
             }
+
+            mount.Paddock = null;
+            mount.IsInStable = false;
         }
 
         public Mount GetPaddockedMount(Character character, int mountId)

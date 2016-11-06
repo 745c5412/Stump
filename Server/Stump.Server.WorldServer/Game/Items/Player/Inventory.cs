@@ -791,8 +791,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 UnStackItem(item, amount);
             }
 
-            DeleteItemFromPresets(item);
-
             var copy = ItemManager.Instance.CreatePlayerItem(newOwner, item, amount);
             newOwner.Inventory.AddItem(copy, false);
         }

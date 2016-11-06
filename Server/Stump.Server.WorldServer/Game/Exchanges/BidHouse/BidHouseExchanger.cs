@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 
             var bidItem = BidHouseManager.Instance.CreateBidHouseItem(Character, item, quantity, price);
             BidHouseManager.Instance.AddBidHouseItem(bidItem);
-
+            
             Character.Inventory.RemoveItem(item, quantity);
 
             InventoryHandler.SendExchangeBidHouseItemAddOkMessage(Character.Client, bidItem.GetObjectItemToSellInBid());

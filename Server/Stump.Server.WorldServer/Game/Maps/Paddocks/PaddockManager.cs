@@ -33,8 +33,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 
         public void Save()
         {
-            // save only public paddocks, the others are saved with the guilds
-            foreach (var paddock in m_paddocks.Where(paddock => paddock.Value.IsPublicPaddock() && paddock.Value.IsRecordDirty))
+            // save guilds paddocks
+            foreach (var paddock in m_paddocks.Where(paddock => !paddock.Value.IsPublicPaddock() && paddock.Value.IsRecordDirty))
             {
                 paddock.Value.Save(Database);
             }
