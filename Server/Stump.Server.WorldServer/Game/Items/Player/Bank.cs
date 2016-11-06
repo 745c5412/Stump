@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.DofusProtocol.Types;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -15,6 +16,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         //1K per default
         [Variable]
         private const int PricePerItem = 1;
+
+        [Variable]
+        private const int MaxBankKamas = 2000000000;
 
         public Bank(Character character)
         {
@@ -96,6 +100,23 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             AddKamas(kamas);
 
             return true;
+        }
+
+        public override void SetKamas(int amount)
+        {
+            if (amount >= MaxBankKamas)
+            {
+                amount = MaxBankKamas;
+                //Vous avez atteint le seuil maximum de kamas dans votre inventaire.
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 344);
+            }
+            else if (amount >= (MaxBankKamas - 50000000))
+            {
+                //Un de vos inventaires (banque, inventaire du personnage) va dépasser le seuil de 2 milliards de Kamas, les kamas supplémentaires seront donc perdus. Surveillez vos stocks de kamas et vos ventes (mode marchand, enclos, maisons, hdv).
+                Owner.SendSystemMessage(55, true);
+            }
+
+            base.SetKamas(amount);
         }
 
         public BasePlayerItem TakeItemBack(BankItem item, int amount, bool sendMessage)

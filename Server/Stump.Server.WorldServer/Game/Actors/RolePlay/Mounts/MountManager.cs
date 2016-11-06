@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             }
 
             Database.Execute(string.Format(MountRecordRelator.DeleteStoredSince, (DateTime.Now - MountStorageValidity).ToString("yyyy-MM-dd HH:mm:ss.fff")));
-            m_mounts = new ConcurrentDictionary<int, MountRecord>(Database.Query<MountRecord>(MountRecordRelator.FetchQuery).ToDictionary(x => x.Id));
+            m_mounts = Database.Query<MountRecord>(MountRecordRelator.FetchQuery).ToDictionary(x => x.Id);
 
             World.Instance.RegisterSaveableInstance(this);
         }
