@@ -1,9 +1,9 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
                 return false;
             }
 
-            var heal = (int) (integerEffect.Value * NumberOfUses);
+            var heal = (int)(integerEffect.Value * NumberOfUses);
             if (Target.Stats.Health.DamageTaken < heal)
             {
                 heal = Target.Stats.Health.DamageTaken;

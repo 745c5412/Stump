@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using NLog.Targets;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -8,6 +6,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {

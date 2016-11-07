@@ -1,25 +1,27 @@
 ﻿#region License GNU GPL
+
 // IPCMessageSerializer.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using ProtoBuf.Meta;
+using Stump.Core.Reflection;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ProtoBuf.Meta;
-using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.IPC
 {
@@ -53,6 +55,7 @@ namespace Stump.Server.BaseServer.IPC
         {
             Model[typeof(IPCMessage)].AddSubType(m_idCounter++, type);
         }
+
         public void RegisterMessage(Type type, int id)
         {
             Model[typeof(IPCMessage)].AddSubType(id, type);
@@ -96,9 +99,9 @@ namespace Stump.Server.BaseServer.IPC
                 stream.WriteByte(lenSize);
                 for (var i = lenSize - 1; i >= 0; i--)
                 {
-                    stream.WriteByte((byte) (len >> 8*i & 255));
+                    stream.WriteByte((byte)(len >> 8 * i & 255));
                 }
-                stream.Write(objStream.ToArray(), 0, (int) objStream.Length);
+                stream.Write(objStream.ToArray(), 0, (int)objStream.Length);
             }
         }
 
@@ -108,11 +111,11 @@ namespace Stump.Server.BaseServer.IPC
             {
                 return 1;
             }
-            if (len < 256*256)
+            if (len < 256 * 256)
             {
                 return 2;
             }
-            if (len < 256*256*256)
+            if (len < 256 * 256 * 256)
             {
                 return 3;
             }

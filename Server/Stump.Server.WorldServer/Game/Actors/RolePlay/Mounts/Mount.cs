@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
@@ -10,8 +8,12 @@ using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Handlers.Basic;
+using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Handlers.Mounts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 {
@@ -27,20 +29,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             new double[] {30, 4},
             new double[] {40, 3},
             new double[] {50, 2},
-            new double[] {60, 1.5},
+            new[] {60, 1.5},
             new double[] {70, 1}
         };
 
         [Variable(true)]
         public static int RequiredLevel = 60;
 
-        public Mount(Character character)
+        public Mount(Character character, MountRecord record)
         {
-            Record = MountManager.Instance.TryGetMountByCharacterId(character.Id);
+            Record = record;
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
-            Effects = MountManager.Instance.GetMountEffects(this);
+            if (Record.PaddockId != null)
+                Paddock = PaddockManager.Instance.GetPaddock(Record.PaddockId.Value);
+            m_effects = MountManager.Instance.GetMountEffects(this);
 
             Owner = character;
         }
@@ -51,22 +55,27 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
-            Effects = MountManager.Instance.GetMountEffects(this);
+
+            if (Record.PaddockId != null)
+                Paddock = PaddockManager.Instance.GetPaddock(Record.PaddockId.Value);
+            m_effects = MountManager.Instance.GetMountEffects(this);
         }
 
-        public Mount(bool sex, int templateId)
+        public void Save(ORM.Database database)
         {
-            Record = new MountRecord
+            if (IsDirty || Record.IsNew)
             {
-                IsNew = true,
-                TemplateId = templateId,
-                Experience = ExperienceManager.Instance.GetMountLevelExperience(1)
-            };
-            Level = ExperienceManager.Instance.GetMountLevel(Experience);
-            Sex = sex;
-            Name = Model.Name;
-            Effects = MountManager.Instance.GetMountEffects(this);
-            Behaviors = new List<MountBehaviorEnum>();
+                WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+                {
+                    if (Record.IsNew)
+                        database.Insert(Record);
+                    else if (Record.IsDirty)
+                        database.Update(Record);
+
+                    IsDirty = false;
+                    Record.IsNew = false;
+                });
+            }
         }
 
         #region Properties
@@ -74,13 +83,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         public MountRecord Record
         {
             get;
-            set;
         }
 
         public bool IsDirty
         {
-            get;
-            set;
+            get { return Record.IsDirty; }
+            set { Record.IsDirty = value; }
         }
 
         public int Id
@@ -91,21 +99,49 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public Character Owner
         {
-            get;
-            set;
+            get { return m_owner; }
+            set
+            {
+                m_owner = value;
+                Record.OwnerId = value?.Id;
+                Record.OwnerName = value?.Name;
+                IsDirty = true;
+            }
         }
 
-        private int m_ownerId;
-        public int OwnerId
+        private List<EffectInteger> m_effects;
+        private Paddock m_paddock;
+        private Character m_owner;
+
+        public Paddock Paddock
         {
-            get { return Owner != null ? Owner.Id : m_ownerId; }
-            set { m_ownerId = value; }
+            get { return m_paddock; }
+            set
+            {
+                m_paddock = value;
+                Record.PaddockId = value?.Id;
+                IsDirty = true;
+            }
         }
 
-        public bool IsRiding
+        public bool IsInStable
         {
-            get;
-            private set;
+            get { return Record.IsInStable; }
+            set
+            {
+                Record.IsInStable = value;
+                IsDirty = true;
+            }
+        }
+
+        public DateTime? StoredSince
+        {
+            get { return Record.StoredSince; }
+            set
+            {
+                Record.StoredSince = value;
+                IsDirty = true;
+            }
         }
 
         public bool Sex
@@ -116,43 +152,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 Record.Sex = value;
                 IsDirty = true;
             }
-
         }
 
-        public List<EffectInteger> Effects
-        {
-            get;
-            private set;
-        }
+        public ReadOnlyCollection<EffectInteger> Effects => m_effects.AsReadOnly();
 
-        public List<MountBehaviorEnum> Behaviors
-        {
-            get { return Record.Behaviors.Select(x => (MountBehaviorEnum)x).ToList(); }
-            private set { Record.Behaviors = value.Select(x => (uint)x).ToList(); }
-        }
+        public ReadOnlyCollection<int> Behaviors => Record.Behaviors.AsReadOnly();
 
-        public MountTemplate Model
-        {
-            get { return Record.Model; }
-        }
+        public MountTemplate Template => Record.Template;
 
         public int TemplateId
         {
             get { return Record.TemplateId; }
-            set
-            {
-                Record.TemplateId = value;
-                IsDirty = true;
-            }
         }
 
-        public ItemTemplate ScrollItem
-        {
-            get
-            {
-                return ItemManager.Instance.TryGetTemplate(Model.ScrollId == 0 ? 7806 : (int)Model.ScrollId);
-            }
-        }
+        public ItemTemplate ScrollItem => Template.ScrollItem;
 
         public byte Level
         {
@@ -299,7 +312,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public int PodsMax
         {
-            get { return Record.Model.PodsBase + (Record.Model.PodsPerLevel * Level); }
+            get { return Record.Template.PodsBase + Record.Template.PodsPerLevel * Level; }
         }
 
         public int FecondationTime
@@ -307,14 +320,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             get { return 0; }
         }
 
-        #endregion
+        #endregion Properties
 
         public void ApplyMountEffects(bool send = true)
         {
             if (Owner == null)
                 return;
 
-            var item = ItemManager.Instance.CreatePlayerItem(Owner, 7806, 1);
+            // dummy item
+            var item = ItemManager.Instance.CreatePlayerItem(Owner, MountTemplate.DEFAULT_SCROLL_ITEM, 1);
             item.Effects.AddRange(Effects);
 
             Owner.Inventory.ApplyItemEffects(item, send, true);
@@ -325,39 +339,27 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             if (Owner == null)
                 return;
 
-            var item = ItemManager.Instance.CreatePlayerItem(Owner, 7806, 1);
+            // dummy item
+            var item = ItemManager.Instance.CreatePlayerItem(Owner, MountTemplate.DEFAULT_SCROLL_ITEM, 1);
             item.Effects.AddRange(Effects);
 
             Owner.Inventory.ApplyItemEffects(item);
         }
 
-        public void RenameMount(Character character, string name)
+        public void RenameMount(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name) || Owner == null)
                 return;
 
             Name = name.EscapeString();
 
-            MountHandler.SendMountRenamedMessage(character.Client, Id, name);
-        }
-
-        public void Release(Character character)
-        {
-            Dismount(character);
-
-            UnApplyMountEffects();
-
-            MountHandler.SendMountUnSetMessage(character.Client);
-            MountHandler.SendMountReleaseMessage(character.Client, character.Mount.Id);
-
-            MountManager.Instance.UnlinkMountFromCharacter(character);
-            character.Mount = null;
+            MountHandler.SendMountRenamedMessage(Owner.Client, Id, name);
         }
 
         public void Sterelize(Character character)
         {
-            character.Mount.ReproductionCount = -1;
-            MountHandler.SendMountSterelizeMessage(character.Client, character.Mount.Id);
+            character.EquippedMount.ReproductionCount = -1;
+            MountHandler.SendMountSterelizeMessage(character.Client, character.EquippedMount.Id);
         }
 
         public void SetGivenExperience(Character character, sbyte xp)
@@ -365,63 +367,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             GivenExperience = xp > 90 ? (sbyte)90 : (xp < 0 ? (sbyte)0 : xp);
 
             MountHandler.SendMountXpRatioMessage(character.Client, GivenExperience);
-        }
-
-        public void ToggleRiding(Character character)
-        {
-            if (character.IsBusy() || character.IsInFight())
-            {
-                //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
-                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
-                return;
-            }
-
-            if (!IsRiding && !character.Map.Outdoor)
-            {
-                //Impossible d'être sur une monture à l'intérieur d'une maison.
-                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 117);
-
-                return;
-            }
-
-            IsRiding = !IsRiding;
-
-            character.RefreshActor();
-
-            MountHandler.SendMountRidingMessage(character.Client, IsRiding);
-
-            if (IsRiding)
-            {
-                var pet = character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
-                if (pet != null)
-                {
-                    character.Inventory.MoveItem(pet, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-                }
-
-                ApplyMountEffects();
-            }            
-            else
-            {
-                //Vous descendez de votre monture.
-                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
-
-                UnApplyMountEffects();
-            }
-        }
-
-        public void Dismount(Character character)
-        {
-            IsRiding = false;
-            UnApplyMountEffects();
-
-            character.RefreshActor();
-
-            MountHandler.SendMountRidingMessage(character.Client, false);
-
-            //Vous descendez de votre monture.
-            BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
-            //Impossible d'entrer dans une demeure en restant sur sa monture.
-            BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 118);
         }
 
         public void AddXP(Character character, long experience)
@@ -439,10 +384,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public void AddBehavior(MountBehaviorEnum behavior)
         {
-            var behaviors = Behaviors;
-            behaviors.Add(behavior);
-
-            Behaviors = behaviors;
+            Record.Behaviors.Add((int)behavior);
         }
 
         protected virtual void OnLevelChanged(Character character)
@@ -451,7 +393,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
 
             UnApplyMountEffects();
-            Effects = MountManager.Instance.GetMountEffects(this);
+            m_effects = MountManager.Instance.GetMountEffects(this);
             ApplyMountEffects();
 
             MountHandler.SendMountSetMessage(character.Client, GetMountClientData());
@@ -481,11 +423,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 isWild = false,
                 isFecondationReady = false,
                 id = Id,
-                model = Model.Id,
+                model = Template.Id,
                 ancestor = new int[0],
-                behaviors = Behaviors.Select(x => (int)x),
+                behaviors = Behaviors,
                 name = Name,
-                ownerId = OwnerId,
+                ownerId = Record.OwnerId ?? -1,
                 experience = Experience,
                 experienceForLevel = ExperienceLevelFloor,
                 experienceForNextLevel = ExperienceNextLevelFloor,
@@ -512,24 +454,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         }
 
         public MountInformationsForPaddock GetMountInformationsForPaddock()
-        {
-            return new MountInformationsForPaddock(Model.Id, Name, "");
-        }
+            => new MountInformationsForPaddock((sbyte)TemplateId, Name, Record.OwnerName);
 
-        #endregion
-
-        public void Save(ORM.Database database)
-        {
-            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
-            {
-                if (Record.IsNew)
-                    database.Insert(Record);
-                else
-                    database.Update(Record);
-
-                IsDirty = false;
-                Record.IsNew = false;
-            });
-        }
+        #endregion Network
     }
 }

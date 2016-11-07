@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     public class Punishment : SpellEffectHandler
     {
         private readonly List<Tuple<int, StatBuff>> m_buffs = new List<Tuple<int, StatBuff>>();
- 
+
         public Punishment(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
@@ -41,14 +41,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
             var damages = (Fights.Damage)token;
             var bonus = damages.Amount;
-            
+
             if (bonus + currentBonus > limit)
-                bonus = (short) (limit - currentBonus);
+                bonus = (short)(limit - currentBonus);
+
+            if (bonus <= 0)
+                return;
 
             var caracteristic = GetPunishmentBoostType(Dice.DiceNum);
             var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice,
-                Spell, (short)bonus, caracteristic, false, true, Dice.DiceNum) 
-                {Duration = Dice.Value};
+                Spell, (short)bonus, caracteristic, false, true, Dice.DiceNum)
+            { Duration = Dice.Value };
 
             buff.Target.AddAndApplyBuff(statBuff, true, true);
             m_buffs.Add(new Tuple<int, StatBuff>(Fight.TimeLine.RoundNumber, statBuff));
@@ -60,16 +63,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             {
                 case ActionsEnum.ACTION_CHARACTER_BOOST_AGILITY:
                     return PlayerFields.Agility;
+
                 case ActionsEnum.ACTION_CHARACTER_BOOST_STRENGTH:
                     return PlayerFields.Strength;
+
                 case ActionsEnum.ACTION_CHARACTER_BOOST_INTELLIGENCE:
                     return PlayerFields.Intelligence;
+
                 case ActionsEnum.ACTION_CHARACTER_BOOST_CHANCE:
                     return PlayerFields.Chance;
+
                 case ActionsEnum.ACTION_CHARACTER_BOOST_WISDOM:
                     return PlayerFields.Wisdom;
+
                 case ActionsEnum.ACTION_CHARACTER_BOOST_DAMAGES_PERCENT:
                     return PlayerFields.DamageBonusPercent;
+
                 case ActionsEnum.ACTION_CHARACTER_BOOST_VITALITY:
                 case (ActionsEnum)407: // **** magic numbers
                     return PlayerFields.Health;

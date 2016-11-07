@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
     public class SkillGuildCreation : Skill
     {
         public SkillGuildCreation(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
-            : base (id, record, interactiveObject)
+            : base(id, record, interactiveObject)
         {
         }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using NLog;
+﻿using NLog;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
@@ -12,6 +9,9 @@ using Stump.Server.WorldServer.Game.Accounts.Startup;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Approach;
 using Stump.Server.WorldServer.Handlers.Basic;
+using System;
+using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace Stump.Server.WorldServer.Core.Network
 {
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Core.Network
 
             lock (ApproachHandler.ConnectionQueue.SyncRoot)
                 ApproachHandler.ConnectionQueue.Add(this);
-                
+
             InQueueUntil = DateTime.Now;
         }
 
@@ -76,6 +76,12 @@ namespace Stump.Server.WorldServer.Core.Network
             internal set;
         }
 
+        public CharacterRecord ForceCharacterSelection
+        {
+            get;
+            set;
+        }
+
         public Character Character
         {
             get;
@@ -118,9 +124,7 @@ namespace Stump.Server.WorldServer.Core.Network
         protected override void OnDisconnect()
         {
             if (Character != null)
-            {
                 Character.LogOut();
-            }
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
@@ -128,15 +132,13 @@ namespace Stump.Server.WorldServer.Core.Network
                     return;
 
                 WorldAccount.ConnectedCharacter = null;
-                WorldServer.Instance.DBAccessor.Database.Update(WorldAccount);
+
+                WorldServer.Instance.DBAccessor.Database.Update(WorldAccount, new[] { "ConnectedCharacter" });
             });
 
             base.OnDisconnect();
         }
 
-        public override string ToString()
-        {
-            return base.ToString() + (Account != null ? " (" + Account.Login + ")" : "");
-        }
+        public override string ToString() => base.ToString() + (Account != null ? " (" + Account.Login + ")" : "");
     }
 }

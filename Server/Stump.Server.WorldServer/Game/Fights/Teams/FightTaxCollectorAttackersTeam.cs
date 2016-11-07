@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Teams
 {
@@ -17,10 +17,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         {
         }
 
-        public override TeamTypeEnum TeamType
-        {
-            get { return TeamTypeEnum.TEAM_TYPE_PLAYER; }
-        }
+        public override TeamTypeEnum TeamType => TeamTypeEnum.TEAM_TYPE_PLAYER;
 
         public override FighterRefusedReasonEnum CanJoin(Character character)
         {

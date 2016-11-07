@@ -1,4 +1,3 @@
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Replies;
@@ -6,6 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Dialogs;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 {
@@ -89,15 +89,19 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 ChangeMessage(message);
         }
 
-        public virtual void ChangeMessage(NpcMessage message)
+        public void ChangeMessage(NpcMessage message)
+        {
+            var replies = message.Replies.
+                Where(entry => entry.CanExecute(Npc, Character)).
+                Select(entry => entry.ReplyId).Distinct().ToArray();
+            ChangeMessage(message, replies);
+        }
+
+        public virtual void ChangeMessage(NpcMessage message, int[] replies, params string[] parameters)
         {
             CurrentMessage = message;
-
-            var replies = message.Replies.
-                Where(entry => entry.CriteriaExpression == null || entry.CriteriaExpression.Eval(Character)).
-                Select(entry => (short)entry.ReplyId).Distinct();
-
-            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, replies);
+            
+            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, replies.Select(x => (short)x), parameters);
         }
     }
 }

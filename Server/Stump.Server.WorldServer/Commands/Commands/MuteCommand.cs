@@ -1,11 +1,11 @@
-﻿using System;
-using System.Drawing;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
+using System;
+using System.Drawing;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-                var time = trigger.Get<int>("time") > 720 ? 720 : trigger.Get<int>("time");
+                var time = trigger.Get<int>("time");
 
                 target.Mute(TimeSpan.FromMinutes(time), trigger.User as Character);
                 trigger.Reply("{0} muted", target.Name);
@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var map = ((GameTrigger) trigger).Character.Map;
+            var map = ((GameTrigger)trigger).Character.Map;
             var mute = map.ToggleMute();
 
             var message = mute

@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using Stump.DofusProtocol.D2oClasses.Tools.D2i;
+using System.Windows;
 using System.Windows.Controls;
-using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 
 namespace WorldEditor.Editors.Files.D2I
 {

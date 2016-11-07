@@ -8,8 +8,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 {
     public class CompoundKey : IEquatable<CompoundKey>
     {
-        object[] values;
-        int hc;
+        private object[] values;
+        private int hc;
 
         public CompoundKey(params object[] values)
         {

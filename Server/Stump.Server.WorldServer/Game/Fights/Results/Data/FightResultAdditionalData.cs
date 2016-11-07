@@ -16,6 +16,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results.Data
         }
 
         public abstract DofusProtocol.Types.FightResultAdditionalData GetFightResultAdditionalData();
+
         public abstract void Apply();
     }
 }

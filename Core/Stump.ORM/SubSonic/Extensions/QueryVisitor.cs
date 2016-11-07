@@ -1,23 +1,23 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.Query;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Collections;
-using Stump.ORM.SubSonic.Query;
 using ExpressionVisitor = Stump.ORM.SubSonic.Linq.Structure.ExpressionVisitor;
 
 namespace Stump.ORM.SubSonic.Extensions
@@ -222,16 +222,19 @@ namespace Stump.ORM.SubSonic.Extensions
                     case "Contains":
                         constraint.Comparison = Comparison.Like;
                         break;
+
                     case "EndsWith":
                         constraint.Comparison = Comparison.EndsWith;
                         break;
+
                     case "StartsWith":
                         constraint.Comparison = Comparison.StartsWith;
                         break;
+
                     default:
                         return base.VisitMethodCall(methodCallExpression);
                 }
-                // Set the starting / ending wildcards on the parameter value... not the best place to do this, but I'm 
+                // Set the starting / ending wildcards on the parameter value... not the best place to do this, but I'm
                 // attempting to constrain the scope of the change.
                 constraint.ConstructionFragment = obj.Member.Name;
                 // Set the current constraint... Visit will be using it, I don't know what it would do with multiple args....
@@ -253,6 +256,7 @@ namespace Stump.ORM.SubSonic.Extensions
                     case "Any":
                         BuildCollectionConstraint(methodCallExpression);
                         break;
+
                     default:
                         throw new InvalidOperationException(
                             String.Format("Method {0} is not supported in linq statement!",
@@ -316,9 +320,11 @@ namespace Stump.ORM.SubSonic.Extensions
                     case Comparison.StartsWith:
                         constraint.ParameterValue = constraint.ParameterValue + "%";
                         break;
+
                     case Comparison.EndsWith:
                         constraint.ParameterValue = "%" + constraint.ParameterValue;
                         break;
+
                     case Comparison.Like:
                         constraint.ParameterValue = "%" + constraint.ParameterValue + "%";
                         break;

@@ -1,7 +1,7 @@
+using Stump.Server.WorldServer.Game.Items;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -9,10 +9,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
     {
         private readonly Dictionary<int, DroppedItem> m_items = new Dictionary<int, DroppedItem>();
 
-        public IReadOnlyDictionary<int, DroppedItem> Items
-        {
-            get { return new ReadOnlyDictionary<int, DroppedItem>(m_items); }
-        }
+        public IReadOnlyDictionary<int, DroppedItem> Items => new ReadOnlyDictionary<int, DroppedItem>(m_items);
 
         public int Kamas
         {
@@ -38,17 +35,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             if (m_items.ContainsKey(item.ItemId))
                 m_items[item.ItemId].Amount += item.Amount;
             else
-                m_items.Add(item.ItemId, new DroppedItem(item.ItemId, item.Amount));
+                m_items.Add(item.ItemId, item);
         }
 
-        public DofusProtocol.Types.FightLoot GetFightLoot()
-        {
-            return new DofusProtocol.Types.FightLoot(m_items.Values.SelectMany(entry => new[] { (short)entry.ItemId, (short)entry.Amount }), Kamas);
-        }
+        public DofusProtocol.Types.FightLoot GetFightLoot() => new DofusProtocol.Types.FightLoot(m_items.Values.SelectMany(entry => new[] { (short)entry.ItemId, (short)entry.Amount }), Kamas);
 
-        public string FightItemsString()
-        {
-            return string.Join("|", m_items.Select(item => item.Value.ItemId + "_" + item.Value.Amount).ToList());
-        }
+        public string FightItemsString() => string.Join("|", m_items.Select(item => item.Value.ItemId + "_" + item.Value.Amount).ToList());
     }
 }

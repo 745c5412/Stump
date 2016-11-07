@@ -1,11 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Spells
 {
@@ -23,7 +24,6 @@ namespace Stump.Server.WorldServer.Game.Spells
         public Character Owner
         {
             get;
-            private set;
         }
 
         internal void LoadSpells()
@@ -32,6 +32,9 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             foreach (var spell in database.Query<CharacterSpellRecord>(string.Format(CharacterSpellRelator.FetchByOwner, Owner.Id)).Select(record => new CharacterSpell(record)))
             {
+                if (m_spells.ContainsKey(spell.Id))
+                    continue;
+
                 m_spells.Add(spell.Id, spell);
             }
         }
@@ -54,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public IEnumerable<CharacterSpell> GetSpells()
         {
-            return m_spells.Values; 
+            return m_spells.Values;
         }
 
         public CharacterSpell LearnSpell(int id)
@@ -72,6 +75,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             m_spells.Add(spell.Id, spell);
 
             ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
+            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 3, spell.Id);
 
             return spell;
         }
@@ -190,7 +194,7 @@ namespace Stump.Server.WorldServer.Game.Spells
                 DowngradeSpell(spell, false);
             }
 
-            InventoryHandler.SendSpellListMessage(Owner.Client, true); 
+            InventoryHandler.SendSpellListMessage(Owner.Client, true);
             return true;
         }
 
@@ -252,7 +256,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (spell == null)
                 return;
 
-            Owner.Shortcuts.AddSpellShortcut(position, (short) id);
+            Owner.Shortcuts.AddSpellShortcut(position, (short)id);
         }
 
         public int CountSpentBoostPoint()

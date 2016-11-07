@@ -1,11 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
@@ -15,6 +7,13 @@ using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Point = System.Drawing.Point;
 
 namespace Stump.Server.WorldServer.Game.Maps
@@ -37,7 +36,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         };
 
         private readonly List<Character> m_characters = new List<Character>();
-
 
         private readonly List<Map> m_maps = new List<Map>();
         private readonly LockFreeQueue<IMessage> m_messageQueue = new LockFreeQueue<IMessage>();
@@ -81,7 +79,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             get { return m_maps; }
         }
-
 
         public Dictionary<Point, List<Map>> MapsByPosition
         {
@@ -151,15 +148,9 @@ namespace Stump.Server.WorldServer.Game.Maps
             set { Interlocked.Exchange(ref m_updateDelay, value); }
         }
 
-        public DateTime LastUpdateTime
-        {
-            get { return m_lastUpdateTime; }
-        }
+        public DateTime LastUpdateTime => m_lastUpdateTime;
 
-        public bool IsUpdating
-        {
-            get { return m_isUpdating; }
-        }
+        public bool IsUpdating => m_isUpdating;
 
         public float AverageUpdateTime
         {
@@ -173,10 +164,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             private set;
         }
 
-        public int CurrentThreadId
-        {
-            get { return m_currentThreadId; }
-        }
+        public int CurrentThreadId => m_currentThreadId;
 
         #region IContextHandler Members
 
@@ -187,13 +175,13 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void AddMessage(Action action)
         {
-            AddMessage((Message) action);
+            AddMessage((Message)action);
         }
 
         public void AddMessage(IMessage msg)
         {
             // make sure, Map is running
-            Start();
+            // Start();
             m_messageQueue.Enqueue(msg);
         }
 
@@ -218,12 +206,14 @@ namespace Stump.Server.WorldServer.Game.Maps
             throw new InvalidOperationException(string.Format("Context needed in Area '{0}'", this));
         }
 
-        #endregion
+        #endregion IContextHandler Members
 
         public event Action<Area> Started;
 
         private void OnStarted()
         {
+            CallPeriodically((int)TimeSpan.FromMinutes(5).TotalMilliseconds, CheckDC);
+
             var handler = Started;
             if (handler != null)
                 handler(this);
@@ -262,7 +252,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public void Stop(bool wait = false)
+        public void Stop()
+        {
+            Stop(false);
+        }
+
+        public void Stop(bool wait)
         {
             if (!m_running)
                 return;
@@ -283,24 +278,19 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void RegisterTimer(TimedTimerEntry timer)
         {
-            EnsureContext();
-            m_timers.Push(timer);
+            ExecuteInContext(() =>
+            {
+                if (!timer.Enabled)
+                    timer.Start();
+
+                m_timers.Push(timer);
+            });
         }
 
         public void UnregisterTimer(TimedTimerEntry timer)
         {
             EnsureContext();
             m_timers.Remove(timer);
-        }
-
-        public void RegisterTimerLater(TimedTimerEntry timer)
-        {
-            m_messageQueue.Enqueue(new Message(() => RegisterTimer(timer)));
-        }
-
-        public void UnregisterTimerLater(TimedTimerEntry timer)
-        {
-            m_messageQueue.Enqueue(new Message(() => UnregisterTimer(timer)));
         }
 
         public TimedTimerEntry CallDelayed(int delay, Action action)
@@ -313,7 +303,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             };
 
             timer.Start();
-            RegisterTimerLater(timer);
+            RegisterTimer(timer);
             return timer;
         }
 
@@ -326,7 +316,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             };
 
             timer.Start();
-            RegisterTimerLater(timer);
+            RegisterTimer(timer);
             return timer;
         }
 
@@ -339,7 +329,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
 
             var updateStart = DateTime.Now;
-            var updateDelta = (int) ((updateStart - m_lastUpdateTime).TotalMilliseconds);
+            var updateDelta = (int)((updateStart - m_lastUpdateTime).TotalMilliseconds);
             long messageProcessTime = 0;
             long timerProcessingTime = 0;
             var timerProcessed = 0;
@@ -378,7 +368,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 sw = Stopwatch.StartNew();
                 TimedTimerEntry peek;
-                while (( peek = m_timers.Peek() ) != null && peek.NextTick <= DateTime.Now)
+                while ((peek = m_timers.Peek()) != null && peek.NextTick <= DateTime.Now)
                 {
                     var timer = m_timers.Pop();
 
@@ -406,13 +396,11 @@ namespace Stump.Server.WorldServer.Game.Maps
                 }
                 sw.Stop();
                 timerProcessingTime = sw.ElapsedMilliseconds;
-
             }
             finally
             {
                 try
                 {
-
                     // we updated the map, so set our last update time to now
                     m_lastUpdateTime = updateStart;
                     TickCount++;
@@ -423,18 +411,22 @@ namespace Stump.Server.WorldServer.Game.Maps
                     var newUpdateDelta = updateEnd - updateStart;
 
                     // weigh old update-time 9 times and new update-time once
-                    AverageUpdateTime = ((AverageUpdateTime*9) + (float) (newUpdateDelta).TotalMilliseconds)/10;
-
+                    AverageUpdateTime = ((AverageUpdateTime * 9) + (float)(newUpdateDelta).TotalMilliseconds) / 10;
 
                     // make sure to unset the ID *before* enqueuing the task in the ThreadPool again
                     Interlocked.Exchange(ref m_currentThreadId, 0);
-                    var callbackTimeout = (int) (m_updateDelay - newUpdateDelta.TotalMilliseconds);
+                    var callbackTimeout = (int)(m_updateDelay - newUpdateDelta.TotalMilliseconds);
                     if (callbackTimeout < 0)
                     {
                         // even if we are in a hurry: For the sake of load-balance we have to give control back to the ThreadPool
                         callbackTimeout = 0;
                         logger.Debug("Area '{0}' update lagged ({1}ms) (msg:{2}ms, timers:{3}ms, timerProc:{4}/{5})",
-                            this, (int) newUpdateDelta.TotalMilliseconds, messageProcessTime, timerProcessingTime, timerProcessed, m_timers.Count);
+                            this, (int)newUpdateDelta.TotalMilliseconds, messageProcessTime, timerProcessingTime, timerProcessed, m_timers.Count);
+                        foreach (var msg in processedMessages.OrderByDescending(x => x.Timestamp).Take(15))
+                        {
+                            logger.Debug(msg);
+                        }
+
                         BenchmarkManager.Instance.AddRange(processedMessages);
                     }
 
@@ -465,7 +457,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (!(obj is Character))
                 return;
 
-            m_characters.Add((Character) obj);
+            m_characters.Add((Character)obj);
 
             if (!IsRunning)
                 Start();
@@ -478,10 +470,21 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (!(obj is Character))
                 return;
 
-            m_characters.Remove((Character) obj);
+            m_characters.Remove((Character)obj);
 
             if (m_characters.Count <= 0 && IsRunning)
                 Stop();
+        }
+
+        public void CheckDC()
+        {
+            var count = m_characters.RemoveAll(x => !x.IsLoggedIn);
+            m_objects.RemoveAll(x => x is Character && !((Character)x).IsLoggedIn);
+
+            if (count > 0)
+            {
+                logger.Warn("{0} disconnected characters removed from {1}", count, this);
+            }
         }
 
         public void SpawnMapsLater()
@@ -529,7 +532,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         internal void RemoveSubArea(SubArea subArea)
         {
             m_subAreas.Remove(subArea);
-            m_maps.RemoveAll(delegate(Map entry)
+            m_maps.RemoveAll(delegate (Map entry)
             {
                 if (!subArea.Maps.Contains(entry))
                     return false;
@@ -568,7 +571,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             return !m_mapsByPoint.ContainsKey(position) ? new Map[0] : m_mapsByPoint[position].Where(entry => entry.Outdoor == outdoor).ToArray();
         }
-
 
         public void AddMonsterSpawn(MonsterSpawn spawn)
         {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
@@ -9,6 +7,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
+using System;
+using System.Linq;
 
 namespace ArkalysPlugin.SmithMagic
 {
@@ -23,16 +23,16 @@ namespace ArkalysPlugin.SmithMagic
             Tuple.Create(EffectsEnum.Effect_DamageAir, new[] {1337, 1342, 1347})
         };
 
-        private static readonly double[] m_potionsBoosts = {0.5, 0.6, 0.8};
+        private static readonly double[] m_potionsBoosts = { 0.5, 0.6, 0.8 };
 
         public SmithMagicPotionItem(Character owner, PlayerItemRecord record) : base(owner, record)
         {
         }
 
-        [Initialization(typeof (ItemManager), Silent = true)]
+        [Initialization(typeof(ItemManager), Silent = true)]
         public static void Initialize()
         {
-            ItemManager.Instance.AddItemConstructor(typeof (SmithMagicPotionItem));
+            ItemManager.Instance.AddItemConstructor(typeof(SmithMagicPotionItem));
         }
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
@@ -58,8 +58,8 @@ namespace ArkalysPlugin.SmithMagic
             if (effectDice != null)
             {
                 var newEffect = new EffectDice(effectDice) { EffectId = tuple.Item1 };
-                newEffect.DiceFace = (short) (newEffect.DiceFace*boost);
-                newEffect.DiceNum = (short) (newEffect.DiceNum*boost);
+                newEffect.DiceFace = (short)(newEffect.DiceFace * boost);
+                newEffect.DiceNum = (short)Math.Ceiling((newEffect.DiceNum * boost));
 
                 weapon.Effects.Add(newEffect);
             }
@@ -68,8 +68,8 @@ namespace ArkalysPlugin.SmithMagic
                 var effectInteger = effect as EffectInteger;
                 if (effectInteger != null)
                 {
-                    var newEffect = new EffectInteger(effectInteger) {EffectId = tuple.Item1};
-                    newEffect.Value = (short) (newEffect.Value*boost);
+                    var newEffect = new EffectInteger(effectInteger) { EffectId = tuple.Item1 };
+                    newEffect.Value = (short)(newEffect.Value * boost);
 
                     weapon.Effects.Add(newEffect);
                 }
@@ -78,9 +78,9 @@ namespace ArkalysPlugin.SmithMagic
                     var effectMinMax = effect as EffectMinMax;
                     if (effectMinMax != null)
                     {
-                        var newEffect = new EffectMinMax(effectMinMax) {EffectId = tuple.Item1};
-                        newEffect.ValueMin = (short) (newEffect.ValueMin*boost);
-                        newEffect.ValueMax = (short) (newEffect.ValueMax*boost);
+                        var newEffect = new EffectMinMax(effectMinMax) { EffectId = tuple.Item1 };
+                        newEffect.ValueMin = (short)(newEffect.ValueMin * boost);
+                        newEffect.ValueMax = (short)(newEffect.ValueMax * boost);
 
                         weapon.Effects.Add(newEffect);
                     }

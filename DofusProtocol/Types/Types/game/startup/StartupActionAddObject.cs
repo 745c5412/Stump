@@ -1,33 +1,32 @@
-
-
 // Generated on 03/02/2014 20:43:03
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class StartupActionAddObject
     {
         public const short Id = 52;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int uid;
         public string title;
         public string text;
         public string descUrl;
         public string pictureUrl;
         public IEnumerable<Types.ObjectItemInformationWithQuantity> items;
-        
+
         public StartupActionAddObject()
         {
         }
-        
+
         public StartupActionAddObject(int uid, string title, string text, string descUrl, string pictureUrl, IEnumerable<Types.ObjectItemInformationWithQuantity> items)
         {
             this.uid = uid;
@@ -37,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             this.pictureUrl = pictureUrl;
             this.items = items;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(uid);
@@ -50,16 +49,15 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in items)
             {
-                 entry.Serialize(writer);
-                 items_count++;
+                entry.Serialize(writer);
+                items_count++;
             }
             var items_after = writer.Position;
             writer.Seek((int)items_before);
             writer.WriteUShort((ushort)items_count);
             writer.Seek((int)items_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             uid = reader.ReadInt();
@@ -73,17 +71,15 @@ namespace Stump.DofusProtocol.Types
             var items_ = new Types.ObjectItemInformationWithQuantity[limit];
             for (int i = 0; i < limit; i++)
             {
-                 items_[i] = new Types.ObjectItemInformationWithQuantity();
-                 items_[i].Deserialize(reader);
+                items_[i] = new Types.ObjectItemInformationWithQuantity();
+                items_[i].Deserialize(reader);
             }
             items = items_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(title) + sizeof(short) + Encoding.UTF8.GetByteCount(text) + sizeof(short) + Encoding.UTF8.GetByteCount(descUrl) + sizeof(short) + Encoding.UTF8.GetByteCount(pictureUrl) + sizeof(short) + items.Sum(x => x.GetSerializationSize());
         }
-        
     }
-    
 }

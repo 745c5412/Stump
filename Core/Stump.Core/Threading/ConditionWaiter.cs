@@ -44,6 +44,7 @@ namespace Stump.Core.Threading
         }
 
         public event EventHandler Success;
+
         public event EventHandler Fail;
 
         public void Start()
@@ -107,7 +108,7 @@ namespace Stump.Core.Threading
                     return true;
 
                 Thread.Sleep(interval);
-            } while (( DateTime.Now - startTime ).TotalMilliseconds < timeout || timeout == System.Threading.Timeout.Infinite);
+            } while ((DateTime.Now - startTime).TotalMilliseconds < timeout || timeout == System.Threading.Timeout.Infinite);
 
             return false;
         }
@@ -126,9 +127,9 @@ namespace Stump.Core.Threading
 
         static ConditionWaiter()
         {
-            if (!typeof (T).IsSubclassOf(typeof (Delegate)))
+            if (!typeof(T).IsSubclassOf(typeof(Delegate)))
             {
-                throw new InvalidOperationException(typeof (T).Name + " is not a delegate type");
+                throw new InvalidOperationException(typeof(T).Name + " is not a delegate type");
             }
         }
 
@@ -177,6 +178,7 @@ namespace Stump.Core.Threading
         }
 
         public event EventHandler Success;
+
         public event EventHandler Fail;
 
         public void Start()
@@ -194,7 +196,7 @@ namespace Stump.Core.Threading
 
         private void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (m_timeout != System.Threading.Timeout.Infinite && ( DateTime.Now - m_startTime ).TotalMilliseconds > m_timeout)
+            if (m_timeout != System.Threading.Timeout.Infinite && (DateTime.Now - m_startTime).TotalMilliseconds > m_timeout)
             {
                 m_timer.Stop();
 

@@ -45,7 +45,7 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
             var distanceAverage = distanceSum / groups.Length;
             var counts = m_points.Length;
 
-            return (int) (counts * distanceAverage + groups.Length * groups.Average(entry => entry.Points.Length));
+            return (int)(counts * distanceAverage + groups.Length * groups.Average(entry => entry.Points.Length));
         }
 
         private PointsGroup[] GetPointsGroups()
@@ -58,7 +58,7 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                 if (exclusions.Contains(point))
                     continue;
 
-                var adjacents = FindAllAdjacentsPoints(point, new List<Point>(new [] { point }));
+                var adjacents = FindAllAdjacentsPoints(point, new List<Point>(new[] { point }));
                 adjacents.Add(point);
 
                 var group = adjacents.ToArray();
@@ -69,7 +69,7 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                 exclusions.Add(point);
                 exclusions.AddRange(adjacents);
                 result.Add(new PointsGroup(@group, GetCenter(@group)));
-            } 
+            }
 
             return result.ToArray();
         }
@@ -96,7 +96,7 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
 
         private static double DistanceTo(Point ptA, Point ptB)
         {
-            return Math.Sqrt(( ptB.X - ptA.X ) * ( ptB.X - ptA.X ) + ( ptB.Y - ptA.Y ) * ( ptB.Y - ptA.Y ));
+            return Math.Sqrt((ptB.X - ptA.X) * (ptB.X - ptA.X) + (ptB.Y - ptA.Y) * (ptB.Y - ptA.Y));
         }
 
         private static IEnumerable<Point> GetAdjacentPoints(Point point)

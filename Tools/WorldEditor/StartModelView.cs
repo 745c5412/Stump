@@ -1,22 +1,24 @@
 ﻿#region License GNU GPL
+
 // StartModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using DBSynchroniser;
 using System.Diagnostics;
 using System.Windows;
-using DBSynchroniser;
 using WorldEditor.Config;
 using WorldEditor.Editors.Items;
 using WorldEditor.Editors.Langs;
@@ -47,11 +49,11 @@ namespace WorldEditor
             if (parameter == null || !CanEditTable(parameter))
                 return;
 
-            var editor = new TableEditor((D2OTable) parameter);
+            var editor = new TableEditor((D2OTable)parameter);
             editor.Show();
         }
 
-        #endregion
+        #endregion EditTableCommand
 
         #region CreateItemCommand
 
@@ -73,8 +75,7 @@ namespace WorldEditor
             editor.Show();
         }
 
-        #endregion
-
+        #endregion CreateItemCommand
 
         #region CreateWeaponCommand
 
@@ -99,8 +100,7 @@ namespace WorldEditor
             editor.Show();
         }
 
-        #endregion
-
+        #endregion CreateWeaponCommand
 
         #region SearchItemCommand
 
@@ -122,8 +122,7 @@ namespace WorldEditor
             window.Show();
         }
 
-        #endregion
-
+        #endregion SearchItemCommand
 
         #region EditLangsCommand
 
@@ -148,7 +147,7 @@ namespace WorldEditor
             editor.Show();
         }
 
-        #endregion
+        #endregion EditLangsCommand
 
         #region OpenConfigCommand
 
@@ -177,6 +176,6 @@ namespace WorldEditor
             Application.Current.Shutdown();
         }
 
-        #endregion
+        #endregion OpenConfigCommand
     }
 }

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Collections;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -10,6 +7,9 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Parties
 {
@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Parties
             m_clients.Add(groupMember.Client);
 
             GroupLevelSum += groupMember.Level;
-            GroupLevelAverage = GroupLevelSum/MembersCount;
+            GroupLevelAverage = GroupLevelSum / MembersCount;
 
             PartyHandler.SendPartyJoinMessage(groupMember.Client, this);
             PartyHandler.SendPartyNewMemberMessage(Clients, this, groupMember);
@@ -114,7 +114,7 @@ namespace Stump.Server.WorldServer.Game.Parties
                 handler(this);
         }
 
-        #endregion
+        #endregion Events
 
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
 
@@ -326,7 +326,6 @@ namespace Stump.Server.WorldServer.Game.Parties
 
                 if (MembersCount <= 1)
                     Disband();
-
                 else if (Leader == character)
                 {
                     ChangeLeader(m_members.First());
@@ -345,7 +344,6 @@ namespace Stump.Server.WorldServer.Game.Parties
 
                 if (MembersCount <= 1)
                     Disband();
-
                 else if (Leader == member)
                 {
                     ChangeLeader(m_members.First());
@@ -475,7 +473,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         private void UnBindEvents(Character member)
         {
-            //member.LifeRegened -= OnLifeUpdated;
+            member.LifeRegened -= OnLifeUpdated;
             member.LevelChanged -= OnLevelChanged;
             member.EnterMap -= OnEnterMap;
             member.ContextChanged -= OnContextChanged;

@@ -1,4 +1,5 @@
 using System;
+using Stump.Core.Xml.Config;
 
 namespace Stump.Server.BaseServer.Plugins
 {
@@ -36,10 +37,16 @@ namespace Stump.Server.BaseServer.Plugins
         {
             get;
         }
+        
+        XmlConfig Config
+        {
+            get;
+        }
 
         void LoadConfig();
 
         void Initialize();
+
         void Shutdown();
 
         void Dispose();

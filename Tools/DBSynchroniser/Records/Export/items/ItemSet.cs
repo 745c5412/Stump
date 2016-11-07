@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:48
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -20,8 +17,10 @@ namespace DBSynchroniser.Records
         private const String MODULE = "ItemSets";
         public uint id;
         public List<uint> items;
+
         [I18NField]
         public uint nameId;
+
         public List<List<EffectInstance>> effects;
         public Boolean bonusIsSecret;
 
@@ -29,7 +28,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -52,6 +50,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_itemsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -86,6 +85,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_effectsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -109,14 +109,14 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (ItemSet)obj;
-            
+
             Id = castedObj.id;
             Items = castedObj.items;
             NameId = castedObj.nameId;
             Effects = castedObj.effects;
             BonusIsSecret = castedObj.bonusIsSecret;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (ItemSet)parent : new ItemSet();
@@ -127,12 +127,11 @@ namespace DBSynchroniser.Records
             obj.bonusIsSecret = BonusIsSecret;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_itemsBin = items == null ? null : items.ToBinary();
             m_effectsBin = effects == null ? null : effects.ToBinary();
-        
         }
     }
 }

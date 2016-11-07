@@ -1,16 +1,16 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
@@ -59,7 +59,7 @@ namespace Stump.ORM.SubSonic.Extensions
         public static string Chop(this string sourceString, int removeFromEnd)
         {
             string result = sourceString;
-            if((removeFromEnd > 0) && (sourceString.Length > removeFromEnd - 1))
+            if ((removeFromEnd > 0) && (sourceString.Length > removeFromEnd - 1))
                 result = result.Remove(sourceString.Length - removeFromEnd, removeFromEnd);
             return result;
         }
@@ -74,12 +74,12 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             int removeDownTo = sourceString.LastIndexOf(backDownTo);
             int removeFromEnd = 0;
-            if(removeDownTo > 0)
+            if (removeDownTo > 0)
                 removeFromEnd = sourceString.Length - removeDownTo;
 
             string result = sourceString;
 
-            if(sourceString.Length > removeFromEnd - 1)
+            if (sourceString.Length > removeFromEnd - 1)
                 result = result.Remove(removeDownTo, removeFromEnd);
 
             return result;
@@ -113,7 +113,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <returns></returns>
         public static string Pluralize(this int number, string sourceString)
         {
-            if(number == 1)
+            if (number == 1)
                 return String.Concat(number, " ", sourceString.MakeSingular());
             return String.Concat(number, " ", sourceString.MakePlural());
         }
@@ -127,7 +127,7 @@ namespace Stump.ORM.SubSonic.Extensions
         public static string Clip(this string sourceString, int removeFromBeginning)
         {
             string result = sourceString;
-            if(sourceString.Length > removeFromBeginning)
+            if (sourceString.Length > removeFromBeginning)
                 result = result.Remove(0, removeFromBeginning);
             return result;
         }
@@ -143,7 +143,7 @@ namespace Stump.ORM.SubSonic.Extensions
             int removeFromBeginning = sourceString.IndexOf(removeUpTo);
             string result = sourceString;
 
-            if(sourceString.Length > removeFromBeginning && removeFromBeginning > 0)
+            if (sourceString.Length > removeFromBeginning && removeFromBeginning > 0)
                 result = result.Remove(0, removeFromBeginning);
 
             return result;
@@ -192,10 +192,10 @@ namespace Stump.ORM.SubSonic.Extensions
         public static string FastReplace(this string original, string pattern, string replacement,
                                          StringComparison comparisonType)
         {
-            if(original == null)
+            if (original == null)
                 return null;
 
-            if(String.IsNullOrEmpty(pattern))
+            if (String.IsNullOrEmpty(pattern))
                 return original;
 
             int lenPattern = pattern.Length;
@@ -204,11 +204,11 @@ namespace Stump.ORM.SubSonic.Extensions
 
             StringBuilder result = new StringBuilder();
 
-            while(true)
+            while (true)
             {
                 idxPattern = original.IndexOf(pattern, idxPattern + 1, comparisonType);
 
-                if(idxPattern < 0)
+                if (idxPattern < 0)
                 {
                     result.Append(original, idxLast, original.Length - idxLast);
                     break;
@@ -233,12 +233,12 @@ namespace Stump.ORM.SubSonic.Extensions
         public static string Crop(this string sourceString, string startText, string endText)
         {
             int startIndex = sourceString.IndexOf(startText, StringComparison.CurrentCultureIgnoreCase);
-            if(startIndex == -1)
+            if (startIndex == -1)
                 return String.Empty;
 
             startIndex += startText.Length;
             int endIndex = sourceString.IndexOf(endText, startIndex, StringComparison.CurrentCultureIgnoreCase);
-            if(endIndex == -1)
+            if (endIndex == -1)
                 return String.Empty;
 
             return sourceString.Substring(startIndex, endIndex - startIndex);
@@ -251,12 +251,12 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <returns></returns>
         public static string Squeeze(this string sourceString)
         {
-            char[] delim = {' '};
+            char[] delim = { ' ' };
             string[] lines = sourceString.Split(delim, StringSplitOptions.RemoveEmptyEntries);
             StringBuilder sb = new StringBuilder();
-            foreach(string s in lines)
+            foreach (string s in lines)
             {
-                if(!String.IsNullOrEmpty(s.Trim()))
+                if (!String.IsNullOrEmpty(s.Trim()))
                     sb.Append(s + " ");
             }
             //remove the last pipe
@@ -282,7 +282,7 @@ namespace Stump.ORM.SubSonic.Extensions
         public static string[] ToWords(this string sourceString)
         {
             string result = sourceString.Trim();
-            return result.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+            return result.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace Stump.ORM.SubSonic.Extensions
             Regex reg = new Regex(find, RegexOptions.IgnoreCase);
 
             List<string> result = new List<string>();
-            foreach(Match m in reg.Matches(source))
+            foreach (Match m in reg.Matches(source))
                 result.Add(m.Value);
             return result;
         }
@@ -341,7 +341,7 @@ namespace Stump.ORM.SubSonic.Extensions
         public static string ToDelimitedList(this IEnumerable<string> list, string delimiter)
         {
             StringBuilder sb = new StringBuilder();
-            foreach(string s in list)
+            foreach (string s in list)
                 sb.Append(String.Concat(s, delimiter));
             string result = sb.ToString();
             result = Chop(result);
@@ -356,12 +356,12 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <returns></returns>
         public static string Strip(this string sourceString, string stripValue)
         {
-            if(!String.IsNullOrEmpty(stripValue))
+            if (!String.IsNullOrEmpty(stripValue))
             {
-                string[] replace = stripValue.Split(new[] {','});
-                for(int i = 0; i < replace.Length; i++)
+                string[] replace = stripValue.Split(new[] { ',' });
+                for (int i = 0; i < replace.Length; i++)
                 {
-                    if(!String.IsNullOrEmpty(sourceString))
+                    if (!String.IsNullOrEmpty(sourceString))
                         sourceString = Regex.Replace(sourceString, replace[i], String.Empty);
                 }
             }
@@ -388,7 +388,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <returns></returns>
         public static string TextToEntity(this string textString)
         {
-            foreach(KeyValuePair<int, string> key in _entityTable)
+            foreach (KeyValuePair<int, string> key in _entityTable)
                 textString = textString.Replace(AsciiToUnicode(key.Key), key.Value);
             return textString.Replace(AsciiToUnicode(38), "&amp;");
         }
@@ -401,7 +401,7 @@ namespace Stump.ORM.SubSonic.Extensions
         public static string EntityToText(this string entityText)
         {
             entityText = entityText.Replace("&amp;", "&");
-            foreach(KeyValuePair<int, string> key in _entityTable)
+            foreach (KeyValuePair<int, string> key in _entityTable)
                 entityText = entityText.Replace(key.Value, AsciiToUnicode(key.Key));
             return entityText;
         }
@@ -427,9 +427,9 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             T oOut = default(T);
             Type t = typeof(T);
-            foreach(FieldInfo fi in t.GetFields())
+            foreach (FieldInfo fi in t.GetFields())
             {
-                if(fi.Name.Matches(Value))
+                if (fi.Name.Matches(Value))
                     oOut = (T)fi.GetValue(null);
             }
 
@@ -703,9 +703,9 @@ namespace Stump.ORM.SubSonic.Extensions
         public static string USStateNameToAbbrev(string stateName)
         {
             stateName = stateName.ToUpper();
-            foreach(KeyValuePair<string, string> key in _USStateTable)
+            foreach (KeyValuePair<string, string> key in _USStateTable)
             {
-                if(stateName == key.Key)
+                if (stateName == key.Key)
                     return key.Value;
             }
             return null;
@@ -719,9 +719,9 @@ namespace Stump.ORM.SubSonic.Extensions
         public static string USStateAbbrevToName(string stateAbbrev)
         {
             stateAbbrev = stateAbbrev.ToUpper();
-            foreach(KeyValuePair<string, string> key in _USStateTable)
+            foreach (KeyValuePair<string, string> key in _USStateTable)
             {
-                if(stateAbbrev == key.Value)
+                if (stateAbbrev == key.Value)
                     return key.Key;
             }
             return null;

@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
@@ -17,11 +11,20 @@ using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public class CharacterManager : DataManager<CharacterManager>
     {
+        [Variable]
+        public static int CharacterDeletionDaysDelay = 15;
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
@@ -38,23 +41,27 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <summary>
         ///   Maximum number of characters you can create/store in your account
         /// </summary>
-        [Variable(true)] public static uint MaxCharacterSlot = 5;
+        [Variable(true)]
+        public static uint MaxCharacterSlot = 5;
 
         private static readonly Regex m_nameCheckerRegex = new Regex(
             "^[A-Z][a-z]{2,9}(?:-[A-Za-z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
 
         public CharacterRecord GetCharacterById(int id)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             return Database.Query<CharacterRecord>(string.Format(CharacterRelator.FetchById, id)).FirstOrDefault();
         }
 
         public CharacterRecord GetCharacterByName(string name)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             return Database.Query<CharacterRecord>(CharacterRelator.FetchByName, name).FirstOrDefault();
         }
 
         public List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             if (client.Account.Characters == null ||
                 client.Account.Characters.Count == 0)
                 return new List<CharacterRecord>();
@@ -77,6 +84,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, id));
             }
 
+            foreach (var record in characters.Where(x => x.DeletedDate > DateTime.Now + TimeSpan.FromDays(CharacterDeletionDaysDelay)))
+            {
+                DeleteCharacterOnAccount(record, client);
+            }
+
             return characters;
         }
 
@@ -89,13 +101,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool DoesNameExist(string name)
         {
-            return Database.ExecuteScalar<object>("SELECT 1 FROM characters WHERE Name=@0", name) != null;
+            WorldServer.Instance.IOTaskPool.EnsureContext();
+            return Database.ExecuteScalar<object>("SELECT 1 FROM characters WHERE Name=@0 AND DeletedDate IS NULL", name) != null;
         }
 
         public void CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
                                                            IEnumerable<int> colors, int headId, Action successCallback, Action<CharacterCreationResultEnum> failCallback)
         {
-            if (client.Characters.Count >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
+            WorldServer.Instance.IOTaskPool.EnsureContext();
+            if (client.Characters.Count(x => !x.IsDeleted) >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
             {
                 failCallback(CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS);
                 return;
@@ -107,7 +121,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
             }
 
-            if (!m_nameCheckerRegex.IsMatch(name))
+            if (!client.UserGroup.IsGameMaster && !m_nameCheckerRegex.IsMatch(name))
             {
                 failCallback(CharacterCreationResultEnum.ERR_INVALID_NAME);
                 return;
@@ -137,7 +151,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 if (breedColors.Length > i)
                 {
-                    look.AddColor(i + 1, color == -1 ? Color.FromArgb((int) breedColors[i]) : Color.FromArgb(color));
+                    look.AddColor(i + 1, color == -1 ? Color.FromArgb((int)breedColors[i]) : Color.FromArgb(color));
                 }
 
                 i++;
@@ -150,18 +164,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             using (var transaction = Database.GetTransaction())
             {
                 record = new CharacterRecord(breed)
-                    {
-                        Experience = ExperienceManager.Instance.GetCharacterLevelExperience(breed.StartLevel),
-                        Name = name,
-                        Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
-                        Head = headId,
-                        EntityLook = look,
-                        CreationDate = DateTime.Now,
-                        LastUsage = DateTime.Now,
-                        AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL,
-                        WarnOnConnection = true,
-                        WarnOnLevel = true,
-                    };
+                {
+                    Experience = ExperienceManager.Instance.GetCharacterLevelExperience((byte)breed.StartLevel),
+                    Name = name,
+                    Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
+                    Head = headId,
+                    EntityLook = look,
+                    CreationDate = DateTime.Now,
+                    LastUsage = DateTime.Now,
+                    AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL,
+                    WarnOnConnection = true,
+                    WarnOnLevel = true,
+                };
 
                 Database.Insert(record);
 
@@ -169,7 +183,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 var spellsToLearn = from spell in breed.Spells
                                     where spell.ObtainLevel <= breed.StartLevel
-                                    orderby spell.ObtainLevel , spell.Spell ascending
+                                    orderby spell.ObtainLevel, spell.Spell ascending
                                     select spell;
 
                 var slot = 0;
@@ -181,7 +195,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 {
                     Database.Insert(spellRecord);
 
-                    var shortcut = new SpellShortcut(record, slot, (short) spellRecord.SpellId);
+                    var shortcut = new SpellShortcut(record, slot, (short)spellRecord.SpellId);
                     Database.Insert(shortcut);
                     slot++;
                 }
@@ -214,12 +228,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
-        {   
+        {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             // todo cascade
             var guildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
 
             if (guildMember != null)
-                GuildManager.Instance.DeleteGuildMember(guildMember);
+                guildMember.Guild.RemoveMember(guildMember);
 
             Database.Delete(character);
             client.Characters.Remove(character);
@@ -284,6 +299,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Consonants[rand.Next(0, Consonants.Length - 1)];
         }
 
-        #endregion
+        #endregion Character Name Random Generation
     }
 }

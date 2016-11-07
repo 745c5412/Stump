@@ -1,8 +1,8 @@
+using Stump.Server.BaseServer.Commands.Commands;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Server.BaseServer.Commands.Commands;
 
 namespace Stump.Server.BaseServer.Commands
 {
@@ -12,7 +12,6 @@ namespace Stump.Server.BaseServer.Commands
     public abstract class SubCommandContainer : CommandBase, IEnumerable<SubCommand>
     {
         private readonly List<SubCommand> m_subCommands = new List<SubCommand>();
-
 
         /// <summary>
         /// Gets the subcommand by his name or returns null if not found
@@ -36,7 +35,7 @@ namespace Stump.Server.BaseServer.Commands
             }
         }
 
-            #region IEnumerable<SubCommand> Members
+        #region IEnumerable<SubCommand> Members
 
         public IEnumerator<SubCommand> GetEnumerator()
         {
@@ -48,14 +47,14 @@ namespace Stump.Server.BaseServer.Commands
             return GetEnumerator();
         }
 
-        #endregion
+        #endregion IEnumerable<SubCommand> Members
 
         public override void Execute(TriggerBase trigger)
         {
             var str = trigger.Args.NextWord();
 
             SubCommand command;
-            if (!TryGetSubCommand(IgnoreCommandCase ? str.ToLower() : str, out command) || command.RequiredRole > trigger.UserRole)
+            if (!TryGetSubCommand(IgnoreCommandCase ? str.ToLower() : str, out command) || !trigger.CanAccessCommand(command))
             {
                 HelpCommand.DisplayFullCommandDescription(trigger, this);
                 return;

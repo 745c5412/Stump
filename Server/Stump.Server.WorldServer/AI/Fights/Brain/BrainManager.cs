@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using NLog;
+﻿using NLog;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
 {
@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             if (assembly == null)
                 return;
 
-            foreach (var type in assembly.GetTypes().Where( x => x.IsSubclassOf(typeof(Brain))))
+            foreach (var type in assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(Brain))))
             {
                 RegisterBrain(type);
             }
@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public void RegisterBrain(Type brain)
         {
-            var brainIdentifierAttributes = (brain.GetCustomAttributes(typeof (BrainIdentifierAttribute))) as IEnumerable<BrainIdentifierAttribute>;
+            var brainIdentifierAttributes = (brain.GetCustomAttributes(typeof(BrainIdentifierAttribute))) as IEnumerable<BrainIdentifierAttribute>;
             if (brainIdentifierAttributes == null)
                 return;
 
@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             }
 
             var brainType = m_brains[identifier];
-            return (Brain) Activator.CreateInstance(brainType, fighter);
+            return (Brain)Activator.CreateInstance(brainType, fighter);
         }
     }
 }

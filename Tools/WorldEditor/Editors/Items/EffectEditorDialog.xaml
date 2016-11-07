@@ -8,7 +8,7 @@
     <Window.Resources>
         <converters:IdToI18NTextConverter x:Key="IdToI18N" />
         <converters:IsGreaterThanConverter x:Key="GreaterThan" />
-        <items:ColorByOperatorConverter x:Key="ColorByOperatorConverter"/>
+        <items:ColorByOperatorConverter x:Key="ColorByOperatorConverter" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>

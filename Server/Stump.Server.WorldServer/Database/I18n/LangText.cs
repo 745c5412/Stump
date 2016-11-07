@@ -22,7 +22,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        
         [NullString]
         public string French
         {
@@ -30,7 +29,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        
         [NullString]
         public string English
         {
@@ -38,7 +36,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        
         [NullString]
         public string German
         {
@@ -46,7 +43,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        
         [NullString]
         public string Spanish
         {
@@ -54,7 +50,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        
         [NullString]
         public string Italian
         {
@@ -62,7 +57,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        
         [NullString]
         public string Japanish
         {
@@ -70,7 +64,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        
         [NullString]
         public string Dutsh
         {
@@ -78,7 +71,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        
         [NullString]
         public string Portugese
         {
@@ -86,7 +78,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        
         [NullString]
         public string Russish
         {
@@ -94,6 +85,6 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
-        #endregion
+        #endregion ILangText Members
     }
 }

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Stump.Core.Extensions;
+using Stump.Core.Pool;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Network;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Stump.Core.Extensions;
-using Stump.Core.Pool;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -12,7 +13,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public BufferCommand()
         {
-            Aliases = new[] {"buffer"};
+            Aliases = new[] { "buffer" };
             Description = "Gives buffer manager current state";
             RequiredRole = RoleEnum.Administrator;
         }
@@ -40,11 +41,12 @@ namespace Stump.Server.BaseServer.Commands.Commands
     }
 
 #if DEBUG
+
     public class BufferLeaksCommand : CommandBase
     {
         public BufferLeaksCommand()
         {
-            Aliases = new[] {"bufferleaks"};
+            Aliases = new[] { "bufferleaks" };
             Description = "Find possible leaks";
             RequiredRole = RoleEnum.Administrator;
         }
@@ -52,11 +54,13 @@ namespace Stump.Server.BaseServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var path = string.Format("./bufferleaks {0}.txt", DateTime.Now.ToString("dd-MM hh-mm-ss"));
-            
+
             using (var file = File.OpenWrite(path))
             {
                 using (var writer = new StreamWriter(file))
                 {
+                    writer.WriteLine("Connected : {0}", ClientManager.Instance.Count);
+
                     PrintBufferInformations(writer, BufferManager.Default);
                     PrintBufferInformations(writer, BufferManager.Tiny);
                     PrintBufferInformations(writer, BufferManager.Small);
@@ -73,13 +77,24 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             var leaks = manager.GetSegmentsInUse();
 
+            file.WriteLine("------------- {0} kB {1}/{2} used segments -------------", manager.SegmentSize / 1024, manager.UsedSegmentCount, manager.TotalSegmentCount);
             foreach (var leak in leaks.OrderByDescending(x => DateTime.Now - x.LastUsage))
             {
-                file.WriteLine("Buffer #{0} Size:{1} LastUsage:{2}ago  Stack:{3}", leak.Number, leak.Length,
-                    (DateTime.Now - leak.LastUsage).ToPrettyFormat(), leak.LastUserTrace);
-                file.WriteLine("");
+                var client = leak.Token as BaseClient;
+                if (client != null && !client.Connected)
+                {
+                    file.WriteLine("Client {0} Connected {1}", client, client.Connected);
+                }
+                if (client == null || !client.Connected)
+                {
+                    file.WriteLine("Buffer #{0} Size:{1} LastUsage:{2}ago Uses:{4}  Stack:{3}", leak.Number, leak.Length,
+                        (DateTime.Now - leak.LastUsage).ToPrettyFormat(), leak.LastUserTrace, leak.Uses);
+
+                    file.WriteLine("");
+                }
             }
         }
     }
+
 #endif
 }

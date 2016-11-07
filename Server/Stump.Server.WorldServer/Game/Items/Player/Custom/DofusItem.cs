@@ -1,12 +1,11 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
     [ItemType(ItemTypeEnum.DOFUS)]
-    [ItemType(ItemTypeEnum.DOFUS_SHOP)]
     [ItemType(ItemTypeEnum.TROPHY)]
     public class DofusItem : BasePlayerItem
     {
@@ -15,7 +14,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
         }
 
-
         public override bool OnEquipItem(bool unequip)
         {
             if (unequip)
@@ -23,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             if (Owner.Inventory.Any(x => x.IsEquiped() && x.Template.Id == Template.Id && x.Guid != Guid))
                 return false;
-            
+
             return base.OnEquipItem(false);
         }
     }

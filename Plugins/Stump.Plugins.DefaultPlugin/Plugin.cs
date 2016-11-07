@@ -1,5 +1,5 @@
-using System;
 using Stump.Server.BaseServer.Plugins;
+using System;
 
 namespace Stump.Plugins.DefaultPlugin
 {
@@ -10,7 +10,6 @@ namespace Stump.Plugins.DefaultPlugin
         {
             CurrentPlugin = this;
         }
-
 
         public override string Name
         {
@@ -37,12 +36,10 @@ namespace Stump.Plugins.DefaultPlugin
 
         public override void Shutdown()
         {
-
         }
 
         public override void Dispose()
         {
-
         }
 
         public override bool UseConfig

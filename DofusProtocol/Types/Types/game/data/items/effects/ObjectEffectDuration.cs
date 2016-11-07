@@ -1,30 +1,26 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class ObjectEffectDuration : ObjectEffect
     {
         public const short Id = 75;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public short days;
         public short hours;
         public short minutes;
-        
+
         public ObjectEffectDuration()
         {
         }
-        
+
         public ObjectEffectDuration(short actionId, short days, short hours, short minutes)
          : base(actionId)
         {
@@ -32,7 +28,7 @@ namespace Stump.DofusProtocol.Types
             this.hours = hours;
             this.minutes = minutes;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -40,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(hours);
             writer.WriteShort(minutes);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -54,12 +50,10 @@ namespace Stump.DofusProtocol.Types
             if (minutes < 0)
                 throw new Exception("Forbidden value on minutes = " + minutes + ", it doesn't respect the following condition : minutes < 0");
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short);
         }
-        
     }
-    
 }

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Arena;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -9,15 +6,16 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaPreFight
     {
-
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
 
         private readonly Dictionary<Character, Map> m_charactersMaps = new Dictionary<Character, Map>();
@@ -90,7 +88,6 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
                     PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
-
         }
 
         private void OnMemberAdded(ArenaPreFightTeam arg1, ArenaWaitingCharacter arg2)
@@ -104,7 +101,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         private void OnFightDenied(ArenaWaitingCharacter obj)
         {
             ArenaManager.Instance.ArenaTaskPool.ExecuteInContext(() =>
-            {                
+            {
                 ContextHandler.SendGameRolePlayArenaFighterStatusMessage(m_clients, Id, obj.Character, false);
                 obj.Character.ToggleArenaWaitTime();
 
@@ -132,7 +129,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                     // Combat de Kolizéum annulé/non validé par l'autre équipe.
                     character.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 274);
                 }
-                
+
                 foreach (var character in DefendersTeam.Members.Concat(ChallengersTeam.Members).Where(character => character.Character.ArenaPopup != null))
                 {
                     character.Character.ArenaPopup.Cancel();
@@ -185,7 +182,10 @@ namespace Stump.Server.WorldServer.Game.Arena
                     if (character1.ArenaPopup != null)
                         character1.ArenaPopup.Cancel();
 
-                    lock(m_charactersMaps)
+                    //Avoid keeping Dialog popup during fight
+                    character1.LeaveDialog();
+
+                    lock (m_charactersMaps)
                         m_charactersMaps.Add(character1, character1.Map);
 
                     if (character1.IsFighting())
@@ -205,7 +205,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                         RemoveShield(character1);
 
                         character1.Teleport(m_fight.Map, m_fight.Map.Cells[character1.Cell.Id]);
-                             
+
                         if (Interlocked.Decrement(ref m_readyPlayersCount) <= 0)
                         {
                             m_fight.Map.Area.AddMessage(PrepareFight);

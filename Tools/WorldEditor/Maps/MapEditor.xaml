@@ -4,13 +4,13 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:ee="http://schemas.microsoft.com/expression/2010/effects"
         xmlns:Layers="clr-namespace:WorldEditor.Maps.Layers" xmlns:Elements="clr-namespace:WorldEditor.Maps.Elements" xmlns:avalonDock="http://avalondock.codeplex.com"
         x:Class="WorldEditor.Maps.MapEditor" mc:Ignorable="d" d:DataContext="{d:DesignInstance Type={x:Type Maps:MapEditorModelView}}" Title="MapEditor" Height="800" Width="1024">
-  <avalonDock:DockingManager DocumentsSource="{Binding Maps}">
-    <avalonDock:DockingManager.DocumentPaneTemplate>
-      <ControlTemplate>
-        <Maps:MapControl/>
-      </ControlTemplate>
-    </avalonDock:DockingManager.DocumentPaneTemplate>
-    <avalonDock:LayoutRoot>
+    <avalonDock:DockingManager DocumentsSource="{Binding Maps}">
+        <avalonDock:DockingManager.DocumentPaneTemplate>
+            <ControlTemplate>
+                <Maps:MapControl />
+            </ControlTemplate>
+        </avalonDock:DockingManager.DocumentPaneTemplate>
+        <avalonDock:LayoutRoot>
             <avalonDock:LayoutPanel>
                 <avalonDock:LayoutDocumentPane x:Name="DocumentPane"></avalonDock:LayoutDocumentPane>
             </avalonDock:LayoutPanel>
@@ -51,7 +51,6 @@
                     </avalonDock:LayoutAnchorGroup>
                 </avalonDock:LayoutAnchorSide>
             </avalonDock:LayoutRoot.RightSide>
-            </avalonDock:LayoutRoot>
-
+        </avalonDock:LayoutRoot>
     </avalonDock:DockingManager>
 </Window>

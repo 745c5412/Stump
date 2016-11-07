@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Teams
 {
@@ -58,13 +58,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 handler(this, fighter);
         }
 
-        #endregion
+        #endregion Events
 
         private readonly List<FightActor> m_fighters = new List<FightActor>();
-        private readonly List<FightActor> m_leavers = new List<FightActor>();  
+        private readonly List<FightActor> m_leavers = new List<FightActor>();
         private readonly List<FightActor> m_deadFighters = new List<FightActor>();
         private readonly object m_locker = new object();
-                       
+
         protected FightTeam(TeamEnum id, Cell[] placementCells)
         {
             Id = id;
@@ -186,12 +186,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 case FightOptionsEnum.FIGHT_OPTION_SET_CLOSED:
                     IsClosed = !IsClosed;
                     break;
+
                 case FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP:
                     IsAskingForHelp = !IsAskingForHelp;
                     break;
+
                 case FightOptionsEnum.FIGHT_OPTION_SET_SECRET:
                     IsSecret = !IsSecret;
                     break;
+
                 case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
                     IsRestrictedToParty = !IsRestrictedToParty;
                     break;
@@ -206,12 +209,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             {
                 case FightOptionsEnum.FIGHT_OPTION_SET_CLOSED:
                     return IsClosed;
+
                 case FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP:
                     return IsAskingForHelp;
+
                 case FightOptionsEnum.FIGHT_OPTION_SET_SECRET:
                     return IsSecret;
+
                 case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
                     return IsRestrictedToParty;
+
                 default:
                     return false;
             }
@@ -224,7 +231,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public bool AreAllDead()
         {
-            return m_fighters.Count <= 0 || m_fighters.Where(x => !(x is SummonedFighter) && !(x is SummonedBomb)).All(entry => entry.IsDead() || entry.HasLeft());
+            return m_fighters.Count <= 0 || m_fighters.Where(x => !(x is SummonedFighter) && !(x is SummonedBomb)).
+                All(entry => entry.IsDead() || (entry.HasLeft() && (!(entry is CharacterFighter) || !((CharacterFighter)entry).IsDisconnected)));
         }
 
         public bool IsFull()
@@ -381,8 +389,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         {
             return new FightTeamInformations((sbyte)Id,
                                              Leader != null ? Leader.Id : 0,
-                                             (sbyte) AlignmentSide,
-                                             (sbyte) TeamType,
+                                             (sbyte)AlignmentSide,
+                                             (sbyte)TeamType,
                                              m_fighters.Select(entry => entry.GetFightTeamMemberInformations()));
         }
 
@@ -397,8 +405,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public FightTeamLightInformations GetFightTeamLightInformations()
         {
-            return new FightTeamLightInformations((sbyte)Id, Leader == null ? 0 : Leader.Id, (sbyte) AlignmentSide,
-                                                  (sbyte) TeamType, (sbyte) m_fighters.Count);
+            return new FightTeamLightInformations((sbyte)Id, Leader == null ? 0 : Leader.Id, (sbyte)AlignmentSide,
+                                                  (sbyte)TeamType, (sbyte)m_fighters.Count(x => !(x is SummonedFighter) && !(x is SummonedBomb) && !(x is SlaveFighter)));
         }
     }
 }

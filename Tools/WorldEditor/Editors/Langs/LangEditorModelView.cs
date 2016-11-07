@@ -1,33 +1,29 @@
 ﻿#region License GNU GPL
+
 // D2IEditorModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using DBSynchroniser.Records.Langs;
+using Stump.Core.I18N;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Windows.Forms;
-using DBSynchroniser.Records.Langs;
-using Stump.Core.I18N;
-using Stump.DofusProtocol.D2oClasses.Tools.D2i;
-using Stump.ORM.SubSonic.Extensions;
 using WorldEditor.Helpers;
 using WorldEditor.Loaders.I18N;
 
@@ -39,9 +35,9 @@ namespace WorldEditor.Editors.Langs
         private uint m_highestId;
         private Stack<LangGridRow> m_deletedRows = new Stack<LangGridRow>();
 
-
         private ReadOnlyObservableCollection<LangGridRow> m_readOnylRows;
         private ObservableCollection<LangGridRow> m_rows = new ObservableCollection<LangGridRow>();
+
         public LangEditorModelView(LangEditor editor)
         {
             m_editor = editor;
@@ -114,7 +110,7 @@ namespace WorldEditor.Editors.Langs
             }
             else
             {
-                var lang = (Languages) Enum.Parse(typeof (Languages), SearchType);
+                var lang = (Languages)Enum.Parse(typeof(Languages), SearchType);
                 for (var i = startIndex; i < Rows.Count; i++)
                 {
                     if (!Rows[i].DoesContainText(SearchText, lang))
@@ -192,8 +188,7 @@ namespace WorldEditor.Editors.Langs
             }
         }
 
-        #endregion
-
+        #endregion FindCommand
 
         #region FindNextCommand
 
@@ -228,7 +223,7 @@ namespace WorldEditor.Editors.Langs
             }
         }
 
-        #endregion
+        #endregion FindNextCommand
 
         #region AddRowCommand
 
@@ -246,7 +241,7 @@ namespace WorldEditor.Editors.Langs
 
         private void OnAddRow(object parameter)
         {
-            var row = new LangTextRow(new LangText {Id = ++m_highestId});
+            var row = new LangTextRow(new LangText { Id = ++m_highestId });
             row.State = RowState.Added;
             m_rows.Add(row);
 
@@ -255,9 +250,7 @@ namespace WorldEditor.Editors.Langs
             m_editor.TextsGrid.Focus();
         }
 
-        #endregion
-
-
+        #endregion AddRowCommand
 
         #region AddUIRowCommand
 
@@ -284,8 +277,7 @@ namespace WorldEditor.Editors.Langs
             m_editor.TextsGrid.Focus();
         }
 
-        #endregion
-
+        #endregion AddUIRowCommand
 
         #region RemoveRowCommand
 
@@ -316,8 +308,7 @@ namespace WorldEditor.Editors.Langs
             }
         }
 
-        #endregion
-
+        #endregion RemoveRowCommand
 
         #region SaveCommand
 
@@ -348,7 +339,6 @@ namespace WorldEditor.Editors.Langs
             MessageService.ShowMessage(m_editor, "Saved ! ");
         }
 
-        #endregion
-
+        #endregion SaveCommand
     }
 }

@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using System;
+using System.Collections.Generic;
 using Monster = Stump.DofusProtocol.D2oClasses.Monster;
 
 namespace Stump.Server.WorldServer.Database.Monsters
@@ -155,7 +155,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
         public void AssignFields(object d2oObject)
         {
-            var monster = (Monster) d2oObject;
+            var monster = (Monster)d2oObject;
             Id = monster.id;
             NameId = monster.nameId;
             GfxId = monster.gfxId;
@@ -169,6 +169,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
             IsActive = true;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

@@ -2,10 +2,10 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-using System.Data.SqlClient;
-using System.Linq.Expressions;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Linq.Translation;
+using System.Data.SqlClient;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -14,13 +14,11 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class TSqlLanguage : QueryLanguage
     {
-
         public TSqlLanguage(IDataProvider provider)
             : base(provider)
         {
         }
 
-       
         private SqlCommandBuilder cb = new SqlCommandBuilder();
 
         public override string Quote(string name)

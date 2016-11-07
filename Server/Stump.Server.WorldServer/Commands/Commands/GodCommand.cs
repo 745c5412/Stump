@@ -2,10 +2,12 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
-
     public class GodCommand : SubCommandContainer
     {
         public GodCommand()
@@ -15,7 +17,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Just to be all powerful.";
         }
     }
-
 
     public class GodOnCommand : TargetSubCommand
     {
@@ -37,6 +38,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
         }
     }
+
     public class GodOffCommand : TargetSubCommand
     {
         public GodOffCommand()
@@ -66,6 +68,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.Moderator;
             Description = "Enable/disable admin chat mode";
         }
+
         public override void Execute(GameTrigger trigger)
         {
             trigger.Reply("Admin chat mode is : {0}", trigger.Bold(
@@ -95,17 +98,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var amount = trigger.Get<short>("amount");
                 if (amount > 0 && amount <= byte.MaxValue)
                 {
-                    delta = (byte) (amount);
+                    delta = (byte)(amount);
                     target.LevelUp(delta);
                     trigger.Reply("Added " + trigger.Bold("{0}") + " levels to '{1}'.", delta, target.Name);
-
                 }
                 else if (amount < 0 && -amount <= byte.MaxValue)
                 {
-                    delta = (byte) (-amount);
+                    delta = (byte)(-amount);
                     target.LevelDown(delta);
                     trigger.Reply("Removed " + trigger.Bold("{0}") + " levels from '{1}'.", delta, target.Name);
-
                 }
                 else
                 {
@@ -115,14 +116,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    public class SetKamasCommand : TargetCommand
+    public class KamasCommand : TargetCommand
     {
-        public SetKamasCommand()
+        public KamasCommand()
         {
             Aliases = new[] { "kamas" };
             RequiredRole = RoleEnum.Administrator;
-            Description = "Set the amount kamas of target's inventory";
-            AddParameter<int>("amount", "amount", "Amount of kamas to set");
+            Description = "Add the amount kamas to target's inventory";
+            AddParameter<int>("amount", "amount", "Amount of kamas to add");
             AddTargetParameter(true);
         }
 
@@ -130,10 +131,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-                var kamas = trigger.Get<int>("amount");
+                var amount = trigger.Get<int>("amount");
 
-                target.Inventory.SetKamas(kamas);
-                trigger.ReplyBold("{0} has now {1} kamas", target, kamas);
+                target.Inventory.AddKamas(amount);
+                trigger.ReplyBold($"{amount} Kamas was added to {target} and he now have {target.Kamas} kamas");
             }
         }
     }
@@ -159,7 +160,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 target.RefreshStats();
                 trigger.Reply("{0} has now {1} stats points", target, statsPoints);
             }
-
         }
     }
 
@@ -177,8 +177,29 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-
                 trigger.Reply(target.ToggleInvisibility() ? "{0} is now invisible" : "{0} is now visible", target);
+            }
+        }
+    }
+
+    public class HealCommand : TargetCommand
+    {
+        public HealCommand()
+        {
+            Aliases = new[] { "heal", "hp" };
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Restore Heal and Energy";
+            AddTargetParameter(true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            foreach (var target in GetTargets(trigger))
+            {
+                target.Stats.Health.DamageTaken = 0;
+                target.Energy = target.EnergyMax;
+
+                target.RefreshStats();
             }
         }
     }

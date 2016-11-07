@@ -1,18 +1,11 @@
-
-using System;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Commands.Matching.Characters;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
-using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -22,6 +15,7 @@ using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
 using Area = Stump.Server.WorldServer.Game.Maps.Area;
 using NpcTemplate = Stump.Server.WorldServer.Database.Npcs.NpcTemplate;
 
@@ -32,7 +26,7 @@ namespace Stump.Server.WorldServer.Commands
         public static ConverterHandler<T> GetEnumConverter<T>()
             where T : struct
         {
-            var type = typeof (T);
+            var type = typeof(T);
 
             if (!type.IsEnum)
                 throw new ConverterException("Cannot convert non-enum type");
@@ -44,7 +38,7 @@ namespace Stump.Server.WorldServer.Commands
                            if (Enum.TryParse(entry, CommandBase.IgnoreCommandCase, out result))
                                return result;
 
-                           throw new ConverterException(string.Format("Cannot convert '{0}' to a {1}", entry, type.Name));
+                           throw new ConverterException(string.Format("Cannot convert '{0}' to a {1}. Possible values : {2}", entry, type.Name, string.Join(", ", Enum.GetNames(typeof(T)))));
                        };
         }
 
@@ -61,8 +55,8 @@ namespace Stump.Server.WorldServer.Commands
                 throw new ConverterException(string.Format("'{0}' is not found or not connected", entry));
 
             return target;
-        };        
-        
+        };
+
         public static ConverterHandler<Character[]> CharactersConverter = (entry, trigger) =>
         {
             var matching = new CharacterMatching(entry,

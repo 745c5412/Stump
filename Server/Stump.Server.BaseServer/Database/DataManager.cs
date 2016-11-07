@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reflection;
-using Stump.Core.Extensions;
+﻿using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
+using System;
+using System.Reflection;
 
 namespace Stump.Server.BaseServer.Database
 {
@@ -85,8 +85,8 @@ namespace Stump.Server.BaseServer.Database
         {
             foreach (var type in Assembly.GetTypes())
             {
-                if (type.IsAbstract || !type.IsSubclassOfGeneric(typeof (DataManager<>)) ||
-                    type == typeof (DataManager<>)) continue;
+                if (type.IsAbstract || !type.IsSubclassOfGeneric(typeof(DataManager<>)) ||
+                    type == typeof(DataManager<>)) continue;
 
                 var method = type.GetMethod("Initialize", BindingFlags.Public | BindingFlags.FlattenHierarchy | BindingFlags.Instance);
 

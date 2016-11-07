@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Steamer
 {
@@ -36,9 +36,11 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Steamer
                 case (int)SpellIdEnum.BOUMBOUMT:
                     requiredState = (int)SpellStatesEnum.Ambush;
                     break;
+
                 case (int)SpellIdEnum.TRANSKO:
                     requiredState = (int)SpellStatesEnum.Periscope;
                     break;
+
                 case (int)SpellIdEnum.SAUVETAGE:
                     requiredState = (int)SpellStatesEnum.First_Aid;
                     break;

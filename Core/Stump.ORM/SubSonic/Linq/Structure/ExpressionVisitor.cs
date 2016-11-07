@@ -2,13 +2,12 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
-namespace Stump.ORM.SubSonic.Linq.Structure 
+namespace Stump.ORM.SubSonic.Linq.Structure
 {
     public abstract class ExpressionVisitor
     {
@@ -32,6 +31,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case ExpressionType.TypeAs:
                 case ExpressionType.UnaryPlus:
                     return this.VisitUnary((UnaryExpression)exp);
+
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
                 case ExpressionType.Subtract:
@@ -57,31 +57,44 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case ExpressionType.ExclusiveOr:
                 case ExpressionType.Power:
                     return this.VisitBinary((BinaryExpression)exp);
+
                 case ExpressionType.TypeIs:
                     return this.VisitTypeIs((TypeBinaryExpression)exp);
+
                 case ExpressionType.Conditional:
                     return this.VisitConditional((ConditionalExpression)exp);
+
                 case ExpressionType.Constant:
                     return this.VisitConstant((ConstantExpression)exp);
+
                 case ExpressionType.Parameter:
                     return this.VisitParameter((ParameterExpression)exp);
+
                 case ExpressionType.MemberAccess:
                     return this.VisitMemberAccess((MemberExpression)exp);
+
                 case ExpressionType.Call:
                     return this.VisitMethodCall((MethodCallExpression)exp);
+
                 case ExpressionType.Lambda:
                     return this.VisitLambda((LambdaExpression)exp);
+
                 case ExpressionType.New:
                     return this.VisitNew((NewExpression)exp);
+
                 case ExpressionType.NewArrayInit:
                 case ExpressionType.NewArrayBounds:
                     return this.VisitNewArray((NewArrayExpression)exp);
+
                 case ExpressionType.Invoke:
                     return this.VisitInvocation((InvocationExpression)exp);
+
                 case ExpressionType.MemberInit:
                     return this.VisitMemberInit((MemberInitExpression)exp);
+
                 case ExpressionType.ListInit:
                     return this.VisitListInit((ListInitExpression)exp);
+
                 default:
                     return this.VisitUnknown(exp);
             }
@@ -98,10 +111,13 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             {
                 case MemberBindingType.Assignment:
                     return this.VisitMemberAssignment((MemberAssignment)binding);
+
                 case MemberBindingType.MemberBinding:
                     return this.VisitMemberMemberBinding((MemberMemberBinding)binding);
+
                 case MemberBindingType.ListBinding:
                     return this.VisitMemberListBinding((MemberListBinding)binding);
+
                 default:
                     throw new Exception(string.Format("Unhandled binding type '{0}'", binding.BindingType));
             }
@@ -143,12 +159,16 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                     {
                         case ExpressionType.LessThan:
                             return Expression.LessThan(arg1, arg2);
+
                         case ExpressionType.LessThanOrEqual:
                             return Expression.LessThanOrEqual(arg1, arg2);
+
                         case ExpressionType.GreaterThan:
                             return Expression.GreaterThan(arg1, arg2);
+
                         case ExpressionType.GreaterThanOrEqual:
                             return Expression.GreaterThanOrEqual(arg1, arg2);
+
                         default:
                             return Expression.Equal(arg1, arg2);
                     }

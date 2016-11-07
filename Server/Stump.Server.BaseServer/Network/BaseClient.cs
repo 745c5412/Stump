@@ -1,21 +1,37 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace Stump.Server.BaseServer.Network
 {
-    public abstract class BaseClient : IPacketReceiver, IDisposable
+    public abstract class BaseClient : IPacketReceiver, IDisposable, IClient
     {
         [Variable(DefinableRunning = true)]
         public static bool LogPackets = false;
+
+        [Variable(DefinableRunning = true)]
+        public static int MessagesEntriesLimit = 20;
+
+        [Variable(DefinableRunning = true)]
+        public static double FloodMinTime = 3.0;
+
+        [Variable(DefinableRunning = true)]
+        public readonly static List<string> MessagesWhitelist = new List<string>
+            {
+                "GameActionAcknowledgementMessage",
+                "GameFightTurnReadyMessage"
+            };
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -23,17 +39,27 @@ namespace Stump.Server.BaseServer.Network
         private bool m_disconnecting;
 
         private bool m_onDisconnectCalled;
+
+        // sub offset until where we can write in the segment
         private int m_writeOffset;
+
+        // sub offset until where we can read in the segment
         private int m_readOffset;
+
         private int m_remainingLength;
         private BufferSegment m_bufferSegment;
         private long m_totalBytesReceived;
 
+        private readonly LimitedStack<Pair<DateTime, Message>> m_messagesHistory = new LimitedStack<Pair<DateTime, Message>>(MessagesEntriesLimit);
+
         protected BaseClient(Socket socket)
         {
             Socket = socket;
-            IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
+            IP = ((IPEndPoint)socket.RemoteEndPoint).Address.ToString();
             m_bufferSegment = BufferManager.GetSegment(ClientManager.BufferSize);
+#if DEBUG
+            m_bufferSegment.Token = this;
+#endif
         }
 
         public Socket Socket
@@ -60,12 +86,11 @@ namespace Stump.Server.BaseServer.Network
         }
 
         /// <summary>
-        /// Last activity as a socket client (last received packet or sent packet)
+        /// Last activity as a socket client (last received packets)
         /// </summary>
         public DateTime LastActivity
         {
-            get;
-            private set;
+            get { return m_messagesHistory.Peek().First; }
         }
 
         #region IPacketReceiver Members
@@ -73,37 +98,38 @@ namespace Stump.Server.BaseServer.Network
         public virtual void Send(Message message)
         {
             var stream = BufferManager.GetSegmentStream(ClientManager.BufferSize);
-            
+
             var writer = new BigEndianWriter(stream);
             try
             {
                 message.Pack(writer);
             }
-            catch
+            catch (Exception ex)
             {
                 stream.Dispose();
-                throw;
+                throw new Exception(ex.Message + "(" + message + ")", ex);
             }
 
             Send(stream);
 
             OnMessageSent(message);
         }
-        
+
         // a bit dirty. only used by WorldClientCollection
         public void Send(SegmentStream stream)
-        {   
+        {
             if (Socket == null || !Connected)
             {
                 stream.Dispose();
                 return;
             }
-                            
-            var args = ObjectPoolMgr.ObtainObject<SocketAsyncEventArgs>();
+
+            var args = ObjectPoolMgr.ObtainObject<PoolableSocketArgs>();
+
             try
             {
                 args.Completed += OnSendCompleted;
-                args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
+                args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int)(stream.Position));
                 args.UserToken = stream;
 
                 if (!Socket.SendAsync(args))
@@ -112,13 +138,12 @@ namespace Stump.Server.BaseServer.Network
                     stream.Dispose();
                     ObjectPoolMgr.ReleaseObject(args);
                 }
-                LastActivity = DateTime.Now;
             }
             catch
             {
                 args.Dispose();
                 stream.Dispose();
-                ObjectPoolMgr.ReleaseObject(args);
+                // args could be disposed if an error occured
                 throw;
             }
         }
@@ -130,12 +155,13 @@ namespace Stump.Server.BaseServer.Network
             if (stream != null)
                 stream.Dispose();
 
-            ObjectPoolMgr.ReleaseObject(args);
+            ObjectPoolMgr.ReleaseObject((PoolableSocketArgs)args);
         }
 
-        #endregion
+        #endregion IPacketReceiver Members
 
         public event Action<BaseClient, Message> MessageReceived;
+
         public event Action<BaseClient, Message> MessageSent;
 
         protected virtual void OnMessageReceived(Message message)
@@ -183,9 +209,10 @@ namespace Stump.Server.BaseServer.Network
         {
             try
             {
+                args.Completed -= ProcessReceive;
                 var bytesReceived = args.BytesTransferred;
 
-                if (bytesReceived == 0)
+                if (args.LastOperation != SocketAsyncOperation.Receive || bytesReceived == 0)
                 {
                     Disconnect();
                 }
@@ -215,8 +242,7 @@ namespace Stump.Server.BaseServer.Network
             }
             finally
             {
-                args.Completed -= ProcessReceive;
-                ClientManager.Instance.PushSocketArg(args);
+                ClientManager.Instance.PushSocketArg((PoolableSocketArgs)args);
             }
         }
 
@@ -226,10 +252,10 @@ namespace Stump.Server.BaseServer.Network
                 m_currentMessage = new MessagePart(false);
 
             var reader = new FastBigEndianReader(buffer)
-                {
-                    Position = buffer.Offset + m_readOffset,
-                    MaxPosition = buffer.Offset + m_readOffset + m_remainingLength,
-                };
+            {
+                Position = buffer.Offset + m_readOffset,
+                MaxPosition = buffer.Offset + m_readOffset + m_remainingLength,
+            };
             // if message is complete
             if (m_currentMessage.Build(reader))
             {
@@ -248,16 +274,28 @@ namespace Stump.Server.BaseServer.Network
                         logger.Debug("Message = {0}", m_currentMessage.Data.ToString(" "));
                     else
                     {
-                        reader.Seek(dataPos, SeekOrigin.Begin); 
+                        reader.Seek(dataPos, SeekOrigin.Begin);
                         logger.Debug("Message = {0}", reader.ReadBytes(m_currentMessage.Length.Value).ToString(" "));
                     }
                     throw;
                 }
 
-                LastActivity = DateTime.Now;
+                if (!MessagesWhitelist.Contains(message.ToString()))
+                    m_messagesHistory.Push(new Pair<DateTime, Message>(DateTime.Now, message));
+
+                var time = m_messagesHistory.Last.Value.First.Subtract(m_messagesHistory.First.Value.First);
+
+                //Flood check, 
+                if (m_messagesHistory.Count == m_messagesHistory.MaxItems && time.TotalSeconds < FloodMinTime)
+                {
+                    logger.Error($"Forced disconnection {this}: Flood: {m_messagesHistory.Count} messages in {time.TotalSeconds} seconds ! - LastMessages: {m_messagesHistory.Select(x => x.Second).ToCSV(",")}");
+                    Disconnect();
+
+                    return false;
+                }
 
                 if (LogPackets)
-                    Console.WriteLine("(RECV) {0} : {1}", this, message);
+                    Console.WriteLine($"(RECV) {this} : {message}");
 
                 OnMessageReceived(message);
 
@@ -268,11 +306,13 @@ namespace Stump.Server.BaseServer.Network
                 return m_remainingLength <= 0 || BuildMessage(buffer);
             }
 
+            logger.Debug("Message truncated, ensure buffer is big enough ...");
+
             m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
             m_readOffset = (int)reader.Position - buffer.Offset;
             m_writeOffset = m_readOffset + m_remainingLength;
 
-            EnsureBuffer(m_currentMessage.Length.HasValue ? m_currentMessage.Length.Value : 3);
+            EnsureBuffer(m_currentMessage.Length.HasValue ? m_currentMessage.Length.Value : 5); // 5 is the max header size
 
             return false;
         }
@@ -284,8 +324,9 @@ namespace Stump.Server.BaseServer.Network
         {
             if (m_bufferSegment.Length - m_writeOffset < length + m_remainingLength)
             {
-                var newSegment = BufferManager.GetSegment(length + m_remainingLength);
+                var newSegment = BufferManager.GetSegment(Math.Max(length + m_remainingLength, ClientManager.BufferSize));
 
+                // the data before m_readOffset are deprecated, we don't need them anymore
                 Array.Copy(m_bufferSegment.Buffer.Array,
                            m_bufferSegment.Offset + m_readOffset,
                            newSegment.Buffer.Array,
@@ -344,30 +385,37 @@ namespace Stump.Server.BaseServer.Network
         protected virtual void OnDisconnect()
         {
         }
-        
+
         ~BaseClient()
-		{
-			Dispose(false);
-		}
+        {
+            Dispose(false);
+        }
 
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-		protected virtual void Dispose(bool disposing)
-		{
+        protected virtual void Dispose(bool disposing)
+        {
             if (Socket != null && Socket.Connected)
             {
-                Socket.Shutdown(SocketShutdown.Both);
-                Socket.Close();
+                try
+                {
+                    Socket.Shutdown(SocketShutdown.Both);
+                    Socket.Close();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Exception occurs while shutdown socket of client {0} : {1}", ToString(), ex);
+                }
             }
             if (m_bufferSegment != null)
             {
                 m_bufferSegment.DecrementUsage();
             }
-		}
+        }
 
         public override string ToString()
         {

@@ -2,47 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.DofusProtocol.Types;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
     public class Bank : ItemsStorage<BankItem>
     {
         //1K per default
-        [Variable] private const int PricePerItem = 1;
+        [Variable]
+        private const int PricePerItem = 1;
+
+        [Variable]
+        private const int MaxBankKamas = 2000000000;
 
         public Bank(Character character)
         {
             Owner = character;
-            IsLoaded = false;
         }
 
         public void LoadRecord()
         {
-            if (IsLoaded)
-                return;
-
             WorldServer.Instance.IOTaskPool.EnsureContext();
 
             Items = WorldServer.Instance.DBAccessor.Database.Query<BankItemRecord>(string.Format(BankItemRelator.FetchByOwner,
                     Owner.Account.Id)).ToDictionary(x => x.Id, x => new BankItem(Owner, x));
-            IsLoaded = true;
-        }
-
-        public bool IsLoaded
-        {
-            get;
-            private set;
         }
 
         public Character Owner
         {
             get;
-            private set;
         }
 
         public override int Kamas
@@ -51,21 +44,46 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             protected set { Owner.Client.WorldAccount.BankKamas = value; }
         }
 
-        public bool StoreItem(BasePlayerItem item, int amount)
+        public BankItem StoreItem(BasePlayerItem item, int amount, bool sendMessage)
         {
             if (!Owner.Inventory.HasItem(item) || amount <= 0)
-                return false;
+                return null;
 
             if (item.IsLinkedToPlayer())
-                return false;
+                return null;
+
+            if (item.IsEquiped())
+                return null;
 
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
+            Owner.Inventory.RemoveItem(item, amount, sendMessage: sendMessage);
             var bankItem = ItemManager.Instance.CreateBankItem(Owner, item, amount);
-            AddItem(bankItem);
+            bankItem = AddItem(bankItem, sendMessage);
 
-            Owner.Inventory.RemoveItem(item, amount);
+            return bankItem;
+        }
+
+        public bool StoreItems(IEnumerable<int> guids, bool all, bool existing)
+        {
+            var bankItems = new List<BankItem>();
+            var deletedItems = new List<BasePlayerItem>();
+
+            foreach (var item in Owner.Inventory.Where(x => guids.Contains(x.Guid) || (existing && Items.Values.Any(y => y.Template.Id == x.Template.Id)) || all).ToArray())
+            {
+                var bankItem = StoreItem(item, (int)item.Stack, false);
+                if (bankItem == null)
+                    continue;
+
+                bankItems.Add(bankItem);
+                deletedItems.Add(item);
+            }
+
+            InventoryHandler.SendObjectsDeletedMessage(Owner.Client, deletedItems.Select(x => x.Guid));
+            InventoryHandler.SendStorageObjectsUpdateMessage(Owner.Client, bankItems);
+
+            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
             return true;
         }
@@ -78,31 +96,71 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (Owner.Inventory.Kamas < kamas)
                 kamas = Owner.Inventory.Kamas;
 
-            AddKamas(kamas);
             Owner.Inventory.SetKamas(Owner.Inventory.Kamas - kamas);
-
+            AddKamas(kamas);
 
             return true;
         }
 
-        public bool TakeItemBack(BankItem item, int amount)
+        public override void SetKamas(int amount)
+        {
+            if (amount >= MaxBankKamas)
+            {
+                amount = MaxBankKamas;
+                //Vous avez atteint le seuil maximum de kamas dans votre inventaire.
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 344);
+            }
+            else if (amount >= (MaxBankKamas - 50000000))
+            {
+                //Un de vos inventaires (banque, inventaire du personnage) va dépasser le seuil de 2 milliards de Kamas, les kamas supplémentaires seront donc perdus. Surveillez vos stocks de kamas et vos ventes (mode marchand, enclos, maisons, hdv).
+                Owner.SendSystemMessage(55, true);
+            }
+
+            base.SetKamas(amount);
+        }
+
+        public BasePlayerItem TakeItemBack(BankItem item, int amount, bool sendMessage)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
             if (item == null)
-                return false;
+                return null;
 
             if (!HasItem(item))
-                return false;
+                return null;
 
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
-            var playerItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, amount, new List<EffectBase>(item.Effects));
-            Owner.Inventory.AddItem(playerItem);
+            RemoveItem(item, amount, sendMessage: sendMessage);
 
-            RemoveItem(item, amount);
+            var playerItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, amount, new List<EffectBase>(item.Effects));
+            playerItem = Owner.Inventory.AddItem(playerItem, sendMessage);
+
+            return playerItem;
+        }
+
+        public bool TakeItemsBack(IEnumerable<int> guids, bool all, bool existing)
+        {
+            var newItems = new List<BasePlayerItem>();
+            var deletedItems = new List<BankItem>();
+
+            foreach (var item in Items.Values.Where(x => guids.Contains(x.Guid) || (existing && Owner.Inventory.Any(y => y.Template.Id == x.Template.Id)) || all).ToArray())
+            {
+                var newItem = TakeItemBack(item, (int)item.Stack, false);
+                if (newItem == null)
+                    continue;
+
+                deletedItems.Add(item);
+                newItems.Add(newItem);
+            }
+
+            InventoryHandler.SendStorageObjectsRemoveMessage(Owner.Client, deletedItems.Select(x => x.Guid));
+            InventoryHandler.SendObjectsAddedMessage(Owner.Client, newItems.Select(x => x.GetObjectItem()));
+            InventoryHandler.SendObjectsQuantityMessage(Owner.Client, newItems.Select(x => new ObjectItemQuantity(x.Guid, (int)x.Stack)));
+
+            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
             return true;
         }
@@ -117,33 +175,34 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             SubKamas(kamas);
             Owner.Inventory.AddKamas(kamas);
+
             return true;
         }
 
-        public int GetAccessPrice()
+        public int GetAccessPrice() => (Items.Count * PricePerItem);
+
+        protected override void OnItemAdded(BankItem item, bool sendMessage = true)
         {
-            return (Items.Count * PricePerItem);
+            if (sendMessage)
+                InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
+
+            base.OnItemAdded(item, sendMessage);
         }
 
-        protected override void OnItemAdded(BankItem item, bool addItemMsg)
+        protected override void OnItemRemoved(BankItem item, bool sendMessage = true)
         {
-            InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
+            if (sendMessage)
+                InventoryHandler.SendStorageObjectRemoveMessage(Owner.Client, item);
 
-            base.OnItemAdded(item, false);
+            base.OnItemRemoved(item, sendMessage);
         }
 
-        protected override void OnItemRemoved(BankItem item, bool removeItemMsg)
-        {            
-            InventoryHandler.SendStorageObjectRemoveMessage(Owner.Client, item);
+        protected override void OnItemStackChanged(BankItem item, int difference, bool sendMessage = true)
+        {
+            if (sendMessage)
+                InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
 
-            base.OnItemRemoved(item, removeItemMsg);
-        }
-
-        protected override void OnItemStackChanged(BankItem item, int difference, bool removeMsg = true)
-        {            
-            InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
-
-            base.OnItemStackChanged(item, difference);
+            base.OnItemStackChanged(item, difference, sendMessage);
         }
 
         protected override void OnKamasAmountChanged(int amount)

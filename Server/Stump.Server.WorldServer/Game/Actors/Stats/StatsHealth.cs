@@ -79,9 +79,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         public int PermanentDamages
         {
             get { return m_permanentDamages; }
-            set {
+            set
+            {
                 if (TotalMaxWithoutPermanentDamages - value < 0)
-                    m_permanentDamages = Base + Equiped + Given + Context + ( Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0 ) - 1;
+                    m_permanentDamages = Base + Equiped + Given + Context + (Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0) - 1;
                 else
                 {
                     m_permanentDamages = value;
@@ -127,7 +128,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                var result = Base + Equiped + Given + Context + ( Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0 ) - PermanentDamages;
+                var result = Base + Equiped + Given + Context + (Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0) - PermanentDamages;
 
                 return result < 0 ? 0 : result;
             }
@@ -157,15 +158,28 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public override StatsData Clone()
+        public override StatsData CloneAndChangeOwner(IStatsOwner owner)
         {
-            var clone = new StatsHealth(Owner, Base, 0)
+            var clone = new StatsHealth(owner, Base, 0)
             {
                 Equiped = Equiped,
                 Given = Given
             };
 
             return clone;
+        }
+
+        public override void CopyContext(StatsData target)
+        {
+            base.CopyContext(target);
+
+            var health = target as StatsHealth;
+
+            if (health == null)
+                return;
+
+            health.DamageTaken = DamageTaken;
+            health.PermanentDamages = PermanentDamages;
         }
     }
 }

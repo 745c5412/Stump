@@ -1,32 +1,28 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GameRolePlayGroupMonsterInformations : GameRolePlayActorInformations
     {
         public const short Id = 160;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public Types.GroupMonsterStaticInformations staticInfos;
         public short ageBonus;
         public sbyte lootShare;
         public sbyte alignmentSide;
         public bool keyRingBonus;
-        
+
         public GameRolePlayGroupMonsterInformations()
         {
         }
-        
+
         public GameRolePlayGroupMonsterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, Types.GroupMonsterStaticInformations staticInfos, short ageBonus, sbyte lootShare, sbyte alignmentSide, bool keyRingBonus)
          : base(contextualId, look, disposition)
         {
@@ -36,7 +32,7 @@ namespace Stump.DofusProtocol.Types
             this.alignmentSide = alignmentSide;
             this.keyRingBonus = keyRingBonus;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -47,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(alignmentSide);
             writer.WriteBoolean(keyRingBonus);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -62,12 +58,10 @@ namespace Stump.DofusProtocol.Types
             alignmentSide = reader.ReadSByte();
             keyRingBonus = reader.ReadBoolean();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(short) + staticInfos.GetSerializationSize() + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool);
         }
-        
     }
-    
 }

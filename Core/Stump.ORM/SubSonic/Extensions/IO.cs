@@ -1,16 +1,16 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
 using System.IO;
 using System.Net;
@@ -29,7 +29,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <returns>String containing the content of the file.</returns>
         public static string GetFileText(this string absolutePath)
         {
-            using(StreamReader sr = new StreamReader(absolutePath))
+            using (StreamReader sr = new StreamReader(absolutePath))
                 return sr.ReadToEnd();
         }
 
@@ -40,7 +40,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <param name="fileText">A String containing text to be written to the file.</param>
         public static void CreateToFile(this string fileText, string absolutePath)
         {
-            using(StreamWriter sw = File.CreateText(absolutePath))
+            using (StreamWriter sw = File.CreateText(absolutePath))
                 sw.Write(fileText);
         }
 
@@ -63,7 +63,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <param name="fileText">A String containing text to be written to the file.</param>
         public static void WriteToFile(this string absolutePath, string fileText)
         {
-            using(StreamWriter sw = new StreamWriter(absolutePath, false))
+            using (StreamWriter sw = new StreamWriter(absolutePath, false))
                 sw.Write(fileText);
         }
 
@@ -76,7 +76,7 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             string webPage;
             WebRequest request = WebRequest.Create(url);
-            using(Stream stream = request.GetResponse().GetResponseStream())
+            using (Stream stream = request.GetResponse().GetResponseStream())
             {
                 StreamReader sr = new StreamReader(stream);
                 webPage = sr.ReadToEnd();

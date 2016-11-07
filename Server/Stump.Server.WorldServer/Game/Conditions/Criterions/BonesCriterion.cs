@@ -1,5 +1,5 @@
-﻿using System;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
@@ -29,13 +29,13 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 if (!short.TryParse(Literal, out bonesId))
                     throw new Exception(string.Format("Cannot build BonesCriterion, {0} is not a valid bones id", Literal));
 
-                BonesId = (short) (bonesId != 0 ? bonesId : 1);
+                BonesId = (short)(bonesId != 0 ? bonesId : 1);
             }
         }
 
         public override string ToString()
         {
             return FormatToString(Identifier);
-        } 
+        }
     }
 }

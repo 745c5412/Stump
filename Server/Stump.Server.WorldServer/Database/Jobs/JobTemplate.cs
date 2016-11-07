@@ -1,6 +1,6 @@
 ﻿using Stump.Core.IO;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Database.Jobs
 
         public void AssignFields(object d2oObject)
         {
-            var job = (Job) d2oObject;
+            var job = (Job)d2oObject;
             Id = job.id;
             NameId = job.nameId;
             SpecializationOfId = job.specializationOfId;
@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Database.Jobs
             ToolIds = job.toolIds.ToArray();
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -87,6 +87,6 @@ namespace Stump.Server.WorldServer.Database.Jobs
             m_toolIdsCSV = m_toolIds.ToCSV(",");
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
     }
 }

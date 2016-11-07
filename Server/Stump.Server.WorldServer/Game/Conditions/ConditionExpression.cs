@@ -1,5 +1,4 @@
-﻿using System;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Conditions
 {

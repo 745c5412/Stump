@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:46
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -19,15 +13,16 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "AlignmentSides";
         public int id;
+
         [I18NField]
         public uint nameId;
+
         public Boolean canConquest;
 
         int ID2ORecord.Id
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -55,12 +50,12 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (AlignmentSide)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             CanConquest = castedObj.canConquest;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (AlignmentSide)parent : new AlignmentSide();
@@ -69,10 +64,9 @@ namespace DBSynchroniser.Records
             obj.canConquest = CanConquest;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

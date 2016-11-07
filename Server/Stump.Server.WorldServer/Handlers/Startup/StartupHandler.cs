@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Accounts;
-using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts.Startup;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Startup
 {

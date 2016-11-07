@@ -401,6 +401,5 @@ namespace Stump.DofusProtocol.Enums
         ACTION_SHOW_PLAYERNAME = 964,
         ACTION_BOOST_GLOBAL_RESISTS_BONUS = 1076,
         ACTION_BOOST_GLOBAL_RESISTS_MALUS = 1077
-
     }
 }

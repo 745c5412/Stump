@@ -1,43 +1,41 @@
 ﻿#region License GNU GPL
+
 // D2OEditorModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using WorldEditor.Helpers;
 using WorldEditor.Helpers.Converters;
-using Binding = System.Windows.Data.Binding;
 using CheckBox = System.Windows.Controls.CheckBox;
-using DataGrid = System.Windows.Controls.DataGrid;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using TextBox = System.Windows.Controls.TextBox;
 
 namespace WorldEditor.Editors.Files.D2O
 {
@@ -53,7 +51,7 @@ namespace WorldEditor.Editors.Files.D2O
         private D2OReader m_reader;
         private Type[] m_distinctTypes;
         private Stack<EditedObject> m_editedObjects = new Stack<EditedObject>();
-        private List<DataGridColumn> m_columns = new List<DataGridColumn>(); 
+        private List<DataGridColumn> m_columns = new List<DataGridColumn>();
 
         public D2OEditorModelView(D2OEditor editor, string filePath)
         {
@@ -201,8 +199,7 @@ namespace WorldEditor.Editors.Files.D2O
             m_editedObjects.Push(editedObject);
         }
 
-        #endregion
-
+        #endregion AddCommand
 
         #region RemoveCommand
 
@@ -233,8 +230,7 @@ namespace WorldEditor.Editors.Files.D2O
             }
         }
 
-        #endregion
-
+        #endregion RemoveCommand
 
         #region ConvertCommand
 
@@ -280,8 +276,7 @@ namespace WorldEditor.Editors.Files.D2O
             MessageService.ShowMessage(m_editor, string.Format("File converted to {0}", Path.GetFileName(filePath)));
         }
 
-        #endregion
-
+        #endregion ConvertCommand
 
         #region SaveCommand
 
@@ -305,8 +300,7 @@ namespace WorldEditor.Editors.Files.D2O
             m_reader = new D2OReader(filePath);
         }
 
-        #endregion
-
+        #endregion SaveCommand
 
         #region SaveAsCommand
 
@@ -337,10 +331,9 @@ namespace WorldEditor.Editors.Files.D2O
 
             string filePath = dialog.FileName;
             PerformSave(filePath);
-
         }
 
-        #endregion
+        #endregion SaveAsCommand
 
         private void PerformSave(string filePath)
         {
@@ -353,7 +346,7 @@ namespace WorldEditor.Editors.Files.D2O
                 foreach (var row in Rows)
                 {
                     if (row is IIndexedData)
-                        writer.Write(row, ((IIndexedData) row).Id);
+                        writer.Write(row, ((IIndexedData)row).Id);
                     else
                         writer.Write(row);
                 }
@@ -361,7 +354,6 @@ namespace WorldEditor.Editors.Files.D2O
                 writer.EndWriting();
 
                 MessageService.ShowMessage(m_editor, "File saved successfully");
-
             }
             catch (IOException ex)
             {
@@ -377,7 +369,6 @@ namespace WorldEditor.Editors.Files.D2O
                     writer.Dispose();
             }
         }
-
 
         #region FindCommand
 
@@ -445,7 +436,7 @@ namespace WorldEditor.Editors.Files.D2O
             if (double.TryParse(SearchText, out dummyD))
                 searchDouble = dummyD;
 
-            bool? searchBool = SearchText.ToLower() == "true" || SearchText.ToLower() == "false" ? 
+            bool? searchBool = SearchText.ToLower() == "true" || SearchText.ToLower() == "false" ?
                 SearchText.ToLower() == "true" : (bool?)null;
 
             for (int i = startIndex; i < m_rows.Count; i++)
@@ -453,8 +444,8 @@ namespace WorldEditor.Editors.Files.D2O
                 var value = getter(m_rows[i]);
                 if (isBool)
                 {
-                    if (( searchBool.HasValue && searchBool == (bool)value ) ||
-                        ( searchInteger.HasValue && (bool)value == ( searchInteger.Value != 0 ) ))
+                    if ((searchBool.HasValue && searchBool == (bool)value) ||
+                        (searchInteger.HasValue && (bool)value == (searchInteger.Value != 0)))
                     {
                         row = m_rows[i];
                         index = i;
@@ -538,9 +529,7 @@ namespace WorldEditor.Editors.Files.D2O
             }
         }
 
-        #endregion
-
-
+        #endregion FindCommand
 
         #region FindNextCommand
 
@@ -575,8 +564,7 @@ namespace WorldEditor.Editors.Files.D2O
             }
         }
 
-        #endregion
-
+        #endregion FindNextCommand
 
         public void Dispose()
         {

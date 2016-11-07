@@ -1,44 +1,40 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class PresetItem
     {
         public const short Id = 354;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public byte position;
         public int objGid;
         public int objUid;
-        
+
         public PresetItem()
         {
         }
-        
+
         public PresetItem(byte position, int objGid, int objUid)
         {
             this.position = position;
             this.objGid = objGid;
             this.objUid = objUid;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteByte(position);
             writer.WriteInt(objGid);
             writer.WriteInt(objUid);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             position = reader.ReadByte();
@@ -51,12 +47,10 @@ namespace Stump.DofusProtocol.Types
             if (objUid < 0)
                 throw new Exception("Forbidden value on objUid = " + objUid + ", it doesn't respect the following condition : objUid < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(byte) + sizeof(int) + sizeof(int);
         }
-        
     }
-    
 }

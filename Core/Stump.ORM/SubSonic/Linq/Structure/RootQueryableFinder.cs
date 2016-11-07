@@ -12,7 +12,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public class RootQueryableFinder : ExpressionVisitor
     {
-        Expression root;
+        private Expression root;
+
         public static Expression Find(Expression expression)
         {
             RootQueryableFinder finder = new RootQueryableFinder();

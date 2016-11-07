@@ -1,5 +1,4 @@
-﻿using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types;
+﻿using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -37,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         public override void Apply()
         {
             var id = Target.PopNextBuffId();
-            var buff = new TriggerBuff(id, Target, Caster, Effect as EffectDice, Spell, Critical, Dispellable,
+            var buff = new TriggerBuff(id, Target, Caster, Effect as EffectDice, Spell, Spell, Critical, Dispellable,
                 BuffTriggerType.BEFORE_ATTACKED, EvasionBuffTrigger);
 
             Target.AddAndApplyBuff(buff);
@@ -109,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
             var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)( Dispellable ? 0 : 1 ), (short)Spell.Id, 0, (short)values[0], (short)values[1], (short)values[2], 0);
+            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 0 : 1), (short)Spell.Id, 0, (short)values[0], (short)values[1], (short)values[2], 0);
         }
     }
 }

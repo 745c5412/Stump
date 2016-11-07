@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Stump.Server.WorldServer.Database.Items.Templates;
+﻿using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -48,7 +48,6 @@ namespace Stump.Server.WorldServer.Game.Items
 
         private void OnFightFinished(Character character, CharacterFighter fighter)
         {
-            
         }
     }
 }

@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
@@ -23,8 +17,8 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Fights;
@@ -39,6 +33,12 @@ using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Interactives;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Linq;
 using MapRecord = Stump.Server.WorldServer.Database.World.Maps.MapRecord;
 using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
@@ -127,10 +127,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public event Action<Map, InteractiveObject> InteractiveSpawned;
 
-
         public event Action<Map, InteractiveObject> InteractiveUnSpawned;
-
-
 
         public event Action<Map, Character, InteractiveObject, Skill> InteractiveUsed;
 
@@ -152,7 +149,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 handler(this, user, interactive, skill);
         }
 
-        #endregion
+        #endregion Events
 
         #region Constructors
 
@@ -212,10 +209,13 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void UpdateCells()
         {
             CellsInfoProvider = new MapCellsInformationProvider(this);
-            m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).ToArray();
+
+            var middle = new MapPoint((int)MapPoint.MapWidth / 2, (int)MapPoint.MapHeight / 2);
+            m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).
+                OrderBy(x => middle.ManhattanDistanceTo(x)).ToArray();
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
@@ -275,6 +275,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             get { return m_actors.AsReadOnly(); }
         }
+
         public MapCellsInformationProvider CellsInfoProvider
         {
             get;
@@ -303,6 +304,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             get { return m_spawningPools.AsReadOnly(); }
         }
+
         public uint RelativeId
         {
             get { return Record.RelativeId; }
@@ -532,7 +534,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             set;
         }
 
-        #endregion
+        #endregion Properties
 
         #region Restrictions
 
@@ -601,7 +603,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return (Capabilities & 4096) != 0; }
         }
 
-        #endregion
+        #endregion Restrictions
 
         #region Npcs
 
@@ -657,7 +659,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             Leave(npc);
         }
 
-        #endregion
+        #endregion Npcs
 
         #region TaxCollector
 
@@ -667,7 +669,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             private set;
         }
 
-        #endregion
+        #endregion TaxCollector
 
         #region Interactives
 
@@ -746,7 +748,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (skill == null)
                 return false;
 
-
             if (skill.IsEnabled(character))
             {
                 skill.Execute(character);
@@ -778,7 +779,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return true;
         }
 
-        #endregion
+        #endregion Interactives
 
         #region Monsters
 
@@ -890,6 +891,32 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void RemoveMonsterDungeonSpawn(MonsterDungeonSpawn spawn)
         {
             var pool = m_spawningPools.FirstOrDefault(entry => entry is DungeonSpawningPool) as DungeonSpawningPool;
+
+            if (pool == null)
+                return;
+
+            pool.RemoveSpawn(spawn);
+
+            if (pool.SpawnsCount == 0)
+                pool.StopAutoSpawn();
+        }
+
+        public void AddMonsterStaticSpawn(MonsterStaticSpawn spawn)
+        {
+            var pool = m_spawningPools.FirstOrDefault(entry => entry is StaticSpawningPool) as StaticSpawningPool;
+
+            if (pool == null)
+                AddSpawningPool(pool = new StaticSpawningPool(this, StaticSpawningPool.StaticSpawnsInterval));
+
+            pool.AddSpawn(spawn);
+
+            if (!pool.AutoSpawnEnabled)
+                pool.StartAutoSpawn();
+        }
+
+        public void RemoveMonsterStaticSpawn(MonsterStaticSpawn spawn)
+        {
+            var pool = m_spawningPools.FirstOrDefault(entry => entry is StaticSpawningPool) as StaticSpawningPool;
 
             if (pool == null)
                 return;
@@ -1038,8 +1065,14 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void MoveRandomlyActors()
         {
-            foreach(var actor in Actors.Where(x => x is IAutoMovedEntity && (x as IAutoMovedEntity).NextMoveDate <= DateTime.Now))
+            foreach (var actor in Actors.Where(x => x is IAutoMovedEntity && ((IAutoMovedEntity)x).NextMoveDate <= DateTime.Now))
             {
+                if (actor is MonsterGroup)
+                {
+                    if (((MonsterGroup)actor).SpawningPool is StaticSpawningPool)
+                        continue;
+                }
+
                 var circle = new Lozenge(1, 4);
                 var dest = circle.GetCells(actor.Cell, this).
                     Where(entry => entry.Walkable && !entry.NonWalkableDuringRP && entry.MapChangeData == 0).RandomElementOrDefault();
@@ -1058,9 +1091,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                     DateTime.Now + TimeSpan.FromSeconds(new AsyncRandom().Next(AutoMoveActorMinInverval,
                         AutoMoveActorMaxInverval + 1));
             }
-           
         }
-        #endregion
+
+        #endregion Monsters
 
         #region Triggers
 
@@ -1086,14 +1119,12 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return;
 
             m_cellsTriggers[cell].Clear();
-
         }
 
         public IEnumerable<CellTrigger> GetTriggers(Cell cell)
         {
             if (!m_cellsTriggers.ContainsKey(cell))
                 return Enumerable.Empty<CellTrigger>();
-
 
             return m_cellsTriggers[cell];
         }
@@ -1102,7 +1133,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             return m_cellsTriggers.Values.SelectMany(x => x);
         }
-
 
         public bool ExecuteTrigger(CellTriggerType triggerType, Cell cell, Character character)
         {
@@ -1120,7 +1150,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return applied;
         }
 
-        #endregion
+        #endregion Triggers
 
         #region Fights
 
@@ -1165,18 +1195,18 @@ namespace Stump.Server.WorldServer.Game.Maps
             return m_redPlacement;
         }
 
-        #endregion
+        #endregion Fights
 
         #region Enter/Leave
 
         public void Enter(RolePlayActor actor)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (m_actors.Contains(actor))
             {
@@ -1198,12 +1228,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(RolePlayActor actor)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (!m_actors.Remove(actor))
                 return;
@@ -1221,12 +1251,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(int actorId)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             RolePlayActor removedActor;
             if (m_actorsMap.TryRemove(actorId, out removedActor) && m_actors.Remove(removedActor))
@@ -1237,12 +1267,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Enter(WorldObjectItem objectItem)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (m_objectItems.Contains(objectItem))
             {
@@ -1263,12 +1293,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(WorldObjectItem objectItem)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (m_objectItems.Remove(objectItem))
             {
@@ -1278,12 +1308,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Refresh(RolePlayActor actor)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (IsActor(actor))
                 ForEach(x =>
@@ -1307,7 +1337,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             ForEach(x =>
             {
-                ContextRoleplayHandler.SendObjectGroundAddedMessage(x.Client, objectItem);   
+                ContextRoleplayHandler.SendObjectGroundAddedMessage(x.Client, objectItem);
             });
 
             if (DroppedItemsCleaner == null)
@@ -1350,18 +1380,18 @@ namespace Stump.Server.WorldServer.Game.Maps
                     Leave(actor);
                     return;
                 }
-                TaxCollector = (TaxCollectorNpc) actor;
+                TaxCollector = (TaxCollectorNpc)actor;
             }
             if (actor is IAutoMovedEntity)
             {
-                /*(actor as IAutoMovedEntity).NextMoveDate =
+                (actor as IAutoMovedEntity).NextMoveDate =
                     DateTime.Now + TimeSpan.FromSeconds(new AsyncRandom().Next(AutoMoveActorMinInverval,
                         AutoMoveActorMaxInverval + 1));
 
                 // if the timer wasn't active (=no actors)
                 if (m_autoMoveTimer == null) // call every (max+min)/2/10 to have an average 5% accuracy
-                    m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval)/20*1000,
-                        MoveRandomlyActors);*/
+                    m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval) / 20 * 1000,
+                        MoveRandomlyActors);
             }
 
             ForEach(x =>
@@ -1396,7 +1426,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (actor is IContextDependant)
                 FreeContextualId((sbyte)actor.Id);
 
-            if (m_autoMoveTimer != null && !Actors.OfType<IAutoMovedEntity>().Any())
+            if (m_autoMoveTimer != null && !Actors.OfType<Character>().Any())
             {
                 m_autoMoveTimer.Dispose();
                 m_autoMoveTimer = null;
@@ -1405,7 +1435,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             actor.OnLeaveMap(this);
         }
 
-        #endregion
+        #endregion Enter/Leave
 
         #region Actor Actions
 
@@ -1417,6 +1447,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             BasicHandler.SendBasicNoOperationMessage(Clients);
 
             actor.IsInMovement = true;
+            actor.LastEmoteUsed = null;
 
             var character = actor as Character;
             if (character == null)
@@ -1445,11 +1476,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (monster != null)
                 monster.FightWith(character);
-
-            Refresh(character);
+            else
+                Refresh(character);
         }
 
-        #endregion
+        #endregion Actor Actions
 
         #region Gets
 
@@ -1596,7 +1627,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return (DirectionsEnum)array.GetValue(rand.Next(0, array.Length));
         }
 
-        public Cell GetRandomFreeCell(bool actorFree = false)
+        public Cell GetRandomFreeCell(bool actorFree = false, bool nearMiddle = false)
         {
             var rand = new AsyncRandom();
 
@@ -1607,6 +1638,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             var cells = m_freeCells.Where(entry => !excludedCells.Contains(entry.Id)).ToArray();
 
             return cells[rand.Next(0, cells.Length)];
+        }
+
+        public Cell GetFirstFreeCellNearMiddle()
+        {
+            return m_freeCells.FirstOrDefault();
         }
 
         public Cell GetRandomAdjacentFreeCell(MapPoint cell, bool actorFree = false)
@@ -1630,6 +1666,8 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
+        public bool IsDungeon() => SpawningPools.Any(x => x is DungeonSpawningPool);
+
         #region Neighbors
 
         public Map GetNeighbouringMap(MapNeighbour mapNeighbour)
@@ -1638,12 +1676,16 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 case MapNeighbour.Top:
                     return TopNeighbour;
+
                 case MapNeighbour.Bottom:
                     return BottomNeighbour;
+
                 case MapNeighbour.Right:
                     return RightNeighbour;
+
                 case MapNeighbour.Left:
                     return LeftNeighbour;
+
                 default:
                     throw new ArgumentException("mapNeighbour");
             }
@@ -1663,20 +1705,24 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 case MapNeighbour.Top:
                     return TopNeighbourCell != null ? TopNeighbourCell.Id : (short)(currentCell + 532);
+
                 case MapNeighbour.Bottom:
                     return BottomNeighbourCell != null ? BottomNeighbourCell.Id : (short)(currentCell - 532);
+
                 case MapNeighbour.Right:
                     return RightNeighbourCell != null ? RightNeighbourCell.Id : (short)(currentCell - 13);
+
                 case MapNeighbour.Left:
                     return LeftNeighbourCell != null ? LeftNeighbourCell.Id : (short)(currentCell + 13);
+
                 default:
                     return 0;
             }
         }
 
-        #endregion
+        #endregion Neighbors
 
-        #endregion
+        #endregion Gets
 
         public bool Equals(Map other)
         {
@@ -1733,9 +1779,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                 (short)Position.Y);
         }
 
-        #endregion
+        #endregion MapComplementaryInformationsDataMessage
 
-        #endregion
+        #endregion Network
 
         public bool IsMerchantLimitReached()
         {

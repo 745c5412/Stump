@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Stump.Core.Pool;
+﻿using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Guilds;
-using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
 using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
-using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
@@ -23,6 +23,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private Dictionary<int, EmblemRecord> m_emblems;
         private Dictionary<int, GuildMember> m_guildsMembers;
         private readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
+        private readonly Stack<GuildMember> m_membersToDelete = new Stack<GuildMember>();
 
         private readonly object m_lock = new object();
 
@@ -36,7 +37,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             var membersByGuilds = m_guildsMembers.Values.GroupBy(x => x.Record.GuildId).ToDictionary(x => x.Key);
             m_guilds =
                 Database.Query<GuildRecord>(GuildRelator.FetchQuery)
-                        .ToList()
                         .Select(
                             x =>
                                 new Guild(x,
@@ -48,23 +48,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max())
                 : new UniqueIdProvider(1);
 
+            foreach (var guild in m_guilds.Where(x => x.Value.Members.Count == 0).ToList())
+                DeleteGuild(guild.Value);
+
             World.Instance.RegisterSaveableInstance(this);
         }
 
-        public bool DoesNameExist(string name)
-        {
-            return m_guilds.Any(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase));
-        }
+        public bool DoesNameExist(string name) => m_guilds.Any(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase));
 
-        public bool DoesEmblemExist(NetworkGuildEmblem emblem)
-        {
-            return m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
-        }
+        public bool DoesEmblemExist(NetworkGuildEmblem emblem) => m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
 
-        public bool DoesEmblemExist(GuildEmblem emblem)
-        {
-            return m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
-        }
+        public bool DoesEmblemExist(GuildEmblem emblem) => m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
 
         public Guild TryGetGuild(int id)
         {
@@ -79,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
-                return m_guilds.FirstOrDefault(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase)).Value;
+                return m_guilds.FirstOrDefault(x => String.Equals(x.Value.Name, name, StringComparison.OrdinalIgnoreCase)).Value;
             }
         }
 
@@ -102,7 +96,29 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
-                var guild = new Guild(m_idProvider.Pop(), name);
+                var id = m_idProvider.Pop();
+
+                var record = new GuildRecord
+                {
+                    Id = id,
+                    Name = name,
+                    CreationDate = DateTime.Now,
+                    IsNew = true,
+                    Spells = new int[0],
+                    Experience = 0,
+                    Boost = 0,
+                    Prospecting = 100,
+                    Wisdom = 0,
+                    Pods = 1000,
+                    MaxTaxCollectors = 1,
+                    EmblemBackgroundColor = Color.White.ToArgb(),
+                    EmblemBackgroundShape = 1,
+                    EmblemForegroundColor = Color.Black.ToArgb(),
+                    EmblemForegroundShape = 1
+                };
+
+                var guild = new Guild(record, new GuildMember[0]);
+
                 m_guilds.Add(guild.Id, guild);
 
                 return guild;
@@ -112,7 +128,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public GuildCreationResultEnum CreateGuild(Character character, string name, NetworkGuildEmblem emblem)
         {
             var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.Guildalogem));
-            if (guildalogemme == null)
+            if (guildalogemme == null && !character.IsGameMaster())
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
 
             if (!Regex.IsMatch(name, "^\\b[A-Z][A-Za-z\\s-']{4,30}\\b$", RegexOptions.Compiled) || Regex.IsMatch(name, "^\\s\\s$"))
@@ -120,13 +136,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_INVALID;
             }
 
+            if (emblem.symbolShape >= 324)
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_INVALID;
+
             if (DoesNameExist(name))
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
             if (DoesEmblemExist(emblem))
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
 
-            character.Inventory.RemoveItem(guildalogemme, 1);
+            if (!character.IsGameMaster())
+                character.Inventory.RemoveItem(guildalogemme, 1);
 
             var guild = CreateGuild(name);
             if (guild == null)
@@ -163,9 +183,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void RegisterGuildMember(GuildMember member)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () => Database.Insert(member.Record));
-
             lock (m_lock)
             {
                 m_guildsMembers.Add(member.Id, member);
@@ -174,12 +191,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DeleteGuildMember(GuildMember member)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () => Database.Delete(member.Record));
-
             lock (m_lock)
             {
                 m_guildsMembers.Remove(member.Id);
+                m_membersToDelete.Push(member);
+
                 return true;
             }
         }
@@ -198,6 +214,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     var guild = m_guildsToDelete.Pop();
 
                     Database.Delete(guild.Record);
+                }
+
+                while (m_membersToDelete.Count > 0)
+                {
+                    var member = m_membersToDelete.Pop();
+
+                    Database.Delete(member.Record);
                 }
             }
         }

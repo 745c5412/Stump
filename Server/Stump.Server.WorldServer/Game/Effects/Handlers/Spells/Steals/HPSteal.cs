@@ -1,9 +1,10 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Handlers.Actions;
+using System;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
@@ -24,22 +25,44 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
             foreach (var actor in GetAffectedActors())
             {
-                if (Effect.Duration > 0)
+                if (Effect.Duration > 0 && Spell.Id != (int)SpellIdEnum.MARTEAU_D_OKIM)
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, StealHpBuffTrigger);
                 }
                 else
                 {
-                    var damage = actor.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell) {IsCritical = Critical});
+                    var damage = new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell) { IsCritical = Critical };
 
-                    if (damage / 2 > 0)
-                        Caster.HealDirect((short)( damage / 2d ), actor);
+                    // spell reflected
+                    var buff = actor.GetBestReflectionBuff();
+                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
+                    {
+                        NotifySpellReflected(actor);
+                        damage.Source = Caster;
+                        damage.ReflectedDamages = true;
+                        Caster.InflictDamage(damage);
+
+                        if (buff.Duration <= 0)
+                            actor.RemoveAndDispellBuff(buff);
+                    }
+                    else
+                    {
+                        actor.InflictDamage(damage);
+
+                        var amount = (short)Math.Round(damage.Amount / 2.0);
+                        if (amount > 0)
+                            Caster.HealDirect(amount, actor);
+                    }
                 }
             }
 
             return true;
         }
 
+        private void NotifySpellReflected(FightActor source)
+        {
+            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
+        }
 
         private static void StealHpBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
@@ -57,14 +80,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             {
                 case EffectsEnum.Effect_StealHPWater:
                     return EffectSchoolEnum.Water;
+
                 case EffectsEnum.Effect_StealHPEarth:
                     return EffectSchoolEnum.Earth;
+
                 case EffectsEnum.Effect_StealHPAir:
                     return EffectSchoolEnum.Air;
+
                 case EffectsEnum.Effect_StealHPFire:
                     return EffectSchoolEnum.Fire;
+
                 case EffectsEnum.Effect_StealHPNeutral:
                     return EffectSchoolEnum.Neutral;
+
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));
             }

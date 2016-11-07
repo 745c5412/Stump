@@ -1,23 +1,22 @@
-﻿using System;
+﻿using DofusProtocolBuilder.Parsing.Elements;
 using System.Collections.Generic;
-using DofusProtocolBuilder.Parsing.Elements;
 
 namespace DofusProtocolBuilder.Parsing
 {
-	public struct Argument
-	{
-		public string Name;
-		public string Type;
+    public struct Argument
+    {
+        public string Name;
+        public string Type;
 
-	    public Argument(string name, string type, string defaultValue = default(string))
-	    {
-	        Name = name;
-	        Type = type;
-	        DefaultValue = defaultValue;
-	    }
+        public Argument(string name, string type, string defaultValue = default(string))
+        {
+            Name = name;
+            Type = type;
+            DefaultValue = defaultValue;
+        }
 
-	    public string DefaultValue;
-	}
+        public string DefaultValue;
+    }
 
     public class MethodInfo
     {
@@ -32,9 +31,9 @@ namespace DofusProtocolBuilder.Parsing
             New,
             Override,
             Virtual
-        } ;
+        };
 
-        #endregion
+        #endregion MethodModifiers enum
 
         public MethodInfo()
         {
@@ -47,10 +46,10 @@ namespace DofusProtocolBuilder.Parsing
             set;
         }
 
-		public List<IStatement> Statements
-		{
-			get; set;
-		}
+        public List<IStatement> Statements
+        {
+            get; set;
+        }
 
         public AccessModifiers AccessModifier
         {
@@ -70,7 +69,7 @@ namespace DofusProtocolBuilder.Parsing
             set;
         }
 
-		public Argument[] Arguments
+        public Argument[] Arguments
         {
             get;
             set;

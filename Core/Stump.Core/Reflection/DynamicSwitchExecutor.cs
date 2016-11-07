@@ -7,11 +7,10 @@ using System.Reflection.Emit;
 
 namespace Stump.Core.Reflection
 {
-    class DynamicSwitchExecutor
+    internal class DynamicSwitchExecutor
     {
         private readonly Type m_type;
         private readonly List<SwitchCase> m_cases = new List<SwitchCase>();
-
 
         public void Add(int value, object instance, MethodInfo method)
         {

@@ -13,7 +13,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override void Build()
         {
-            
         }
 
         public override string ToString()

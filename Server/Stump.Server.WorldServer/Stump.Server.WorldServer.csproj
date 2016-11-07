@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stump.Server.WorldServer</RootNamespace>
     <AssemblyName>Stump.Server.WorldServer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -92,28 +92,73 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson, Version=1.10.0.62, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Bson.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=1.10.0.62, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Driver.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Owin.Host.HttpListener.3.0.1\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Owin.Hosting.3.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MongoDB.Bson.2.3.0\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MongoDB.Driver.2.3.0\lib\net45\MongoDB.Driver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MongoDB.Driver.Core.2.3.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Legacy, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\mongocsharpdriver.2.3.0\lib\net45\MongoDB.Driver.Legacy.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MySql.Data, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Library\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>..\..\Library\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpRaven, Version=1.4.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SharpRaven.1.4.5\lib\net45\SharpRaven.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -131,7 +176,12 @@
     <Compile Include="AI\Fights\Brain\Custom\Boss\GlourselesteBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\KorriandreBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\PereFwetarBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Invocations\BarrelBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\MamansotBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\MansobeseBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\MeruletteBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\SporakneBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
@@ -144,6 +194,7 @@
     <Compile Include="AI\Fights\Behaviors\EfficienceCalculator.cs" />
     <Compile Include="AI\Fights\Brain\Brain.cs" />
     <Compile Include="AI\Fights\Spells\SpellTargetStrategy.cs" />
+    <Compile Include="AI\Fights\Spells\TargetCell.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
     <Compile Include="Commands\Commands\AICommands.cs" />
@@ -151,6 +202,7 @@
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
     <Compile Include="Commands\Commands\BankCommand.cs" />
+    <Compile Include="Commands\Commands\DebugCommands.cs" />
     <Compile Include="Commands\Commands\DungeonCommands.cs" />
     <Compile Include="Commands\Commands\FightCommands.cs" />
     <Compile Include="Commands\Commands\FightPlacementCommand.cs" />
@@ -162,6 +214,7 @@
     <Compile Include="Commands\Commands\JailCommands.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />
+    <Compile Include="Commands\Commands\MerchantCommand.cs" />
     <Compile Include="Commands\Commands\MonsterCommands.cs" />
     <Compile Include="Commands\Commands\MountCommand.cs" />
     <Compile Include="Commands\Commands\MuteCommand.cs" />
@@ -219,16 +272,17 @@
     <Compile Include="Database\Items\Templates\WeaponTemplate.cs" />
     <Compile Include="Database\Jobs\JobRecord.cs" />
     <Compile Include="Database\Jobs\JobTemplate.cs" />
+    <Compile Include="Database\Misc\AutoAnnounceMessage.cs" />
     <Compile Include="Database\Monsters\DroppableItem.cs" />
     <Compile Include="Database\Monsters\MonsterDungeonSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterGrade.cs" />
     <Compile Include="Database\Monsters\MonsterRace.cs" />
     <Compile Include="Database\Monsters\MonsterSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterSpell.cs" />
+    <Compile Include="Database\Monsters\MonsterStaticSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterSuperRace.cs" />
     <Compile Include="Database\Monsters\MonsterTemplate.cs" />
-    <Compile Include="Database\Mounts\MountCharacter.cs" />
-    <Compile Include="Database\Mounts\MountPaddock.cs" />
+    <Compile Include="Database\Mounts\MountBonus.cs" />
     <Compile Include="Database\Mounts\MountRecord.cs" />
     <Compile Include="Database\Mounts\MountTemplate.cs" />
     <Compile Include="Database\Npcs\Actions\NpcAction.cs" />
@@ -242,16 +296,25 @@
     <Compile Include="Database\Npcs\NpcReplyRecord.cs" />
     <Compile Include="Database\Npcs\NpcSpawn.cs" />
     <Compile Include="Database\Npcs\NpcTemplate.cs" />
+    <Compile Include="Database\Npcs\Replies\CompleteQuestObjectiveReply.cs" />
     <Compile Include="Database\Npcs\Replies\ContinueDialogReply.cs" />
+    <Compile Include="Database\Npcs\Replies\LearnSpellReply.cs" />
     <Compile Include="Database\Npcs\Replies\EndDialogReply.cs" />
     <Compile Include="Database\Npcs\Replies\LightRestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\NpcReply.cs" />
+    <Compile Include="Database\Npcs\Replies\PvPSeekReply.cs" />
     <Compile Include="Database\Npcs\Replies\RestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\SpellResetReply.cs" />
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
     <Compile Include="Database\Npcs\Replies\DeleteItemReply.cs" />
     <Compile Include="Database\PrimaryKeyIdProvider.cs" />
+    <Compile Include="Database\Quests\QuestObjectiveTemplate.cs" />
+    <Compile Include="Database\Quests\QuestRecord.cs" />
+    <Compile Include="Database\Quests\QuestRewardTemplate.cs" />
+    <Compile Include="Database\Quests\QuestStepTemplate.cs" />
+    <Compile Include="Database\Quests\QuestTemplate.cs" />
     <Compile Include="Database\Shortcuts\PresetShortcut.cs" />
+    <Compile Include="Database\Social\BadWordRecord.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\Tinsel\OrnamentRecord.cs" />
     <Compile Include="Database\Tinsel\TinselManager.cs" />
@@ -263,6 +326,7 @@
     <Compile Include="Database\World\WorldMapTaxCollector.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
+    <Compile Include="Game\Actors\Fight\Customs\LivingChest.cs" />
     <Compile Include="Game\Actors\Fight\SlaveFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedBomb.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
@@ -340,6 +404,7 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
+    <Compile Include="Game\Effects\Handlers\Items\EmoteItemEffect.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\BuffTrigger.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPLost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
@@ -348,7 +413,11 @@
     <Compile Include="Game\Effects\Handlers\Spells\Move\Advance.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Attract.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Retreat.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\LearnEmote.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\SeekPlayer.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\SwitchAlignment.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
@@ -401,7 +470,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\SkipTurn.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\RestoreHpPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\DamageSharing.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Move\Dodge.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\Dodge.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Rewind.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\APStealNonFix.cs" />
@@ -523,15 +592,19 @@
     <Compile Include="Game\Items\Player\Bank.cs" />
     <Compile Include="Game\Items\Player\BankItem.cs" />
     <Compile Include="Database\Items\BankItemRecord.cs" />
+    <Compile Include="Game\Items\Player\Custom\ExoItem.cs" />
     <Compile Include="Game\Items\Player\Custom\DofusItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
+    <Compile Include="Game\Items\Player\Custom\KamasPouch.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
+    <Compile Include="Game\Items\Player\Custom\MountCertificate.cs" />
     <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ShieldItem.cs" />
-    <Compile Include="Game\Items\Player\Custom\TokenScroll.cs" />
+    <Compile Include="Game\Items\Player\Custom\SoulStone.cs" />
+    <Compile Include="Game\Items\Player\Custom\SoulStoneFilled.cs" />
     <Compile Include="Game\Items\Player\DefaultItem.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\BoundLivingObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\CandyItem.cs" />
@@ -545,7 +618,10 @@
     <Compile Include="Game\Items\Pet.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
+    <Compile Include="Game\Maps\Cells\DirectionFlagEnum.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\AllPoints.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Complement.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\CrossSet.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Difference.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Intersection.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Set.cs" />
@@ -557,11 +633,20 @@
     <Compile Include="Game\Maps\Paddocks\Paddock.cs" />
     <Compile Include="Game\Maps\Paddocks\PaddockManager.cs" />
     <Compile Include="Game\Maps\Spawns\GroupSize.cs" />
+    <Compile Include="Game\Maps\Spawns\StaticSpawningPool.cs" />
     <Compile Include="Game\Maps\WorldObjectItem.cs" />
     <Compile Include="Game\Maps\WorldObjectsContext.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\Mount.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\MountManager.cs" />
+    <Compile Include="Game\Misc\AutoAnnounceManager.cs" />
+    <Compile Include="Game\Quests\Objectives\BringItemsToObjective.cs" />
+    <Compile Include="Game\Quests\Objectives\DefeatMonstersObjective.cs" />
+    <Compile Include="Game\Quests\Quest.cs" />
+    <Compile Include="Game\Quests\QuestManager.cs" />
+    <Compile Include="Game\Quests\QuestObjective.cs" />
+    <Compile Include="Game\Quests\QuestReward.cs" />
+    <Compile Include="Game\Quests\QuestStep.cs" />
     <Compile Include="Game\Social\ChatEntry.cs" />
     <Compile Include="Game\Social\ChatHistory.cs" />
     <Compile Include="Game\Social\Friend.cs" />
@@ -573,6 +658,10 @@
     <Compile Include="Game\Spells\Casts\Elementary\CawotteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\NaughtyChildCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\OldToyParadeCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\PunishmentCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\VertigoCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\BombExplodSpellCastHandler.cs" />
@@ -689,6 +778,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Core\IO\WorldConsole.cs" />
+    <Compile Include="WebAPI\Controllers\AccountController.cs" />
+    <Compile Include="WebAPI\Controllers\BankController.cs" />
+    <Compile Include="WebAPI\Controllers\CharacterController.cs" />
+    <Compile Include="WebAPI\Controllers\InventoryController.cs" />
+    <Compile Include="WebAPI\CustomAuthorize.cs" />
+    <Compile Include="WebAPI\Startup.cs" />
+    <Compile Include="WebAPI\WebServer.cs" />
     <Compile Include="WorldServer.cs" />
     <Compile Include="Game\Accounts\AccountManager.cs" />
     <Compile Include="Game\Actors\ContextActor.cs" />
@@ -879,10 +975,6 @@
     <ProjectReference Include="..\..\Library\TreeSharp\TreeSharp.csproj">
       <Project>{8BFDD80E-9E64-4386-B676-ED3CFDF1B095}</Project>
       <Name>TreeSharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Library\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
-      <Project>{72E591D6-8F83-4D8C-8F67-9C325E623234}</Project>
-      <Name>Xceed.Wpf.Toolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>

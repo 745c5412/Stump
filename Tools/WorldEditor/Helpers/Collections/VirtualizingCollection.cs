@@ -13,7 +13,7 @@ namespace WorldEditor.Helpers.Collections
     /// due to memory consumption or fetch latency.
     /// </summary>
     /// <remarks>
-    /// The IList implmentation is not fully complete, but should be sufficient for use as read only collection 
+    /// The IList implmentation is not fully complete, but should be sufficient for use as read only collection
     /// data bound to a suitable ItemsControl.
     /// </remarks>
     /// <typeparam name="T"></typeparam>
@@ -68,7 +68,7 @@ namespace WorldEditor.Helpers.Collections
             _itemsProvider = itemsProvider;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region ItemsProvider
 
@@ -83,7 +83,7 @@ namespace WorldEditor.Helpers.Collections
             get { return _itemsProvider; }
         }
 
-        #endregion
+        #endregion ItemsProvider
 
         #region PageSize
 
@@ -98,7 +98,7 @@ namespace WorldEditor.Helpers.Collections
             get { return _pageSize; }
         }
 
-        #endregion
+        #endregion PageSize
 
         #region PageTimeout
 
@@ -114,7 +114,7 @@ namespace WorldEditor.Helpers.Collections
             get { return _pageTimeout; }
         }
 
-        #endregion
+        #endregion PageTimeout
 
         #region IList<T>, IList
 
@@ -146,7 +146,7 @@ namespace WorldEditor.Helpers.Collections
             }
         }
 
-        #endregion
+        #endregion Count
 
         #region Indexer
 
@@ -167,11 +167,11 @@ namespace WorldEditor.Helpers.Collections
                 RequestPage(pageIndex);
 
                 // if accessing upper 50% then request next page
-                if ( pageOffset > PageSize/2 && pageIndex < Count / PageSize)
+                if (pageOffset > PageSize / 2 && pageIndex < Count / PageSize)
                     RequestPage(pageIndex + 1);
 
                 // if accessing lower 50% then request prev page
-                if (pageOffset < PageSize/2 && pageIndex > 0)
+                if (pageOffset < PageSize / 2 && pageIndex > 0)
                     RequestPage(pageIndex - 1);
 
                 // remove stale pages
@@ -186,14 +186,14 @@ namespace WorldEditor.Helpers.Collections
             }
             set { throw new NotSupportedException(); }
         }
-        
+
         object IList.this[int index]
         {
             get { return this[index]; }
             set { throw new NotSupportedException(); }
         }
 
-        #endregion
+        #endregion Indexer
 
         #region IEnumerator<T>, IEnumerator
 
@@ -225,7 +225,7 @@ namespace WorldEditor.Helpers.Collections
             return GetEnumerator();
         }
 
-        #endregion
+        #endregion IEnumerator<T>, IEnumerator
 
         #region Add
 
@@ -246,7 +246,7 @@ namespace WorldEditor.Helpers.Collections
             throw new NotSupportedException();
         }
 
-        #endregion
+        #endregion Add
 
         #region Contains
 
@@ -267,7 +267,7 @@ namespace WorldEditor.Helpers.Collections
             return false;
         }
 
-        #endregion
+        #endregion Contains
 
         #region Clear
 
@@ -282,13 +282,13 @@ namespace WorldEditor.Helpers.Collections
             throw new NotSupportedException();
         }
 
-        #endregion
+        #endregion Clear
 
         #region IndexOf
 
         int IList.IndexOf(object value)
         {
-            return IndexOf((T) value);
+            return IndexOf((T)value);
         }
 
         /// <summary>
@@ -303,7 +303,7 @@ namespace WorldEditor.Helpers.Collections
             return -1;
         }
 
-        #endregion
+        #endregion IndexOf
 
         #region Insert
 
@@ -328,7 +328,7 @@ namespace WorldEditor.Helpers.Collections
             Insert(index, (T)value);
         }
 
-        #endregion
+        #endregion Insert
 
         #region Remove
 
@@ -367,7 +367,7 @@ namespace WorldEditor.Helpers.Collections
             throw new NotSupportedException();
         }
 
-        #endregion
+        #endregion Remove
 
         #region CopyTo
 
@@ -401,8 +401,8 @@ namespace WorldEditor.Helpers.Collections
             throw new NotSupportedException();
         }
 
-        #endregion
-        
+        #endregion CopyTo
+
         #region Misc
 
         /// <summary>
@@ -450,9 +450,9 @@ namespace WorldEditor.Helpers.Collections
             get { return false; }
         }
 
-        #endregion
-        
-        #endregion
+        #endregion Misc
+
+        #endregion IList<T>, IList
 
         #region Paging
 
@@ -471,7 +471,7 @@ namespace WorldEditor.Helpers.Collections
             foreach (int key in keys)
             {
                 // page 0 is a special case, since WPF ItemsControl access the first item frequently
-                if ( key != 0 && (DateTime.Now - _pageTouchTimes[key]).TotalMilliseconds > PageTimeout )
+                if (key != 0 && (DateTime.Now - _pageTouchTimes[key]).TotalMilliseconds > PageTimeout)
                 {
                     _pages.Remove(key);
                     _pageTouchTimes.Remove(key);
@@ -487,8 +487,8 @@ namespace WorldEditor.Helpers.Collections
         /// <param name="page">The page.</param>
         protected virtual void PopulatePage(int pageIndex, IList<T> page)
         {
-            Trace.WriteLine("Page populated: "+pageIndex);
-            if ( _pages.ContainsKey(pageIndex) )
+            Trace.WriteLine("Page populated: " + pageIndex);
+            if (_pages.ContainsKey(pageIndex))
                 _pages[pageIndex] = page;
         }
 
@@ -512,7 +512,7 @@ namespace WorldEditor.Helpers.Collections
             }
         }
 
-        #endregion
+        #endregion Paging
 
         #region Load methods
 
@@ -533,7 +533,7 @@ namespace WorldEditor.Helpers.Collections
             PopulatePage(pageIndex, FetchPage(pageIndex));
         }
 
-        #endregion
+        #endregion Load methods
 
         #region Fetch methods
 
@@ -544,7 +544,7 @@ namespace WorldEditor.Helpers.Collections
         /// <returns></returns>
         protected IList<T> FetchPage(int pageIndex)
         {
-            return ItemsProvider.FetchRange(pageIndex*PageSize, PageSize);
+            return ItemsProvider.FetchRange(pageIndex * PageSize, PageSize);
         }
 
         /// <summary>
@@ -556,6 +556,6 @@ namespace WorldEditor.Helpers.Collections
             return ItemsProvider.FetchCount();
         }
 
-        #endregion
+        #endregion Fetch methods
     }
 }

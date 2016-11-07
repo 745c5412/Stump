@@ -1,9 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
-using DBSynchroniser.Records;
-using WorldEditor.Database;
-using WorldEditor.Editors.Items;
+﻿using System.Windows;
 
 namespace WorldEditor.Search.Items
 {

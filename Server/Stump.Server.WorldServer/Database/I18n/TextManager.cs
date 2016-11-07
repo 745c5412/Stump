@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.I18N;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.I18n
 {
@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Database.I18n
 
         public string GetText(int id, Languages lang)
         {
-            return GetText((uint) id, lang);
+            return GetText((uint)id, lang);
         }
 
         public string GetText(uint id)
@@ -61,22 +61,31 @@ namespace Stump.Server.WorldServer.Database.I18n
             {
                 case Languages.English:
                     return record.English ?? "(not found)";
+
                 case Languages.French:
                     return record.French ?? "(not found)";
+
                 case Languages.German:
                     return record.German ?? "(not found)";
+
                 case Languages.Spanish:
                     return record.Spanish ?? "(not found)";
+
                 case Languages.Italian:
                     return record.Italian ?? "(not found)";
+
                 case Languages.Japanish:
                     return record.Japanish ?? "(not found)";
+
                 case Languages.Dutsh:
                     return record.Dutsh ?? "(not found)";
+
                 case Languages.Portugese:
                     return record.Portugese ?? "(not found)";
+
                 case Languages.Russish:
                     return record.Russish ?? "(not found)";
+
                 default:
                     return "(not found)";
             }
@@ -97,22 +106,31 @@ namespace Stump.Server.WorldServer.Database.I18n
             {
                 case Languages.English:
                     return record.English ?? "(not found)";
+
                 case Languages.French:
                     return record.French ?? "(not found)";
+
                 case Languages.German:
                     return record.German ?? "(not found)";
+
                 case Languages.Spanish:
                     return record.Spanish ?? "(not found)";
+
                 case Languages.Italian:
                     return record.Italian ?? "(not found)";
+
                 case Languages.Japanish:
                     return record.Japanish ?? "(not found)";
+
                 case Languages.Dutsh:
                     return record.Dutsh ?? "(not found)";
+
                 case Languages.Portugese:
                     return record.Portugese ?? "(not found)";
+
                 case Languages.Russish:
                     return record.Russish ?? "(not found)";
+
                 default:
                     return "(not found)";
             }

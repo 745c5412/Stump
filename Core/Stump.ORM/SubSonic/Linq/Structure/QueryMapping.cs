@@ -2,14 +2,13 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Linq.Translation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Linq.Translation;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -18,7 +17,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public abstract class QueryMapping
     {
-        IQueryLanguage language;
+        private IQueryLanguage language;
 
         protected QueryMapping(IQueryLanguage language)
         {
@@ -152,9 +151,12 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                     Expression me = this.GetMemberExpression(root, mi);
                     if (me != null)
                     {
-                        try {
+                        try
+                        {
                             bindings.Add(Expression.Bind(mi, me));
-                        } catch {
+                        }
+                        catch
+                        {
                             //this is only here until I rewrite this whole thing
                         }
                     }
@@ -172,7 +174,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         public abstract void GetAssociationKeys(MemberInfo association, out List<MemberInfo> declaredTypeMembers, out List<MemberInfo> associatedMembers);
 
         /// <summary>
-        /// Get an expression for a mapped property relative to a root expression. 
+        /// Get an expression for a mapped property relative to a root expression.
         /// The root is either a TableExpression or an expression defining an entity instance.
         /// </summary>
         /// <param name="root"></param>
@@ -217,10 +219,12 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                     if (this.IsColumn(member))
                     {
                         string columnName = this.GetColumnName(member);
-                        if (!string.IsNullOrEmpty(columnName)) {
+                        if (!string.IsNullOrEmpty(columnName))
+                        {
                             return new ColumnExpression(TypeHelper.GetMemberType(member), table.Alias, this.GetColumnName(member));
-
-                        } else {
+                        }
+                        else
+                        {
                             return root;
                         }
                     }

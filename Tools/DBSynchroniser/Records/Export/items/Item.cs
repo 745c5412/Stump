@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:48
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -24,11 +21,15 @@ namespace DBSynchroniser.Records
         public const uint QUEST_CATEGORY = 3;
         public const uint OTHER_CATEGORY = 4;
         public int id;
+
         [I18NField]
         public uint nameId;
+
         public uint typeId;
+
         [I18NField]
         public uint descriptionId;
+
         public int iconId;
         public uint level;
         public uint realWeight;
@@ -58,7 +59,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -232,6 +232,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_recipeIdsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -265,6 +266,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_possibleEffectsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -291,6 +293,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_favoriteSubAreasBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -321,7 +324,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Item)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             TypeId = castedObj.typeId;
@@ -351,7 +354,7 @@ namespace DBSynchroniser.Records
             FavoriteSubAreasBonus = castedObj.favoriteSubAreasBonus;
             Weight = castedObj.weight;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Item)parent : new Item();
@@ -385,13 +388,12 @@ namespace DBSynchroniser.Records
             obj.weight = Weight;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_recipeIdsBin = recipeIds == null ? null : recipeIds.ToBinary();
             m_possibleEffectsBin = possibleEffects == null ? null : possibleEffects.ToBinary();
             m_favoriteSubAreasBin = favoriteSubAreas == null ? null : favoriteSubAreas.ToBinary();
-        
         }
     }
 }

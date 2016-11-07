@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items.BidHouse;
 using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.BidHouse
 {
@@ -32,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             get { return Math.Abs(BidHouseManager.UnsoldDelay - (DateTime.Now - Record.SellDate).Minutes); }
         }
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -56,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             };
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Functions
 
@@ -98,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return true;
         }
 
-        #endregion
+        #endregion Functions
 
         public void Save(ORM.Database database)
         {

@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -13,10 +11,12 @@ using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using System.Drawing;
+using System.Linq;
 
 namespace ArkalysPlugin.Npcs
 {
-    class NpcClassChange
+    internal class NpcClassChange
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -118,10 +118,7 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcClassChangeScript : NpcAction
     {
-        public override NpcActionTypeEnum[] ActionType
-        {
-            get { return new [] { NpcActionTypeEnum.ACTION_TALK }; }
-        }
+        public override NpcActionTypeEnum[] ActionType => new[] { NpcActionTypeEnum.ACTION_TALK };
 
         public override void Execute(Npc npc, Character character)
         {
@@ -144,7 +141,7 @@ namespace ArkalysPlugin.Npcs
         {
             base.Open();
 
-            m_price = 700 + (40 * Character.PrestigeRank);
+            m_price = 100 + (2 * ((Character.PrestigeRank + 1) * Character.Level));
 
             if (Character.Inventory.Tokens == null || Character.Inventory.Tokens.Stack < m_price)
             {
@@ -227,45 +224,59 @@ namespace ArkalysPlugin.Npcs
                 case PlayableBreedEnum.Feca:
                     spellId = 2108;
                     break;
+
                 case PlayableBreedEnum.Osamodas:
                     spellId = 2098;
                     break;
+
                 case PlayableBreedEnum.Enutrof:
                     spellId = 2123;
                     break;
+
                 case PlayableBreedEnum.Sram:
                     spellId = 2078;
                     break;
+
                 case PlayableBreedEnum.Xelor:
                     spellId = 2118;
                     break;
+
                 case PlayableBreedEnum.Ecaflip:
                     spellId = 2058;
                     break;
+
                 case PlayableBreedEnum.Eniripsa:
                     spellId = 2133;
                     break;
+
                 case PlayableBreedEnum.Iop:
                     spellId = 2048;
                     break;
+
                 case PlayableBreedEnum.Cra:
                     spellId = 2088;
                     break;
+
                 case PlayableBreedEnum.Sadida:
                     spellId = 2128;
                     break;
+
                 case PlayableBreedEnum.Sacrieur:
                     spellId = 2103;
                     break;
+
                 case PlayableBreedEnum.Pandawa:
                     spellId = 2113;
                     break;
+
                 case PlayableBreedEnum.Roublard:
                     spellId = 2148;
                     break;
+
                 case PlayableBreedEnum.Zobal:
                     spellId = 18596;
                     break;
+
                 case PlayableBreedEnum.Steamer:
                     spellId = 20109;
                     break;

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Types;
+﻿using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -16,7 +16,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Caster = caster;
             Look = caster.Look.Clone();
-            m_stats = caster.Stats.CloneAndChangeOwner(this);
+            m_stats = new StatsFields(this);
+            m_stats.InitializeFromStats(caster.Stats);
         }
 
         public FightActor Caster
@@ -35,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return Name;
         }
 
-        public override byte Level
+        public override short Level
         {
             get { return Caster.Level; }
         }

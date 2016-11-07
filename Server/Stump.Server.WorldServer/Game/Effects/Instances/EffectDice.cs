@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-using Stump.Core.Threading;
+﻿using Stump.Core.Threading;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Types;
+using System;
+using System.IO;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -19,7 +19,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectDice(EffectDice copy)
             : this(copy.Id, copy.Value, copy.DiceNum, copy.DiceFace, copy)
         {
-            
         }
 
         public EffectDice(short id, short value, short dicenum, short diceface, EffectBase effect)
@@ -32,8 +31,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectDice(EffectInstanceDice effect)
             : base(effect)
         {
-            m_dicenum = (short) effect.diceNum;
-            m_diceface = (short) effect.diceSide;
+            m_dicenum = (short)effect.diceNum;
+            m_diceface = (short)effect.diceSide;
         }
 
         public override int ProtocoleId
@@ -66,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override object[] GetValues()
         {
-            return new object[] {DiceNum, DiceFace, Value};
+            return new object[] { DiceNum, DiceFace, Value };
         }
 
         public override ObjectEffect GetObjectEffect()
@@ -89,10 +88,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = (uint) ZoneShape,
+                zoneShape = (uint)ZoneShape,
                 value = Value,
-                diceNum = (uint) DiceNum,
-                diceSide = (uint) DiceFace
+                diceNum = (uint)DiceNum,
+                diceSide = (uint)DiceFace
             };
         }
 
@@ -104,13 +103,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             var max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
             var min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
 
+            if (min == 0)
+                min = max;
+
             if (type == EffectGenerationType.MaxEffects)
                 return new EffectInteger(Id, Template.Operator != "-" ? max : min, this);
             if (type == EffectGenerationType.MinEffects)
                 return new EffectInteger(Id, Template.Operator != "-" ? min : max, this);
 
             if (min != 0)
-                return new EffectInteger(Id, (short) rand.Next(min, max + 1), this);
+                return new EffectInteger(Id, (short)rand.Next(min, max + 1), this);
 
             return max == 0 ? new EffectInteger(Id, m_value, this) : new EffectInteger(Id, max, this);
         }
@@ -144,7 +146,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             if (ReferenceEquals(a, b))
                 return true;
 
-            if (((object) a == null) || ((object) b == null))
+            if (((object)a == null) || ((object)b == null))
                 return false;
 
             return a.Equals(b);
@@ -167,8 +169,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             unchecked
             {
                 var result = base.GetHashCode();
-                result = (result*397) ^ m_diceface;
-                result = (result*397) ^ m_dicenum;
+                result = (result * 397) ^ m_diceface;
+                result = (result * 397) ^ m_dicenum;
                 return result;
             }
         }

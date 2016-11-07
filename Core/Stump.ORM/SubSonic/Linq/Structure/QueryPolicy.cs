@@ -2,18 +2,18 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
+using Stump.ORM.SubSonic.Linq.Translation;
 using System.Linq.Expressions;
 using System.Reflection;
-using Stump.ORM.SubSonic.Linq.Translation;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
     /// <summary>
-    /// Defines query execution and materialization policies. 
+    /// Defines query execution and materialization policies.
     /// </summary>
     public class QueryPolicy
     {
-        QueryMapping mapping;
+        private QueryMapping mapping;
 
         public QueryPolicy(QueryMapping mapping)
         {
@@ -39,7 +39,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         }
 
         /// <summary>
-        /// Determines if a relationship property is included, but the query for the related data is 
+        /// Determines if a relationship property is included, but the query for the related data is
         /// deferred until the property is first accessed.
         /// </summary>
         /// <param name="member"></param>
@@ -59,7 +59,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         {
             // add included relationships to client projection
             expression = RelationshipIncluder.Include(this, expression);
-    
+
             expression = UnusedColumnRemover.Remove(expression);
             expression = RedundantColumnRemover.Remove(expression);
             expression = RedundantSubqueryRemover.Remove(expression);

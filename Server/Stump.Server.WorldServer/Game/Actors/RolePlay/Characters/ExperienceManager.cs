@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Characters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private KeyValuePair<byte, ExperienceTableEntry> m_highestCharacterLevel;
         private KeyValuePair<byte, ExperienceTableEntry> m_highestGrade;
         private KeyValuePair<byte, ExperienceTableEntry> m_highestGuildLevel;
-        private KeyValuePair<byte, ExperienceTableEntry> m_highestMountLevel; 
+        private KeyValuePair<byte, ExperienceTableEntry> m_highestMountLevel;
 
         public byte HighestCharacterLevel
         {
@@ -70,22 +70,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public long GetCharacterNextLevelExperience(byte level)
         {
-            if (!m_records.ContainsKey((byte) (level + 1)))
+            if (!m_records.ContainsKey((byte)(level + 1)))
                 return long.MaxValue;
 
             if (m_records[(byte)(level + 1)].CharacterExp == null)
                 return long.MaxValue;
 
-            var exp = m_records[(byte) (level + 1)].CharacterExp;
+            var exp = m_records[(byte)(level + 1)].CharacterExp;
 
             if (!exp.HasValue)
                 throw new Exception("Character level " + level + " is not defined");
 
             return exp.Value;
         }
+
         public byte GetCharacterLevel(long experience, int prestigeRank)
         {
-            return GetCharacterLevel(experience - prestigeRank*HighestCharacterExperience);
+            return GetCharacterLevel(experience - prestigeRank * HighestCharacterExperience);
         }
 
         public byte GetCharacterLevel(long experience)
@@ -95,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 if (experience >= m_highestCharacterLevel.Value.CharacterExp)
                     return m_highestCharacterLevel.Key;
 
-                return (byte) (m_records.First(entry => entry.Value.CharacterExp > experience).Key - 1);
+                return (byte)(m_records.First(entry => entry.Value.CharacterExp > experience).Key - 1);
             }
             catch (InvalidOperationException ex)
             {
@@ -103,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        #endregion
+        #endregion Character
 
         #region Alignement
 
@@ -134,14 +135,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ushort GetAlignementNextGradeHonor(byte grade)
         {
             if (!m_records.ContainsKey((byte)(grade + 1)))
-                return 17500;
+                return Character.HonorLimit;
 
-            if (m_records[(byte) (grade + 1)].AlignmentHonor == null)
-                return 17500;
+            if (m_records[(byte)(grade + 1)].AlignmentHonor == null)
+                return Character.HonorLimit;
 
-            var honor = m_records[(byte) (grade + 1)].AlignmentHonor;
+            var honor = m_records[(byte)(grade + 1)].AlignmentHonor;
 
-            return !honor.HasValue ? (ushort)17500 : honor.Value;
+            return !honor.HasValue ? Character.HonorLimit : honor.Value;
         }
 
         public byte GetAlignementGrade(ushort honor)
@@ -151,7 +152,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 if (honor >= m_highestGrade.Value.AlignmentHonor)
                     return m_highestGrade.Key;
 
-                return (byte) (m_records.First(entry => entry.Value.AlignmentHonor > honor).Key - 1);
+                return (byte)(m_records.First(entry => entry.Value.AlignmentHonor > honor).Key - 1);
             }
             catch (InvalidOperationException ex)
             {
@@ -159,7 +160,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        #endregion
+        #endregion Alignement
 
         #region Guild
 
@@ -194,10 +195,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!m_records.ContainsKey((byte)(level + 1)))
                 return long.MaxValue;
 
-            if (m_records[(byte) (level + 1)].GuildExp == null)
+            if (m_records[(byte)(level + 1)].GuildExp == null)
                 return long.MaxValue;
 
-            var exp = m_records[(byte) (level + 1)].GuildExp;
+            var exp = m_records[(byte)(level + 1)].GuildExp;
 
             if (!exp.HasValue)
                 throw new Exception("Guild level " + level + " is not defined");
@@ -212,7 +213,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 if (experience >= m_highestGuildLevel.Value.GuildExp)
                     return m_highestGuildLevel.Key;
 
-                return (byte) (m_records.First(entry => entry.Value.GuildExp > experience).Key - 1);
+                return (byte)(m_records.First(entry => entry.Value.GuildExp > experience).Key - 1);
             }
             catch (InvalidOperationException ex)
             {
@@ -220,9 +221,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        #endregion
+        #endregion Guild
 
         #region Mount
+
         /// <summary>
         ///     Get the experience requiered to access the given mount level
         /// </summary>
@@ -280,7 +282,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        #endregion
+        #endregion Mount
 
         [Initialization(InitializationPass.Fourth)]
         public override void Initialize()
@@ -291,7 +293,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 if (record.Level > 200)
                     throw new Exception("Level cannot exceed 200 (protocol constraint)");
 
-                m_records.Add((byte) record.Level, record);
+                m_records.Add((byte)record.Level, record);
             }
 
             m_highestCharacterLevel = m_records.OrderByDescending(entry => entry.Value.CharacterExp).FirstOrDefault();

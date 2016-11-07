@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Patterns;
 using Stump.Server.WorldServer;
@@ -12,6 +11,7 @@ using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Linq;
 using NpcSpawn = Stump.Server.WorldServer.Database.Npcs.NpcSpawn;
 using NpcTemplate = Stump.Server.WorldServer.Database.Npcs.NpcTemplate;
 
@@ -69,13 +69,13 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 () =>
                 {
                     var spawn = new NpcSpawn()
-                                    {
-                                        Template = template,
-                                        MapId = position.Map.Id,
-                                        CellId = position.Cell.Id,
-                                        Direction = position.Direction,
-                                        Look = template.Look
-                                    };
+                    {
+                        Template = template,
+                        MapId = position.Map.Id,
+                        CellId = position.Cell.Id,
+                        Direction = position.Direction,
+                        Look = template.Look
+                    };
 
                     NpcManager.Instance.AddNpcSpawn(spawn);
                     position.Map.Area.ExecuteInContext(() =>
@@ -118,7 +118,6 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 trigger.ReplyError("Npc Map must be defined !");
                 return;
             }
-
 
             if (npc.Spawn == null)
             {

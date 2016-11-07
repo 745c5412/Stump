@@ -1,36 +1,36 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
-using System;
-using System.Text;
 using Stump.ORM.SubSonic.Query;
 using Stump.ORM.SubSonic.SQLGeneration;
+using System;
+using System.Text;
 
 namespace Stump.ORM.SubSonic.DataProviders.SqlServer
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    /// 
-    
+    ///
+
     public class Sql2005Generator : ANSISqlGenerator
     {
         private const string PAGING_SQL =
             @"
 SELECT *
-FROM     (SELECT ROW_NUMBER() OVER ({1}) AS Row, 
-{0} 
+FROM     (SELECT ROW_NUMBER() OVER ({1}) AS Row,
+{0}
 {2}
 {3}
 {4}
@@ -43,8 +43,9 @@ WHERE  Row >= {5} AND Row <= {6}";
         /// </summary>
         /// <param name="query">The query.</param>
         public Sql2005Generator(SqlQuery query)
-            : base(query) {
-                ClientName = "System.Data.SqlClient";
+            : base(query)
+        {
+            ClientName = "System.Data.SqlClient";
         }
 
         /// <summary>
@@ -64,10 +65,10 @@ WHERE  Row >= {5} AND Row <= {6}";
             string wheres = GenerateConstraints();
             string orderby = GenerateOrderBy();
 
-            if(String.IsNullOrEmpty(orderby.Trim()))
+            if (String.IsNullOrEmpty(orderby.Trim()))
                 orderby = String.Concat(this.sqlFragment.ORDER_BY, idColumn);
 
-            if(qry.Aggregates.Count > 0)
+            if (qry.Aggregates.Count > 0)
                 joins = String.Concat(joins, GenerateGroupBy());
 
             int pageStart = (qry.CurrentPage - 1) * qry.PageSize + 1;
@@ -94,15 +95,15 @@ WHERE  Row >= {5} AND Row <= {6}";
             sb.AppendLine(")");
 
             //if the values list is set, use that
-            if(i.Inserts.Count > 0)
+            if (i.Inserts.Count > 0)
             {
                 sb.Append(" VALUES (");
                 bool isFirst = true;
-                foreach(InsertSetting s in i.Inserts)
+                foreach (InsertSetting s in i.Inserts)
                 {
-                    if(!isFirst)
+                    if (!isFirst)
                         sb.Append(",");
-                    if(!s.IsExpression)
+                    if (!s.IsExpression)
                         sb.Append(s.ParameterName);
                     else
                         sb.Append(s.Value);

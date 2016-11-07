@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Social
             {
                 return new FriendOnlineInformations(Account.Id,
                     Account.Nickname,
-                    (sbyte)( Character.IsFighting() ? PlayerStateEnum.GAME_TYPE_FIGHT : PlayerStateEnum.GAME_TYPE_ROLEPLAY ),
+                    (sbyte)(Character.IsFighting() ? PlayerStateEnum.GAME_TYPE_FIGHT : PlayerStateEnum.GAME_TYPE_ROLEPLAY),
                     Account.LastConnectionTimeStamp,
                     0, // todo achievement
                     Character.Name,
@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Social
             return new FriendInformations(
                 Account.Id,
                 Account.Nickname,
-                (sbyte) PlayerStateEnum.NOT_CONNECTED,
+                (sbyte)PlayerStateEnum.NOT_CONNECTED,
                 Account.LastConnectionTimeStamp,
                 0); // todo achievement
         }

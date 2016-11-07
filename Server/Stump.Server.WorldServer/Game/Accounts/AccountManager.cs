@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC;
@@ -12,15 +8,23 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace Stump.Server.WorldServer.Game.Accounts
 {
     public class AccountManager : DataManager<AccountManager>
     {
-        public static UserGroup DefaultUserGroup = new UserGroup(new UserGroupData() { Id = 0, IsGameMaster = false, Name = "Default", Role = RoleEnum.Player});
+        [Variable(true)]
+        public static readonly int AccountBlockMaxDelay = 20; // in seconds
+
+        public static UserGroup DefaultUserGroup = new UserGroup(new UserGroupData() { Id = 0, IsGameMaster = false, Name = "Default", Role = RoleEnum.Player });
 
         private Dictionary<int, UserGroup> m_userGroups;
-        private readonly ConcurrentDictionary<int, Character> m_savingCharacters = new ConcurrentDictionary<int, Character>(); 
+        private readonly ConcurrentDictionary<int, Tuple<Character, DateTime>> m_blockedAccount = new ConcurrentDictionary<int, Tuple<Character, DateTime>>();
 
         public override void Initialize()
         {
@@ -42,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Accounts
 
             var ev = new ManualResetEvent(false);
             IList<UserGroupData> groups = null;
-            IPCErrorMessage errorMsg = null;
+            IIPCErrorMessage errorMsg = null;
             IPCAccessor.Instance.SendRequest<GroupsListMessage>(new GroupsRequestMessage(), reply =>
             {
                 groups = reply.Groups;
@@ -66,6 +70,11 @@ namespace Stump.Server.WorldServer.Game.Accounts
             return m_userGroups.TryGetValue(id, out group) ? group : DefaultUserGroup;
         }
 
+        public void AddUserGroup(UserGroup userGroup)
+        {
+            m_userGroups.Add(userGroup.Id, userGroup);
+        }
+
         public WorldAccount CreateWorldAccount(WorldClient client)
         {
             /* Create WorldAccount */
@@ -73,6 +82,8 @@ namespace Stump.Server.WorldServer.Game.Accounts
             {
                 Id = client.Account.Id,
                 Nickname = client.Account.Nickname,
+                Tokens = 0,
+                NewTokens = 0
             };
             Database.Insert(worldAccount);
 
@@ -103,21 +114,29 @@ namespace Stump.Server.WorldServer.Game.Accounts
             return Database.ExecuteScalar<bool>(string.Format("SELECT EXISTS(SELECT 1 FROM accounts WHERE Id={0})", id));
         }
 
-        // block this account 
+        // block this account
         public void BlockAccount(WorldAccount account, Character character)
         {
-            m_savingCharacters.TryAdd(account.Id, character);
+            m_blockedAccount.TryAdd(account.Id, Tuple.Create(character, DateTime.Now));
         }
 
         public void UnBlockAccount(WorldAccount account)
         {
-            Character dummy;
-            m_savingCharacters.TryRemove(account.Id, out dummy);
+            Tuple<Character, DateTime> dummy;
+            m_blockedAccount.TryRemove(account.Id, out dummy);
         }
 
         public bool IsAccountBlocked(int accountId, out Character character)
         {
-            return m_savingCharacters.TryGetValue(accountId, out character);
+            Tuple<Character, DateTime> tuple;
+            if (!m_blockedAccount.TryGetValue(accountId, out tuple))
+            {
+                character = null;
+                return false;
+            }
+
+            character = tuple.Item1;
+            return DateTime.Now - tuple.Item2 < TimeSpan.FromSeconds(AccountBlockMaxDelay);
         }
     }
 }

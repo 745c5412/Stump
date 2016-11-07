@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using NLog;
+﻿using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Effects;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -20,6 +15,10 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Usables;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects
@@ -29,8 +28,11 @@ namespace Stump.Server.WorldServer.Game.Effects
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private delegate ItemEffectHandler ItemEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
+
         private delegate ItemEffectHandler ItemSetEffectConstructor(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply);
+
         private delegate UsableEffectHandler UsableEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
+
         private delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical);
 
         private Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
@@ -43,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         [Initialization(InitializationPass.Third)]
         public override void Initialize()
         {
-            m_effects = Database.Fetch<EffectTemplate>(EffectTemplateRelator.FetchQuery).ToDictionary(entry => (short) entry.Id);
+            m_effects = Database.Fetch<EffectTemplate>(EffectTemplateRelator.FetchQuery).ToDictionary(entry => (short)entry.Id);
 
             InitializeHandlers();
         }
@@ -69,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Effects
                     {
                         var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(BasePlayerItem) });
                         m_itemsEffectHandler.Add(effect, ctor.CreateDelegate<ItemEffectConstructor>());
-                        
+
                         var ctorItemSet = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(ItemSetTemplate), typeof(bool) });
                         if (ctorItemSet != null)
                             m_itemsSetEffectHandler.Add(effect, ctorItemSet.CreateDelegate<ItemSetEffectConstructor>());
@@ -91,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Effects
 
                     m_effectsHandlers[effect].Add(type);
                 }
-            } 
+            }
         }
 
         /// <summary>
@@ -177,7 +179,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         public ItemEffectHandler GetItemEffectHandler(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply)
         {
             ItemSetEffectConstructor handler;
-            return m_itemsSetEffectHandler.TryGetValue(effect.EffectId, out handler) ? handler(effect, target,itemSet, apply) : new DefaultItemEffect(effect, target, itemSet, apply);
+            return m_itemsSetEffectHandler.TryGetValue(effect.EffectId, out handler) ? handler(effect, target, itemSet, apply) : new DefaultItemEffect(effect, target, itemSet, apply);
         }
 
         public void AddUsableEffectHandler(UsableEffectHandler handler)
@@ -272,35 +274,35 @@ namespace Stump.Server.WorldServer.Game.Effects
             if (effectDice.value == 0 && effectDice.diceNum > 0 && effectDice.diceSide > 0)
             {
                 return new EffectInstanceMinMax
-                           {
-                               duration = effectDice.duration,
-                               effectId = effectDice.effectId,
-                               max = effectDice.diceSide,
-                               min = effectDice.diceNum,
-                               modificator = effectDice.modificator,
-                               random = effectDice.random,
-                               targetId = effectDice.targetId,
-                               trigger = effectDice.trigger,
-                               zoneShape = effectDice.zoneShape,
-                               zoneSize = effectDice.zoneSize
-                           };
+                {
+                    duration = effectDice.duration,
+                    effectId = effectDice.effectId,
+                    max = effectDice.diceSide,
+                    min = effectDice.diceNum,
+                    modificator = effectDice.modificator,
+                    random = effectDice.random,
+                    targetId = effectDice.targetId,
+                    trigger = effectDice.trigger,
+                    zoneShape = effectDice.zoneShape,
+                    zoneSize = effectDice.zoneSize
+                };
             }
 
             if (effectDice.value == 0 && effectDice.diceNum == 0 && effectDice.diceSide > 0)
             {
                 return new EffectInstanceMinMax
-                           {
-                               duration = effectDice.duration,
-                               effectId = effectDice.effectId,
-                               max = effectDice.diceSide,
-                               min = effectDice.diceNum,
-                               modificator = effectDice.modificator,
-                               random = effectDice.random,
-                               targetId = effectDice.targetId,
-                               trigger = effectDice.trigger,
-                               zoneShape = effectDice.zoneShape,
-                               zoneSize = effectDice.zoneSize
-                           };
+                {
+                    duration = effectDice.duration,
+                    effectId = effectDice.effectId,
+                    max = effectDice.diceSide,
+                    min = effectDice.diceNum,
+                    modificator = effectDice.modificator,
+                    random = effectDice.random,
+                    targetId = effectDice.targetId,
+                    trigger = effectDice.trigger,
+                    zoneShape = effectDice.zoneShape,
+                    zoneSize = effectDice.zoneSize
+                };
             }
 
             return effect;
@@ -340,8 +342,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             return buffer.ToArray();
         }
 
-
-        public List<EffectBase>  DeserializeEffects(byte[] buffer)
+        public List<EffectBase> DeserializeEffects(byte[] buffer)
         {
             var result = new List<EffectBase>();
 
@@ -367,33 +368,43 @@ namespace Stump.Server.WorldServer.Game.Effects
                 case 1:
                     effect = new EffectBase();
                     break;
+
                 case 2:
                     effect = new EffectCreature();
                     break;
+
                 case 3:
                     effect = new EffectDate();
                     break;
+
                 case 4:
                     effect = new EffectDice();
                     break;
+
                 case 5:
                     effect = new EffectDuration();
                     break;
+
                 case 6:
                     effect = new EffectInteger();
                     break;
+
                 case 7:
                     effect = new EffectLadder();
                     break;
+
                 case 8:
                     effect = new EffectMinMax();
                     break;
+
                 case 9:
                     effect = new EffectMount();
                     break;
+
                 case 10:
                     effect = new EffectString();
                     break;
+
                 default:
                     throw new Exception(string.Format("Incorrect identifier : {0}", identifier));
             }
@@ -421,13 +432,15 @@ namespace Stump.Server.WorldServer.Game.Effects
                     EffectsEnum.Effect_StealHPFire,
                     EffectsEnum.Effect_StealHPNeutral,
 
-                    EffectsEnum.Effect_RemoveAP, 
-                    
+                    EffectsEnum.Effect_RemoveAP,
+
                     EffectsEnum.Effect_RemainingFights,
 
-                    EffectsEnum.Effect_HealHP_108
+                    EffectsEnum.Effect_HealHP_108,
+
+                    EffectsEnum.Effect_SoulStone
                 };
 
-        #endregion
+        #endregion Unrandomable Effects
     }
 }

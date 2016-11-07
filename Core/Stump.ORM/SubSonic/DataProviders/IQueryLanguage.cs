@@ -1,5 +1,5 @@
-using System.Linq.Expressions;
 using System;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.DataProviders
 {
@@ -9,13 +9,18 @@ namespace Stump.ORM.SubSonic.DataProviders
     public interface IQueryLanguage
     {
         string ClientName { get; set; }
-        IDataProvider DataProvider { get;set;}
+        IDataProvider DataProvider { get; set; }
+
         string Quote(string name);
+
         bool IsScalar(Type type);
+
         bool CanBeColumn(Expression expression);
+
         Expression Translate(Expression expression);
+
         string Format(Expression expression);
+
         Expression Parameterize(Expression expression);
     }
 }
-

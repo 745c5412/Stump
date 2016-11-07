@@ -1,5 +1,4 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -7,6 +6,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Challenges;
 using Stump.Server.WorldServer.Game.Maps;
+using System;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -14,9 +14,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public FightCommands()
         {
-            Aliases = new[] {"fight"};
+            Aliases = new[] { "fight" };
             Description = "Provides commands to manage fights";
-            RequiredRole=RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.GameMaster;
         }
     }
 
@@ -24,9 +24,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public KickFightCommand()
         {
-            Aliases = new[] {"kick"};
+            Aliases = new[] { "kick" };
             Description = "Kick the target";
-            ParentCommandType = typeof (FightCommands);
+            ParentCommandType = typeof(FightCommands);
             RequiredRole = RoleEnum.GameMaster;
             AddTargetParameter();
         }
@@ -37,7 +37,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 if (!target.IsInFight())
                     trigger.ReplyError("{0} is not fighting", target);
-
                 else
                 {
                     var fight = target.Fight;
@@ -56,9 +55,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public ListFightCommand()
         {
-            Aliases = new[] {"list"};
+            Aliases = new[] { "list" };
             Description = "List fights on the map";
-            ParentCommandType = typeof (FightCommands);
+            ParentCommandType = typeof(FightCommands);
             RequiredRole = RoleEnum.GameMaster;
             AddParameter("map", "m", "List fights of that map", isOptional: true,
                               converter: ParametersConverter.MapConverter);
@@ -75,7 +74,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     return;
                 }
 
-                map = ((GameTrigger) trigger).Character.Map;
+                map = ((GameTrigger)trigger).Character.Map;
             }
             else
                 map = trigger.Get<Map>("map");
@@ -175,7 +174,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.GameMaster;
             AddParameter("fight", "f", "The fight to end", isOptional: true,
                               converter: ParametersConverter.FightConverter);
-
         }
 
         public override void Execute(TriggerBase trigger)
@@ -183,8 +181,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             IFight fight;
             if (trigger.IsArgumentDefined("fight"))
                 fight = trigger.Get<IFight>("fight");
-            else if ((trigger is GameTrigger) && ((GameTrigger) trigger).Character.IsInFight())
-                fight = ((GameTrigger) trigger).Character.Fight;
+            else if ((trigger is GameTrigger) && ((GameTrigger)trigger).Character.IsInFight())
+                fight = ((GameTrigger)trigger).Character.Fight;
             else
             {
                 trigger.ReplyError("Define a fight");
@@ -214,8 +212,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             IFight fight;
             if (trigger.IsArgumentDefined("fight"))
                 fight = trigger.Get<IFight>("fight");
-            else if (( trigger is GameTrigger ) && ( trigger as GameTrigger ).Character.IsInFight())
-                fight = ( trigger as GameTrigger ).Character.Fight;
+            else if ((trigger is GameTrigger) && (trigger as GameTrigger).Character.IsInFight())
+                fight = (trigger as GameTrigger).Character.Fight;
             else
             {
                 trigger.ReplyError("Define a fight");
@@ -243,8 +241,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             IFight fight;
             if (trigger.IsArgumentDefined("fight"))
                 fight = trigger.Get<IFight>("fight");
-            else if (( trigger is GameTrigger ) && ( (GameTrigger) trigger ).Character.IsInFight())
-                fight = ( (GameTrigger) trigger ).Character.Fight;
+            else if ((trigger is GameTrigger) && ((GameTrigger)trigger).Character.IsInFight())
+                fight = ((GameTrigger)trigger).Character.Fight;
             else
             {
                 trigger.ReplyError("Define a fight");
@@ -274,14 +272,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 trigger.ReplyError("Must be in fight");
                 return;
             }
-            
+
             var challengeId = trigger.Get<int>("challenge");
             var fight = ((GameTrigger)trigger).Character.Fight;
 
             var challenge = ChallengeManager.Instance.GetChallenge(challengeId, fight);
             challenge.Initialize();
 
-            fight.SetChallenge(challenge);
+            fight.AddChallenge(challenge);
 
             trigger.Reply("Force challengeId {0} for current Fight", challenge.Id);
         }

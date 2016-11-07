@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.IO;
+﻿using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Core.Network
 {
-    public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>
+    public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>, IDisposable
     {
         private WorldClient m_singleClient; // avoid new object allocation
         private readonly List<WorldClient> m_underlyingList = new List<WorldClient>();
+        private readonly List<SegmentStream> m_usedStream = new List<SegmentStream>();
 
         public WorldClientCollection()
         {
-            
         }
 
         public WorldClientCollection(IEnumerable<WorldClient> clients)
@@ -29,10 +29,7 @@ namespace Stump.Server.WorldServer.Core.Network
             m_singleClient = client;
         }
 
-        public int Count
-        {
-            get { return m_singleClient != null ? 1 : m_underlyingList.Count; }
-        }
+        public int Count => m_singleClient != null ? 1 : m_underlyingList.Count;
 
         public void Send(Message message)
         {
@@ -48,15 +45,12 @@ namespace Stump.Server.WorldServer.Core.Network
                         return;
 
                     var disconnectedClients = new List<WorldClient>();
-                    SegmentStream stream = BufferManager.Default.CheckOutStream();
+                    var stream = BufferManager.Default.CheckOutStream();
                     try
                     {
                         var writer = new BigEndianWriter(stream);
                         message.Pack(writer);
-                        stream.Segment.Uses = m_underlyingList.Count;
-
-                        if (stream.Segment.Uses == 0)
-                            BufferManager.Default.CheckIn(stream.Segment);
+                        stream.Segment.Uses = m_underlyingList.Count(x => x != null && x.Connected);
 
                         foreach (WorldClient worldClient in m_underlyingList)
                         {
@@ -67,16 +61,13 @@ namespace Stump.Server.WorldServer.Core.Network
                             }
 
                             if (worldClient == null || !worldClient.Connected)
+                            {
                                 disconnectedClients.Add(worldClient);
+                            }
                         }
                     }
                     finally
                     {
-                        if (stream.Segment.Uses > 0)
-                        {
-                            stream.Segment.Uses = 0;
-                            BufferManager.Default.CheckIn(stream.Segment);
-                        }
                     }
 
                     foreach (var client in disconnectedClients)
@@ -115,20 +106,16 @@ namespace Stump.Server.WorldServer.Core.Network
             }
         }
 
-        public IEnumerator<WorldClient> GetEnumerator()
-        {
-            // not thread safe
-            return m_singleClient != null ? new[] { m_singleClient }.AsEnumerable().GetEnumerator() : m_underlyingList.GetEnumerator();
-        }
+        public IEnumerator<WorldClient> GetEnumerator() => m_singleClient != null ? new[] { m_singleClient }.AsEnumerable().GetEnumerator() : m_underlyingList.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public static implicit operator WorldClientCollection(WorldClient client)
+        public static implicit operator WorldClientCollection(WorldClient client) => new WorldClientCollection(client);
+
+        public void Dispose()
         {
-            return new WorldClientCollection(client);
+            m_singleClient = null;
+            m_underlyingList.Clear();
         }
     }
 }

@@ -1,10 +1,10 @@
-using System.Collections.Generic;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 {
@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 
         public delegate void EffectComputeHandler(Character target, EffectInteger effect, bool isBoost);
 
-        #endregion
+        #endregion Delegates
 
         #region Binds
 
@@ -161,7 +161,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                 {PlayerFields.Weight, SubWeight},
             };
 
-
         private static readonly Dictionary<EffectsEnum, PlayerFields> m_addEffectsBinds =
             new Dictionary<EffectsEnum, PlayerFields>
                 {
@@ -304,14 +303,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                     {EffectsEnum.Effect_DecreaseWeight, PlayerFields.Weight}
                 };
 
-        #endregion
+        #endregion Binds
 
         public DefaultItemEffect(EffectBase effect, Character target, BasePlayerItem item)
             : base(effect, target, item)
         {
         }
 
-        public DefaultItemEffect(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply) 
+        public DefaultItemEffect(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply)
             : base(effect, target, itemSet, apply)
         {
         }
@@ -319,6 +318,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         public override bool Apply()
         {
             if (!(Effect is EffectInteger))
+                return false;
+
+            if (Operation == HandlerOperation.NONAPPLY)
                 return false;
 
             EffectComputeHandler handler;
@@ -350,7 +352,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             }
 
             if (handler != null)
-                handler(Target, (EffectInteger) Effect, Boost);
+                handler(Target, (EffectInteger)Effect, Boost);
 
             return true;
         }
@@ -489,7 +491,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 
         private static void AddMPAttack(Character target, EffectInteger effect, bool isBoost)
         {
-            if (isBoost)  target.Stats[PlayerFields.MPAttack].Given += effect.Value; else target.Stats[PlayerFields.MPAttack].Equiped += effect.Value;
+            if (isBoost) target.Stats[PlayerFields.MPAttack].Given += effect.Value; else target.Stats[PlayerFields.MPAttack].Equiped += effect.Value;
         }
 
         private static void AddPushDamageBonus(Character target, EffectInteger effect, bool isBoost)
@@ -682,7 +684,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             if (isBoost) target.Stats[PlayerFields.Weight].Given += effect.Value; else target.Stats[PlayerFields.Weight].Equiped += effect.Value;
         }
 
-        #endregion
+        #endregion Add Methods
 
         #region Sub Methods
 
@@ -1011,6 +1013,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             if (isBoost) target.Stats[PlayerFields.Weight].Given -= effect.Value; else target.Stats[PlayerFields.Weight].Equiped -= effect.Value;
         }
 
-        #endregion
+        #endregion Sub Methods
     }
 }

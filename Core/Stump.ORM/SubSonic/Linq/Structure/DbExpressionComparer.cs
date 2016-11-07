@@ -2,11 +2,10 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Translation;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Translation;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -45,34 +44,46 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 return false;
             if (a.Type != b.Type)
                 return false;
-            switch ((DbExpressionType) a.NodeType)
+            switch ((DbExpressionType)a.NodeType)
             {
                 case DbExpressionType.Table:
-                    return CompareTable((TableExpression) a, (TableExpression) b);
+                    return CompareTable((TableExpression)a, (TableExpression)b);
+
                 case DbExpressionType.Column:
-                    return CompareColumn((ColumnExpression) a, (ColumnExpression) b);
+                    return CompareColumn((ColumnExpression)a, (ColumnExpression)b);
+
                 case DbExpressionType.Select:
-                    return CompareSelect((SelectExpression) a, (SelectExpression) b);
+                    return CompareSelect((SelectExpression)a, (SelectExpression)b);
+
                 case DbExpressionType.Join:
-                    return CompareJoin((JoinExpression) a, (JoinExpression) b);
+                    return CompareJoin((JoinExpression)a, (JoinExpression)b);
+
                 case DbExpressionType.Aggregate:
-                    return CompareAggregate((AggregateExpression) a, (AggregateExpression) b);
+                    return CompareAggregate((AggregateExpression)a, (AggregateExpression)b);
+
                 case DbExpressionType.Scalar:
                 case DbExpressionType.Exists:
                 case DbExpressionType.In:
-                    return CompareSubquery((SubqueryExpression) a, (SubqueryExpression) b);
+                    return CompareSubquery((SubqueryExpression)a, (SubqueryExpression)b);
+
                 case DbExpressionType.AggregateSubquery:
-                    return CompareAggregateSubquery((AggregateSubqueryExpression) a, (AggregateSubqueryExpression) b);
+                    return CompareAggregateSubquery((AggregateSubqueryExpression)a, (AggregateSubqueryExpression)b);
+
                 case DbExpressionType.IsNull:
-                    return CompareIsNull((IsNullExpression) a, (IsNullExpression) b);
+                    return CompareIsNull((IsNullExpression)a, (IsNullExpression)b);
+
                 case DbExpressionType.Between:
-                    return CompareBetween((BetweenExpression) a, (BetweenExpression) b);
+                    return CompareBetween((BetweenExpression)a, (BetweenExpression)b);
+
                 case DbExpressionType.RowCount:
-                    return CompareRowNumber((RowNumberExpression) a, (RowNumberExpression) b);
+                    return CompareRowNumber((RowNumberExpression)a, (RowNumberExpression)b);
+
                 case DbExpressionType.Projection:
-                    return CompareProjection((ProjectionExpression) a, (ProjectionExpression) b);
+                    return CompareProjection((ProjectionExpression)a, (ProjectionExpression)b);
+
                 case DbExpressionType.NamedValue:
-                    return CompareNamedValue((NamedValueExpression) a, (NamedValueExpression) b);
+                    return CompareNamedValue((NamedValueExpression)a, (NamedValueExpression)b);
+
                 default:
                     return base.Compare(a, b);
             }
@@ -230,14 +241,16 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         {
             if (a.NodeType != b.NodeType)
                 return false;
-            switch ((DbExpressionType) a.NodeType)
+            switch ((DbExpressionType)a.NodeType)
             {
                 case DbExpressionType.Scalar:
-                    return CompareScalar((ScalarExpression) a, (ScalarExpression) b);
+                    return CompareScalar((ScalarExpression)a, (ScalarExpression)b);
+
                 case DbExpressionType.Exists:
-                    return CompareExists((ExistsExpression) a, (ExistsExpression) b);
+                    return CompareExists((ExistsExpression)a, (ExistsExpression)b);
+
                 case DbExpressionType.In:
-                    return CompareIn((InExpression) a, (InExpression) b);
+                    return CompareIn((InExpression)a, (InExpression)b);
             }
             return false;
         }

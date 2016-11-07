@@ -1,22 +1,21 @@
 ﻿#region License GNU GPL
+
 // NpcTrade.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
-using System.Globalization;
-using System.Linq;
+#endregion License GNU GPL
+
 using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Logging;
@@ -24,6 +23,9 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System;
+using System.Globalization;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
 {
@@ -59,26 +61,29 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
         }
 
         protected override void Apply()
-        {                            
+        {
             // check all items are still there
             if (!FirstTrader.Items.All(x =>
                 {
                     var item = FirstTrader.Character.Inventory.TryGetItem(x.Guid);
-                    
+
                     return item != null && item.Stack >= x.Stack;
                 }))
             {
                 return;
             }
 
-            FirstTrader.Character.Inventory.SetKamas((int)(FirstTrader.Character.Inventory.Kamas + (SecondTrader.Kamas - FirstTrader.Kamas)));
+            //Check if kamas still here
+            if (FirstTrader.Character.Inventory.Kamas < FirstTrader.Kamas)
+                return;
 
+            FirstTrader.Character.Inventory.SetKamas((int)(FirstTrader.Character.Inventory.Kamas + (SecondTrader.Kamas - FirstTrader.Kamas)));
 
             // trade items
             foreach (var tradeItem in FirstTrader.Items)
             {
                 var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
-                    FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack);
+                FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack);
             }
 
             foreach (var tradeItem in SecondTrader.Items)
@@ -91,7 +96,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
             var document = new BsonDocument
                     {
                         { "NpcId", SecondTrader.Npc.TemplateId },
-                        { "PlayerId", FirstTrader.Id },
+                        { "PlayerId", FirstTrader.Character.Id },
+                        { "PlayerName", FirstTrader.Character.Name },
                         { "NpcKamas", SecondTrader.Kamas },
                         { "PlayerItems", FirstTrader.ItemsString },
                         { "NpcItems", SecondTrader.ItemsString },

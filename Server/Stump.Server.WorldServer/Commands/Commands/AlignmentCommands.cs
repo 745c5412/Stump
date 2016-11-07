@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public AlignmentCommands()
         {
-            Aliases = new[] {"alignment", "align"};
+            Aliases = new[] { "alignment", "align" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Provides many commands to manage player alignment";
         }
@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            foreach(var target in GetTargets(trigger))
+            foreach (var target in GetTargets(trigger))
                 target.ChangeAlignementSide(trigger.Get<AlignmentSideEnum>("side"));
         }
     }

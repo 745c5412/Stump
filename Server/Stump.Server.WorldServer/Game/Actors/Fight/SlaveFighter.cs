@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -14,19 +11,25 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public class SlaveFighter : FightActor, INamedActor
     {
         private readonly StatsFields m_stats;
-        
+
         public SlaveFighter(int id, FightTeam team, FightActor summoner, MonsterGrade template, Cell cell)
             : base(team)
         {
             Id = id;
             Summoner = summoner;
+
             Position = summoner.Position.Clone();
+            FightStartPosition = Position;
+
             Cell = cell;
             Monster = template;
             Look = Monster.Template.EntityLook;
@@ -35,6 +38,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Initialize(template);
             AdjustStats();
 
+            RegisterEvents();
+        }
+
+        public void RegisterEvents()
+        {
             Fight.TurnStarted += OnTurnStarted;
             Fight.TurnStopped += OnTurnStopped;
         }
@@ -48,6 +56,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (characterFighter == null)
                 return;
 
+            ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
+
             var slotIndex = 0;
             ShortcutHandler.SendShortcutBarContentMessage(characterFighter.Character.Client,
                 Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id)), ShortcutBarEnum.SPELL_SHORTCUT_BAR);
@@ -55,22 +65,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void OnTurnStopped(IFight fight, FightActor player)
         {
-            if (player == this && IsAlive())
-                    Die();
-
-            if (player != Summoner)
-                return;
-
-            var characterFighter = Summoner as CharacterFighter;
-            if (characterFighter == null)
-                return;
-
-            ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
+            if (player == this && IsAlive() && Monster.Template.Id == 3120) //Roublabot
+                Die();
         }
 
         protected override void OnTurnPassed()
         {
-            if (IsAlive())
+            if (IsAlive() && Monster.Template.Id == 3120) //Roublabot
                 Die();
         }
 
@@ -79,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Fight.TurnStarted -= OnTurnStarted;
             Fight.TurnStopped -= OnTurnStopped;
 
-            base.OnDead(killedBy, false);
+            base.OnDead(killedBy, passTurn);
 
             Summoner.RemoveSlave(this);
         }
@@ -103,59 +104,32 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public FightActor Summoner
         {
             get;
-            private set;
         }
 
         public MonsterGrade Monster
         {
             get;
-            private set;
         }
 
-        public override ObjectPosition MapPosition
-        {
-            get { return Position; }
-        }
+        public override bool HasResult => false;
 
-        public override byte Level
-        {
-            get { return (byte)Monster.Level; }
-        }
+        public override ObjectPosition MapPosition => Position;
 
-        public override StatsFields Stats
-        {
-            get { return m_stats; }
-        }
+        public override short Level => (short)Monster.Level;
 
-        public override string GetMapRunningFighterName()
-        {
-            return Monster.Id.ToString(CultureInfo.InvariantCulture);
-        }
+        public override StatsFields Stats => m_stats;
 
-        public string Name
-        {
-            get { return Monster.Template.Name; }
-        }
+        public override string GetMapRunningFighterName() => Monster.Id.ToString(CultureInfo.InvariantCulture);
 
-        public IEnumerable<Spell> Spells
-        {
-            get { return Monster.Spells; }
-        }
+        public string Name => Monster.Template.Name;
 
-        public override Spell GetSpell(int id)
-        {
-            return Spells.FirstOrDefault(x => x.Template.Id == id);
-        }
+        public IEnumerable<Spell> Spells => Monster.Spells;
 
-        public override bool HasSpell(int id)
-        {
-            return Spells.Any(x => x.Template.Id == id);
-        }
+        public override Spell GetSpell(int id) => Spells.FirstOrDefault(x => x.Template.Id == id);
 
-        public override FightTeamMemberInformations GetFightTeamMemberInformations()
-        {
-            return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
-        }
+        public override bool HasSpell(int id) => Spells.Any(x => x.Template.Id == id);
+
+        public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
@@ -178,8 +152,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return new CharacterCharacteristicsInformations(
                         characterFighter.Character.Experience, // EXPERIENCE
-                        characterFighter.Character.LowerBoundExperience, // EXPERIENCE level floor 
-                        characterFighter.Character.UpperBoundExperience, // EXPERIENCE nextlevel floor 
+                        characterFighter.Character.LowerBoundExperience, // EXPERIENCE level floor
+                        characterFighter.Character.UpperBoundExperience, // EXPERIENCE nextlevel floor
 
                         characterFighter.Character.Kamas, // Amount of kamas.
 

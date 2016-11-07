@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using WorldEditor.Loaders.Icons;
 
 namespace WorldEditor.Editors.Items
@@ -38,11 +27,11 @@ namespace WorldEditor.Editors.Items
         }
 
         public static readonly DependencyProperty IconsSourceProperty =
-            DependencyProperty.Register("IconsSource", typeof (IEnumerable<Icon>), typeof (IconSelectionDialog), new PropertyMetadata(default(IEnumerable<Icon>)));
+            DependencyProperty.Register("IconsSource", typeof(IEnumerable<Icon>), typeof(IconSelectionDialog), new PropertyMetadata(default(IEnumerable<Icon>)));
 
         public IEnumerable<Icon> IconsSource
         {
-            get { return (IEnumerable<Icon>) GetValue(IconsSourceProperty); }
+            get { return (IEnumerable<Icon>)GetValue(IconsSourceProperty); }
             set { SetValue(IconsSourceProperty, value); }
         }
 

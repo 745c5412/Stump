@@ -1,9 +1,8 @@
-﻿using System;
-using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
+﻿using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {

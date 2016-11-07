@@ -16,21 +16,16 @@ namespace Stump.Server.WorldServer.Game.Arena
             ShowLoot = showLoot;
         }
 
-        public override bool CanLoot(FightTeam team)
-        {
-            return Outcome == FightOutcomeEnum.RESULT_VICTORY && !Fighter.HasLeft() && ShowLoot;
-        }
+        public override bool CanLoot(FightTeam team) => Outcome == FightOutcomeEnum.RESULT_VICTORY && !Fighter.HasLeft() && ShowLoot;
 
         public int Rank
         {
             get;
-            private set;
         }
 
         public bool ShowLoot
         {
             get;
-            private set;
         }
 
         public override FightResultListEntry GetFightResultListEntry()
@@ -44,11 +39,11 @@ namespace Stump.Server.WorldServer.Game.Arena
                 kamas = Fighter.Character.ComputeWonArenaKamas();
             }
 
-            var items = amount > 0 ? new[] {(short) ItemIdEnum.Kolizeton, (short) amount} : new short[0];
+            var items = amount > 0 ? new[] { (short)ItemIdEnum.Kolizeton, (short)amount } : new short[0];
 
             var loot = new DofusProtocol.Types.FightLoot(items, kamas);
 
-            return new FightResultPlayerListEntry((short) Outcome, loot, Id, Alive, (byte)Level,
+            return new FightResultPlayerListEntry((short)Outcome, loot, Id, Alive, (byte)Level,
                 new FightResultAdditionalData[0]);
         }
 

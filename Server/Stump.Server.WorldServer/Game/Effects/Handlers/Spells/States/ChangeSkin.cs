@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
             {
                 if (Dice.Value == 0)
                     continue;
-                
+
                 var look = actor.Look.Clone();
                 var driverLook = look.SubLooks.FirstOrDefault(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER);
                 short skinId = -1;
@@ -36,13 +36,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     case 1575: //Zobal - Pleutre
                         skinId = 1443;
                         break;
+
                     case 1576: //Zobal - Psychopathe
                         skinId = 1449;
                         break;
+
                     case 1035: //Steamer - Scaphrandre
                         skinId = 1955;
                         bonesId = 1;
                         break;
+
                     case 874: //Pandawa - Colère de Zatoïshwan
                         bonesId = 453;
                         scale = 80;
@@ -70,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                     look.BonesID = bonesId;
                 }
-                
+
                 if (Dice.Value >= 0)
                 {
                     var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);

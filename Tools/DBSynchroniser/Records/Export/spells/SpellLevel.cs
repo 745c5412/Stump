@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:50
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -52,7 +49,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -243,6 +239,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statesRequiredBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -269,6 +266,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statesForbiddenBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -295,6 +293,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_effectsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -321,6 +320,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_criticalEffectBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -337,7 +337,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SpellLevel)obj;
-            
+
             Id = castedObj.id;
             SpellId = castedObj.spellId;
             SpellBreed = castedObj.spellBreed;
@@ -368,7 +368,7 @@ namespace DBSynchroniser.Records
             Effects = castedObj.effects;
             CriticalEffect = castedObj.criticalEffect;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (SpellLevel)parent : new SpellLevel();
@@ -403,14 +403,13 @@ namespace DBSynchroniser.Records
             obj.criticalEffect = CriticalEffect;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_statesRequiredBin = statesRequired == null ? null : statesRequired.ToBinary();
             m_statesForbiddenBin = statesForbidden == null ? null : statesForbidden.ToBinary();
             m_effectsBin = effects == null ? null : effects.ToBinary();
             m_criticalEffectBin = criticalEffect == null ? null : criticalEffect.ToBinary();
-        
         }
     }
 }

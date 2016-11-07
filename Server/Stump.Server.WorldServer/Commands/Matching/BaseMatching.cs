@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Stump.Core.Extensions;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Extensions;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Commands.Matching
 {
@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Commands.Matching
         }
 
         public BaseMatching(string pattern, Character caller)
-            : this (pattern)
+            : this(pattern)
         {
             Caller = caller;
         }
@@ -32,7 +32,9 @@ namespace Stump.Server.WorldServer.Commands.Matching
         }
 
         protected abstract string GetName(T obj);
+
         protected abstract IEnumerable<T> GetSource();
+
         protected abstract BaseCriteria<T> GetCriteria(string pattern);
 
         protected virtual T[] GetByNames(string name)

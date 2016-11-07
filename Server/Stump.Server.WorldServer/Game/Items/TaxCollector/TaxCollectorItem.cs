@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Extensions;
+﻿using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
@@ -8,6 +6,8 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 {
@@ -23,16 +23,16 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         public TaxCollectorItem(TaxCollectorNpc owner, int guid, ItemTemplate template, List<EffectBase> effects, uint stack)
         {
             Record = new TaxCollectorItemRecord // create the associated record
-                         {
-                             Id = guid,
-                             OwnerId = owner.GlobalId,
-                             Template = template,
-                             Stack = stack,
-                             Effects = effects,
-                         };
+            {
+                Id = guid,
+                OwnerId = owner.GlobalId,
+                Template = template,
+                Stack = stack,
+                Effects = effects,
+            };
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Functions
 
@@ -59,6 +59,6 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             return new ObjectItemQuantity(Guid, (int)Stack);
         }
 
-        #endregion
+        #endregion Functions
     }
 }

@@ -1,10 +1,10 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
@@ -41,10 +41,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 School = GetEffectSchool(buff.Dice.EffectId),
                 MarkTrigger = MarkTrigger,
                 IsCritical = Critical,
-                
             };
 
-            var damagesAmount = Math.Round(((buff.Target.Stats.Health.PermanentDamages*Dice.DiceNum)/100d));
+            var damagesAmount = Math.Round(((buff.Target.Stats.Health.PermanentDamages * Dice.DiceNum) / 100d));
 
             damages.Amount = (int)damagesAmount;
 
@@ -57,14 +56,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             {
                 case EffectsEnum.Effect_DamageWaterPerHPEroded:
                     return EffectSchoolEnum.Water;
+
                 case EffectsEnum.Effect_DamageEarthPerHPEroded:
                     return EffectSchoolEnum.Earth;
+
                 case EffectsEnum.Effect_DamageAirPerHPEroded:
                     return EffectSchoolEnum.Air;
+
                 case EffectsEnum.Effect_DamageFirePerHPEroded:
                     return EffectSchoolEnum.Fire;
+
                 case EffectsEnum.Effect_DamageNeutralPerHPEroded:
                     return EffectSchoolEnum.Neutral;
+
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));
             }

@@ -2,6 +2,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -35,9 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(InventoryPresetUseMessage.Id)]
         public static void HandleInventoryPresetUse(WorldClient client, InventoryPresetUseMessage message)
         {
-            var result = client.Character.Inventory.EquipPreset(message.presetId);
-
-            SendInventoryPresetUseResultMessage(client, (sbyte)(message.presetId + 1), result);
+            client.Character.Inventory.EquipPreset(message.presetId);
         }
 
         public static void SendInventoryPresetUpdateMessage(WorldClient client, Preset preset)
@@ -55,9 +54,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new InventoryPresetDeleteResultMessage(presetId, (sbyte)result));
         }
 
-        public static void SendInventoryPresetUseResultMessage(WorldClient client, sbyte presetId, PresetUseResultEnum result)
+        public static void SendInventoryPresetUseResultMessage(WorldClient client, sbyte presetId, PresetUseResultEnum result, IEnumerable<byte> unlinkedPosition)
         {
-            client.Send(new InventoryPresetUseResultMessage(presetId, (sbyte)result, new byte[0]));
+            client.Send(new InventoryPresetUseResultMessage(presetId, (sbyte)result, unlinkedPosition));
         }
 
         public static void SendInventoryPresetUpdateErrorMessage(WorldClient client, PresetSaveUpdateErrorEnum result)

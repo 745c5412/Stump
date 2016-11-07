@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -13,6 +10,9 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 {
@@ -30,6 +30,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public const short ClientStarsBonusLimit = 200;
 
         public event Action<MonsterGroup, Character> EnterFight;
+
         public event Action<MonsterGroup, IFight> ExitFight;
 
         private readonly List<Monster> m_monsters = new List<Monster>();
@@ -82,15 +83,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             get
             {
-                var bonus = ( DateTime.Now - CreationDate ).TotalSeconds / ((double)StarsBonusInterval / StarsBonusIncrementation);
+                var bonus = (DateTime.Now - CreationDate).TotalSeconds / ((double)StarsBonusInterval / StarsBonusIncrementation);
 
                 if (bonus > StarsBonusLimit)
                     bonus = StarsBonusLimit;
 
-                return (short) bonus;
+                return (short)bonus;
             }
+            set { CreationDate = DateTime.Now - TimeSpan.FromSeconds(value * StarsBonusInterval / (double)StarsBonusIncrementation); }
         }
-        
+
         public DateTime NextMoveDate
         {
             get;
@@ -108,6 +110,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             get;
             private set;
         }
+
+        public Character AuthorizedAgressor
+        {
+            get;
+            set;
+        }
+
         public override bool CanMove()
         {
             return true;
@@ -160,6 +169,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             if (character.Map != Map)
                 return;
 
+            // only this character and his group can join the fight
+            if (AuthorizedAgressor != null && AuthorizedAgressor != character && AuthorizedAgressor.Client.Connected)
+            {
+                ContextHandler.SendChallengeFightJoinRefusedMessage(character.Client, character, FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER);
+                return;
+            }
+
             Map.Leave(this);
 
             if (Map.GetBlueFightPlacement().Length < m_monsters.Count)
@@ -170,7 +186,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
             var reason = character.CanAttack(this);
             if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
-            {                
+            {
                 ContextHandler.SendChallengeFightJoinRefusedMessage(character.Client, character, reason);
                 return;
             }
@@ -202,6 +218,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             if (handler != null)
                 handler(this, character);
         }
+
         private void OnExitFight(IFight fight)
         {
             Fight = null;
@@ -272,6 +289,5 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             return string.Format("{0} monsters ({1})", m_monsters.Count, Id);
         }
-
     }
 }

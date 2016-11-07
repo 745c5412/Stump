@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServiceStack.Text;
+using System;
 using System.Text;
 
 namespace Stump.Core.Extensions
@@ -7,17 +8,17 @@ namespace Stump.Core.Extensions
     {
         public static long GetUnixTimeStampLong(this DateTime date)
         {
-            return (long)( date - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime() ).TotalMilliseconds;
+            return (long)(date.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalMilliseconds;
         }
 
         public static double GetUnixTimeStampDouble(this DateTime date)
         {
-            return (date - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime()).TotalMilliseconds;
+            return (date.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalMilliseconds;
         }
 
         public static int GetUnixTimeStamp(this DateTime date)
         {
-            return (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            return (int)(date.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds;
         }
 
         public static string ToPrettyFormat(this TimeSpan span)

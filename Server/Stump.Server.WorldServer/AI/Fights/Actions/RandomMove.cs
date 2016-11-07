@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using Stump.Server.WorldServer.Game.Actors.Fight;
+﻿using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using System;
+using System.Linq;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (!Fighter.CanMove())
                 return RunStatus.Failure;
 
-            var lozenge = new Lozenge(0, (byte) Fighter.MP);
+            var lozenge = new Lozenge(0, (byte)Fighter.MP);
             var cells = lozenge.GetCells(Fighter.Cell, Fighter.Fight.Map).Where(entry => Fighter.Fight.IsCellFree(entry)).ToArray();
 
             if (cells.Length == 0)

@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using Stump.Server.WorldServer.Database.Items.Templates;
+﻿using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {
     public sealed class WorldObjectItem : WorldObject
     {
-        public  WorldObjectItem(int id, Map map, Cell cell, ItemTemplate template, List<EffectBase> effects, int quantity)
+        public WorldObjectItem(int id, Map map, Cell cell, ItemTemplate template, List<EffectBase> effects, int quantity)
         {
             Id = id;
             Position = new ObjectPosition(map, cell);

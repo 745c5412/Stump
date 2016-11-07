@@ -1,22 +1,18 @@
-
-
 // Generated on 03/02/2014 20:42:59
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class FightResultPvpData : FightResultAdditionalData
     {
         public const short Id = 190;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public byte grade;
         public ushort minHonorForGrade;
         public ushort maxHonorForGrade;
@@ -24,11 +20,11 @@ namespace Stump.DofusProtocol.Types
         public short honorDelta;
         public ushort dishonor;
         public short dishonorDelta;
-        
+
         public FightResultPvpData()
         {
         }
-        
+
         public FightResultPvpData(byte grade, ushort minHonorForGrade, ushort maxHonorForGrade, ushort honor, short honorDelta, ushort dishonor, short dishonorDelta)
         {
             this.grade = grade;
@@ -39,7 +35,7 @@ namespace Stump.DofusProtocol.Types
             this.dishonor = dishonor;
             this.dishonorDelta = dishonorDelta;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -51,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(dishonor);
             writer.WriteShort(dishonorDelta);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -73,12 +69,10 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on dishonor = " + dishonor + ", it doesn't respect the following condition : dishonor < 0 || dishonor > 500");
             dishonorDelta = reader.ReadShort();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(byte) + sizeof(ushort) + sizeof(ushort) + sizeof(ushort) + sizeof(short) + sizeof(ushort) + sizeof(short);
         }
-        
     }
-    
 }

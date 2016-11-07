@@ -1,30 +1,26 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class FriendInformations : AbstractContactInformations
     {
         public const short Id = 78;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte playerState;
         public int lastConnection;
         public int achievementPoints;
-        
+
         public FriendInformations()
         {
         }
-        
+
         public FriendInformations(int accountId, string accountName, sbyte playerState, int lastConnection, int achievementPoints)
          : base(accountId, accountName)
         {
@@ -32,7 +28,7 @@ namespace Stump.DofusProtocol.Types
             this.lastConnection = lastConnection;
             this.achievementPoints = achievementPoints;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -40,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(lastConnection);
             writer.WriteInt(achievementPoints);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -52,12 +48,10 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on lastConnection = " + lastConnection + ", it doesn't respect the following condition : lastConnection < 0");
             achievementPoints = reader.ReadInt();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(sbyte) + sizeof(int) + sizeof(int);
         }
-        
     }
-    
 }

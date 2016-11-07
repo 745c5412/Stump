@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Monsters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
 using MonsterSpawn = Stump.Server.WorldServer.Database.Monsters.MonsterSpawn;
 using MonsterSpell = Stump.Server.WorldServer.Database.Monsters.MonsterSpell;
@@ -20,6 +20,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         private Dictionary<int, DroppableItem> m_droppableItems;
         private Dictionary<int, MonsterGrade> m_monsterGrades;
         private Dictionary<int, MonsterSuperRace> m_monsterSuperRaces;
+        private Dictionary<int, MonsterStaticSpawn> m_monsterStaticSpawns;
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
@@ -42,6 +43,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                 .ToDictionary(entry => entry.Id);
             m_droppableItems = Database.Query<DroppableItem>(DroppableItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterSuperRaces = Database.Query<MonsterSuperRace>(MonsterSuperRaceRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterStaticSpawns = Database
+                .Query<MonsterStaticSpawn, MonsterStaticSpawnEntity, MonsterGrade, MonsterStaticSpawn>
+                (new MonsterStaticSpawnRelator().Map, MonsterStaticSpawnRelator.FetchQuery)
+                .ToDictionary(entry => entry.Id);
         }
 
         public MonsterGrade[] GetMonsterGrades()
@@ -128,6 +133,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public MonsterDungeonSpawn[] GetMonsterDungeonsSpawns()
         {
             return m_monsterDungeonsSpawns.Values.ToArray();
+        }
+
+        public MonsterStaticSpawn[] GetMonsterStaticSpawns()
+        {
+            return m_monsterStaticSpawns.Values.ToArray();
         }
 
         public MonsterSpawn GetOneMonsterSpawn(Predicate<MonsterSpawn> predicate)

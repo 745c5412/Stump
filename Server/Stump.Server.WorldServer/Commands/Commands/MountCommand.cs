@@ -1,10 +1,9 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using Stump.Core.Extensions;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
-using Stump.Server.WorldServer.Handlers.Mounts;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -30,10 +29,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(GameTrigger trigger)
         {
-            if (trigger.Character.HasEquipedMount())
-                MountManager.Instance.DeleteMount(trigger.Character.Mount);
+            var template = MountManager.Instance.GetTemplates().RandomElementOrDefault();
+            var mount = MountManager.Instance.CreateMount(trigger.Character, template);
 
-            MountManager.Instance.CreateMount(trigger.Character, false, 9);
+            trigger.Character.EquipMount(mount);
         }
     }
 }

@@ -1,23 +1,23 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Extensions;
 
 namespace Stump.ORM.SubSonic.Schema
 {
@@ -38,26 +38,26 @@ namespace Stump.ORM.SubSonic.Schema
             var result = new List<string>();
             var existing = source.Provider.GetTableFromDB(source.Name);
             //remove columns not found
-            foreach(var c in existing.Columns)
+            foreach (var c in existing.Columns)
             {
                 var colFound = source.GetColumn(c.Name);
-                if(colFound == null)
+                if (colFound == null)
                 {
                     //remove it
                     result.Add(source.DropColumnSql(c.Name));
                 }
             }
             //loop the existing table and add columns not found, update columns found...
-            foreach(var col in source.Columns)
+            foreach (var col in source.Columns)
             {
                 var colFound = existing.GetColumn(col.Name);
-                if(colFound == null)
+                if (colFound == null)
                 {
                     //add it
                     string addSql = col.CreateSql;
                     //when adding a column, and UPDATE it appended
                     //need to split that out into its own command
-                    var sqlCommands = addSql.Split(new char[]{';'},StringSplitOptions.RemoveEmptyEntries);
+                    var sqlCommands = addSql.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var s in sqlCommands)
                     {
                         result.Add(s);
@@ -66,12 +66,10 @@ namespace Stump.ORM.SubSonic.Schema
                 else
                 {
                     //don't want to alter the PK
-                    if(!colFound.Equals(col) & ! col.IsPrimaryKey)
+                    if (!colFound.Equals(col) & !col.IsPrimaryKey)
                     {
-                            
-                        if(!String.IsNullOrEmpty(col.AlterSql))
+                        if (!String.IsNullOrEmpty(col.AlterSql))
                             result.Add(col.AlterSql);
-                        
                     }
                 }
             }
@@ -91,7 +89,7 @@ namespace Stump.ORM.SubSonic.Schema
             var table = type.ToSchemaTable(provider);
             var existing = provider.GetTableFromDB(table.Name);
 
-            if(existing != null)
+            if (existing != null)
             {
                 //if the tables exist, reconcile the columns
                 result.AddRange(CreateColumnMigrationSql(table));
@@ -111,7 +109,7 @@ namespace Stump.ORM.SubSonic.Schema
             //pull all the objects out of the namespace
             var modelTypes = _modelAssembly.GetTypes().Where(x => x.Namespace.StartsWith(baseNameSpace));
 
-            foreach(var type in modelTypes)
+            foreach (var type in modelTypes)
                 result.AddRange(MigrateFromModel(type, provider));
 
             return result.ToArray();

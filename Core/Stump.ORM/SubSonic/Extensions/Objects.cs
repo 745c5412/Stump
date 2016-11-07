@@ -1,26 +1,26 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Schema;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Reflection;
-using System.Linq;
 using System.ComponentModel;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.ORM.SubSonic.Schema;
+using System.Data;
+using System.Linq;
+using System.Reflection;
 
 namespace Stump.ORM.SubSonic.Extensions
 {
@@ -43,7 +43,7 @@ namespace Stump.ORM.SubSonic.Extensions
         /// This method was written by Peter Johnson at:
         /// http://aspalliance.com/author.aspx?uId=1026.
         /// </remarks>
-        /// 
+        ///
         public static object ChangeTypeTo<T>(this object value)
         {
             Type conversionType = typeof(T);
@@ -54,12 +54,12 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             // Note: This if block was taken from Convert.ChangeType as is, and is needed here since we're
             // checking properties on conversionType below.
-            if(conversionType == null)
+            if (conversionType == null)
                 throw new ArgumentNullException("conversionType");
 
             // If it's not a nullable type, just pass through the parameters to Convert.ChangeType
 
-            if(conversionType.IsGenericType && conversionType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            if (conversionType.IsGenericType && conversionType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
             {
                 // It's a nullable type, so instead of calling Convert.ChangeType directly which would throw a
                 // InvalidCastException (per http://weblogs.asp.net/pjohnson/archive/2006/02/07/437631.aspx),
@@ -69,7 +69,7 @@ namespace Stump.ORM.SubSonic.Extensions
                 // Note: We only do this check if we're converting to a nullable type, since doing it outside
                 // would diverge from Convert.ChangeType's behavior, which throws an InvalidCastException if
                 // value is null and conversionType is a value type.
-                if(value == null)
+                if (value == null)
                     return null;
 
                 // It's a nullable type, and not null, so that means it can be converted to its underlying type,
@@ -77,18 +77,17 @@ namespace Stump.ORM.SubSonic.Extensions
                 NullableConverter nullableConverter = new NullableConverter(conversionType);
                 conversionType = nullableConverter.UnderlyingType;
             }
-            else if(conversionType == typeof(Guid))
+            else if (conversionType == typeof(Guid))
             {
                 return new Guid(value.ToString());
-                
-            }else if(conversionType==typeof(Int64) && value.GetType()==typeof(int))
+            }
+            else if (conversionType == typeof(Int64) && value.GetType() == typeof(int))
 
             {
                 //there is an issue with SQLite where the PK is ALWAYS int64. If this conversion type is Int64
                 //we need to throw here - suggesting that they need to use LONG instead
-                
-                
-                throw  new InvalidOperationException("Can't convert an Int64 (long) to Int32(int). If you're using SQLite - this is probably due to your PK being an INTEGER, which is 64bit. You'll need to set your key to long.");
+
+                throw new InvalidOperationException("Can't convert an Int64 (long) to Int32(int). If you're using SQLite - this is probably due to your PK being an INTEGER, which is 64bit. You'll need to set your key to long.");
             }
 
             // Now that we've guaranteed conversionType is something Convert.ChangeType can handle (i.e. not a
@@ -100,13 +99,13 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             PropertyInfo[] props = value.GetType().GetProperties();
-            foreach(PropertyInfo pi in props)
+            foreach (PropertyInfo pi in props)
             {
                 try
                 {
                     result.Add(pi.Name, pi.GetValue(value, null));
                 }
-                catch {}
+                catch { }
             }
             return result;
         }
@@ -115,11 +114,11 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             PropertyInfo[] props = item.GetType().GetProperties();
             //FieldInfo[] fields = item.GetType().GetFields();
-            foreach(PropertyInfo pi in props)
+            foreach (PropertyInfo pi in props)
             {
-                if(settings.ContainsKey(pi.Name))
+                if (settings.ContainsKey(pi.Name))
                 {
-                    if(pi.CanWrite)
+                    if (pi.CanWrite)
                         pi.SetValue(item, settings[pi.Name], null);
                 }
             }
@@ -139,21 +138,21 @@ namespace Stump.ORM.SubSonic.Extensions
 
         private static bool CanGenerateSchemaFor(Type type)
         {
-        	return type == typeof (string) ||
-        	       type == typeof (Guid) ||
-        	       type == typeof (Guid?) ||
-        	       type == typeof (decimal) ||
-        	       type == typeof (decimal?) ||
-        	       type == typeof (double) ||
-        	       type == typeof (double?) ||
-        	       type == typeof (DateTime) ||
-        	       type == typeof (DateTime?) ||
-        	       type == typeof (bool) ||
-        	       type == typeof (bool?) ||
-        	       type == typeof (Int16) ||
-        	       type == typeof (Int16?) ||
-        	       type == typeof (Int32) ||
-        	       type == typeof (Int32?) ||
+            return type == typeof(string) ||
+                   type == typeof(Guid) ||
+                   type == typeof(Guid?) ||
+                   type == typeof(decimal) ||
+                   type == typeof(decimal?) ||
+                   type == typeof(double) ||
+                   type == typeof(double?) ||
+                   type == typeof(DateTime) ||
+                   type == typeof(DateTime?) ||
+                   type == typeof(bool) ||
+                   type == typeof(bool?) ||
+                   type == typeof(Int16) ||
+                   type == typeof(Int16?) ||
+                   type == typeof(Int32) ||
+                   type == typeof(Int32?) ||
                    type == typeof(Int64) ||
                    type == typeof(Int64?) ||
                    type == typeof(UInt64?) ||
@@ -163,29 +162,29 @@ namespace Stump.ORM.SubSonic.Extensions
                    type == typeof(UInt32?) ||
                    type == typeof(UInt64) ||
                    type == typeof(UInt64?) ||
-        	       type == typeof (float?) ||
+                   type == typeof(float?) ||
                    type == typeof(float) ||
                    type == typeof(byte) ||
                    type == typeof(sbyte) ||
                    type == typeof(byte[]) ||
-        	       type.IsEnum || IsNullableEnum(type);
+                   type.IsEnum || IsNullableEnum(type);
         }
 
-    	internal static bool IsNullableEnum(Type type)
-    	{
-    		var enumType = Nullable.GetUnderlyingType(type);
+        internal static bool IsNullableEnum(Type type)
+        {
+            var enumType = Nullable.GetUnderlyingType(type);
 
-			return enumType != null && enumType.IsEnum;
-    	}
+            return enumType != null && enumType.IsEnum;
+        }
 
-    	public static ITable ToSchemaTable(this Type type, IDataProvider provider)
+        public static ITable ToSchemaTable(this Type type, IDataProvider provider)
         {
             string tableName = type.Name;
             tableName = tableName.MakePlural();
             var result = new DatabaseTable(tableName, provider);
             result.ClassName = type.Name;
 
-			var typeAttributes = type.GetCustomAttributes(typeof(IClassMappingAttribute), false);
+            var typeAttributes = type.GetCustomAttributes(typeof(IClassMappingAttribute), false);
 
             foreach (IClassMappingAttribute attr in typeAttributes)
             {
@@ -196,7 +195,7 @@ namespace Stump.ORM.SubSonic.Extensions
             }
 
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            foreach(var prop in props)
+            foreach (var prop in props)
             {
                 if (prop.GetSetMethod() == null)
                     continue;
@@ -204,18 +203,18 @@ namespace Stump.ORM.SubSonic.Extensions
                 var attributes = prop.GetCustomAttributes(false);
                 if (ColumnIsIgnored(attributes))
                 {
-                        continue;
+                    continue;
                 }
 
-                if(CanGenerateSchemaFor(prop.PropertyType))
+                if (CanGenerateSchemaFor(prop.PropertyType))
                 {
                     var column = new DatabaseColumn(prop.Name, result);
-						  column.PropertyName = prop.Name;
-					bool isNullable = prop.PropertyType.Name.Contains("Nullable");
+                    column.PropertyName = prop.Name;
+                    bool isNullable = prop.PropertyType.Name.Contains("Nullable");
 
-                	column.DataType = IdentifyColumnDataType(prop.PropertyType, isNullable);
+                    column.DataType = IdentifyColumnDataType(prop.PropertyType, isNullable);
 
-                    if(column.DataType == DbType.Decimal || column.DataType == DbType.Double)
+                    if (column.DataType == DbType.Decimal || column.DataType == DbType.Double)
                     {
                         //default to most common;
                         column.NumberScale = 2;
@@ -230,7 +229,7 @@ namespace Stump.ORM.SubSonic.Extensions
                         isNullable = true;
                     }
 
-                    if(isNullable)
+                    if (isNullable)
                         column.IsNullable = true;
 
                     // Now work with attributes
@@ -273,17 +272,17 @@ namespace Stump.ORM.SubSonic.Extensions
             }
 
             //if the PK is still null-look for a column called [tableName]ID - if it's there then make it PK
-            if(result.PrimaryKey == null)
+            if (result.PrimaryKey == null)
             {
                 var pk = (result.GetColumn(type.Name + "ID") ?? result.GetColumn("ID")) ?? result.GetColumn("Key");
 
-                if(pk != null)
+                if (pk != null)
                 {
                     pk.IsPrimaryKey = true;
                     //if it's an INT then AutoIncrement it
-                    if(pk.IsNumeric)
+                    if (pk.IsNumeric)
                         pk.AutoIncrement = true;
-                    else if(pk.IsString && pk.MaxLength == 0)
+                    else if (pk.IsString && pk.MaxLength == 0)
                         pk.MaxLength = 255;
                     //} else {
                     //    pk = new DatabaseColumn(type.ColumnName + "ID", result);
@@ -296,7 +295,7 @@ namespace Stump.ORM.SubSonic.Extensions
 
             //we should have a PK at this point
             //if not, throw :)
-            if(result.PrimaryKey == null)
+            if (result.PrimaryKey == null)
                 throw new InvalidOperationException("Can't decide which property to consider the Key - you can create one called 'ID' or mark one with SubSonicPrimaryKey attribute");
             return result;
         }
@@ -316,23 +315,23 @@ namespace Stump.ORM.SubSonic.Extensions
             return attributes.Any(x => x is IgnoreAttribute);
         }
 
-		private static DbType IdentifyColumnDataType(Type type, bool isNullable)
-    	{
-			//if this is a nullable type, we need to get at the underlying type
-			if (isNullable)
-			{
-				var nullType = Nullable.GetUnderlyingType(type);
+        private static DbType IdentifyColumnDataType(Type type, bool isNullable)
+        {
+            //if this is a nullable type, we need to get at the underlying type
+            if (isNullable)
+            {
+                var nullType = Nullable.GetUnderlyingType(type);
 
-				return nullType.IsEnum ? GetEnumType(nullType) : Database.GetDbType(nullType);
-			}
+                return nullType.IsEnum ? GetEnumType(nullType) : Database.GetDbType(nullType);
+            }
 
-			return type.IsEnum ? GetEnumType(type) : Database.GetDbType(type);
-    	}
+            return type.IsEnum ? GetEnumType(type) : Database.GetDbType(type);
+        }
 
-    	private static DbType GetEnumType(Type type)
-    	{
-			var enumType = Enum.GetUnderlyingType(type);
-    		return Database.GetDbType(enumType);
-    	}
+        private static DbType GetEnumType(Type type)
+        {
+            var enumType = Enum.GetUnderlyingType(type);
+            return Database.GetDbType(enumType);
+        }
     }
 }

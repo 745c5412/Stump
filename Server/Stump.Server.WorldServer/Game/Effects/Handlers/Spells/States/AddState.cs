@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
             foreach (var affectedActor in GetAffectedActors())
             {
-                var state = SpellManager.Instance.GetSpellState((uint) Dice.Value);
+                var state = SpellManager.Instance.GetSpellState((uint)Dice.Value);
 
                 if (state == null)
                 {

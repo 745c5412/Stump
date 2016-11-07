@@ -1,22 +1,22 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Stump.ORM.SubSonic.Query;
 
 namespace Stump.ORM.SubSonic.Extensions
 {
@@ -38,7 +38,6 @@ namespace Stump.ORM.SubSonic.Extensions
             result = new List<Constraint>();
         }
 
-
         #region Process expressions
 
         /// <summary>
@@ -47,23 +46,23 @@ namespace Stump.ORM.SubSonic.Extensions
         /// <param name="expression"></param>
         public List<Constraint> ProcessExpression(Expression expression)
         {
-            if(expression.NodeType == ExpressionType.AndAlso)
+            if (expression.NodeType == ExpressionType.AndAlso)
                 ProcessAndAlso((BinaryExpression)expression);
-            else if(expression.NodeType == ExpressionType.NotEqual)
+            else if (expression.NodeType == ExpressionType.NotEqual)
                 BuildFromBinary(expression, Comparison.NotEquals);
-            else if(expression.NodeType == ExpressionType.Equal)
+            else if (expression.NodeType == ExpressionType.Equal)
                 BuildFromBinary(expression, Comparison.Equals);
-            else if(expression.NodeType == ExpressionType.GreaterThan)
+            else if (expression.NodeType == ExpressionType.GreaterThan)
                 BuildFromBinary(expression, Comparison.GreaterThan);
-            else if(expression.NodeType == ExpressionType.GreaterThanOrEqual)
+            else if (expression.NodeType == ExpressionType.GreaterThanOrEqual)
                 BuildFromBinary(expression, Comparison.LessOrEquals);
-            else if(expression.NodeType == ExpressionType.LessThan)
+            else if (expression.NodeType == ExpressionType.LessThan)
                 BuildFromBinary(expression, Comparison.LessThan);
-            else if(expression.NodeType == ExpressionType.LessThanOrEqual)
+            else if (expression.NodeType == ExpressionType.LessThanOrEqual)
                 BuildFromBinary(expression, Comparison.LessOrEquals);
-            else if(expression is MethodCallExpression)
+            else if (expression is MethodCallExpression)
                 ProcessMethodCall((MethodCallExpression)expression);
-            else if(expression is LambdaExpression)
+            else if (expression is LambdaExpression)
                 ProcessExpression(((LambdaExpression)expression).Body);
             //else if (expression is MethodCallExpression)
             //    ProcessMethodCall(expression as MethodCallExpression);
@@ -80,17 +79,17 @@ namespace Stump.ORM.SubSonic.Extensions
         {
             Constraint c = new Constraint(ConstraintType.Where, columnName);
 
-            if(result.Count > 1)
+            if (result.Count > 1)
                 c = new Constraint(ConstraintType.And, columnName);
 
             //c.ParameterName = columnName;
 
-            if(comp == Comparison.StartsWith)
+            if (comp == Comparison.StartsWith)
             {
                 value = string.Format("{0}%", value);
                 comp = Comparison.Like;
             }
-            else if(comp == Comparison.EndsWith)
+            else if (comp == Comparison.EndsWith)
             {
                 value = string.Format("%{0}", value);
                 comp = Comparison.Like;
@@ -104,13 +103,12 @@ namespace Stump.ORM.SubSonic.Extensions
 
         private void BuildFromBinary(Expression exp, Comparison op)
         {
-
             BinaryExpression expression = exp as BinaryExpression;
 
             if (expression != null)
             {
                 //make sure the left side is a Member, and the right is a constant value
-                if(expression.Left is MemberExpression && expression.Right is ConstantExpression)
+                if (expression.Left is MemberExpression && expression.Right is ConstantExpression)
                 {
                     //the member - "Title", "Publisher", etc
                     MemberExpression memb = expression.Left as MemberExpression;
@@ -118,8 +116,8 @@ namespace Stump.ORM.SubSonic.Extensions
                     ConstantExpression val = expression.Right as ConstantExpression;
                     AddConstraint(memb.Member.Name, op, val.Value);
                 }
-                    //or the left side is a Member, and the right is a conversion from a constant value to a nullable
-                else if(expression.Left is MemberExpression && expression.Right.NodeType == ExpressionType.Convert
+                //or the left side is a Member, and the right is a conversion from a constant value to a nullable
+                else if (expression.Left is MemberExpression && expression.Right.NodeType == ExpressionType.Convert
                         && expression.Right.Type.Name.Equals(nullableType))
                 {
                     //the member - "Title", "Publisher", etc
@@ -130,12 +128,12 @@ namespace Stump.ORM.SubSonic.Extensions
                     if (convert != null)
                     {
                         ConstantExpression val = convert.Operand as ConstantExpression;
-                        if(val != null)
+                        if (val != null)
                             AddConstraint(memb.Member.Name, op, val.Value);
                     }
                 }
-                    //if this isn't the case, it's Unary and is an enum setting
-                else if(expression.Left.NodeType == ExpressionType.MemberAccess)
+                //if this isn't the case, it's Unary and is an enum setting
+                else if (expression.Left.NodeType == ExpressionType.MemberAccess)
                 {
                     MemberExpression left = expression.Left as MemberExpression;
                     MemberExpression right = expression.Right as MemberExpression;
@@ -145,7 +143,7 @@ namespace Stump.ORM.SubSonic.Extensions
                         if (right.Expression.NodeType == ExpressionType.Constant)
                         {
                             ConstantExpression val = right.Expression as ConstantExpression;
-                            if(val != null && left != null)
+                            if (val != null && left != null)
                             {
                                 Type t = val.Value.GetType();
                                 FieldInfo[] fields = t.GetFields();
@@ -177,16 +175,16 @@ namespace Stump.ORM.SubSonic.Extensions
 
             if (expression != null)
             {
-                if(expression.Arguments[0].NodeType == ExpressionType.MemberAccess)
+                if (expression.Arguments[0].NodeType == ExpressionType.MemberAccess)
                 {
                     MemberExpression memberExpr = (MemberExpression)expression.Arguments[0];
-                    if(expression.Arguments[1].NodeType == ExpressionType.Constant)
+                    if (expression.Arguments[1].NodeType == ExpressionType.Constant)
                     {
                         ConstantExpression val = (ConstantExpression)expression.Arguments[1];
                         AddConstraint(memberExpr.Member.Name, op, val.Value);
                     }
                 }
-                else if(expression.Arguments[0].NodeType == ExpressionType.Constant)
+                else if (expression.Arguments[0].NodeType == ExpressionType.Constant)
                 {
                     ConstantExpression val = (ConstantExpression)expression.Arguments[0];
                     MemberExpression memberExpr = (MemberExpression)expression.Object;
@@ -197,34 +195,41 @@ namespace Stump.ORM.SubSonic.Extensions
 
         private void ProcessMethodCall(MethodCallExpression expression)
         {
-            switch(expression.Method.Name)
+            switch (expression.Method.Name)
             {
                 case op_Equality:
                     // Handle book.Publisher == "xxx"
                     BuildFromMemberAccess(expression, Comparison.Equals);
                     break;
+
                 case op_GreaterThan:
                     // Handle book.Price <= xxx
                     BuildFromMemberAccess(expression, Comparison.GreaterThan);
                     break;
+
                 case op_LessThan:
                     // Handle book.Price <= xxx
                     BuildFromMemberAccess(expression, Comparison.LessThan);
                     break;
+
                 case op_LessThanOrEqual:
                     // Handle book.Price <= xxx
                     BuildFromMemberAccess(expression, Comparison.LessOrEquals);
                     break;
+
                 case op_GreaterThanOrEqual:
                     // Handle book.Price <= xxx
                     BuildFromMemberAccess(expression, Comparison.GreaterOrEquals);
                     break;
+
                 case contains:
                     BuildFromMemberAccess(expression, Comparison.Like);
                     break;
+
                 case startsWith:
                     BuildFromMemberAccess(expression, Comparison.StartsWith);
                     break;
+
                 case endsWith:
                     // Handle book.Title.Contains("xxx")
                     BuildFromMemberAccess(expression, Comparison.EndsWith);

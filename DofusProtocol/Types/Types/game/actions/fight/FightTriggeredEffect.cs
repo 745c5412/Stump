@@ -1,10 +1,4 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
@@ -12,20 +6,21 @@ namespace Stump.DofusProtocol.Types
     public class FightTriggeredEffect : AbstractFightDispellableEffect
     {
         public const short Id = 210;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public int arg1;
         public int arg2;
         public int arg3;
         public short delay;
-        
+
         public FightTriggeredEffect()
         {
         }
-        
+
         public FightTriggeredEffect(int uid, int targetId, short turnDuration, sbyte dispelable, short spellId, int parentBoostUid, int arg1, int arg2, int arg3, short delay)
          : base(uid, targetId, turnDuration, dispelable, spellId, parentBoostUid)
         {
@@ -34,7 +29,7 @@ namespace Stump.DofusProtocol.Types
             this.arg3 = arg3;
             this.delay = delay;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -43,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(arg3);
             writer.WriteShort(delay);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -52,12 +47,10 @@ namespace Stump.DofusProtocol.Types
             arg3 = reader.ReadInt();
             delay = reader.ReadShort();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short);
         }
-        
     }
-    
 }

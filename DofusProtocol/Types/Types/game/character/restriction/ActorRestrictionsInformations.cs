@@ -1,10 +1,4 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
@@ -12,11 +6,12 @@ namespace Stump.DofusProtocol.Types
     public class ActorRestrictionsInformations
     {
         public const short Id = 204;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public bool cantBeAggressed;
         public bool cantBeChallenged;
         public bool cantTrade;
@@ -38,11 +33,11 @@ namespace Stump.DofusProtocol.Types
         public bool cantChangeZone;
         public bool cantAttackMonster;
         public bool cantWalk8Directions;
-        
+
         public ActorRestrictionsInformations()
         {
         }
-        
+
         public ActorRestrictionsInformations(bool cantBeAggressed, bool cantBeChallenged, bool cantTrade, bool cantBeAttackedByMutant, bool cantRun, bool forceSlowWalk, bool cantMinimize, bool cantMove, bool cantAggress, bool cantChallenge, bool cantExchange, bool cantAttack, bool cantChat, bool cantBeMerchant, bool cantUseObject, bool cantUseTaxCollector, bool cantUseInteractive, bool cantSpeakToNPC, bool cantChangeZone, bool cantAttackMonster, bool cantWalk8Directions)
         {
             this.cantBeAggressed = cantBeAggressed;
@@ -67,7 +62,7 @@ namespace Stump.DofusProtocol.Types
             this.cantAttackMonster = cantAttackMonster;
             this.cantWalk8Directions = cantWalk8Directions;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             byte flag1 = 0;
@@ -98,7 +93,7 @@ namespace Stump.DofusProtocol.Types
             flag3 = BooleanByteWrapper.SetFlag(flag3, 4, cantWalk8Directions);
             writer.WriteByte(flag3);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             byte flag1 = reader.ReadByte();
@@ -126,12 +121,10 @@ namespace Stump.DofusProtocol.Types
             cantAttackMonster = BooleanByteWrapper.GetFlag(flag3, 3);
             cantWalk8Directions = BooleanByteWrapper.GetFlag(flag3, 4);
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0;
         }
-        
     }
-    
 }

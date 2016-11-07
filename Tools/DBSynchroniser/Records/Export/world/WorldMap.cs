@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:51
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -39,7 +36,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -160,6 +156,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_zoomBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -176,7 +173,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (WorldMap)obj;
-            
+
             Id = castedObj.id;
             OrigineX = castedObj.origineX;
             OrigineY = castedObj.origineY;
@@ -194,7 +191,7 @@ namespace DBSynchroniser.Records
             TotalHeight = castedObj.totalHeight;
             Zoom = castedObj.zoom;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (WorldMap)parent : new WorldMap();
@@ -216,11 +213,10 @@ namespace DBSynchroniser.Records
             obj.zoom = Zoom;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_zoomBin = zoom == null ? null : zoom.ToBinary();
-        
         }
     }
 }

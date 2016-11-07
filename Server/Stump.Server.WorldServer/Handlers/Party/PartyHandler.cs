@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -12,7 +8,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Parties;
-using Stump.Server.WorldServer.Handlers.Basic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
 {
@@ -200,13 +196,13 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (target == null)
                 return;
 
-            foreach(var member in target.Party.Members)
+            foreach (var member in target.Party.Members)
             {
                 if (message.enabled)
                     member.FollowMember(target);
                 else
                     member.UnfollowMember();
-            } 
+            }
         }
 
         [WorldHandler(PartyStopFollowRequestMessage.Id)]
@@ -245,7 +241,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
 
         public static void SendPartyMemberInFightMessage(IPacketReceiver client, Game.Parties.Party party, Character member, PartyFightReasonEnum reason, IFight fight)
         {
-            client.Send(new PartyMemberInFightMessage(party.Id, (sbyte)reason, member.Id, member.Account.Id, member.Name, fight.Id, 
+            client.Send(new PartyMemberInFightMessage(party.Id, (sbyte)reason, member.Id, member.Account.Id, member.Name, fight.Id,
                 new MapCoordinatesExtended((short)fight.Map.Position.X, (short)fight.Map.Position.Y, fight.Map.Id, (short)fight.Map.SubArea.Id), fight.GetPlacementTimeLeft()));
         }
 
@@ -320,7 +316,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 invitation.Party.Members.Select(entry => entry.GetPartyInvitationMemberInformations()),
                 invitation.Party.Guests.Select(invitation.Party.GetPartyGuestInformations)
                 ));
-        }    
+        }
 
         public static void SendPartyCannotJoinErrorMessage(IPacketReceiver client, Game.Parties.Party party, PartyJoinErrorEnum reason)
         {

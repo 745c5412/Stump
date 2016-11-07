@@ -1,10 +1,10 @@
-using System.Collections.Generic;
 using NLog;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Database.Interactives
 {
@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
                 return m_current;
 
             if (m_current != null && m_current.Id == spawn.Id)
-            {            
+            {
                 if (binding.InteractiveSpawnId == m_current.Id && binding.SkillId == skill.Id)
                     m_current.Skills.Add(skill);
                 return null;

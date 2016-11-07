@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Stump.Core.Mathematics;
+using Stump.Core.Reflection;
+using Stump.Server.BaseServer.Initialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Stump.Core.Mathematics;
-using Stump.Core.Reflection;
-using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges
 {
@@ -36,8 +36,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
                 return;
 
             foreach (var identifier in from challengeIdentifierAttribute in challengeIdentifierAttributes
-                                       select challengeIdentifierAttribute.Identifiers into identifiers from identifier in identifiers
-                                       where !m_challenges.ContainsKey(identifier) select identifier)
+                                       select challengeIdentifierAttribute.Identifiers into identifiers
+                                       from identifier in identifiers
+                                       where !m_challenges.ContainsKey(identifier)
+                                       select identifier)
             {
                 m_challenges.Add(identifier, challenge);
             }
@@ -59,7 +61,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
 
         public DefaultChallenge GetRandomChallenge(IFight fight)
         {
-            while (true)
+            const int MAX_TRIES = 20;
+            for(int i = 0; i < MAX_TRIES; i++)
             {
                 var random = new CryptoRandom().Next(m_challenges.Keys.Min(), (m_challenges.Keys.Max() + 1));
                 var challenge = GetChallenge(random, fight);
@@ -67,11 +70,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
                 if (challenge == null)
                     continue;
 
+                if (fight.Challenges.Any(x => x.GetType() == challenge.GetType()))
+                    continue;
+
                 if (!challenge.IsEligible())
                     continue;
 
                 return challenge;
             }
+
+            return null;
         }
     }
 }

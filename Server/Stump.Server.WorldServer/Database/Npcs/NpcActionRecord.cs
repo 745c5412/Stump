@@ -1,4 +1,3 @@
-using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Database;
@@ -75,6 +74,12 @@ namespace Stump.Server.WorldServer.Database.Npcs
                 m_conditionExpression = value;
                 Condition = value.ToString();
             }
+        }
+
+        public int Priority
+        {
+            get;
+            set;
         }
 
         public NpcActionDatabase GenerateAction()

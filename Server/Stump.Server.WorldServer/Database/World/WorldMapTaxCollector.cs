@@ -1,7 +1,7 @@
-﻿using System;
-using Stump.ORM;
+﻿using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Maps;
+using System;
 
 namespace Stump.Server.WorldServer.Database.World
 {
@@ -108,6 +108,5 @@ namespace Stump.Server.WorldServer.Database.World
             get;
             set;
         }
-    
     }
 }

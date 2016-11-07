@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿using Stump.DofusProtocol.D2oClasses.Tools.D2p;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 
 namespace WorldEditor.Editors.Files.D2P
 {
@@ -34,7 +34,6 @@ namespace WorldEditor.Editors.Files.D2P
         {
             ModelView.RemoveFileCommand.RaiseCanExecuteChanged();
             ModelView.ExtractCommand.RaiseCanExecuteChanged();
-
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -51,7 +50,7 @@ namespace WorldEditor.Editors.Files.D2P
                     e.Effects = DragDropEffects.Copy;
             }
 
-            e.Handled = true; 
+            e.Handled = true;
         }
 
         private void FilesGrid_Drop(object sender, DragEventArgs e)
@@ -68,7 +67,7 @@ namespace WorldEditor.Editors.Files.D2P
                 }
             }
 
-            e.Handled = true; 
+            e.Handled = true;
         }
     }
 }

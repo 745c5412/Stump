@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:46
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -34,7 +28,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -89,7 +82,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (AmbientSound)obj;
-            
+
             Id = castedObj.id;
             Volume = castedObj.volume;
             CriterionId = castedObj.criterionId;
@@ -98,7 +91,7 @@ namespace DBSynchroniser.Records
             Channel = castedObj.channel;
             Type_id = castedObj.type_id;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (AmbientSound)parent : new AmbientSound();
@@ -111,10 +104,9 @@ namespace DBSynchroniser.Records
             obj.type_id = Type_id;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

@@ -1,21 +1,22 @@
 ﻿#region License GNU GPL
 
 // D2PEditorModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#endregion
+#endregion License GNU GPL
 
+using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,9 +24,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Windows.Forms;
-using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 using WorldEditor.Helpers;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
@@ -35,7 +34,6 @@ namespace WorldEditor.Editors.Files.D2P
     {
         private readonly D2PEditor m_editor;
         private readonly D2pFile m_file;
-
 
         private ReadOnlyObservableCollection<D2PGridRow> m_readOnylRows;
         private ObservableCollection<D2PGridRow> m_rows = new ObservableCollection<D2PGridRow>();
@@ -73,7 +71,7 @@ namespace WorldEditor.Editors.Files.D2P
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        #endregion
+        #endregion INotifyPropertyChanged Members
 
         private void Open(D2pDirectory directory)
         {
@@ -127,12 +125,12 @@ namespace WorldEditor.Editors.Files.D2P
             if (parameter == null || !CanExploreFolder(parameter))
                 return;
 
-            var folderRow = (D2PFolderRow) parameter;
+            var folderRow = (D2PFolderRow)parameter;
 
             Open(folderRow.Folder);
         }
 
-        #endregion
+        #endregion ExploreFolderCommand
 
         #region AddFileCommand
 
@@ -154,12 +152,12 @@ namespace WorldEditor.Editors.Files.D2P
                 return;
 
             var dialog = new OpenFileDialog
-                {
-                    Filter = "*|*",
-                    CheckPathExists = true,
-                    Title = "Select the files to add",
-                    Multiselect = true
-                };
+            {
+                Filter = "*|*",
+                CheckPathExists = true,
+                Title = "Select the files to add",
+                Multiselect = true
+            };
 
             if (dialog.ShowDialog() != true)
                 return;
@@ -189,7 +187,7 @@ namespace WorldEditor.Editors.Files.D2P
             m_editor.FilesGrid.ScrollIntoView(row);
         }
 
-        #endregion
+        #endregion AddFileCommand
 
         #region RemoveFileCommand
 
@@ -203,7 +201,7 @@ namespace WorldEditor.Editors.Files.D2P
         private bool CanRemoveFile(object parameter)
         {
             return parameter != null && parameter is IList &&
-                ( parameter as IList ).OfType<D2PGridRow>().Count(x => !( x is D2PLastFolderRow )) > 0;
+                (parameter as IList).OfType<D2PGridRow>().Count(x => !(x is D2PLastFolderRow)) > 0;
         }
 
         private void OnRemoveFile(object parameter)
@@ -211,7 +209,7 @@ namespace WorldEditor.Editors.Files.D2P
             if (parameter == null || !CanRemoveFile(parameter))
                 return;
 
-            var rows = ( parameter as IList ).OfType<D2PGridRow>().ToArray();
+            var rows = (parameter as IList).OfType<D2PGridRow>().ToArray();
             foreach (var row in rows)
             {
                 if (row is D2PFileRow)
@@ -241,11 +239,9 @@ namespace WorldEditor.Editors.Files.D2P
                     }
                 }
             }
-         
         }
 
-        #endregion
-
+        #endregion RemoveFileCommand
 
         #region ExtractCommand
 
@@ -259,7 +255,7 @@ namespace WorldEditor.Editors.Files.D2P
         private bool CanExtract(object parameter)
         {
             return parameter != null && parameter is IList &&
-                ( parameter as IList ).OfType<D2PGridRow>().Count(x => !( x is D2PLastFolderRow )) > 0;
+                (parameter as IList).OfType<D2PGridRow>().Count(x => !(x is D2PLastFolderRow)) > 0;
         }
 
         private void OnExtract(object parameter)
@@ -275,21 +271,20 @@ namespace WorldEditor.Editors.Files.D2P
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                var rows = ( parameter as IList ).OfType<D2PGridRow>().ToArray();
+                var rows = (parameter as IList).OfType<D2PGridRow>().ToArray();
                 foreach (var row in rows)
                 {
                     if (row is D2PFileRow)
-                        File.ExtractFile(( row as D2PFileRow ).Entry.FullFileName, dialog.SelectedPath);
+                        File.ExtractFile((row as D2PFileRow).Entry.FullFileName, dialog.SelectedPath);
                     else if (row is D2PFolderRow)
-                        File.ExtractDirectory(( row as D2PFolderRow ).Folder.FullName, dialog.SelectedPath);
+                        File.ExtractDirectory((row as D2PFolderRow).Folder.FullName, dialog.SelectedPath);
                 }
 
                 MessageService.ShowMessage(m_editor, "Files extracted");
             }
         }
 
-        #endregion
-
+        #endregion ExtractCommand
 
         #region ExtractAllCommand
 
@@ -318,12 +313,10 @@ namespace WorldEditor.Editors.Files.D2P
                 File.ExtractAllFiles(dialog.SelectedPath);
             }
 
-
             MessageService.ShowMessage(m_editor, "All files extracted");
         }
 
-        #endregion
-
+        #endregion ExtractAllCommand
 
         #region SaveCommand
 
@@ -357,8 +350,7 @@ namespace WorldEditor.Editors.Files.D2P
             }
         }
 
-        #endregion
-
+        #endregion SaveCommand
 
         #region SaveAsCommand
 
@@ -406,7 +398,7 @@ namespace WorldEditor.Editors.Files.D2P
             }
         }
 
-        #endregion
+        #endregion SaveAsCommand
 
         public void Dispose()
         {

@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" Name="ExpanderRow" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <UniformGrid Rows="1" DockPanel.Dock="Top" HorizontalAlignment="Left" Grid.Row="0">
             <Button Margin="3" Command="{Binding AddRowCommand}">
@@ -135,40 +135,40 @@
                 <KeyBinding Key="Back" Command="{Binding RemoveRowCommand}" CommandParameter="{Binding ElementName=TextsGrid, Path=SelectedItems}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Key" Binding="{Binding Id}" Width="100" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Key" Binding="{Binding Id}" Width="100" IsReadOnly="True" />
                 <DataGridTextColumn Header="French" Binding="{Binding French}" Width="*"
-                                    Visibility="{Binding Source={x:Reference FrenchVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}"/>
-                <DataGridTextColumn Header="English" Binding="{Binding English}" Width="*" 
-                                    Visibility="{Binding Source={x:Reference EnglishVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}"/>
-                <DataGridTextColumn Header="German" Binding="{Binding German}" Width="*" IsReadOnly="True" 
-                                    Visibility="{Binding Source={x:Reference GermanVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}"/>
-                <DataGridTextColumn Header="Dutsh" Binding="{Binding Dutsh}" Width="*" IsReadOnly="True" 
-                                    Visibility="{Binding Source={x:Reference DutshVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}"/>
-                <DataGridTextColumn Header="Italian" Binding="{Binding Italian}" Width="*" IsReadOnly="True" 
-                                    Visibility="{Binding Source={x:Reference ItalianVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}"/>
-                <DataGridTextColumn Header="Spanish" Binding="{Binding Spanish}" Width="*" IsReadOnly="True" 
-                                    Visibility="{Binding Source={x:Reference SpanishVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}"/>
-                <DataGridTextColumn Header="Portugese" Binding="{Binding Portugese}" Width="*" IsReadOnly="True" 
-                                    Visibility="{Binding Source={x:Reference PortugeseVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}"/>
-                <DataGridTextColumn Header="Russish" Binding="{Binding Russish}" Width="*" IsReadOnly="True" 
-                                    Visibility="{Binding Source={x:Reference RussishVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}"/>
-                <DataGridTextColumn Header="Japanish" Binding="{Binding Japanish}" Width="*" IsReadOnly="True" 
-                                    Visibility="{Binding Source={x:Reference JapanishVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}"/>
+                                    Visibility="{Binding Source={x:Reference FrenchVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" />
+                <DataGridTextColumn Header="English" Binding="{Binding English}" Width="*"
+                                    Visibility="{Binding Source={x:Reference EnglishVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" />
+                <DataGridTextColumn Header="German" Binding="{Binding German}" Width="*" IsReadOnly="True"
+                                    Visibility="{Binding Source={x:Reference GermanVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" />
+                <DataGridTextColumn Header="Dutsh" Binding="{Binding Dutsh}" Width="*" IsReadOnly="True"
+                                    Visibility="{Binding Source={x:Reference DutshVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" />
+                <DataGridTextColumn Header="Italian" Binding="{Binding Italian}" Width="*" IsReadOnly="True"
+                                    Visibility="{Binding Source={x:Reference ItalianVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" />
+                <DataGridTextColumn Header="Spanish" Binding="{Binding Spanish}" Width="*" IsReadOnly="True"
+                                    Visibility="{Binding Source={x:Reference SpanishVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" />
+                <DataGridTextColumn Header="Portugese" Binding="{Binding Portugese}" Width="*" IsReadOnly="True"
+                                    Visibility="{Binding Source={x:Reference PortugeseVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" />
+                <DataGridTextColumn Header="Russish" Binding="{Binding Russish}" Width="*" IsReadOnly="True"
+                                    Visibility="{Binding Source={x:Reference RussishVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" />
+                <DataGridTextColumn Header="Japanish" Binding="{Binding Japanish}" Width="*" IsReadOnly="True"
+                                    Visibility="{Binding Source={x:Reference JapanishVisibleBox}, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" />
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Grid.Row="4" Margin="3" Orientation="Horizontal">
-            <CheckBox Margin="3" Name="FrenchVisibleBox" Content="French" IsChecked="True"/>
-            <CheckBox Margin="3" Name="EnglishVisibleBox" Content="English"/>
-            <CheckBox Margin="3" Name="GermanVisibleBox" Content="German"/>
-            <CheckBox Margin="3" Name="SpanishVisibleBox" Content="Spanish"/>
-            <CheckBox Margin="3" Name="ItalianVisibleBox" Content="Italian"/>
-            <CheckBox Margin="3" Name="DutshVisibleBox" Content="Dutsh"/>
-            <CheckBox Margin="3" Name="PortugeseVisibleBox" Content="Portugese"/>
-            <CheckBox Margin="3" Name="RussishVisibleBox" Content="Russish"/>
-            <CheckBox Margin="3" Name="JapanishVisibleBox" Content="Japanish"/>
+            <CheckBox Margin="3" Name="FrenchVisibleBox" Content="French" IsChecked="True" />
+            <CheckBox Margin="3" Name="EnglishVisibleBox" Content="English" />
+            <CheckBox Margin="3" Name="GermanVisibleBox" Content="German" />
+            <CheckBox Margin="3" Name="SpanishVisibleBox" Content="Spanish" />
+            <CheckBox Margin="3" Name="ItalianVisibleBox" Content="Italian" />
+            <CheckBox Margin="3" Name="DutshVisibleBox" Content="Dutsh" />
+            <CheckBox Margin="3" Name="PortugeseVisibleBox" Content="Portugese" />
+            <CheckBox Margin="3" Name="RussishVisibleBox" Content="Russish" />
+            <CheckBox Margin="3" Name="JapanishVisibleBox" Content="Japanish" />
         </StackPanel>
-        <DockPanel Grid.Row="5" Margin="3" >
-            <TextBlock Text="Find ..." Margin="3" VerticalAlignment="Center"/>
+        <DockPanel Grid.Row="5" Margin="3">
+            <TextBlock Text="Find ..." Margin="3" VerticalAlignment="Center" />
             <ComboBox SelectedIndex="0" DockPanel.Dock="Right" Margin="3" Width="80" SelectedValue="{Binding SearchType, Mode=TwoWay}" SelectedValuePath="Content">
                 <ComboBoxItem>Key</ComboBoxItem>
                 <ComboBoxItem>All</ComboBoxItem>

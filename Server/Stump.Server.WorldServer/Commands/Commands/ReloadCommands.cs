@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game;
@@ -16,7 +10,12 @@ using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Social;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Threading.Tasks;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -34,15 +33,16 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {"breeds", BreedManager.Instance},
                 {"experiences", ExperienceManager.Instance},
                 {"langs", TextManager.Instance},
-                {"guilds", GuildManager.Instance}
+                {"guilds", GuildManager.Instance},
+                {"badwords", ChatManager.Instance},
             };
 
         public ReloadCommands()
         {
-            Aliases = new[] {"reload"};
-            RequiredRole=RoleEnum.Administrator;
+            Aliases = new[] { "reload" };
+            RequiredRole = RoleEnum.Administrator;
             Description = "Reload manager";
-            AddParameter<string>("name", "n", "Name of the manager to reload", isOptional:true);
+            AddParameter<string>("name", "n", "Name of the manager to reload", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -70,7 +70,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            World.Instance.SendAnnounce("[RELOAD] Reloading " + name + " ... WORLD PAUSED", Color.DodgerBlue);
+            //World.Instance.SendAnnounce("[RELOAD] Reloading " + name + " ... WORLD PAUSED", Color.DodgerBlue);
+            trigger.ReplyBold($"[RELOAD] Reloading {name} ... WORLD PAUSED");
             Task.Factory.StartNew(() =>
                 {
                     World.Instance.Pause();
@@ -83,7 +84,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                         World.Instance.Resume();
                     }
 
-                    World.Instance.SendAnnounce("[RELOAD] " + name + " reloaded ... WORLD RESUMED", Color.DodgerBlue);
+                    trigger.ReplyBold($"[RELOAD] {name} reloaded ... WORLD RESUMED");
+                    //World.Instance.SendAnnounce("[RELOAD] " + name + " reloaded ... WORLD RESUMED", Color.DodgerBlue);
                 });
         }
     }

@@ -1,18 +1,17 @@
-using System.Drawing;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
+using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
     public partial class CharacterHandler
     {
-
         [WorldHandler(CharacterReplayRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterReplayRequestMessage(WorldClient client, CharacterReplayRequestMessage message)
         {
@@ -49,7 +48,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             /* Bind look and save character */
-            character.Name = characterName; 
+            character.Name = characterName;
             WorldServer.Instance.DBAccessor.Database.Update(character);
         }
 
@@ -67,7 +66,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             /* Get character Breed */
-            var breed = BreedManager.Instance.GetBreed((int) character.Breed);
+            var breed = BreedManager.Instance.GetBreed((int)character.Breed);
 
             if (breed == null)
             {
@@ -78,10 +77,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             var breedColors = character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleColors : breed.FemaleColors;
 
             character.EntityLook.SetColors(
-                message.indexedColor.Select((x, i) => x == -1 ? Color.FromArgb((int) breedColors[i]) : Color.FromArgb(x)).ToArray());
+                message.indexedColor.Select((x, i) => x == -1 ? Color.FromArgb((int)breedColors[i]) : Color.FromArgb(x)).ToArray());
 
             WorldServer.Instance.DBAccessor.Database.Update(character);
         }
-
     }
 }

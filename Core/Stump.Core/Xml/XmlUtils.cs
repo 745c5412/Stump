@@ -11,7 +11,7 @@ namespace Stump.Core.Xml
 
         private static readonly Dictionary<Type, XmlSerializer> Serializers = new Dictionary<Type, XmlSerializer>();
 
-        #endregion
+        #endregion Properties
 
         #region Serialize
 
@@ -81,7 +81,7 @@ namespace Stump.Core.Xml
             }
         }
 
-        #endregion
+        #endregion Serialize
 
         #region Deserialize
 
@@ -118,7 +118,7 @@ namespace Stump.Core.Xml
                 return (T)Serializers[typeof(T)].Deserialize(reader);
             }
         }
-        
+
         /// <summary>
         ///   Deserializes the specified stream.
         /// </summary>
@@ -164,6 +164,7 @@ namespace Stump.Core.Xml
                 return Serializers[valueType].Deserialize(reader);
             }
         }
-        #endregion
+
+        #endregion Deserialize
     }
 }

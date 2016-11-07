@@ -7,7 +7,7 @@ namespace WorldEditor.Search
     /// <summary>
     /// Interaction logic for SearchDialog.xaml
     /// </summary>
-    public partial class SearchDialog : UserControl 
+    public partial class SearchDialog : UserControl
     {
         public SearchDialog()
         {
@@ -15,11 +15,11 @@ namespace WorldEditor.Search
         }
 
         public static readonly DependencyProperty ResultItemTemplateProperty =
-            DependencyProperty.Register("ResultItemTemplate", typeof (DataTemplate), typeof (SearchDialog), new PropertyMetadata(default(DataTemplate)));
+            DependencyProperty.Register("ResultItemTemplate", typeof(DataTemplate), typeof(SearchDialog), new PropertyMetadata(default(DataTemplate)));
 
         public DataTemplate ResultItemTemplate
         {
-            get { return (DataTemplate) GetValue(ResultItemTemplateProperty); }
+            get { return (DataTemplate)GetValue(ResultItemTemplateProperty); }
             set { SetValue(ResultItemTemplateProperty, value); }
         }
 

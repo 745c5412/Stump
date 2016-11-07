@@ -19,14 +19,17 @@ namespace Stump.Core.Threading
             switch (task.Status)
             {
                 case TaskStatus.RanToCompletion:
-                    resultSetter.SetResult(task is Task<TResult> ? ((Task<TResult>) task).Result : default(TResult));
+                    resultSetter.SetResult(task is Task<TResult> ? ((Task<TResult>)task).Result : default(TResult));
                     break;
+
                 case TaskStatus.Faulted:
                     resultSetter.SetException(task.Exception.InnerExceptions);
                     break;
+
                 case TaskStatus.Canceled:
                     resultSetter.SetCanceled();
                     break;
+
                 default:
                     throw new InvalidOperationException("The task was not completed.");
             }
@@ -40,7 +43,7 @@ namespace Stump.Core.Threading
         /// <param name = "task">The task whose completion results should be transfered.</param>
         public static void SetFromTask<TResult>(this TaskCompletionSource<TResult> resultSetter, Task<TResult> task)
         {
-            SetFromTask(resultSetter, (Task) task);
+            SetFromTask(resultSetter, (Task)task);
         }
 
         /// <summary>
@@ -57,12 +60,14 @@ namespace Stump.Core.Threading
                 case TaskStatus.RanToCompletion:
                     return
                         resultSetter.TrySetResult(task is Task<TResult>
-                                                      ? ((Task<TResult>) task).Result
+                                                      ? ((Task<TResult>)task).Result
                                                       : default(TResult));
                 case TaskStatus.Faulted:
                     return resultSetter.TrySetException(task.Exception.InnerExceptions);
+
                 case TaskStatus.Canceled:
                     return resultSetter.TrySetCanceled();
+
                 default:
                     throw new InvalidOperationException("The task was not completed.");
             }
@@ -77,7 +82,7 @@ namespace Stump.Core.Threading
         /// <returns>Whether the transfer could be completed.</returns>
         public static bool TrySetFromTask<TResult>(this TaskCompletionSource<TResult> resultSetter, Task<TResult> task)
         {
-            return TrySetFromTask(resultSetter, (Task) task);
+            return TrySetFromTask(resultSetter, (Task)task);
         }
     }
 }

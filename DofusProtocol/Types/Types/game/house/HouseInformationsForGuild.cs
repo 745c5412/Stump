@@ -1,22 +1,21 @@
-
-
 // Generated on 03/02/2014 20:43:02
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class HouseInformationsForGuild
     {
         public const short Id = 170;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int houseId;
         public int modelId;
         public string ownerName;
@@ -26,11 +25,11 @@ namespace Stump.DofusProtocol.Types
         public short subAreaId;
         public IEnumerable<int> skillListIds;
         public uint guildshareParams;
-        
+
         public HouseInformationsForGuild()
         {
         }
-        
+
         public HouseInformationsForGuild(int houseId, int modelId, string ownerName, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<int> skillListIds, uint guildshareParams)
         {
             this.houseId = houseId;
@@ -43,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             this.skillListIds = skillListIds;
             this.guildshareParams = guildshareParams;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(houseId);
@@ -58,8 +57,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in skillListIds)
             {
-                 writer.WriteInt(entry);
-                 skillListIds_count++;
+                writer.WriteInt(entry);
+                skillListIds_count++;
             }
             var skillListIds_after = writer.Position;
             writer.Seek((int)skillListIds_before);
@@ -68,7 +67,7 @@ namespace Stump.DofusProtocol.Types
 
             writer.WriteUInt(guildshareParams);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             houseId = reader.ReadInt();
@@ -92,19 +91,17 @@ namespace Stump.DofusProtocol.Types
             var skillListIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 skillListIds_[i] = reader.ReadInt();
+                skillListIds_[i] = reader.ReadInt();
             }
             skillListIds = skillListIds_;
             guildshareParams = reader.ReadUInt();
             if (guildshareParams < 0 || guildshareParams > 4294967295)
                 throw new Exception("Forbidden value on guildshareParams = " + guildshareParams + ", it doesn't respect the following condition : guildshareParams < 0 || guildshareParams > 4294967295");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + skillListIds.Sum(x => sizeof(int)) + sizeof(uint);
         }
-        
     }
-    
 }

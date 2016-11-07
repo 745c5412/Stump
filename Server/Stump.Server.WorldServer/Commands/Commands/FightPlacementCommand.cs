@@ -1,10 +1,10 @@
-﻿using System.Drawing;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
+using System.Drawing;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public FightPlacementCommands()
         {
-            Aliases = new[] {"placement"};
+            Aliases = new[] { "placement" };
             Description = "Manage fight placement";
             RequiredRole = RoleEnum.GameMaster;
         }
@@ -22,8 +22,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public FightPlacementShowCommand()
         {
-            Aliases = new[] {"show"};
-            ParentCommandType = typeof (FightPlacementCommands);
+            Aliases = new[] { "show" };
+            ParentCommandType = typeof(FightPlacementCommands);
             Description = "Display current map placements";
             RequiredRole = RoleEnum.GameMaster;
         }
@@ -70,8 +70,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public FightPlacementSetCommand()
         {
-            Aliases = new[] {"set"};            
-            ParentCommandType = typeof (FightPlacementCommands);
+            Aliases = new[] { "set" };
+            ParentCommandType = typeof(FightPlacementCommands);
             Description = "Set current map placements";
             RequiredRole = RoleEnum.GameMaster;
             AddParameter<string>("color", "c", "Blue/Red");

@@ -1,31 +1,27 @@
-
-
 // Generated on 03/02/2014 20:42:59
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class AbstractFightTeamInformations
     {
         public const short Id = 116;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte teamId;
         public int leaderId;
         public sbyte teamSide;
         public sbyte teamTypeId;
-        
+
         public AbstractFightTeamInformations()
         {
         }
-        
+
         public AbstractFightTeamInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId)
         {
             this.teamId = teamId;
@@ -33,7 +29,7 @@ namespace Stump.DofusProtocol.Types
             this.teamSide = teamSide;
             this.teamTypeId = teamTypeId;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(teamId);
@@ -41,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(teamSide);
             writer.WriteSByte(teamTypeId);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             teamId = reader.ReadSByte();
@@ -53,12 +49,10 @@ namespace Stump.DofusProtocol.Types
             if (teamTypeId < 0)
                 throw new Exception("Forbidden value on teamTypeId = " + teamTypeId + ", it doesn't respect the following condition : teamTypeId < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(sbyte);
         }
-        
     }
-    
 }

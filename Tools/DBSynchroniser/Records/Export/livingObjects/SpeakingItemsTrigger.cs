@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:49
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -26,7 +23,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)triggersId; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("TriggersId", false)]
@@ -49,6 +45,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_textIdsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -75,6 +72,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statesBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -91,12 +89,12 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SpeakingItemsTrigger)obj;
-            
+
             TriggersId = castedObj.triggersId;
             TextIds = castedObj.textIds;
             States = castedObj.states;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (SpeakingItemsTrigger)parent : new SpeakingItemsTrigger();
@@ -105,12 +103,11 @@ namespace DBSynchroniser.Records
             obj.states = States;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_textIdsBin = textIds == null ? null : textIds.ToBinary();
             m_statesBin = states == null ? null : states.ToBinary();
-        
         }
     }
 }

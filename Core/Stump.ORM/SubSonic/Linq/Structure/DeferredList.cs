@@ -14,6 +14,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     public interface IDeferLoadable
     {
         bool IsLoaded { get; }
+
         void Load();
     }
 
@@ -43,10 +44,9 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
         private void Check()
         {
-            if(!this.IsLoaded)
+            if (!this.IsLoaded)
                 this.Load();
         }
-
 
         #region IList<T> Members
 
@@ -82,8 +82,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
         }
 
-        #endregion
-
+        #endregion IList<T> Members
 
         #region ICollection<T> Members
 
@@ -131,8 +130,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             return this.values.Remove(item);
         }
 
-        #endregion
-
+        #endregion ICollection<T> Members
 
         #region IEnumerable<T> Members
 
@@ -142,8 +140,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             return this.values.GetEnumerator();
         }
 
-        #endregion
-
+        #endregion IEnumerable<T> Members
 
         #region IEnumerable Members
 
@@ -152,8 +149,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             return this.GetEnumerator();
         }
 
-        #endregion
-
+        #endregion IEnumerable Members
 
         #region IList Members
 
@@ -206,8 +202,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
         }
 
-        #endregion
-
+        #endregion IList Members
 
         #region ICollection Members
 
@@ -227,6 +222,6 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             get { return null; }
         }
 
-        #endregion
+        #endregion ICollection Members
     }
 }

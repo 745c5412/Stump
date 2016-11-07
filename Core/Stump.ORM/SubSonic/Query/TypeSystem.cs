@@ -1,16 +1,16 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
@@ -25,30 +25,30 @@ namespace Stump.ORM.SubSonic.Query
     {
         private static Type FindIEnumerable(Type seqType)
         {
-            if(seqType == null || seqType == typeof(string))
+            if (seqType == null || seqType == typeof(string))
                 return null;
-            if(seqType.IsArray)
+            if (seqType.IsArray)
                 return typeof(IEnumerable<>).MakeGenericType(seqType.GetElementType());
-            if(seqType.IsGenericType)
+            if (seqType.IsGenericType)
             {
-                foreach(Type arg in seqType.GetGenericArguments())
+                foreach (Type arg in seqType.GetGenericArguments())
                 {
                     Type ienum = typeof(IEnumerable<>).MakeGenericType(arg);
-                    if(ienum.IsAssignableFrom(seqType))
+                    if (ienum.IsAssignableFrom(seqType))
                         return ienum;
                 }
             }
             Type[] ifaces = seqType.GetInterfaces();
-            if(ifaces != null && ifaces.Length > 0)
+            if (ifaces != null && ifaces.Length > 0)
             {
-                foreach(Type iface in ifaces)
+                foreach (Type iface in ifaces)
                 {
                     Type ienum = FindIEnumerable(iface);
-                    if(ienum != null)
+                    if (ienum != null)
                         return ienum;
                 }
             }
-            if(seqType.BaseType != null && seqType.BaseType != typeof(object))
+            if (seqType.BaseType != null && seqType.BaseType != typeof(object))
                 return FindIEnumerable(seqType.BaseType);
             return null;
         }
@@ -61,7 +61,7 @@ namespace Stump.ORM.SubSonic.Query
         internal static Type GetElementType(Type seqType)
         {
             Type ienum = FindIEnumerable(seqType);
-            if(ienum == null)
+            if (ienum == null)
                 return seqType;
             return ienum.GetGenericArguments()[0];
         }
@@ -78,7 +78,7 @@ namespace Stump.ORM.SubSonic.Query
 
         internal static Type GetNonNullableType(Type type)
         {
-            if(IsNullableType(type))
+            if (IsNullableType(type))
                 return type.GetGenericArguments()[0];
             return type;
         }
@@ -86,13 +86,13 @@ namespace Stump.ORM.SubSonic.Query
         internal static Type GetMemberType(MemberInfo mi)
         {
             FieldInfo fi = mi as FieldInfo;
-            if(fi != null)
+            if (fi != null)
                 return fi.FieldType;
             PropertyInfo pi = mi as PropertyInfo;
-            if(pi != null)
+            if (pi != null)
                 return pi.PropertyType;
             EventInfo ei = mi as EventInfo;
-            if(ei != null)
+            if (ei != null)
                 return ei.EventHandlerType;
             return null;
         }

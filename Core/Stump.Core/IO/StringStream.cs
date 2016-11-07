@@ -100,11 +100,11 @@ namespace Stump.Core.IO
 
         public Object Clone()
         {
-            var ss = new StringStream(m_str) {m_pos = m_pos};
+            var ss = new StringStream(m_str) { m_pos = m_pos };
             return ss;
         }
 
-        #endregion
+        #endregion ICloneable Members
 
         /// <summary>
         /// Resets the position to the beginning.
@@ -435,11 +435,9 @@ namespace Stump.Core.IO
 
                 if (index >= m_str.Length)
                     return -1;
-
             } while (inContainer || m_str[index] != search);
 
             return index;
         }
     }
-
 }

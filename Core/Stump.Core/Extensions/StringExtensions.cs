@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Stump.Core.Collections;
+using System;
 using System.Collections;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Stump.Core.Collections;
 
 namespace Stump.Core.Extensions
 {
@@ -15,7 +15,7 @@ namespace Stump.Core.Extensions
             if (string.IsNullOrEmpty(source))
                 return string.Empty;
 
-            char[] letters = source.ToCharArray();
+            var letters = source.ToCharArray();
             letters[0] = char.ToUpper(letters[0]);
 
             return new string(letters);
@@ -40,7 +40,7 @@ namespace Stump.Core.Extensions
             for (int i = 0; i < size; i++)
             {
                 //26 letters in the alphabet, ascii + 65 for the capital letters
-                builder.Append(Convert.ToChar(Convert.ToInt32(Math.Floor(26*random.NextDouble() + 65))));
+                builder.Append(Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65))));
             }
             return builder.ToString();
         }
@@ -56,11 +56,10 @@ namespace Stump.Core.Extensions
             return SplitAdvanced(expression, delimiter, qualifier, false);
         }
 
-
         public static string[] SplitAdvanced(this string expression, string delimiter,
             string qualifier, bool ignoreCase)
         {
-            return SplitAdvanced(expression, new []{delimiter}, qualifier, false);
+            return SplitAdvanced(expression, new[] { delimiter }, qualifier, false);
         }
 
         public static string[] SplitAdvanced(this string expression, string[] delimiters,
@@ -76,11 +75,11 @@ namespace Stump.Core.Extensions
                     if (string.Compare(expression.Substring
                                            (charIndex, qualifier.Length), qualifier, ignoreCase) == 0)
                     {
-                        qualifierState = !( qualifierState );
+                        qualifierState = !(qualifierState);
                     }
-                    else if (!( qualifierState )
-                             && ( delimiters.Any(x => string.Compare(expression.Substring
-                                                   (charIndex, x.Length), x, ignoreCase) == 0 )))
+                    else if (!(qualifierState)
+                             && (delimiters.Any(x => string.Compare(expression.Substring
+                                                  (charIndex, x.Length), x, ignoreCase) == 0)))
                     {
                         values.Add(expression.Substring
                                        (startIndex, charIndex - startIndex));
@@ -133,12 +132,18 @@ namespace Stump.Core.Extensions
             return CountOccurences(str, chr, 0, str.Length);
         }
 
-
         public static string GetMD5(this string encryptString)
         {
-            byte[] passByteCrypt = new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(encryptString));
+            var passByteCrypt = new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(encryptString));
 
             return passByteCrypt.ByteArrayToString();
+        }
+
+        public static string RemoveWhitespace(this string input)
+        {
+            return new string(input.ToCharArray()
+                .Where(c => !Char.IsWhiteSpace(c))
+                .ToArray());
         }
     }
 }

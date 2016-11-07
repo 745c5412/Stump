@@ -1,23 +1,21 @@
 ﻿#region License GNU GPL
+
 // IPCOperations.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+#endregion License GNU GPL
+
 using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -27,13 +25,16 @@ using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Stump.Server.AuthServer.IPC
 {
     public class IPCOperations
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
 
         private readonly Dictionary<Type, Action<object, IPCMessage>> m_handlers = new Dictionary<Type, Action<object, IPCMessage>>();
 
@@ -70,7 +71,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void InitializeHandlers()
         {
-            foreach (var method in GetType().GetMethods(BindingFlags.Instance| BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (var method in GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (method.Name == "HandleMessage")
                     continue;
@@ -89,9 +90,10 @@ namespace Stump.Server.AuthServer.IPC
             logger.Info("Opening Database connection for '{0}' server", WorldServer.Name);
             Database = new ORM.Database(AuthServer.DatabaseConfiguration.GetConnectionString(),
                                        AuthServer.DatabaseConfiguration.ProviderName)
-                                       {
-                                           KeepConnectionAlive = true
-                                       };
+            {
+                KeepConnectionAlive = true,
+                CommandTimeout = (24 * 60 * 60)
+            };
             Database.OpenSharedConnection();
 
             AccountManager = new AccountManager();
@@ -153,7 +155,7 @@ namespace Stump.Server.AuthServer.IPC
             else if (message.Id.HasValue)
             {
                 var account = AccountManager.FindAccountById(message.Id.Value);
-                
+
                 if (account == null)
                 {
                     Client.SendError(string.Format("Account not found with id {0}", message.Id), message);
@@ -165,7 +167,7 @@ namespace Stump.Server.AuthServer.IPC
             else if (message.CharacterId.HasValue)
             {
                 var account = AccountManager.FindAccountByCharacterId(message.CharacterId.Value);
-                
+
                 if (account == null)
                 {
                     Client.SendError(string.Format("Account not found with character id {0}", message.CharacterId), message);
@@ -173,12 +175,18 @@ namespace Stump.Server.AuthServer.IPC
                 }
 
                 Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
-
             }
             else
             {
                 Client.SendError("Ticket, Nickname, Login, CharacterId and Id null or empty", message);
             }
+        }
+
+        private void Handle(AccountsRequestMessage message)
+        {
+            var accounts = Database.Fetch<Account>("SELECT * FROM accounts WHERE Login LIKE '" + message.LoginLike + "'");
+
+            Client.ReplyRequest(new AccountsAnswerMessage(accounts.Select(x => x.Serialize()).ToList()), message);
         }
 
         private void Handle(ChangeStateMessage message)
@@ -252,19 +260,17 @@ namespace Stump.Server.AuthServer.IPC
             account.SecretQuestion = message.Account.SecretQuestion;
             account.SecretAnswer = message.Account.SecretAnswer;
             account.UserGroupId = message.Account.UserGroupId;
-            account.Tokens = message.Account.Tokens;
             account.LastClientKey = message.Account.LastClientKey;
 
             Database.Update(account);
             Client.ReplyRequest(new CommonOKMessage(), message);
-            //Client.ReplyRequest(new UpdateAccountMessage(account.Serialize()), message);
         }
 
         private void Handle(DeleteAccountMessage message)
         {
             Account account;
             if (message.AccountId != null)
-                account = AccountManager.FindAccountById((int) message.AccountId);
+                account = AccountManager.FindAccountById((int)message.AccountId);
             else if (!string.IsNullOrEmpty(message.AccountName))
                 account = AccountManager.FindAccountByLogin(message.AccountName);
             else
@@ -398,12 +404,12 @@ namespace Stump.Server.AuthServer.IPC
                     IP = ip,
                     BanReason = message.BanReason,
                     BannedBy = message.BannerAccountId,
-                    Duration = message.BanEndDate.HasValue ? (int?)( message.BanEndDate - DateTime.Now ).Value.TotalMinutes : null,
+                    Duration = message.BanEndDate.HasValue ? (int?)(message.BanEndDate - DateTime.Now).Value.TotalMinutes : null,
                     Date = DateTime.Now
                 };
 
                 Database.Insert(record);
-                AccountManager.Instance.AddIPBan(record);
+                AccountManager.AddIPBan(record);
             }
 
             Client.ReplyRequest(new CommonOKMessage(), message);
@@ -447,7 +453,7 @@ namespace Stump.Server.AuthServer.IPC
                 };
 
                 Database.Insert(record);
-                AccountManager.Instance.AddClientKeyBan(record);
+                AccountManager.AddClientKeyBan(record);
             }
 
             Client.ReplyRequest(new CommonOKMessage(), message);
@@ -471,7 +477,7 @@ namespace Stump.Server.AuthServer.IPC
         {
             var key = AccountManager.FindMatchingClientKeyBan(message.ClientKey);
             if (key != null && key.GetRemainingTime() > TimeSpan.Zero)
-            {              
+            {
                 Client.ReplyRequest(new BanClientKeyAnswerMessage(true, key.GetEndDate()), message);
                 return;
             }
@@ -485,6 +491,14 @@ namespace Stump.Server.AuthServer.IPC
                 new GroupsListMessage(
                     Database.Query<UserGroupRecord>(UserGroupRelator.FetchQuery).Select(x => x.GetGroupData()).ToList()),
                 message);
+        }
+
+        private void Handle(GroupAddMessage message)
+        {
+            var id = (int)(ulong)Database.Insert(new UserGroupRecord(message.UserGroup));
+
+            message.UserGroup.Id = id;
+            Client.ReplyRequest(new GroupAddResultMessage(message.UserGroup), message);
         }
 
         public void Dispose()

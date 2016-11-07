@@ -1,21 +1,19 @@
-﻿using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
+﻿using Stump.ORM.SubSonic.Linq.Structure;
 using Stump.ORM.SubSonic.Linq.Translation;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.DataProviders.MySQL
 {
     /// <summary>
     /// MySQL specific QueryLanguage
     /// </summary>
-    /// 
+    ///
     public class MySqlLanguage : QueryLanguage
     {
-        
         public MySqlLanguage(IDataProvider provider) : base(provider)
         {
             ClientName = "MySql.Data.MySqlClient";
         }
-
 
         public override string Quote(string name)
         {
@@ -51,7 +49,6 @@ namespace Stump.ORM.SubSonic.DataProviders.MySQL
                 //reset the Take since we need both on the Select
                 //for the formatter to work
                 outer.Take = inner.Take;
-
 
                 expression = new ProjectionExpression(outer, projection.Projector);
             }

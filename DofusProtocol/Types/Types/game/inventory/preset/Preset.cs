@@ -1,31 +1,29 @@
-
-
 // Generated on 03/02/2014 20:43:02
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class Preset
     {
         public const short Id = 355;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte presetId;
         public sbyte symbolId;
         public bool mount;
         public IEnumerable<Types.PresetItem> objects;
-        
+
         public Preset()
         {
         }
-        
+
         public Preset(sbyte presetId, sbyte symbolId, bool mount, IEnumerable<Types.PresetItem> objects)
         {
             this.presetId = presetId;
@@ -33,7 +31,7 @@ namespace Stump.DofusProtocol.Types
             this.mount = mount;
             this.objects = objects;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(presetId);
@@ -44,16 +42,15 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in objects)
             {
-                 entry.Serialize(writer);
-                 objects_count++;
+                entry.Serialize(writer);
+                objects_count++;
             }
             var objects_after = writer.Position;
             writer.Seek((int)objects_before);
             writer.WriteUShort((ushort)objects_count);
             writer.Seek((int)objects_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             presetId = reader.ReadSByte();
@@ -67,17 +64,15 @@ namespace Stump.DofusProtocol.Types
             var objects_ = new Types.PresetItem[limit];
             for (int i = 0; i < limit; i++)
             {
-                 objects_[i] = new Types.PresetItem();
-                 objects_[i].Deserialize(reader);
+                objects_[i] = new Types.PresetItem();
+                objects_[i].Deserialize(reader);
             }
             objects = objects_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + sizeof(short) + objects.Sum(x => x.GetSerializationSize());
         }
-        
     }
-    
 }

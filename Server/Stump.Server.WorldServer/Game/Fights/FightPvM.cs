@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Challenges;
 using Stump.Server.WorldServer.Game.Fights.Results;
@@ -9,6 +6,9 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -39,10 +39,31 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             base.OnFightStarted();
 
+            if (!Map.AllowFightChallenges)
+                return;
+
             var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+
+            // no challenge found
+            if (challenge == null)
+                return;
+
             challenge.Initialize();
 
-            SetChallenge(challenge);
+            AddChallenge(challenge);
+
+            if (Map.IsDungeon())
+            {
+                challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+                
+                // no challenge found
+                if (challenge == null)
+                    return;
+
+                challenge.Initialize();
+
+                AddChallenge(challenge);
+            }
         }
 
         protected override void OnFighterAdded(FightTeam team, FightActor actor)
@@ -59,33 +80,30 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_ageBonusDefined = true;
         }
 
-        public override FightTypeEnum FightType
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_PvM;
+
+        public override bool IsPvP => false;
+
+        public bool IsPvMArenaFight
         {
-            get { return FightTypeEnum.FIGHT_TYPE_PvM; }
+            get;
+            set;
         }
 
-        public override bool IsPvP
+        protected override List<IFightResult> GetResults()
         {
-            get { return false; }
-        }
-
-        protected override IEnumerable<IFightResult> GenerateResults()
-        {
-            base.GenerateResults();
-
             var results = new List<IFightResult>();
-            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)
-                && !(entry is SummonedBomb) && !(entry is SlaveFighter)).Select(entry => entry.GetFightResult()));
+            results.AddRange(GetFightersAndLeavers().Where(entry => entry.HasResult).Select(entry => entry.GetFightResult()));
 
             if (Map.TaxCollector != null && Map.TaxCollector.CanGatherLoots())
                 results.Add(new TaxCollectorProspectingResult(Map.TaxCollector, this));
 
             foreach (var team in m_teams)
             {
-                IEnumerable<FightActor> droppers = team.OpposedTeam.GetAllFighters(entry => entry.IsDead()).ToList();
+                IEnumerable<FightActor> droppers = team.OpposedTeam.GetAllFighters(entry => entry.IsDead() && entry.CanDrop()).ToList();
                 var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorProspectingResult ? -1 : entry.Prospecting); // tax collector loots at the end
                 var teamPP = team.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
-                var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
+                var kamas = Winners == team ? droppers.Sum(entry => entry.GetDroppedKamas()) * team.GetAllFighters<CharacterFighter>().Count() : 0;
 
                 foreach (var looter in looters)
                 {
@@ -106,10 +124,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
 
-
             return results;
         }
-
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
@@ -121,14 +137,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, !IsStarted, true, IsStarted, GetPlacementTimeLeft(), FightType);
         }
 
-        protected override bool CanCancelFight()
-        {
-            return false;
-        }
+        protected override bool CanCancelFight() => false;
 
         public override int GetPlacementTimeLeft()
         {
-            var timeleft = FightConfiguration.PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
+            var timeleft = FightConfiguration.PlacementPhaseTime - (DateTime.Now - CreationTime).TotalMilliseconds;
 
             if (timeleft < 0)
                 timeleft = 0;
@@ -136,5 +149,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             return (int)timeleft;
         }
 
+        protected override void OnDisposed()
+        {
+            if (m_placementTimer != null)
+                m_placementTimer.Dispose();
+
+            base.OnDisposed();
+        }
     }
 }

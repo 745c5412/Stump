@@ -1,34 +1,33 @@
 ﻿#region License GNU GPL
 
 // TimedTimerEntry.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#endregion
+#endregion License GNU GPL
 
 using System;
 using System.Collections.Generic;
 
 namespace Stump.Core.Timers
 {
-    public class TimedTimerEntry
+    public class TimedTimerEntry : IDisposable
     {
         private int m_interval;
         private bool m_firstCalled;
 
         public TimedTimerEntry()
         {
-            
         }
 
         public TimedTimerEntry(int interval, Action action)
@@ -38,7 +37,7 @@ namespace Stump.Core.Timers
 
         public TimedTimerEntry(int delay, int interval, Action action)
         {
-            m_delay = m_delay;
+            m_delay = delay;
             Interval = interval;
             Action = action;
         }
@@ -62,6 +61,12 @@ namespace Stump.Core.Timers
         }
 
         public DateTime NextTick
+        {
+            get;
+            private set;
+        }
+
+        public DateTime? LastExecute
         {
             get;
             private set;
@@ -111,13 +116,12 @@ namespace Stump.Core.Timers
             IsDisposed = true;
         }
 
-
         public bool ShouldTrigger()
         {
-            return Enabled && DateTime.Now >= NextTick;
+            return Enabled && !IsDisposed && DateTime.Now >= NextTick;
         }
 
-        public void Trigger()
+        public bool Trigger()
         {
             Action();
 
@@ -127,6 +131,14 @@ namespace Stump.Core.Timers
                 NextTick = DateTime.Now + TimeSpan.FromMilliseconds(Interval);
 
             m_firstCalled = true;
+            LastExecute = DateTime.Now;
+
+            return Enabled || IsDisposed;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} (Callback = {1}, Delay = {2})", GetType(), Action, Delay);
         }
     }
 

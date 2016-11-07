@@ -30,6 +30,7 @@ namespace Stump.Server.BaseServer.Commands.Patterns
         }
 
         public abstract void ExecuteAdd(TriggerBase trigger);
+
         public abstract void ExecuteRemove(TriggerBase trigger);
     }
 
@@ -55,7 +56,6 @@ namespace Stump.Server.BaseServer.Commands.Patterns
             {
                 ExecuteRemove(trigger);
             }
-
             else
             {
                 trigger.ReplyError("Invalid action {0}, define add or remove", action);
@@ -63,6 +63,7 @@ namespace Stump.Server.BaseServer.Commands.Patterns
         }
 
         public abstract void ExecuteAdd(TriggerBase trigger);
+
         public abstract void ExecuteRemove(TriggerBase trigger);
     }
 }

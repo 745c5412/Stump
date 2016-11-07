@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
     public class SkillPaddock : Skill
     {
         public SkillPaddock(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
-            : base (id, record, interactiveObject)
+            : base(id, record, interactiveObject)
         {
         }
 
@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             if (character.IsBusy())
                 return;
 
-            var paddock = PaddockManager.Instance.GetPaddock(InteractiveObject.Map.Id);
+            var paddock = PaddockManager.Instance.GetPaddockByMap(InteractiveObject.Map.Id);
             if (paddock == null)
                 return;
 

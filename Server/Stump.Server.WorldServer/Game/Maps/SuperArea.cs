@@ -1,9 +1,9 @@
+using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database.World;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using Stump.Server.WorldServer.Database.Monsters;
-using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {
@@ -14,7 +14,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly Dictionary<Point, List<Map>> m_mapsByPoint = new Dictionary<Point, List<Map>>();
         private readonly List<SubArea> m_subAreas = new List<SubArea>();
         private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
-
 
         protected internal SuperAreaRecord m_record;
 
@@ -74,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             m_areas.Remove(area);
             m_subAreas.RemoveAll(entry => area.SubAreas.Contains(entry));
-            m_maps.RemoveAll(delegate(Map entry)
+            m_maps.RemoveAll(delegate (Map entry)
                                  {
                                      if (area.Maps.Contains(entry))
                                      {
@@ -135,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void RemoveMonsterSpawn(MonsterSpawn spawn)
         {
             m_monsterSpawns.Remove(spawn);
-            
+
             foreach (var area in Areas)
             {
                 area.RemoveMonsterSpawn(spawn);
@@ -149,6 +148,5 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return m_monsterSpawns.AsReadOnly();
             }
         }
-
     }
 }

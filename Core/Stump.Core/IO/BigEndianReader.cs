@@ -1,18 +1,21 @@
 ﻿#region License GNU GPL
+
 // BigEndianReader.cs
-// 
+//
 // Copyright (C) 2012 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
+
+#endregion License GNU GPL
+
 using System;
 using System.IO;
 using System.Text;
@@ -37,10 +40,9 @@ namespace Stump.Core.IO
         {
             get
             {
-               return m_reader.BaseStream.Position;
+                return m_reader.BaseStream.Position;
             }
         }
-
 
         public Stream BaseStream
         {
@@ -50,7 +52,7 @@ namespace Stump.Core.IO
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Initialisation
 
@@ -80,7 +82,7 @@ namespace Stump.Core.IO
             m_reader = new BinaryReader(new MemoryStream(tab), Encoding.UTF8);
         }
 
-        #endregion
+        #endregion Initialisation
 
         #region Private Methods
 
@@ -98,7 +100,7 @@ namespace Stump.Core.IO
             return bytes;
         }
 
-        #endregion
+        #endregion Private Methods
 
         #region Public Method
 
@@ -214,7 +216,7 @@ namespace Stump.Core.IO
         /// <returns></returns>
         public Char ReadChar()
         {
-            return (char) ReadUShort();
+            return (char)ReadUShort();
         }
 
         /// <summary>
@@ -283,7 +285,6 @@ namespace Stump.Core.IO
             }
         }
 
-
         public void Seek(int offset, SeekOrigin seekOrigin)
         {
             m_reader.BaseStream.Seek(offset, seekOrigin);
@@ -301,7 +302,7 @@ namespace Stump.Core.IO
             m_reader.BaseStream.Position = pos;
         }
 
-        #endregion
+        #endregion Public Method
 
         #region Dispose
 
@@ -314,6 +315,6 @@ namespace Stump.Core.IO
             m_reader = null;
         }
 
-        #endregion
+        #endregion Dispose
     }
 }

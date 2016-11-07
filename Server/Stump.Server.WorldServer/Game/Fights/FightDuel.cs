@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -31,31 +31,17 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.StartFighting();
         }
 
-        public override bool IsDeathTemporarily
-        {
-            get { return true; }
-        }
+        public override bool IsDeathTemporarily => true;
 
-        public override FightTypeEnum FightType
-        {
-            get { return FightTypeEnum.FIGHT_TYPE_CHALLENGE; }
-        }
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_CHALLENGE;
 
-        public override bool IsPvP
-        {
-            get { return true; }
-        }
+        public override bool IsPvP => true;
 
-        public override bool IsMultiAccountRestricted
-        {
-            get { return false; }
-        }
+        public override bool IsMultiAccountRestricted => false;
 
-        protected override IEnumerable<IFightResult> GenerateResults()
+        protected override List<IFightResult> GetResults()
         {
-            base.GenerateResults();
-
-            return GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)).Select(fighter => fighter.GetFightResult());
+            return GetFightersAndLeavers().Where(entry => entry.HasResult).Select(fighter => fighter.GetFightResult()).ToList();
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
@@ -70,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public TimeSpan GetPlacementTimeLeft()
         {
-            var timeleft = TimeSpan.FromMilliseconds(FightConfiguration.PlacementPhaseTime) - ( DateTime.Now - CreationTime );
+            var timeleft = TimeSpan.FromMilliseconds(FightConfiguration.PlacementPhaseTime) - (DateTime.Now - CreationTime);
 
             if (timeleft < TimeSpan.Zero)
                 timeleft = TimeSpan.Zero;

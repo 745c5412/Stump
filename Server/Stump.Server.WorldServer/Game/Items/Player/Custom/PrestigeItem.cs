@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Server.WorldServer.Database.Items;
+﻿using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
@@ -14,8 +14,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         public PrestigeItem(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
-            IsTemporarily = true;            
-            var effects = PrestigeManager.Instance.GetPrestigeEffects(Owner.PrestigeRank);
+            IsTemporarily = true;
+            var effects = PrestigeManager.GetPrestigeEffects(Owner.PrestigeRank);
             Effects = new List<EffectBase>(effects);
         }
 
@@ -38,14 +38,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         public void UpdateEffects()
         {
             ApplyBonus(ItemEffectHandler.HandlerOperation.UNAPPLY);
-            var effects = PrestigeManager.Instance.GetPrestigeEffects(Owner.PrestigeRank);
+            var effects = PrestigeManager.GetPrestigeEffects(Owner.PrestigeRank);
 
             Effects = new List<EffectBase>(effects);
             ApplyBonus(ItemEffectHandler.HandlerOperation.APPLY);
         }
 
         public override bool OnRemoveItem()
-        {            
+        {
             ApplyBonus(ItemEffectHandler.HandlerOperation.UNAPPLY);
             return base.OnRemoveItem();
         }

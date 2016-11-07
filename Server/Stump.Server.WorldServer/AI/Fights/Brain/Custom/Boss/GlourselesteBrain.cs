@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
@@ -7,6 +6,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
@@ -76,16 +76,20 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
                 if (stateBuff == null)
                     return;
 
+                Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+
                 player.RemoveAndDispellBuff(stateBuff);
+
+                Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
             }
 
             if (!(player is CharacterFighter) || player.Team.Id == Fighter.Team.Id)
                 return;
 
-            if (Fighter.HasState((int) SpellStatesEnum.Invulnerable))
+            if (Fighter.HasState((int)SpellStatesEnum.Invulnerable))
                 return;
 
-            var spell = new Spell((int) SpellIdEnum.GLOURSOMPTUEUX, 1);
+            var spell = new Spell((int)SpellIdEnum.GLOURSOMPTUEUX, 1);
             player.CastSpell(spell, Fighter.Cell, true, true);
         }
 
@@ -109,30 +113,30 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             Fighter.CastSpell(spell, Fighter.Cell, true, true);
         }
 
-        private void OnBossMoved(FightActor fighter, bool takeDamage)
+        private void OnBossMoved(FightActor source, FightActor target, bool takeDamage)
         {
-            if (fighter == Fighter)
+            if (source == Fighter)
                 return;
 
             //State Résuglours
             GetEffectHandler(SpellIdEnum.GLOURSONGEUR, Fighter.Cell, 3).Apply();
         }
 
-        private void OnActorMoved(FightActor fighter, bool takeDamage)
+        private void OnActorMoved(FightActor source, FightActor target, bool takeDamage)
         {
             if (!takeDamage)
                 return;
 
             //Kill
-            var handler = GetEffectHandler(SpellIdEnum.GLOURSONGEUR, fighter.Cell, 1);
+            var handler = GetEffectHandler(SpellIdEnum.GLOURSONGEUR, target.Cell, 1);
 
-            handler.AddAffectedActor(fighter);
+            handler.AddAffectedActor(target);
             handler.Apply();
         }
 
         private void OnFightPointsVariation(FightActor fighter, ActionsEnum action, FightActor source, FightActor target, short delta)
         {
-            if (action != ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST && action != ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST)
+            if (action != ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST && action != ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST && action != ActionsEnum.ACTION_CHARACTER_DEBOOST_RANGE)
                 return;
 
             //State Résuglours

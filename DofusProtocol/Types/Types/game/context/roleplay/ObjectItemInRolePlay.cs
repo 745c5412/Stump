@@ -1,41 +1,37 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class ObjectItemInRolePlay
     {
         public const short Id = 198;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public short cellId;
         public short objectGID;
-        
+
         public ObjectItemInRolePlay()
         {
         }
-        
+
         public ObjectItemInRolePlay(short cellId, short objectGID)
         {
             this.cellId = cellId;
             this.objectGID = objectGID;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(cellId);
             writer.WriteShort(objectGID);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             cellId = reader.ReadShort();
@@ -45,12 +41,10 @@ namespace Stump.DofusProtocol.Types
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(short) + sizeof(short);
         }
-        
     }
-    
 }

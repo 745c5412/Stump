@@ -1,37 +1,34 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
+using Stump.Core.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class TaxCollectorFightersInformation
     {
         public const short Id = 169;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int collectorId;
         public IEnumerable<Types.CharacterMinimalPlusLookInformations> allyCharactersInformations;
         public IEnumerable<Types.CharacterMinimalPlusLookInformations> enemyCharactersInformations;
-        
+
         public TaxCollectorFightersInformation()
         {
         }
-        
+
         public TaxCollectorFightersInformation(int collectorId, IEnumerable<Types.CharacterMinimalPlusLookInformations> allyCharactersInformations, IEnumerable<Types.CharacterMinimalPlusLookInformations> enemyCharactersInformations)
         {
             this.collectorId = collectorId;
             this.allyCharactersInformations = allyCharactersInformations;
             this.enemyCharactersInformations = enemyCharactersInformations;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(collectorId);
@@ -40,8 +37,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in allyCharactersInformations)
             {
-                 entry.Serialize(writer);
-                 allyCharactersInformations_count++;
+                entry.Serialize(writer);
+                allyCharactersInformations_count++;
             }
             var allyCharactersInformations_after = writer.Position;
             writer.Seek((int)allyCharactersInformations_before);
@@ -53,16 +50,15 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in enemyCharactersInformations)
             {
-                 entry.Serialize(writer);
-                 enemyCharactersInformations_count++;
+                entry.Serialize(writer);
+                enemyCharactersInformations_count++;
             }
             var enemyCharactersInformations_after = writer.Position;
             writer.Seek((int)enemyCharactersInformations_before);
             writer.WriteUShort((ushort)enemyCharactersInformations_count);
             writer.Seek((int)enemyCharactersInformations_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             collectorId = reader.ReadInt();
@@ -70,25 +66,23 @@ namespace Stump.DofusProtocol.Types
             var allyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 allyCharactersInformations_[i] = new Types.CharacterMinimalPlusLookInformations();
-                 allyCharactersInformations_[i].Deserialize(reader);
+                allyCharactersInformations_[i] = new Types.CharacterMinimalPlusLookInformations();
+                allyCharactersInformations_[i].Deserialize(reader);
             }
             allyCharactersInformations = allyCharactersInformations_;
             limit = reader.ReadUShort();
             var enemyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 enemyCharactersInformations_[i] = new Types.CharacterMinimalPlusLookInformations();
-                 enemyCharactersInformations_[i].Deserialize(reader);
+                enemyCharactersInformations_[i] = new Types.CharacterMinimalPlusLookInformations();
+                enemyCharactersInformations_[i].Deserialize(reader);
             }
             enemyCharactersInformations = enemyCharactersInformations_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + allyCharactersInformations.Sum(x => x.GetSerializationSize()) + sizeof(short) + enemyCharactersInformations.Sum(x => x.GetSerializationSize());
         }
-        
     }
-    
 }

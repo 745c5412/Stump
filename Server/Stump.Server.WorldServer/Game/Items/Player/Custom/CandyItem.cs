@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             }
 
             var boostItem = ItemManager.Instance.TryGetTemplate(criterion.Item);
-                        
+
             if (boostItem == null)
             {
                 logger.Error(string.Format("Candy {0} has boostItem {1} but it doesn't exist",

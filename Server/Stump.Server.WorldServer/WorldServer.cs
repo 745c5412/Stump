@@ -1,11 +1,4 @@
-
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Threading;
+using ServiceStack.Text;
 using Stump.Core.Attributes;
 using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
@@ -22,7 +15,14 @@ using Stump.Server.WorldServer.Core.IO;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
-using ServiceStack.Text;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Threading;
 using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.WorldServer
@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer
         };
 
         [Variable(true)]
-        public static int AutoSaveInterval  = 3 * 60;
+        public static int AutoSaveInterval = 3 * 60;
 
         [Variable(true)]
         public static bool SaveMessage = true;
@@ -82,10 +82,10 @@ namespace Stump.Server.WorldServer
             get;
             private set;
         }
+
         public WorldServer()
             : base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
         {
-            
         }
 
         public override void Initialize()
@@ -93,18 +93,23 @@ namespace Stump.Server.WorldServer
             base.Initialize();
             ConsoleInterface = new WorldConsole();
             VirtualConsoleInterface = new WorldVirtualConsole();
-            ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
+            ConsoleBase.SetTitle($"#Stump World Server - {Version} : {ServerInformation.Name}");
 
             logger.Info("Initializing Database...");
             DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
             DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
+
+            foreach (var plugin in PluginManager.Instance.GetPlugins())
+                DBAccessor.RegisterMappingAssembly(plugin.PluginAssembly);
+
             InitializationManager.Initialize(InitializationPass.Database);
             DBAccessor.Initialize();
 
-            logger.Info("Opening Database..."); 
+            logger.Info("Opening Database...");
             DBAccessor.OpenConnection();
             DataManager.DefaultDatabase = DBAccessor.Database;
             DataManagerAllocator.Assembly = Assembly.GetExecutingAssembly();
+            DBAccessor.Database.ExecutingCommand += OnExecutingDBCommand;
 
             logger.Info("Register Messages...");
             MessageReceiver.Initialize();
@@ -120,6 +125,14 @@ namespace Stump.Server.WorldServer
             InitializationManager.InitializeAll();
             CommandManager.LoadOrCreateCommandsInfo(CommandsInfoFilePath);
             IsInitialized = true;
+        }
+
+        private void OnExecutingDBCommand(ORM.Database arg1, IDbCommand arg2)
+        {
+            if (!Initializing && !IOTaskPool.IsInContext)
+            {
+                logger.Warn("Execute DB command out the IO task pool : " + arg2.CommandText);
+            }
         }
 
         protected override void OnPluginAdded(PluginContext plugincontext)
@@ -145,13 +158,12 @@ namespace Stump.Server.WorldServer
             logger.Info("Start listening on port : " + Port + "...");
             ClientManager.Start(Host, Port);
 
+            IOTaskPool.Start();
+
             StartTime = DateTime.Now;
         }
 
-        protected override BaseClient CreateClient(Socket s)
-        {
-            return new WorldClient(s);
-        }
+        protected override BaseClient CreateClient(Socket s) => new WorldClient(s);
 
         protected override void DisconnectAfkClient()
         {
@@ -178,10 +190,7 @@ namespace Stump.Server.WorldServer
             return clients.Any();
         }
 
-        public WorldClient[] FindClients(Predicate<WorldClient> predicate)
-        {
-            return ClientManager.FindAll(predicate);
-        }
+        public WorldClient[] FindClients(Predicate<WorldClient> predicate) => ClientManager.FindAll(predicate);
 
         private DateTime m_lastAnnouncedTime;
 
@@ -266,12 +275,12 @@ namespace Stump.Server.WorldServer
                 var wait = new AutoResetEvent(false);
                 IOTaskPool.ExecuteInContext(() =>
                 {
-                        World.Instance.Stop(true);
-                        World.Instance.Save();
-                        wait.Set();
-                    });
+                    World.Instance.Stop(true);
+                    World.Instance.Save();
+                    wait.Set();
+                });
 
-                wait.WaitOne();
+                wait.WaitOne(-1);
             }
 
             IPCAccessor.Instance.Stop();

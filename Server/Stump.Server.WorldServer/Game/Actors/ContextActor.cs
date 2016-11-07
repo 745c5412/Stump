@@ -1,4 +1,5 @@
-using System;
+using Stump.Core.Collections;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
@@ -7,6 +8,7 @@ using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Handlers.Chat;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Actors
 {
@@ -32,10 +34,13 @@ namespace Stump.Server.WorldServer.Game.Actors
             set;
         }
 
-        public virtual ICharacterContainer CharacterContainer
+        public virtual Pair<EmotesEnum, DateTime> LastEmoteUsed
         {
-            get { return Position.Map; }
+            get;
+            set;
         }
+
+        public virtual ICharacterContainer CharacterContainer => Position.Map;
 
         public override ObjectPosition Position
         {
@@ -46,10 +51,11 @@ namespace Stump.Server.WorldServer.Game.Actors
                     m_position.PositionChanged -= OnPositionChanged;
 
                 m_position = value;
-                OnPositionChanged(m_position);
 
                 if (m_position != null)
                     m_position.PositionChanged += OnPositionChanged;
+
+                OnPositionChanged(m_position);
             }
         }
 
@@ -59,10 +65,10 @@ namespace Stump.Server.WorldServer.Game.Actors
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations()
         {
-            return new EntityDispositionInformations(Cell.Id, (sbyte) Direction);
+            return new EntityDispositionInformations(Cell.Id, (sbyte)Direction);
         }
 
-        #endregion
+        #endregion EntityDispositionInformations
 
         #region GameContextActorInformations
 
@@ -76,12 +82,12 @@ namespace Stump.Server.WorldServer.Game.Actors
 
         public virtual IdentifiedEntityDispositionInformations GetIdentifiedEntityDispositionInformations()
         {
-            return new IdentifiedEntityDispositionInformations(Cell.Id, (sbyte) Direction, Id);
+            return new IdentifiedEntityDispositionInformations(Cell.Id, (sbyte)Direction, Id);
         }
 
-        #endregion
+        #endregion GameContextActorInformations
 
-        #endregion
+        #endregion Network
 
         #region Actions
 
@@ -92,7 +98,7 @@ namespace Stump.Server.WorldServer.Game.Actors
             CharacterContainer.ForEach(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
         }
 
-        #endregion
+        #endregion Chat
 
         #region Moving
 
@@ -121,11 +127,11 @@ namespace Stump.Server.WorldServer.Game.Actors
             if (handler != null)
                 handler(this, path, canceled);
         }
-        
+
         public event Action<ContextActor, Cell> InstantMoved;
 
         protected virtual void OnInstantMoved(Cell cell)
-        {   
+        {
             Action<ContextActor, Cell> handler = InstantMoved;
             if (handler != null) handler(this, cell);
         }
@@ -156,6 +162,9 @@ namespace Stump.Server.WorldServer.Game.Actors
         public virtual bool StartMove(Path movementPath)
         {
             if (!CanMove())
+                return false;
+
+            if (movementPath.StartCell.Id != Cell.Id) //Verify Hack
                 return false;
 
             m_isMoving = true;
@@ -209,8 +218,8 @@ namespace Stump.Server.WorldServer.Game.Actors
             return true;
         }
 
-        #endregion
+        #endregion Moving
 
-        #endregion
+        #endregion Actions
     }
 }

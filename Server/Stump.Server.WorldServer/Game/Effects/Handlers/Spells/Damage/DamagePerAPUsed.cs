@@ -1,14 +1,14 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
-    [EffectHandler(EffectsEnum.Effect_DamageAirPerAP)] 
+    [EffectHandler(EffectsEnum.Effect_DamageAirPerAP)]
     [EffectHandler(EffectsEnum.Effect_DamageEarthPerAP)]
     [EffectHandler(EffectsEnum.Effect_DamageFirePerAP)]
     [EffectHandler(EffectsEnum.Effect_DamageWaterPerAP)]
@@ -40,10 +40,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             {
                 Source = buff.Caster,
                 Buff = buff,
-                IgnoreDamageReduction = true,
                 School = GetEffectSchool(buff.Dice.EffectId),
                 MarkTrigger = MarkTrigger,
-                IsCritical = Critical
+                IsCritical = Critical,
+                Spell = buff.Spell
             };
 
             damages.GenerateDamages();
@@ -58,14 +58,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             {
                 case EffectsEnum.Effect_DamageWaterPerAP:
                     return EffectSchoolEnum.Water;
+
                 case EffectsEnum.Effect_DamageEarthPerAP:
                     return EffectSchoolEnum.Earth;
+
                 case EffectsEnum.Effect_DamageAirPerAP:
                     return EffectSchoolEnum.Air;
+
                 case EffectsEnum.Effect_DamageFirePerAP:
                     return EffectSchoolEnum.Fire;
+
                 case EffectsEnum.Effect_DamageNeutralPerAP:
                     return EffectSchoolEnum.Neutral;
+
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));
             }

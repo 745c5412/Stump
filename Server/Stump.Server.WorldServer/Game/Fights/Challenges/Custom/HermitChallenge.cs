@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -22,12 +22,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             else
             {
                 BonusMin = 30;
-                BonusMax = 30;  
+                BonusMax = 30;
             }
 
             m_team = Fight.DefendersTeam is FightMonsterTeam ? Fight.DefendersTeam : Fight.ChallengersTeam;
             if (id == (int)ChallengeEnum.ANACHORÈTE)
-                m_team = m_team.OpposedTeam; 
+                m_team = m_team.OpposedTeam;
         }
 
         public override void Initialize()
@@ -44,10 +44,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private void OnBeforeTurnStopped(IFight fight, FightActor fighter)
         {
-            if (!(fighter is CharacterFighter))
+            if (!(fighter is CharacterFighter) || fighter.IsDead())
                 return;
 
-            if (!fighter.Position.Point.GetAdjacentCells(x => m_team.GetOneFighter(Fight.Map.GetCell(x)) != null).Any())
+            if (!fighter.Position.Point.GetAdjacentCells(x => m_team.GetOneFighter(y => y.IsAlive() && y.Cell == Fight.Map.GetCell(x)) != null).Any())
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);

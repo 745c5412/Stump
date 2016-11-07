@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using NLog;
+﻿using NLog;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Effects;
+using System;
+using System.IO;
+using System.Text;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -35,7 +35,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         private int m_random;
         private SpellTargetType m_targets;
 
-        [NonSerialized] protected EffectTemplate m_template;
+        [NonSerialized]
+        protected EffectTemplate m_template;
+
         private bool m_trigger;
         private uint m_zoneMinSize;
         private SpellShapeEnum m_zoneShape;
@@ -81,10 +83,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public EffectBase(EffectInstance effect)
         {
-            m_id = (short) effect.effectId;
+            m_id = (short)effect.effectId;
             m_template = EffectManager.Instance.GetTemplate(Id);
 
-            m_targets = (SpellTargetType) effect.targetId;
+            m_targets = (SpellTargetType)effect.targetId;
             m_delay = effect.delay;
             m_duration = effect.duration;
             m_group = effect.group;
@@ -117,10 +119,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public EffectsEnum EffectId
         {
-            get { return (EffectsEnum) Id; }
+            get { return (EffectsEnum)Id; }
             set
             {
-                Id = (short) value;
+                Id = (short)value;
                 IsDirty = true;
             }
         }
@@ -217,7 +219,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public uint ZoneSize
         {
-            get { return m_zoneSize >= 63 ? (byte) 63 : (byte) m_zoneSize; }
+            get { return m_zoneSize >= 63 ? (byte)63 : (byte)m_zoneSize; }
             set
             {
                 m_zoneSize = value;
@@ -237,7 +239,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public uint ZoneMinSize
         {
-            get { return m_zoneMinSize >= 63 ? (byte) 63 : (byte) m_zoneMinSize; }
+            get { return m_zoneMinSize >= 63 ? (byte)63 : (byte)m_zoneMinSize; }
             set
             {
                 m_zoneMinSize = value;
@@ -258,7 +260,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return MemberwiseClone();
         }
 
-        #endregion
+        #endregion ICloneable Members
 
         protected void ParseRawZone(string rawZone)
         {
@@ -270,7 +272,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 return;
             }
 
-            var shape = (SpellShapeEnum) rawZone[0];
+            var shape = (SpellShapeEnum)rawZone[0];
             byte size = 0;
             byte minSize = 0;
 
@@ -305,7 +307,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             var builder = new StringBuilder();
 
-            builder.Append((char) (int) ZoneShape);
+            builder.Append((char)(int)ZoneShape);
             builder.Append(ZoneSize);
 
             if (ZoneMinSize <= 0)
@@ -336,20 +338,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public virtual EffectInstance GetEffectInstance()
         {
             return new EffectInstance
-                {
-                    effectId = (uint) Id,
-                    targetId = (int) Targets,
-                    delay = Delay,
-                    duration = Duration,
-                    group = Group,
-                    random = Random,
-                    modificator = Modificator,
-                    trigger = Trigger,
-                    hidden = Hidden,
-                    zoneMinSize = ZoneMinSize,
-                    zoneSize = ZoneSize,
-                    zoneShape = (uint) ZoneShape
-                };
+            {
+                effectId = (uint)Id,
+                targetId = (int)Targets,
+                delay = Delay,
+                duration = Duration,
+                group = Group,
+                random = Random,
+                modificator = Modificator,
+                trigger = Trigger,
+                hidden = Hidden,
+                zoneMinSize = ZoneMinSize,
+                zoneSize = ZoneSize,
+                zoneShape = (uint)ZoneShape
+            };
         }
 
         public byte[] Serialize()
@@ -360,12 +362,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
             InternalSerialize(ref writer);
 
-            return ((MemoryStream) writer.BaseStream).ToArray();
+            return ((MemoryStream)writer.BaseStream).ToArray();
         }
 
         protected virtual void InternalSerialize(ref BinaryWriter writer)
         {
-            if ((int) Targets == 0 &&
+            if ((int)Targets == 0 &&
                 Duration == 0 &&
                 Delay == 0 &&
                 Random == 0 &&
@@ -382,7 +384,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
             else
             {
-                writer.Write((int) Targets);
+                writer.Write((int)Targets);
                 writer.Write(Id); // writer id second 'cause targets can't equals to 'C' but id can
                 writer.Write(Duration);
                 writer.Write(Delay);
@@ -409,7 +411,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
             InternalDeserialize(ref reader);
 
-            index += (int) reader.BaseStream.Position;
+            index += (int)reader.BaseStream.Position;
         }
 
         protected virtual void InternalDeserialize(ref BinaryReader reader)
@@ -421,7 +423,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
             else
             {
-                m_targets = (SpellTargetType) reader.ReadInt32();
+                m_targets = (SpellTargetType)reader.ReadInt32();
                 m_id = reader.ReadInt16();
                 m_duration = reader.ReadInt32();
                 m_delay = reader.ReadInt32();
@@ -438,8 +440,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (EffectBase)) return false;
-            return Equals((EffectBase) obj);
+            if (obj.GetType() != typeof(EffectBase)) return false;
+            return Equals((EffectBase)obj);
         }
 
         public static bool operator ==(EffectBase left, EffectBase right)

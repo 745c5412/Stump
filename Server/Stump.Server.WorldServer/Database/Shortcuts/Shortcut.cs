@@ -1,4 +1,5 @@
 using Stump.ORM;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Characters;
 
 namespace Stump.Server.WorldServer.Database.Shortcuts
@@ -29,6 +30,7 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
 
         private int m_ownerId;
 
+        [Index]
         public int OwnerId
         {
             get { return m_ownerId; }
@@ -64,6 +66,7 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
         }
 
         public abstract DofusProtocol.Types.Shortcut GetNetworkShortcut();
+
         public void BeforeSave(bool insert)
         {
             IsDirty = false;

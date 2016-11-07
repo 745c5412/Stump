@@ -11,10 +11,16 @@ namespace Stump.Server.WorldServer.Game.Items
         public int ItemId
         {
             get;
-            set;
+            private set;
         }
 
         public uint Amount
+        {
+            get;
+            set;
+        }
+
+        public bool IgnoreGeneration
         {
             get;
             set;

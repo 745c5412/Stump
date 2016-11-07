@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Stump.Tools.Sniffer
@@ -31,7 +27,7 @@ namespace Stump.Tools.Sniffer
 
         public string SelectedInterface
         {
-            get { return listBoxInterfaces.SelectedIndex != -1 ? (string) listBoxInterfaces.SelectedItem : null; }
+            get { return listBoxInterfaces.SelectedIndex != -1 ? (string)listBoxInterfaces.SelectedItem : null; }
         }
 
         private void listBoxInterfaces_SelectedIndexChanged(object sender, EventArgs e)

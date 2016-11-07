@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 
@@ -57,6 +56,7 @@ namespace Stump.Core.IO
         /// </summary>
         /// <returns></returns>
         void WriteByte(byte @byte);
+
         void WriteSByte(sbyte @byte);
 
         /// <summary>
@@ -107,6 +107,7 @@ namespace Stump.Core.IO
         void WriteBytes(byte[] data);
 
         void Clear();
+
         void Seek(int offset);
     }
 }

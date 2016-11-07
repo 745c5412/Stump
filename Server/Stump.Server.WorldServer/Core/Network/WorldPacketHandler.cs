@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Stump.Core.Threading;
+﻿using Stump.Core.Threading;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Handlers;
+using System.Collections.Generic;
 using Message = Stump.DofusProtocol.Messages.Message;
 
 namespace Stump.Server.WorldServer.Core.Network
@@ -14,10 +14,9 @@ namespace Stump.Server.WorldServer.Core.Network
         {
             if (message is BasicPingMessage) // pong immediately
             {
-                client.Send(new BasicPongMessage(( message as BasicPingMessage ).quiet));
+                client.Send(new BasicPongMessage((message as BasicPingMessage).quiet));
                 return;
             }
-
 
             List<MessageHandler> handlers;
             if (m_handlers.TryGetValue(message.MessageId, out handlers))
@@ -43,7 +42,7 @@ namespace Stump.Server.WorldServer.Core.Network
                     }
 
                     if (client.Character != null && !handler.Attribute.ShouldBeLogged)
-                    {                       
+                    {
                         if (handler.Attribute.IgnorePredicate)
                             continue;
 
@@ -56,7 +55,12 @@ namespace Stump.Server.WorldServer.Core.Network
 
                     var context = GetContextHandler(handler.Attribute, client, message);
                     if (context != null)
+                    {
+                        if (!context.IsRunning)
+                            context.Start();
+
                         context.AddMessage(new HandledMessage<WorldClient>(handler.Action, client, message));
+                    }
                 }
             }
             else
@@ -65,10 +69,8 @@ namespace Stump.Server.WorldServer.Core.Network
             }
         }
 
-
         public IContextHandler GetContextHandler(WorldHandlerAttribute attr, WorldClient client, Message message)
         {
-
             if (!attr.IsGamePacket)
             {
                 return WorldServer.Instance.IOTaskPool;

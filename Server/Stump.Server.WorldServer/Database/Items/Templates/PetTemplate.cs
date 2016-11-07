@@ -1,6 +1,6 @@
 ﻿using Stump.Core.IO;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -73,13 +73,13 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public void AssignFields(object d2oObject)
         {
-            var pet = (Pet) d2oObject;
+            var pet = (Pet)d2oObject;
             Id = pet.id;
             FoodItems = pet.foodItems.ToArray();
             FoodTypes = pet.foodTypes.ToArray();
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -89,6 +89,6 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             m_foodTypesCSV = m_foodTypes.ToCSV(",");
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
     }
 }

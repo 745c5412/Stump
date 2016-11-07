@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Stump.Server.WorldServer.Game.Maps;
+﻿using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Plugins.DefaultPlugin.Global
 {

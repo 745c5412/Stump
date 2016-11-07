@@ -24,11 +24,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
             if (m_matrix[a].F < m_matrix[b].F)
             {
-                return m_orderByDescending ? 1 : - 1;
+                return m_orderByDescending ? 1 : -1;
             }
             return 0;
         }
 
-        #endregion
+        #endregion IComparer<short> Members
     }
 }

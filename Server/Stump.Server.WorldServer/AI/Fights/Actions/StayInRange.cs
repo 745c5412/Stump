@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Stump.ORM.SubSonic.Query;
-using Stump.Server.WorldServer.Game.Actors.Fight;
+﻿using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
+using System.Linq;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
@@ -32,17 +31,28 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (!Fighter.CanMove())
                 return RunStatus.Failure;
 
-            var zone = Fighter.Brain.Environment.GetVisibleEnemies()
-                              .Select(x => (Set)new LozengeSet(x.Position.Point, MaxRange, MinRange))
-                              .Aggregate((set, current) => set.IntersectWith(current))
-                              .IntersectWith(new LozengeSet(Fighter.Position.Point, Fighter.MP));
+            var enemies = Fighter.Brain.Environment.GetVisibleEnemies().ToArray();
 
-            var result = zone.EnumerateValidPoints().FirstOrDefault();
-
-            if (result == null)
+            if (enemies.Length <= 0)
                 return RunStatus.Failure;
 
-            var move = new MoveAction(Fighter, result);
+            var zone = enemies.Select(x => (Set)new LozengeSet(x.Position.Point, MaxRange, MinRange))
+                              .Aggregate((set, current) => set.IntersectWith(current));
+
+            var result = zone.EnumerateValidPoints().Where(x =>
+                Fighter.Brain.Environment.CellInformationProvider.IsCellWalkable(x.CellId)).
+                              OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
+
+            // too far away, just try to move closer
+            if (result == null)
+            {
+                result = zone.EnumerateValidPoints().OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
+
+                if (result == null)
+                    return RunStatus.Failure;
+            }
+
+            var move = new MoveAction(Fighter, result) { AttemptOnly = true };
             return move.YieldExecute(context);
         }
     }

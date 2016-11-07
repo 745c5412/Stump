@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:46
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -19,8 +13,10 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "Ornaments";
         public int id;
+
         [I18NField]
         public uint nameId;
+
         public Boolean visible;
         public int assetId;
         public int iconId;
@@ -31,7 +27,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -87,7 +82,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Ornament)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             Visible = castedObj.visible;
@@ -96,7 +91,7 @@ namespace DBSynchroniser.Records
             Rarity = castedObj.rarity;
             Order = castedObj.order;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Ornament)parent : new Ornament();
@@ -109,10 +104,9 @@ namespace DBSynchroniser.Records
             obj.order = Order;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

@@ -7,7 +7,6 @@ namespace Stump.Server.BaseServer.IPC.Messages
     {
         public BanClientKeyRequestMessage()
         {
-
         }
 
         [ProtoMember(2)]

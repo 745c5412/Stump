@@ -14,17 +14,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         {
             APPLY,
             UNAPPLY,
+            NONAPPLY
         }
 
         protected ItemEffectHandler(EffectBase effect, Character target, BasePlayerItem item)
-            : base (effect)
+            : base(effect)
         {
             Target = target;
             Item = item;
         }
 
         protected ItemEffectHandler(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply)
-            : base (effect)
+            : base(effect)
         {
             Target = target;
             ItemSet = itemSet;
@@ -79,6 +80,5 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             }
             set { m_operation = value; }
         }
-
     }
 }

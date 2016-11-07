@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Timers;
@@ -11,6 +7,10 @@ using Stump.Server.AuthServer.Database.Accounts;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Messages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 
 namespace Stump.Server.AuthServer.Managers
 {
@@ -39,7 +39,6 @@ namespace Stump.Server.AuthServer.Managers
             PlayableBreedEnum.Steamer
             };
 
-
         [Variable]
         public static int CacheTimeout = 300;
 
@@ -49,13 +48,12 @@ namespace Stump.Server.AuthServer.Managers
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<string, Tuple<DateTime, Account>>();
         private List<IpBan> m_ipBans = new List<IpBan>();
-        private List<ClientKeyBan> m_keyBans = new List<ClientKeyBan>(); 
-        private SimpleTimerEntry m_timer;
-        private SimpleTimerEntry m_bansTimer;
+        private List<ClientKeyBan> m_keyBans = new List<ClientKeyBan>();
+        private TimedTimerEntry m_timer;
+        private TimedTimerEntry m_bansTimer;
 
         public AccountManager()
         {
-            
         }
 
         public override void Initialize()
@@ -69,8 +67,8 @@ namespace Stump.Server.AuthServer.Managers
 
         public override void TearDown()
         {
-            AuthServer.Instance.IOTaskPool.CancelSimpleTimer(m_timer);
-            AuthServer.Instance.IOTaskPool.CancelSimpleTimer(m_bansTimer);
+            AuthServer.Instance.IOTaskPool.RemoveTimer(m_timer);
+            AuthServer.Instance.IOTaskPool.RemoveTimer(m_bansTimer);
         }
 
         private void TimerTick()
@@ -80,7 +78,6 @@ namespace Stump.Server.AuthServer.Managers
             foreach (var keyPair in toRemove)
             {
                 m_accountsCache.Remove(keyPair.Key);
-                logger.Debug("Ticket {0} uncached (life time : {1} DateTime.Now={2})", keyPair.Key, keyPair.Value.Item1, DateTime.Now);
             }
         }
 
@@ -191,14 +188,22 @@ namespace Stump.Server.AuthServer.Managers
                     account);
             }
             else
+            {
+                var alreadyCachedAccounts = m_accountsCache.Where(x => x.Value.Item2.Id == account.Id).ToArray();
+
+                foreach (var keyPair in alreadyCachedAccounts.ToArray())
+                {
+                    m_accountsCache.Remove(keyPair.Key);
+                }
+
                 m_accountsCache.Add(account.Ticket,
                     Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account));
+            }
         }
 
         public void UnCacheAccount(Account account)
         {
             m_accountsCache.Remove(account.Ticket);
-            logger.Debug("Uncache ticket {0}", account.Ticket);
         }
 
         public Account FindCachedAccountByTicket(string ticket)
@@ -240,11 +245,11 @@ namespace Stump.Server.AuthServer.Managers
                 return null;
 
             var character = new WorldCharacter
-                                {
-                                    AccountId = account.Id,
-                                    WorldId = world.Id,
-                                    CharacterId = characterId
-                                };
+            {
+                AccountId = account.Id,
+                WorldId = world.Id,
+                CharacterId = characterId
+            };
 
             account.WorldCharacters.Add(character);
             Database.Insert(character);
@@ -269,19 +274,18 @@ namespace Stump.Server.AuthServer.Managers
         {
             var character = CreateAccountCharacter(account, world, characterId);
 
-
             return true;
         }
 
         public WorldCharacterDeleted CreateDeletedCharacter(Account account, WorldServer world, int characterId)
         {
             var character = new WorldCharacterDeleted
-                                {
-                                    AccountId = account.Id,
-                                    WorldId = world.Id,
-                                    CharacterId = characterId,
-                                    DeletionDate = DateTime.Now
-                                };
+            {
+                AccountId = account.Id,
+                WorldId = world.Id,
+                CharacterId = characterId,
+                DeletionDate = DateTime.Now
+            };
 
             Database.Insert(character);
 
@@ -300,10 +304,10 @@ namespace Stump.Server.AuthServer.Managers
 
         public void DisconnectClientsUsingAccount(Account account, AuthClient except = null)
         {
-            DisconnectClientsUsingAccount(account, except, result => { }); // do nothing
+            DisconnectClientsUsingAccount(account, except, result => { }, () => { }); // do nothing
         }
 
-        public void DisconnectClientsUsingAccount(Account account, AuthClient except, Action<bool> callback)
+        public void DisconnectClientsUsingAccount(Account account, AuthClient except, Action<bool> callback, Action errorCallBack)
         {
             var clients = AuthServer.Instance.FindClients(entry => entry != except && entry.Account != null && entry.Account.Id == account.Id).ToArray();
 
@@ -324,7 +328,7 @@ namespace Stump.Server.AuthServer.Managers
             if (server != null && server.Connected && server.IPCClient != null)
             {
                 server.IPCClient.SendRequest<DisconnectedClientMessage>(new DisconnectClientMessage(account.Id),
-                    msg => callback(msg.Disconnected), msg => callback(false));
+                    msg => callback(msg.Disconnected), msg => errorCallBack());
             }
             else
             {

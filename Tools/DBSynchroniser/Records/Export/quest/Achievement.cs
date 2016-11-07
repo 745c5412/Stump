@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:50
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -19,11 +16,15 @@ namespace DBSynchroniser.Records
     {
         private const String MODULE = "Achievements";
         public uint id;
+
         [I18NField]
         public uint nameId;
+
         public uint categoryId;
+
         [I18NField]
         public uint descriptionId;
+
         public int iconId;
         public uint points;
         public uint level;
@@ -38,7 +39,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -133,6 +133,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_objectiveIdsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -159,6 +160,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_rewardIdsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -175,7 +177,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Achievement)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             CategoryId = castedObj.categoryId;
@@ -190,7 +192,7 @@ namespace DBSynchroniser.Records
             ObjectiveIds = castedObj.objectiveIds;
             RewardIds = castedObj.rewardIds;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Achievement)parent : new Achievement();
@@ -209,12 +211,11 @@ namespace DBSynchroniser.Records
             obj.rewardIds = RewardIds;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_objectiveIdsBin = objectiveIds == null ? null : objectiveIds.ToBinary();
             m_rewardIdsBin = rewardIds == null ? null : rewardIds.ToBinary();
-        
         }
     }
 }

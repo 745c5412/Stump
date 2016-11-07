@@ -10,14 +10,17 @@ namespace Stump.Server.BaseServer.Network
         /// Do not check version
         /// </summary>
         None,
+
         /// <summary>
         /// Check major minor and release values
         /// </summary>
         Light,
+
         /// <summary>
         /// Check revision value too
         /// </summary>
         Medium,
+
         /// <summary>
         /// Check all values
         /// </summary>
@@ -33,10 +36,10 @@ namespace Stump.Server.BaseServer.Network
         public static VersionCheckingSeverity Severity = VersionCheckingSeverity.Light;
 
         /// <summary>
-        /// Version for the client. 
+        /// Version for the client.
         /// </summary>
         [Variable(true)]
-        public static Version ExpectedVersion = new Version(2, 10, 0, 70907, 1, (sbyte) BuildTypeEnum.RELEASE);
+        public static Version ExpectedVersion = new Version(2, 10, 0, 65664, 1, (sbyte)BuildTypeEnum.RELEASE);
 
         /// <summary>
         /// Actual version
@@ -61,15 +64,18 @@ namespace Stump.Server.BaseServer.Network
             {
                 case VersionCheckingSeverity.None:
                     return true;
+
                 case VersionCheckingSeverity.Light:
                     return ExpectedVersion.major == versionToCompare.major &&
                            ExpectedVersion.minor == versionToCompare.minor &&
                            ExpectedVersion.release == versionToCompare.release;
+
                 case VersionCheckingSeverity.Medium:
                     return ExpectedVersion.major == versionToCompare.major &&
                            ExpectedVersion.minor == versionToCompare.minor &&
                            ExpectedVersion.release == versionToCompare.release &&
                            ExpectedVersion.revision == versionToCompare.revision;
+
                 case VersionCheckingSeverity.Heavy:
                     return ExpectedVersion.major == versionToCompare.major &&
                            ExpectedVersion.minor == versionToCompare.minor &&
@@ -79,6 +85,12 @@ namespace Stump.Server.BaseServer.Network
             }
 
             return false;
+        }
+
+        public static VersionExtended ToVersionExtended(this Version version, sbyte install, sbyte technology)
+        {
+            return new VersionExtended(version.major, version.minor, version.release, version.revision, version.patch,
+                version.buildType, install, technology);
         }
     }
 }

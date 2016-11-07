@@ -1,17 +1,18 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Handlers.Basic;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
@@ -43,7 +44,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 SendObjectGroundAddedMessage(client, objectItem);
             }
 
-            var paddock = PaddockManager.Instance.GetPaddock(message.mapId);
+            var paddock = PaddockManager.Instance.GetPaddockByMap(message.mapId);
             if (paddock != null)
                 client.Send(paddock.GetPaddockPropertiesMessage());
         }
@@ -73,16 +74,16 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendMapRunningFightDetailsMessage(IPacketReceiver client, IFight fight)
         {
-            var redFighters = fight.ChallengersTeam.GetAllFighters().ToArray();
-            var blueFighters = fight.DefendersTeam.GetAllFighters().ToArray();
+            var redFighters = fight.ChallengersTeam.GetAllFighters(x => !(x is SummonedFighter) && !(x is SummonedBomb) && !(x is SlaveFighter)).ToArray();
+            var blueFighters = fight.DefendersTeam.GetAllFighters(x => !(x is SummonedFighter) && !(x is SummonedBomb) && !(x is SlaveFighter)).ToArray();
 
             var fighters = redFighters.Concat(blueFighters).ToArray();
 
             client.Send(new MapRunningFightDetailsMessage(
                 fight.Id,
                 fighters.Select(entry => entry.GetMapRunningFighterName()),
-                fighters.Select(entry => (short)entry.Level),
-                (sbyte) redFighters.Length,
+                fighters.Select(entry => entry.Level),
+                (sbyte)redFighters.Length,
                 fighters.Select(entry => entry.IsAlive())));
         }
 

@@ -7,6 +7,7 @@ namespace Uplauncher.Helpers
     public static class WebBrowserHelper
     {
         #region Definitions/DLL Imports
+
         /// <summary>
         /// For PInvoke Contains information about an entry in the Internet cache
         /// </summary>
@@ -14,10 +15,13 @@ namespace Uplauncher.Helpers
         public struct INTERNET_CACHE_ENTRY_INFOA
         {
             public int dwStructSize;
+
             [MarshalAs(UnmanagedType.LPTStr)]
             public String lpszSourceUrlName;
+
             [MarshalAs(UnmanagedType.LPTStr)]
             public String lpszLocalFileName;
+
             public int CacheEntryType;
             public int dwUseCount;
             public int dwHitRate;
@@ -99,7 +103,8 @@ namespace Uplauncher.Helpers
           CallingConvention = CallingConvention.StdCall)]
         public static extern bool DeleteUrlCacheEntry(
           IntPtr lpszUrlName);
-        #endregion
+
+        #endregion Definitions/DLL Imports
 
         #region Public Static Functions
 
@@ -177,7 +182,6 @@ namespace Uplauncher.Helpers
             IntPtr enumHandle = IntPtr.Zero;
             bool returnValue = false;
 
-
             // Start to delete URLs that do not belong to any group.
             enumHandle = FindFirstUrlCacheEntry(null, IntPtr.Zero, ref cacheEntryInfoBufferSizeInitial);
             if (enumHandle != IntPtr.Zero && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error())
@@ -218,6 +222,7 @@ namespace Uplauncher.Helpers
             }
             Marshal.FreeHGlobal(cacheEntryInfoBuffer);
         }
-        #endregion
+
+        #endregion Public Static Functions
     }
 }

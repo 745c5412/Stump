@@ -8,7 +8,7 @@ namespace Stump.Server.AuthServer.Commands
     {
         public ServerCommands()
         {
-            Aliases = new[] {"server", "serv"};
+            Aliases = new[] { "server", "serv" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Provides many commands to manage servers";
         }
@@ -18,8 +18,8 @@ namespace Stump.Server.AuthServer.Commands
     {
         public ServerStatusCommand()
         {
-            Aliases = new[] {"status", "state"};
-            ParentCommandType = typeof (ServerCommands);
+            Aliases = new[] { "status", "state" };
+            ParentCommandType = typeof(ServerCommands);
             RequiredRole = RoleEnum.Administrator;
             Description = "Change status of a server.";
 
@@ -36,7 +36,7 @@ namespace Stump.Server.AuthServer.Commands
             if (world == null)
                 return;
 
-            WorldServerManager.Instance.ChangeWorldState(world, (ServerStatusEnum) stateId, false);
+            WorldServerManager.Instance.ChangeWorldState(world, (ServerStatusEnum)stateId, false);
         }
     }
 }

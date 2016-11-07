@@ -12,28 +12,26 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public TransitionsCommands()
         {
-            Aliases = new[] {"transition"};
+            Aliases = new[] { "transition" };
             Description = "Manage map transitions";
             RequiredRole = RoleEnum.Administrator;
         }
-         
     }
 
     public class TransitionSetCommand : SubCommand
     {
         public TransitionSetCommand()
         {
-            Aliases = new[] {"set"};
+            Aliases = new[] { "set" };
             Description = "Set the current map transition";
             RequiredRole = RoleEnum.Administrator;
-            ParentCommandType = typeof (TransitionsCommands);
+            ParentCommandType = typeof(TransitionsCommands);
             AddParameter("transition", "t", "Top/Right/Bottom/Left",
                 converter: ParametersConverter.GetEnumConverter<MapNeighbour>());
             AddParameter("map", "m", "The destination", converter: ParametersConverter.MapConverter);
-            AddParameter("cell", "c", "The cell destination", isOptional:true, converter: ParametersConverter.CellConverter);
-            AddParameter("from", "f", "The map to modify", isOptional:true, converter: ParametersConverter.MapConverter);
+            AddParameter("cell", "c", "The cell destination", isOptional: true, converter: ParametersConverter.CellConverter);
+            AddParameter("from", "f", "The map to modify", isOptional: true, converter: ParametersConverter.MapConverter);
         }
-
 
         public override void Execute(TriggerBase trigger)
         {
@@ -61,18 +59,22 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     from.TopNeighbour = map;
                     from.TopNeighbourCell = cell;
                     break;
+
                 case MapNeighbour.Bottom:
                     from.BottomNeighbour = map;
                     from.BottomNeighbourCell = cell;
                     break;
+
                 case MapNeighbour.Right:
                     from.RightNeighbour = map;
                     from.RightNeighbourCell = cell;
                     break;
+
                 case MapNeighbour.Left:
                     from.LeftNeighbour = map;
                     from.LeftNeighbourCell = cell;
                     break;
+
                 default:
                     trigger.ReplyError("{0} not a valid transition", transition);
                     return;
@@ -90,13 +92,13 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public TransitionResetCommand()
         {
-            Aliases = new[] {"reset"};
+            Aliases = new[] { "reset" };
             Description = "Reset the current map transition";
             RequiredRole = RoleEnum.Administrator;
-            ParentCommandType = typeof (TransitionsCommands);
+            ParentCommandType = typeof(TransitionsCommands);
             AddParameter("transition", "t", "Top/Right/Bottom/Left",
                 converter: ParametersConverter.GetEnumConverter<MapNeighbour>());
-            AddParameter("from", "f", "The map to modify", isOptional:true, converter: ParametersConverter.MapConverter);
+            AddParameter("from", "f", "The map to modify", isOptional: true, converter: ParametersConverter.MapConverter);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -123,18 +125,22 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     from.TopNeighbour = null;
                     from.TopNeighbourCell = null;
                     break;
+
                 case MapNeighbour.Bottom:
                     from.BottomNeighbour = null;
                     from.BottomNeighbourCell = null;
                     break;
+
                 case MapNeighbour.Right:
                     from.RightNeighbour = null;
                     from.RightNeighbourCell = null;
                     break;
+
                 case MapNeighbour.Left:
                     from.LeftNeighbour = null;
                     from.LeftNeighbourCell = null;
                     break;
+
                 default:
                     trigger.ReplyError("{0} not a valid transition", transition);
                     return;
@@ -152,10 +158,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public TransitionAddTriggerCommand()
         {
-            Aliases = new[] {"trigger"};
+            Aliases = new[] { "trigger" };
             Description = "Add a trigger to the current map";
             RequiredRole = RoleEnum.Administrator;
-            ParentCommandType = typeof (TransitionsCommands);
+            ParentCommandType = typeof(TransitionsCommands);
             AddParameter("cellidsrc", "cellsrc", "Cell source", isOptional: true, converter: ParametersConverter.CellConverter);
             AddParameter("map", "map", "Map destination", converter: ParametersConverter.MapConverter);
             AddParameter<short>("celliddst", "celldst", "Cell destination");

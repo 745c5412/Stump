@@ -19,7 +19,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
         public BankCustomer Customer
         {
             get;
-            private set;
         }
 
         public ExchangeTypeEnum ExchangeType
@@ -33,12 +32,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
         }
 
         public void Open()
-        {
-            if (Character.CheckBankIsLoaded(() => Character.Area.AddMessage(OpenCallBack)))
-                OpenCallBack();
-        }
-
-        private void OpenCallBack()
         {
             InventoryHandler.SendExchangeStartedMessage(Character.Client, ExchangeType);
             InventoryHandler.SendStorageInventoryContentMessage(Character.Client, Customer.Character.Bank);

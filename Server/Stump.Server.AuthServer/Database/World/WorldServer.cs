@@ -1,11 +1,8 @@
-﻿using System;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.AuthServer.IPC;
-using Stump.Server.BaseServer.IPC;
+using System;
 
 namespace Stump.Server.AuthServer.Database
 {
@@ -83,7 +80,6 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-
         #region Status
 
         public ServerStatusEnum Status
@@ -125,7 +121,7 @@ namespace Stump.Server.AuthServer.Database
             IPCClient = null;
         }
 
-        #endregion
+        #endregion Status
 
         public override string ToString()
         {

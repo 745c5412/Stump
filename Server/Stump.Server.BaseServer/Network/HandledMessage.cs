@@ -1,22 +1,21 @@
-﻿using System;
-using System.Diagnostics;
-using NLog;
+﻿using NLog;
 using Stump.Core.Threading;
 using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Exceptions;
+using System;
+using System.Diagnostics;
 using Message = Stump.DofusProtocol.Messages.Message;
 
 namespace Stump.Server.BaseServer.Network
 {
     public class HandledMessage<T> : Message3<object, T, Message>
-        where T : BaseClient
+        where T : IClient
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public HandledMessage(Action<object, T, Message> callback, T client, Message message)
-            : base (null, client, message, callback)
+            : base(null, client, message, callback)
         {
-            
         }
 
         public override void Execute()

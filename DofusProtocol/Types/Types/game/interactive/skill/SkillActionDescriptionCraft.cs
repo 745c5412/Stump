@@ -1,43 +1,39 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class SkillActionDescriptionCraft : SkillActionDescription
     {
         public const short Id = 100;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public sbyte maxSlots;
         public sbyte probability;
-        
+
         public SkillActionDescriptionCraft()
         {
         }
-        
+
         public SkillActionDescriptionCraft(short skillId, sbyte maxSlots, sbyte probability)
          : base(skillId)
         {
             this.maxSlots = maxSlots;
             this.probability = probability;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
             writer.WriteSByte(maxSlots);
             writer.WriteSByte(probability);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -48,12 +44,10 @@ namespace Stump.DofusProtocol.Types
             if (probability < 0)
                 throw new Exception("Forbidden value on probability = " + probability + ", it doesn't respect the following condition : probability < 0");
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(sbyte) + sizeof(sbyte);
         }
-        
     }
-    
 }

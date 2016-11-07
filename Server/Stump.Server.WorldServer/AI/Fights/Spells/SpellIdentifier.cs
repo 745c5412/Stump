@@ -1,22 +1,25 @@
 ﻿#region License GNU GPL
+
 // SpellIdentifier.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System.Linq;
+#endregion License GNU GPL
+
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
@@ -24,7 +27,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
     {
         public static SpellCategory GetSpellCategories(Spell spell)
         {
-            return spell.CurrentSpellLevel.Effects.Aggregate(SpellCategory.None, (current, effect) => current | GetEffectCategories(effect.EffectId));
+            return GetSpellCategories(spell.CurrentSpellLevel);
+        }
+
+        public static SpellCategory GetSpellCategories(SpellLevelTemplate spellLevel)
+        {
+            return spellLevel.Effects.Aggregate(SpellCategory.None, (current, effect) => current | GetEffectCategories(effect.EffectId));
         }
 
         public static SpellCategory GetEffectCategories(EffectsEnum effectId)
@@ -33,43 +41,72 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             {
                 case EffectsEnum.Effect_StealHPAir:
                     return SpellCategory.DamagesAir | SpellCategory.Healing;
+
                 case EffectsEnum.Effect_StealHPWater:
                     return SpellCategory.DamagesWater | SpellCategory.Healing;
+
                 case EffectsEnum.Effect_StealHPFire:
                     return SpellCategory.DamagesFire | SpellCategory.Healing;
+
                 case EffectsEnum.Effect_StealHPEarth:
                     return SpellCategory.DamagesEarth | SpellCategory.Healing;
+
                 case EffectsEnum.Effect_StealHPNeutral:
                     return SpellCategory.DamagesNeutral | SpellCategory.Healing;
+
                 case EffectsEnum.Effect_DamageFire:
                 case EffectsEnum.Effect_DamageFirePerHPLost:
+                case EffectsEnum.Effect_DamageFirePerAP:
+                case EffectsEnum.Effect_DamagePercentFire:
                     return SpellCategory.DamagesFire;
+
                 case EffectsEnum.Effect_DamageWater:
                 case EffectsEnum.Effect_DamageWaterPerHPLost:
+                case EffectsEnum.Effect_DamageWaterPerAP:
+                case EffectsEnum.Effect_DamagePercentWater:
                     return SpellCategory.DamagesWater;
+
                 case EffectsEnum.Effect_DamageAir:
                 case EffectsEnum.Effect_DamageAirPerHPLost:
+                case EffectsEnum.Effect_DamageAirPerAP:
+                case EffectsEnum.Effect_DamagePercentAir:
                     return SpellCategory.DamagesAir;
+
                 case EffectsEnum.Effect_DamageNeutral:
                 case EffectsEnum.Effect_DamageNeutralPerHPLost:
+                case EffectsEnum.Effect_DamageNeutralPerAP:
                 case EffectsEnum.Effect_Punishment_Damage:
+                case EffectsEnum.Effect_DamagePercentNeutral:
                     return SpellCategory.DamagesNeutral;
+
                 case EffectsEnum.Effect_DamageEarth:
                 case EffectsEnum.Effect_DamageEarthPerHPLost:
+                case EffectsEnum.Effect_DamageEarthPerAP:
+                case EffectsEnum.Effect_DamagePercentEarth:
                     return SpellCategory.DamagesEarth;
+
                 case EffectsEnum.Effect_HealHP_108:
                 case EffectsEnum.Effect_HealHP_143:
                 case EffectsEnum.Effect_HealHP_81:
                 case EffectsEnum.Effect_RestoreHPPercent:
                     return SpellCategory.Healing;
+
                 case EffectsEnum.Effect_Kill:
+                case EffectsEnum.Effect_KillAndSummon:
                     return SpellCategory.Damages;
+
                 case EffectsEnum.Effect_Summon:
                 case EffectsEnum.Effect_Double:
                 case EffectsEnum.Effect_185:
                 case EffectsEnum.Effect_621:
-                case EffectsEnum.Effect_623:
+                case EffectsEnum.Effect_SoulStoneSummon:
+                case EffectsEnum.Effect_Glyph:
+                case EffectsEnum.Effect_Glyph_402:
                     return SpellCategory.Summoning;
+
+                case EffectsEnum.Effect_ReviveAndGiveHPToLastDiedAlly:
+                    return SpellCategory.Summoning | SpellCategory.Healing;
+
                 case EffectsEnum.Effect_AddArmorDamageReduction:
                 case EffectsEnum.Effect_AddAirResistPercent:
                 case EffectsEnum.Effect_AddFireResistPercent:
@@ -117,6 +154,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_AddSummonLimit:
                 case EffectsEnum.Effect_AddVitality:
                 case EffectsEnum.Effect_AddVitalityPercent:
+                case EffectsEnum.Effect_AddLock:
+                case EffectsEnum.Effect_AddDodge:
                 case EffectsEnum.Effect_Dodge:
                 case EffectsEnum.Effect_AddDodgeAPProbability:
                 case EffectsEnum.Effect_AddDodgeMPProbability:
@@ -125,9 +164,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_RegainAP:
                 case EffectsEnum.Effect_TriggerBuff:
                 case EffectsEnum.Effect_DamageIntercept:
+                case EffectsEnum.Effect_HealOrMultiply:
+                case EffectsEnum.Effect_IncreaseDamage_138:
                     return SpellCategory.Buff;
+
                 case EffectsEnum.Effect_Teleport:
                     return SpellCategory.Teleport;
+
                 case EffectsEnum.Effect_PushBack:
                 case EffectsEnum.Effect_PullForward:
                 case EffectsEnum.Effect_Advance:
@@ -150,8 +193,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_SubStrength:
                 case EffectsEnum.Effect_SubDodgeAPProbability:
                 case EffectsEnum.Effect_SubDodgeMPProbability:
+                case EffectsEnum.Effect_SubLock:
+                case EffectsEnum.Effect_SubDodge:
                 case EffectsEnum.Effect_SubAP:
                 case EffectsEnum.Effect_SubMP:
+                case EffectsEnum.Effect_SubRange:
                 case EffectsEnum.Effect_SubCriticalHit:
                 case EffectsEnum.Effect_SubMagicDamageReduction:
                 case EffectsEnum.Effect_SubPhysicalDamageReduction:
@@ -198,10 +244,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_ReduceEffectsDuration:
                 case EffectsEnum.Effect_GiveHpPercentWhenAttack:
                 case EffectsEnum.Effect_GiveHPPercent:
+                case EffectsEnum.Effect_DispelMagicEffects:
+                case EffectsEnum.Effect_AddErosion:
+                case EffectsEnum.Effect_RandDownModifier:
                     return SpellCategory.Curse;
             }
             return SpellCategory.None;
-
         }
     }
 }

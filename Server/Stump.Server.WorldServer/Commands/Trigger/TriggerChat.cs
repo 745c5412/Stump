@@ -1,12 +1,10 @@
-﻿using System;
-using System.Drawing;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Core.IO;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
+using System.Drawing;
 using XColor = System.Drawing.Color;
 
 namespace Stump.Server.WorldServer.Commands.Trigger

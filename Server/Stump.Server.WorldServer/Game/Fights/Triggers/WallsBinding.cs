@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         private readonly Color m_color;
         private readonly List<Wall> m_walls = new List<Wall>();
-        private readonly List<WallsBinding> m_intersections = new List<WallsBinding>(); 
+        private readonly List<WallsBinding> m_intersections = new List<WallsBinding>();
 
         public WallsBinding(SummonedBomb bomb1, SummonedBomb bomb2, Color color)
         {
@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             private set;
         }
 
-        public ReadOnlyCollection<WallsBinding> Intersections 
+        public ReadOnlyCollection<WallsBinding> Intersections
         {
             get
             {
@@ -101,7 +101,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
                 if (existantWall == null)
                 {
-                    var wall = new Wall((short) Bomb1.Fight.PopNextTriggerId(), Bomb1.Summoner, Bomb1.WallSpell, null,
+                    var wall = new Wall((short)Bomb1.Fight.PopNextTriggerId(), Bomb1.Summoner, Bomb1.WallSpell, null,
                         cell, this,
                         new MarkShape(Bomb1.Fight, cell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, m_color));
 
@@ -116,7 +116,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                     m_intersections.Add(existantWall.WallBinding);
                     existantWall.WallBinding.Removed += OnIntersectionRemoved;
                 }
-
             }
 
             foreach (var wall in m_walls)
@@ -140,7 +139,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public void Delete()
         {
             foreach (var wall in m_walls.ToArray())
-            {  
+            {
                 wall.Remove();
             }
 
@@ -148,5 +147,4 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             OnRemoved();
         }
     }
-
 }

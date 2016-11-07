@@ -1,23 +1,23 @@
-// 
+//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
+using Stump.ORM.SubSonic.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using Stump.ORM.SubSonic.DataProviders;
-using Stump.ORM.SubSonic.Extensions;
 
 namespace Stump.ORM.SubSonic.Query
 {
@@ -89,9 +89,9 @@ namespace Stump.ORM.SubSonic.Query
         /// <returns></returns>
         public bool Contains(string parameterName)
         {
-            foreach(QueryParameter p in this)
+            foreach (QueryParameter p in this)
             {
-                if(p.ParameterName.MatchesTrimmed(parameterName))
+                if (p.ParameterName.MatchesTrimmed(parameterName))
                     return true;
             }
             return false;
@@ -104,9 +104,9 @@ namespace Stump.ORM.SubSonic.Query
         /// <returns></returns>
         public QueryParameter GetParameter(string parameterName)
         {
-            foreach(QueryParameter p in this)
+            foreach (QueryParameter p in this)
             {
-                if(p.ParameterName.MatchesTrimmed(parameterName))
+                if (p.ParameterName.MatchesTrimmed(parameterName))
                     return p;
             }
             return null;
@@ -143,16 +143,16 @@ namespace Stump.ORM.SubSonic.Query
         public void Add(string parameterName, object value, DbType dataType, ParameterDirection mode)
         {
             //remove if already added, and replace with last in
-            if(Contains(parameterName))
+            if (Contains(parameterName))
                 Remove(GetParameter(parameterName));
 
             QueryParameter param = new QueryParameter
-                                       {
-                                           ParameterName = parameterName,
-                                           ParameterValue = value,
-                                           DataType = dataType,
-                                           Mode = mode
-                                       };
+            {
+                ParameterName = parameterName,
+                ParameterValue = value,
+                DataType = dataType,
+                Mode = mode
+            };
             Add(param);
         }
     }
@@ -160,7 +160,7 @@ namespace Stump.ORM.SubSonic.Query
     /// <summary>
     /// Summary for the QueryCommandCollection class
     /// </summary>
-    public class QueryCommandCollection : List<QueryCommand> {}
+    public class QueryCommandCollection : List<QueryCommand> { }
 
     /// <summary>
     /// Summary for the QueryCommand class
@@ -170,7 +170,7 @@ namespace Stump.ORM.SubSonic.Query
         private int commandTimeout = 60;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public List<object> OutputValues;
 
@@ -236,9 +236,9 @@ namespace Stump.ORM.SubSonic.Query
             bool bOut = false;
 
             //loop the params and see if one is in/out
-            foreach(QueryParameter param in Parameters)
+            foreach (QueryParameter param in Parameters)
             {
-                if(param.Mode != ParameterDirection.Input)
+                if (param.Mode != ParameterDirection.Input)
                 {
                     bOut = true;
                     break;
@@ -258,18 +258,18 @@ namespace Stump.ORM.SubSonic.Query
         /// <param name="direction">The direction.</param>
         private void AddParameter(string parameterName, object parameterValue, int maxSize, DbType dbType, ParameterDirection direction)
         {
-            if(parameters == null)
+            if (parameters == null)
                 parameters = new QueryParameterCollection();
 
             QueryParameter param = new QueryParameter
-                                       {
-                                           ParameterName = parameterName,
-                                           ParameterValue = (parameterValue ?? DBNull.Value),
-                                           Mode = direction,
-                                           DataType = dbType
-                                       };
+            {
+                ParameterName = parameterName,
+                ParameterValue = (parameterValue ?? DBNull.Value),
+                Mode = direction,
+                DataType = dbType
+            };
 
-            if(maxSize > -1 && direction != ParameterDirection.Output)
+            if (maxSize > -1 && direction != ParameterDirection.Output)
                 param.Size = maxSize;
 
             parameters.Add(param);
@@ -350,7 +350,7 @@ namespace Stump.ORM.SubSonic.Query
 
         /// <summary>
         /// Adds a return parameter (RETURN_VALUE) to the command.
-        /// 
+        ///
         /// </summary>
         public void AddReturnParameter()
         {
@@ -372,10 +372,10 @@ namespace Stump.ORM.SubSonic.Query
             cmd.CommandType = CommandType;
             cmd.CommandTimeout = commandTimeout;
 
-            if(trannie != null)
+            if (trannie != null)
                 cmd.Transaction = trannie;
 
-            foreach(var param in parameters)
+            foreach (var param in parameters)
             {
                 DbParameter p = cmd.CreateParameter();
                 p.ParameterName = param.ParameterName;
@@ -393,11 +393,11 @@ namespace Stump.ORM.SubSonic.Query
         /// <param name="command"></param>
         public void GetOutputParameters(DbCommand command)
         {
-            if(HasOutputParams())
+            if (HasOutputParams())
             {
-                foreach(QueryParameter p in Parameters)
+                foreach (QueryParameter p in Parameters)
                 {
-                    if(p.Mode == ParameterDirection.InputOutput || p.Mode == ParameterDirection.Output || p.Mode == ParameterDirection.ReturnValue)
+                    if (p.Mode == ParameterDirection.InputOutput || p.Mode == ParameterDirection.Output || p.Mode == ParameterDirection.ReturnValue)
                     {
                         object oVal = command.Parameters[p.ParameterName].Value;
                         p.ParameterValue = oVal;

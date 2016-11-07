@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
@@ -30,35 +29,58 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     case SpellIdEnum.FRICTION:
                         triggerHandler = FrictionBuffTrigger;
                         break;
+
                     case SpellIdEnum.POUTCH:
                     case SpellIdEnum.BRISE_L_ÂME:
                         triggerType = BuffTriggerType.BUFF_ADDED;
                         break;
+
                     case SpellIdEnum.RÉMISSION:
                         triggerHandler = RemissionBuffTrigger;
                         break;
+
                     case SpellIdEnum.MOT_LOTOF:
                         triggerType = BuffTriggerType.TURN_BEGIN;
                         break;
+
                     case SpellIdEnum.SACCHAROSE:
                         triggerType = BuffTriggerType.LOST_MP;
                         break;
+
                     case SpellIdEnum.MANSOMURE:
                         triggerType = BuffTriggerType.AFTER_HEALED;
                         break;
+
                     case SpellIdEnum.INIMOUTH:
                         triggerType = BuffTriggerType.DAMAGES_PUSHBACK;
                         break;
+
                     case SpellIdEnum.RATTRAPAGE:
-                        triggerType = BuffTriggerType.TACKLED;
+                        triggerType = BuffTriggerType.TACKLE;
                         break;
+
                     case SpellIdEnum.ÉVOLUTION:
                         triggerType = BuffTriggerType.BUFF_ADDED;
                         triggerHandler = EvolutionBuffTrigger;
                         break;
+
+                    case SpellIdEnum.POLLEN:
+                        triggerHandler = PollenBuffTrigger;
+                        break;
+
+                    case SpellIdEnum.MÉRULE_TRAÇON:
+                        triggerHandler = MeruleBuffTrigger;
+                        break;
+
+                    case SpellIdEnum.MANSOPOUDRAGE:
+                    case SpellIdEnum.HAIMJI:
+                        triggerType = BuffTriggerType.PUSH;
+                        break;
+
                     case SpellIdEnum.GLOURS_POURSUITE:
                     case SpellIdEnum.GLOURSON_DE_CLOCHE:
                         break;
+
                     default:
                         return false;
                 }
@@ -66,9 +88,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 var buffId = actor.PopNextBuffId();
 
                 var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
-                var effect = spell.CurrentSpellLevel.Effects[0];
+                var effect = Effect as EffectDice;
 
-                var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
+                var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, Spell, false, false,
                     triggerType, triggerHandler)
                 {
                     Duration = (short)Dice.Duration
@@ -111,9 +133,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (!target.Position.Point.IsAdjacentTo(source.Position.Point))
                 return;
 
-            var effect = new Push(buff.Dice, target, buff.Spell, target.Cell, buff.Critical);
-            effect.AddAffectedActor(source);
-            effect.Apply();
+            target.CastSpell(buff.Spell, target.Cell, true, true);
         }
 
         private static void FrictionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
@@ -149,6 +169,47 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             var effect = new Pull(buff.Dice, source, buff.Spell, source.Cell, buff.Critical);
             effect.AddAffectedActor(target);
             effect.Apply();
+        }
+
+        private static void PollenBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            var damage = token as Fights.Damage;
+            if (damage == null)
+                return;
+
+            if (damage.Source == null)
+                return;
+
+            var target = buff.Target;
+
+            if (damage.Source == target)
+                return;
+
+            if (damage.Spell != null && damage.Spell.Id != (int)SpellIdEnum.COUP_DE_POING)
+                return;
+
+            target.CastSpell(buff.Spell, target.Cell, true, true);
+        }
+
+        private static void MeruleBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            var damage = token as Fights.Damage;
+            if (damage == null)
+                return;
+
+            if (damage.Source == null)
+                return;
+
+            var source = damage.Source;
+            var target = buff.Target;
+
+            if (source == target || source.IsFriendlyWith(target))
+                return;
+
+            if (damage.Spell == null || damage.Spell.Id == (int)SpellIdEnum.COUP_DE_POING)
+                return;
+
+            source.CastSpell(buff.Spell, source.Cell, true, true);
         }
 
         private static bool IsValidSpell(FightActor actor, Spell spell)

@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaQueueMember
     {
-        [Variable] public static int ArenaMargeIncreasePerMinutes = 30;
+        [Variable]
+        public static int ArenaMargeIncreasePerMinutes = 30;
+
+        [Variable(true, DefinableRunning = true)]
+        public static bool ArenaCheckIP = true;
 
         public ArenaQueueMember(Character character)
         {
@@ -48,12 +52,12 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public int MaxMatchableRank
         {
-            get { return (int) (ArenaRank + ArenaMargeIncreasePerMinutes*(DateTime.Now - InQueueSince).TotalMinutes); }
+            get { return (int)(ArenaRank + ArenaMargeIncreasePerMinutes * (DateTime.Now - InQueueSince).TotalMinutes); }
         }
-        
+
         public int MinMatchableRank
         {
-            get { return (int) (ArenaRank - ArenaMargeIncreasePerMinutes*(DateTime.Now - InQueueSince).TotalMinutes); }
+            get { return (int)(ArenaRank - ArenaMargeIncreasePerMinutes * (DateTime.Now - InQueueSince).TotalMinutes); }
         }
 
         public DateTime InQueueSince
@@ -85,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         public bool IsCompatibleWith(ArenaQueueMember member)
         {
             return Math.Max(member.MinMatchableRank, MinMatchableRank) <= Math.Max(member.MaxMatchableRank, MaxMatchableRank)
-                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference;
+                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference && (!ArenaCheckIP || !member.EnumerateClients().Any(x => EnumerateClients().Any(y => y.IP == x.IP)));
         }
     }
 }

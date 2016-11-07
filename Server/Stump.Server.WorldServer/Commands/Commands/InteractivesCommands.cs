@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
@@ -13,6 +10,10 @@ using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using System;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -45,17 +46,17 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             var ios = character.Map.Record.Elements.ToList();
 
-            foreach (var io in ios)
+            foreach (var io in ios.Where(x => x.ElementId != 0))
             {
                 var randomColor = GetRandomColor();
-                character.Client.Send(new DebugHighlightCellsMessage(randomColor.ToArgb() & 16777215, new[] { io.CellId }));
+                character.Client.Send(new DebugHighlightCellsMessage(randomColor.ToArgb(), new[] { io.CellId }));
                 character.SendServerMessage(string.Format("Element Id: {0} - CellId: {1}", io.ElementId, io.CellId), randomColor);
             }
         }
 
         private static Color GetRandomColor()
         {
-            var randomGen = new Random();
+            var randomGen = new CryptoRandom();
             var names = (KnownColor[])Enum.GetValues(typeof(KnownColor));
             var randomColorName = names[randomGen.Next(names.Length)];
             return Color.FromKnownColor(randomColorName);
@@ -93,7 +94,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {
                     World.Instance.Resume();
                 }
-               
+
                 World.Instance.SpawnInteractives();
                 World.Instance.SpawnCellTriggers();
 

@@ -1,33 +1,29 @@
-
-
 // Generated on 03/02/2014 20:42:58
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GameServerInformations
     {
         public const short Id = 25;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public ushort id;
         public sbyte status;
         public sbyte completion;
         public bool isSelectable;
         public sbyte charactersCount;
         public double date;
-        
+
         public GameServerInformations()
         {
         }
-        
+
         public GameServerInformations(ushort id, sbyte status, sbyte completion, bool isSelectable, sbyte charactersCount, double date)
         {
             this.id = id;
@@ -37,7 +33,7 @@ namespace Stump.DofusProtocol.Types
             this.charactersCount = charactersCount;
             this.date = date;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteUShort(id);
@@ -47,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(charactersCount);
             writer.WriteDouble(date);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             id = reader.ReadUShort();
@@ -65,12 +61,10 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on charactersCount = " + charactersCount + ", it doesn't respect the following condition : charactersCount < 0");
             date = reader.ReadDouble();
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(ushort) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + sizeof(sbyte) + sizeof(double);
         }
-        
     }
-    
 }

@@ -6,17 +6,19 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
     public abstract class Set
     {
         public abstract IEnumerable<MapPoint> EnumerateSet();
+
         public abstract bool BelongToSet(MapPoint point);
 
         public IEnumerable<MapPoint> EnumerateValidPoints()
         {
-            return EnumerateSet().Where(x => x.IsInMap());
+            return EnumerateSet().Where(x => x != null && x.IsInMap());
         }
 
         public Set IntersectWith(Set A)
         {
             return new Intersection(A, this);
         }
+
         public Set UnionWith(Set A)
         {
             return new Union(A, this);

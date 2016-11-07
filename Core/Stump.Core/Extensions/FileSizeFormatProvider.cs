@@ -62,7 +62,6 @@ namespace Stump.Core.Extensions
             string precision = format.Substring(2);
             if (String.IsNullOrEmpty(precision)) precision = "2";
             return String.Format("{0:N" + precision + "}{1}", size, suffix);
-
         }
 
         private static string DefaultFormat(string format, object arg, IFormatProvider formatProvider)
@@ -74,6 +73,5 @@ namespace Stump.Core.Extensions
             }
             return arg.ToString();
         }
-
     }
 }

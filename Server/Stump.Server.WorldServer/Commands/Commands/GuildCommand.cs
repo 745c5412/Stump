@@ -1,10 +1,7 @@
 ﻿using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
 
@@ -14,7 +11,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public GuildCommand()
         {
-            Aliases = new[] {"guild"};
+            Aliases = new[] { "guild" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Provides many commands to manage guilds";
         }
@@ -24,11 +21,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public GuildCreateCommand()
         {
-            Aliases = new[] {"create"};
+            Aliases = new[] { "create" };
             RequiredRole = RoleEnum.Administrator;
-            ParentCommandType = typeof (GuildCommand);
+            ParentCommandType = typeof(GuildCommand);
         }
-
 
         public override void Execute(GameTrigger trigger)
         {
@@ -41,9 +37,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public GuildJoinCommand()
         {
-            Aliases = new[] {"join"};
+            Aliases = new[] { "join" };
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommandType = typeof (GuildCommand);
+            ParentCommandType = typeof(GuildCommand);
 
             AddParameter<string>("guildname", "guild", "The name of the guild");
         }
@@ -73,9 +69,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public GuildBossCommand()
         {
-            Aliases = new[] {"boss"};
+            Aliases = new[] { "boss" };
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommandType = typeof (GuildCommand);
+            ParentCommandType = typeof(GuildCommand);
         }
 
         public override void Execute(GameTrigger trigger)

@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public WhoCommand()
         {
-            Aliases = new [] { "who" };
+            Aliases = new[] { "who" };
             RequiredRole = RoleEnum.Moderator;
             Description = "Return a list of playe based on the given arguments";
             AddParameter<string>("parameters", "params", "Level (exact or range x-y), Breed, Area or Name (partial)", isOptional: true);
@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             Predicate<Character> predicate = x => true;
-            
+
             if (trigger.IsArgumentDefined("params"))
             {
                 var parameters = trigger.Get<string>("params");
@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var list = World.Instance.GetCharacters(x => x.Account.UserGroupId > (int) RoleEnum.Player);
+            var list = World.Instance.GetCharacters(x => x.Account.UserGroupId > (int)RoleEnum.Player && !x.Invisible).ToList();
 
             if (!list.Any())
             {
@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             foreach (var player in list)
             {
-                trigger.ReplyBold(" - {0}", player.Name);
+                trigger.ReplyBold(" - {0} ({1})", player.Name, player.UserGroup.Name);
             }
         }
     }

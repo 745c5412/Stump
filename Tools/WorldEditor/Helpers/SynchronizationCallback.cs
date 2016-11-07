@@ -143,12 +143,15 @@ namespace WorldEditor.Helpers
                     case 0:
                         Callback.DynamicInvoke(null);
                         break;
+
                     case 1:
                         Callback.DynamicInvoke(state);
                         break;
+
                     case 2:
                         Callback.DynamicInvoke(Context, state);
                         break;
+
                     default:
                         throw new InvalidProgramException("Delegate has an invalid number of callback parameters.");
                 }

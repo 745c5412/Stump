@@ -39,19 +39,18 @@ namespace Stump.Server.WorldServer.Game.Items
 
         private readonly Dictionary<ItemTypeEnum, PlayerItemConstructor> m_itemCtorByTypes =
             new Dictionary<ItemTypeEnum, PlayerItemConstructor>();
-        
+
         private readonly Dictionary<EffectsEnum, PlayerItemConstructor> m_itemCtorByEffects =
             new Dictionary<EffectsEnum, PlayerItemConstructor>();
 
         private delegate BasePlayerItem PlayerItemConstructor(Character owner, PlayerItemRecord record);
 
-
-        #endregion
+        #endregion Fields
 
         #region Creators
 
         public BasePlayerItem CreatePlayerItem(Character owner, int id, int amount, bool maxEffects = false)
-        {            
+        {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
@@ -62,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, int amount, bool maxEffects = false)
-        {            
+        {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
@@ -71,11 +70,11 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public BasePlayerItem CreatePlayerItem(Character owner, IItem item)
         {
-            return CreatePlayerItem(owner, item.Template, (int)item.Stack, item.Effects.Clone());
+            return CreatePlayerItem(owner, item.Template, (int) item.Stack, item.Effects.Clone());
         }
 
         public BasePlayerItem CreatePlayerItem(Character owner, IItem item, int amount)
-        {            
+        {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
@@ -83,21 +82,21 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, int amount, List<EffectBase> effects)
-        {            
+        {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
             var guid = PlayerItemRecord.PopNextId();
             var record = new PlayerItemRecord // create the associated record
-                        {
-                            Id = guid,
-                            OwnerId = owner.Id,
-                            Template = template,
-                            Stack = (uint)amount,
-                            Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
-                            Effects = effects,
-                            IsNew = true,
-                        };
+            {
+                Id = guid,
+                OwnerId = owner.Id,
+                Template = template,
+                Stack = (uint) amount,
+                Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
+                Effects = effects,
+                IsNew = true
+            };
 
             return CreateItemInstance(owner, record);
         }
@@ -133,7 +132,6 @@ namespace Stump.Server.WorldServer.Game.Items
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
-
             var guid = PlayerMerchantItemRecord.PopNextId();
             var record = new PlayerMerchantItemRecord // create the associated record
             {
@@ -141,7 +139,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 OwnerId = character.Id,
                 Price = price,
                 Template = item.Template,
-                Stack = (uint)amount,
+                Stack = (uint) amount,
                 Effects = new List<EffectBase>(item.Effects),
                 IsNew = true
             };
@@ -155,29 +153,57 @@ namespace Stump.Server.WorldServer.Game.Items
                 throw new ArgumentException("amount < 0", "amount");
             var guid = TaxCollectorItemRecord.PopNextId();
             var record = new TaxCollectorItemRecord // create the associated record
-                        {
-                            Id = guid,
-                            OwnerId = owner.GlobalId,
-                            Template = template,
-                            Stack = (uint)amount,
-                            Effects = GenerateItemEffects(template),
-                            IsNew = true,
-                        };
+            {
+                Id = guid,
+                OwnerId = owner.GlobalId,
+                Template = template,
+                Stack = (uint) amount,
+                Effects = GenerateItemEffects(template),
+                IsNew = true
+            };
 
             return new TaxCollectorItem(record);
         }
-        
+
         public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, int id, int amount)
         {
-             if (amount < 0)
+            if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
-
 
             if (!m_itemTemplates.ContainsKey(id))
                 throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
 
             return CreateTaxCollectorItem(owner, m_itemTemplates[id], amount);
+        }
 
+        public BankItem CreateBankItem(Character character, int id, int amount)
+        {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
+            if (!m_itemTemplates.ContainsKey(id))
+                throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
+
+            return CreateBankItem(character, m_itemTemplates[id], amount);
+        }
+
+        public BankItem CreateBankItem(Character character, ItemTemplate template, int amount)
+        {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
+            var guid = BankItemRecord.PopNextId();
+            var record = new BankItemRecord // create the associated record
+            {
+                Id = guid,
+                OwnerAccountId = character.Account.Id,
+                Template = template,
+                Stack = (uint) amount,
+                Effects = GenerateItemEffects(template),
+                IsNew = true
+            };
+
+            return new BankItem(character, record);
         }
 
         public BankItem CreateBankItem(Character character, BasePlayerItem item, int amount)
@@ -185,29 +211,33 @@ namespace Stump.Server.WorldServer.Game.Items
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
-
             var guid = BankItemRecord.PopNextId();
             var record = new BankItemRecord // create the associated record
-                        {
-                            Id = guid,
-                            OwnerAccountId = character.Account.Id,
-                            Template = item.Template,
-                            Stack = (uint)amount,
-                            Effects = new List<EffectBase>(item.Effects),
-                            IsNew = true
-                        };
+            {
+                Id = guid,
+                OwnerAccountId = character.Account.Id,
+                Template = item.Template,
+                Stack = (uint) amount,
+                Effects = new List<EffectBase>(item.Effects),
+                IsNew = true
+            };
 
             return new BankItem(character, record);
         }
 
         public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)
         {
-            var effects = template.Effects.Select(effect => EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId) ? effect : effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal)).ToList();
+            var effects =
+                template.Effects.Select(
+                    effect =>
+                        EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId)
+                            ? effect
+                            : effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal)).ToList();
 
             return effects.ToList();
         }
 
-        #endregion
+        #endregion Creators
 
         #region Loading
 
@@ -231,77 +261,77 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof (BasePlayerItem).IsAssignableFrom(x)))
             {
-                var idAttr = type.GetCustomAttribute<ItemIdAttribute>();
-
-                if (idAttr != null)
-                {
-                    if (m_itemCtorById.ContainsKey(idAttr.ItemId))
-                    {
-                        logger.Error("Item Constructor with ID {0} defined twice or more !", idAttr.ItemId);
-                        continue;
-                    }
-
-                    m_itemCtorById.Add(idAttr.ItemId,
-                        type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
-                            .CreateDelegate<PlayerItemConstructor>());
-                }
-
-                var typeAttrs = type.GetCustomAttributes<ItemTypeAttribute>();
-
-                if (typeAttrs != null)
-                {
-                    foreach (var typeAttr in typeAttrs)
-                    {
-                        if (m_itemCtorByTypes.ContainsKey(typeAttr.ItemType))
-                        {
-                            logger.Error("Item Constructor with Type {0} defined twice or more !", typeAttr.ItemType);
-                            continue;
-                        }
-
-                        m_itemCtorByTypes.Add(typeAttr.ItemType,
-                            type.GetConstructor(new[] { typeof(Character), typeof(PlayerItemRecord) })
-                                .CreateDelegate<PlayerItemConstructor>());
-                    }
-                }
-
-                var effectAttr = type.GetCustomAttribute<ItemHasEffectAttribute>();
-
-                if (effectAttr == null)
-                    continue;
-
-                if (m_itemCtorByEffects.ContainsKey(effectAttr.Effect))
-                {
-                    logger.Error("Item Constructor with Effect {0} defined twice or more !", effectAttr.Effect);
-                    continue;
-                }
-
-                m_itemCtorByEffects.Add(effectAttr.Effect,
-                    type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
-                        .CreateDelegate<PlayerItemConstructor>());
+                AddItemConstructor(type);
             }
         }
 
         public void AddItemConstructor(Type type)
         {
-            var attr = type.GetCustomAttribute<ItemTypeAttribute>();
+            var idAttr = type.GetCustomAttribute<ItemIdAttribute>();
 
-            if (attr == null)
-            {                
-                logger.Error("Item Constructor {0} has no attribute !", type);
-                return;
-            }
-
-            if (m_itemCtorByTypes.ContainsKey(attr.ItemType))
+            if (idAttr != null)
             {
-                logger.Error("Item Constructor with Type {0} defined twice or more !", attr.ItemType);
-                return;
+                AddItemConstructorById(idAttr.ItemId, type);
             }
 
-            m_itemCtorByTypes.Add(attr.ItemType, type.GetConstructor(new [] {typeof(Character), typeof(PlayerItemRecord) }).CreateDelegate<PlayerItemConstructor>());
+            var typeAttrs = type.GetCustomAttributes<ItemTypeAttribute>();
 
+            if (typeAttrs != null)
+            {
+                foreach (var typeAttr in typeAttrs)
+                {
+                    AddItemConstructorByType(typeAttr.ItemType, type);
+                }
+            }
+
+            var effectAttr = type.GetCustomAttribute<ItemHasEffectAttribute>();
+
+            if (effectAttr == null)
+                return;
+
+            AddItemConstructorByEffect(effectAttr.Effect, type);
         }
 
-        #endregion
+        public void AddItemConstructorById(ItemIdEnum itemId, Type type)
+        {
+            if (m_itemCtorById.ContainsKey(itemId))
+            {
+                logger.Error("Item Constructor with ID {0} defined twice or more !", itemId);
+                return;
+            }
+
+            m_itemCtorById.Add(itemId,
+                type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                    .CreateDelegate<PlayerItemConstructor>());
+        }
+
+        public void AddItemConstructorByType(ItemTypeEnum itemType, Type type)
+        {
+            if (m_itemCtorByTypes.ContainsKey(itemType))
+            {
+                logger.Error("Item Constructor with Type {0} defined twice or more !", itemType);
+                return;
+            }
+
+            m_itemCtorByTypes.Add(itemType,
+                type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                    .CreateDelegate<PlayerItemConstructor>());
+        }
+
+        public void AddItemConstructorByEffect(EffectsEnum effect, Type type)
+        {
+            if (m_itemCtorByEffects.ContainsKey(effect))
+            {
+                logger.Error("Item Constructor with Effect {0} defined twice or more !", effect);
+                return;
+            }
+
+            m_itemCtorByEffects.Add(effect,
+                type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                    .CreateDelegate<PlayerItemConstructor>());
+        }
+
+        #endregion Loading
 
         #region Getters
 
@@ -317,16 +347,16 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public ItemTemplate TryGetTemplate(ItemIdEnum id)
         {
-            return !m_itemTemplates.ContainsKey((int)id) ? null : m_itemTemplates[(int)id];
+            return !m_itemTemplates.ContainsKey((int) id) ? null : m_itemTemplates[(int) id];
         }
 
         public ItemTemplate TryGetTemplate(string name, bool ignorecase)
         {
             return
                 m_itemTemplates.Values.FirstOrDefault(entry => entry.Name.Equals(name,
-                                                                                 ignorecase
-                                                                                     ? StringComparison.InvariantCultureIgnoreCase
-                                                                                     : StringComparison.InvariantCulture));
+                    ignorecase
+                        ? StringComparison.InvariantCultureIgnoreCase
+                        : StringComparison.InvariantCulture));
         }
 
         public ItemSetTemplate TryGetItemSetTemplate(uint id)
@@ -338,9 +368,9 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             return
                 m_itemsSets.Values.FirstOrDefault(entry => entry.Name.Equals(name,
-                                                                             ignorecase
-                                                                                 ? StringComparison.InvariantCultureIgnoreCase
-                                                                                 : StringComparison.InvariantCulture));
+                    ignorecase
+                        ? StringComparison.InvariantCultureIgnoreCase
+                        : StringComparison.InvariantCulture));
         }
 
         public List<NpcItem> GetNpcShopItems(uint id)
@@ -374,22 +404,20 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         /// <summary>
-        /// Find an item template contains in a given list with a pattern
+        ///     Find an item template contains in a given list with a pattern
         /// </summary>
         /// <remarks>
-        /// When @ precede the pattern, then the case is ignored
-        /// * is a joker, it can be placed at the begin or at the end or both
-        /// it means that characters are ignored (include letters, numbers, spaces and underscores)
-        /// 
-        /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
+        ///     When @ precede the pattern, then the case is ignored
+        ///     * is a joker, it can be placed at the begin or at the end or both
+        ///     it means that characters are ignored (include letters, numbers, spaces and underscores)
+        ///     Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
         /// </remarks>
         /// <example>
-        /// pattern :   @Ab*
-        /// list :  abc
-        ///         Abd
-        ///         ace
-        /// 
-        /// returns : abc and Abd
+        ///     pattern :   @Ab*
+        ///     list :  abc
+        ///     Abd
+        ///     ace
+        ///     returns : abc and Abd
         /// </example>
         public IEnumerable<ItemTemplate> GetItemsByPattern(string pattern, IEnumerable<ItemTemplate> list)
         {
@@ -414,22 +442,20 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         /// <summary>
-        /// Find an item template by a pattern
+        ///     Find an item template by a pattern
         /// </summary>
         /// <remarks>
-        /// When @ precede the pattern, then the case is ignored
-        /// * is a joker, it can be placed at the begin or at the end or both
-        /// it means that characters are ignored (include letters, numbers, spaces and underscores)
-        /// 
-        /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
+        ///     When @ precede the pattern, then the case is ignored
+        ///     * is a joker, it can be placed at the begin or at the end or both
+        ///     it means that characters are ignored (include letters, numbers, spaces and underscores)
+        ///     Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
         /// </remarks>
         /// <example>
-        /// pattern :   @Ab*
-        /// list :  abc
-        ///         Abd
-        ///         ace
-        /// 
-        /// returns : abc and Abd
+        ///     pattern :   @Ab*
+        ///     list :  abc
+        ///     Abd
+        ///     ace
+        ///     returns : abc and Abd
         /// </example>
         public IEnumerable<ItemTemplate> GetItemsByPattern(string pattern)
         {
@@ -437,22 +463,20 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         /// <summary>
-        /// Find an item instancce contains in a given list with a pattern
+        ///     Find an item instancce contains in a given list with a pattern
         /// </summary>
         /// <remarks>
-        /// When @ precede the pattern, then the case is ignored
-        /// * is a joker, it can be placed at the begin or at the end or both
-        /// it means that characters are ignored (include letters, numbers, spaces and underscores)
-        /// 
-        /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
+        ///     When @ precede the pattern, then the case is ignored
+        ///     * is a joker, it can be placed at the begin or at the end or both
+        ///     it means that characters are ignored (include letters, numbers, spaces and underscores)
+        ///     Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
         /// </remarks>
         /// <example>
-        /// pattern :   @Ab*
-        /// list :  abc
-        ///         Abd
-        ///         ace
-        /// 
-        /// returns : abc and Abd
+        ///     pattern :   @Ab*
+        ///     list :  abc
+        ///     Abd
+        ///     ace
+        ///     returns : abc and Abd
         /// </example>
         public IEnumerable<BasePlayerItem> GetItemsByPattern(string pattern, IEnumerable<BasePlayerItem> list)
         {
@@ -476,7 +500,6 @@ namespace Stump.Server.WorldServer.Game.Items
             return list.Where(entry => Regex.Match(entry.Template.Name, pattern, ignorecase ? RegexOptions.IgnoreCase : RegexOptions.None).Success);
         }
 
-
         public void AddItemTemplate(ItemTemplate template)
         {
             m_itemTemplates.Add(template.Id, template);
@@ -489,6 +512,6 @@ namespace Stump.Server.WorldServer.Game.Items
             return !m_livingObjects.TryGetValue(id, out livingObjectRecord) ? null : livingObjectRecord;
         }
 
-        #endregion
+        #endregion Getters
     }
 }

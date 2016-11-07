@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:47
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -20,6 +14,7 @@ namespace DBSynchroniser.Records
         private const String MODULE = "InfoMessages";
         public uint typeId;
         public uint messageId;
+
         [I18NField]
         public uint textId;
 
@@ -61,12 +56,12 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (InfoMessage)obj;
-            
+
             TypeId = castedObj.typeId;
             MessageId = castedObj.messageId;
             TextId = castedObj.textId;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (InfoMessage)parent : new InfoMessage();
@@ -75,10 +70,9 @@ namespace DBSynchroniser.Records
             obj.textId = TextId;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

@@ -2,10 +2,9 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -14,7 +13,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class DeclaredAliasGatherer : DbExpressionVisitor
     {
-        HashSet<TableAlias> aliases;
+        private HashSet<TableAlias> aliases;
 
         private DeclaredAliasGatherer()
         {

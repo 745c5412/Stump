@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:50
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -29,7 +26,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -73,6 +69,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_parametersBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -99,6 +96,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_coordsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -115,7 +113,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (QuestObjective)obj;
-            
+
             Id = castedObj.id;
             StepId = castedObj.stepId;
             TypeId = castedObj.typeId;
@@ -123,7 +121,7 @@ namespace DBSynchroniser.Records
             Parameters = castedObj.parameters;
             Coords = castedObj.coords;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (QuestObjective)parent : new QuestObjective();
@@ -135,12 +133,11 @@ namespace DBSynchroniser.Records
             obj.coords = Coords;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_parametersBin = parameters == null ? null : parameters.ToBinary();
             m_coordsBin = coords == null ? null : coords.ToBinary();
-        
         }
     }
 }

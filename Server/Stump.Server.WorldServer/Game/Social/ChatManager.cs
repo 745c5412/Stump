@@ -1,24 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using MongoDB.Bson;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Social;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 
 namespace Stump.Server.WorldServer.Game.Social
 {
-    public class ChatManager : Singleton<ChatManager>
+    public class ChatManager : DataManager<ChatManager>, ISaveable
     {
         #region Delegates
 
@@ -27,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Social
         /// </summary>
         public delegate void ChatParserDelegate(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems);
 
-        #endregion
+        #endregion Delegates
 
         /// <summary>
         /// Prefix used for chat commands
@@ -50,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Social
         /// <summary>
         /// In seconds
         /// </summary>
-        [Variable] 
+        [Variable]
         public static int AntiFloodTimeBetweenTwoGlobalMessages = 60;
 
         /// <summary>
@@ -71,6 +79,8 @@ namespace Stump.Server.WorldServer.Game.Social
         [Variable]
         public static int AntiFloodMuteTime = 10;
 
+        public List<BadWordRecord> BadWords;
+
         /// <summary>
         ///   Chat handler for each channel Id.
         /// </summary>
@@ -79,6 +89,8 @@ namespace Stump.Server.WorldServer.Game.Social
         [Initialization(InitializationPass.First)]
         public void Initialize()
         {
+            ChatHandlers.Clear();
+
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_GLOBAL, SayGlobal);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_GUILD, SayGuild);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_PARTY, SayParty);
@@ -87,6 +99,20 @@ namespace Stump.Server.WorldServer.Game.Social
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_SEEK, SaySeek);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_ADMIN, SayAdministrators);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_TEAM, SayTeam);
+
+            BadWords = Database.Query<BadWordRecord>(BadWordRelator.FetchQuery).ToList();
+            World.Instance.RegisterSaveableInstance(this);
+        }
+
+        public string CanSendMessage(string message)
+        {
+            foreach (var badWord in BadWords)
+            {
+                if (message.ToLower().RemoveWhitespace().Contains(badWord.Text.ToLower()))
+                    return badWord.Text;
+            }
+
+            return string.Empty;
         }
 
         public bool CanUseChannel(Character character, ChatActivableChannelsEnum channel)
@@ -94,33 +120,55 @@ namespace Stump.Server.WorldServer.Game.Social
             switch (channel)
             {
                 case ChatActivableChannelsEnum.CHANNEL_GLOBAL:
-                    return (!character.Map.IsMuted || character.UserGroup.Role >= AdministratorChatMinAccess);
+                    {
+                        if (character.Map.IsMuted && character.UserGroup.Role <= AdministratorChatMinAccess)
+                        {
+                            character.SendServerMessage("La map est actuellement réduite au silence !");
+                            return false;
+                        }
+
+                        return true;
+                    }
+
                 case ChatActivableChannelsEnum.CHANNEL_TEAM:
                     return character.IsFighting();
+
                 case ChatActivableChannelsEnum.CHANNEL_ARENA:
                     return character.IsInParty(PartyTypeEnum.PARTY_TYPE_ARENA);
+
                 case ChatActivableChannelsEnum.CHANNEL_GUILD:
                     return character.Guild != null;
+
                 case ChatActivableChannelsEnum.CHANNEL_ALIGN:
                     return false;
+
                 case ChatActivableChannelsEnum.CHANNEL_PARTY:
                     return character.IsInParty(PartyTypeEnum.PARTY_TYPE_CLASSICAL);
+
                 case ChatActivableChannelsEnum.CHANNEL_SALES:
                     return !character.IsMuted();
+
                 case ChatActivableChannelsEnum.CHANNEL_SEEK:
                     return !character.IsMuted();
+
                 case ChatActivableChannelsEnum.CHANNEL_NOOB:
                     return true;
+
                 case ChatActivableChannelsEnum.CHANNEL_ADMIN:
                     return character.UserGroup.Role >= AdministratorChatMinAccess;
+
                 case ChatActivableChannelsEnum.CHANNEL_ADS:
                     return !character.IsMuted();
+
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
                     return !character.IsMuted();
+
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO:
                     return false;
+
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_FIGHT_LOG:
                     return false;
+
                 default:
                     return false;
             }
@@ -130,14 +178,11 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public void HandleChat(WorldClient client, ChatActivableChannelsEnum channel, string message, IEnumerable<ObjectItem> objectItems = null)
         {
-            if (!CanUseChannel(client.Character, channel))
-                return;
-
             if (!ChatHandlers.ContainsKey(channel))
                 return;
 
             if (message.StartsWith(CommandPrefix) &&
-                ( message.Length < CommandPrefix.Length * 2 || message.Substring(CommandPrefix.Length, CommandPrefix.Length) != CommandPrefix )) // ignore processing command whenever there is the preffix twice
+                (message.Length < CommandPrefix.Length * 2 || message.Substring(CommandPrefix.Length, CommandPrefix.Length) != CommandPrefix)) // ignore processing command whenever there is the preffix twice
             {
                 message = message.Remove(0, CommandPrefix.Length); // remove our prefix
                 WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(UnescapeChatCommand(message)),
@@ -145,15 +190,40 @@ namespace Stump.Server.WorldServer.Game.Social
             }
             else
             {
+                if (!CanUseChannel(client.Character, channel))
+                    return;
+
+                var badword = CanSendMessage(message);
+                if (badword != string.Empty)
+                {
+                    client.Character.SendServerMessage($"Message non envoyé. Le terme <b>{badword}</b> est interdit sur le serveur !");
+                    return;
+                }
+
                 if (client.Character.IsMuted())
                     client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 124,
-                                                            (int) client.Character.GetMuteRemainingTime().TotalSeconds);
+                                                            (int)client.Character.GetMuteRemainingTime().TotalSeconds);
                 else
                 {
                     if (client.Character.ChatHistory.RegisterAndCheckFlood(new ChatEntry(message, channel, DateTime.Now)))
                         ChatHandlers[channel](client, message, objectItems);
                 }
             }
+
+            var document = new BsonDocument
+                    {
+                        { "SenderId", client.Character.Id },
+                        { "SenderName", client.Character.Name },
+                        { "SenderAccountId", client.Account.Id },
+                        { "ReceiverId", 0 },
+                        { "ReceiverName", "" },
+                        { "ReceiverAccountId", 0 },
+                        { "Message", message },
+                        { "Channel", (int)channel },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+            MongoLogger.Instance.Insert("Chats", document);
         }
 
         private static string UnescapeChatCommand(string command)
@@ -175,20 +245,24 @@ namespace Stump.Server.WorldServer.Game.Social
                         case "lt":
                             sb.Append("<");
                             break;
+
                         case "gt":
                             sb.Append(">");
                             break;
+
                         case "quot":
                             sb.Append("\"");
                             break;
+
                         case "amp":
                             sb.Append("&");
                             break;
+
                         default:
                             int id;
                             if (!int.TryParse(str, out id))
                                 continue;
-                            sb.Append((char) id);
+                            sb.Append((char)id);
                             break;
                     }
 
@@ -276,6 +350,7 @@ namespace Stump.Server.WorldServer.Game.Social
                     SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY, msg);
             });
         }
+
         public void SayArena(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_ARENA))
@@ -284,7 +359,8 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
             }
 
-            client.Character.ArenaParty.ForEach(entry => { 
+            client.Character.ArenaParty.ForEach(entry =>
+            {
                 if (objectItems != null)
                     SendChatServerWithObjectMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ARENA, msg, objectItems);
                 else
@@ -361,6 +437,20 @@ namespace Stump.Server.WorldServer.Game.Social
                    channel == ChatActivableChannelsEnum.CHANNEL_SEEK;
         }
 
-        #endregion
+        #endregion Handlers
+
+        public void Save()
+        {
+            foreach (var badWord in BadWords.Where(x => x.IsDirty || x.IsNew))
+            {
+                if (badWord.IsNew)
+                    Database.Insert(badWord);
+                else
+                    Database.Update(badWord);
+
+                badWord.IsNew = false;
+                badWord.IsDirty = false;
+            }
+        }
     }
 }

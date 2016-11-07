@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Enutrof
 {
@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Enutrof
             var affectedActors = zoneEffect.GetAffectedActors();
             summonEffect.Apply();
 
-            var summonedBag = Caster.Summons.FirstOrDefault(x => x is SummonedMonster && ((SummonedMonster) x).Monster.MonsterId == summonEffect.Dice.DiceNum);
+            var summonedBag = Caster.Summons.FirstOrDefault(x => x is SummonedMonster && ((SummonedMonster)x).Monster.MonsterId == summonEffect.Dice.DiceNum);
 
             if (summonedBag == null)
                 return;

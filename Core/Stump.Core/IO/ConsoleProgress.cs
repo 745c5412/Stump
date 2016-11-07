@@ -1,4 +1,3 @@
-
 using System;
 
 namespace Stump.Core.IO
@@ -67,7 +66,6 @@ namespace Stump.Core.IO
             {
                 cleaner += " ";
             }
-
 
             int oldX = Console.CursorLeft;
             int oldY = Console.CursorTop;

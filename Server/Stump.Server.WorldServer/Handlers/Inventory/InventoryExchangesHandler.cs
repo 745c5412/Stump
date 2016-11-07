@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Messages;
@@ -14,6 +12,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges.Bank;
 using Stump.Server.WorldServer.Game.Exchanges.BidHouse;
 using Stump.Server.WorldServer.Game.Exchanges.Merchant;
 using Stump.Server.WorldServer.Game.Exchanges.Paddock;
@@ -23,7 +22,8 @@ using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
-using Stump.Server.WorldServer.Game.Maps.Paddocks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
                         return;
                     }
-                    
+
                     if (!client.Character.Map.AllowExchangesBetweenPlayers)
                     {
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_IMPOSSIBLE);
@@ -80,6 +80,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                     request.Open();
 
                     break;
+
                 default:
                     SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_IMPOSSIBLE);
                     break;
@@ -134,7 +135,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeSellMessage(WorldClient client, ExchangeSellMessage message)
         {
             var dialog = client.Character.Dialog as IShopDialog;
-            if (dialog != null) 
+            if (dialog != null)
                 dialog.SellItem(message.objectToSellId, message.quantity);
         }
 
@@ -171,7 +172,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!client.Character.IsInExchange())
                 return;
 
-            if(client.Character.Exchanger is CharacterMerchant)
+            if (client.Character.Exchanger is CharacterMerchant)
             {
                 ((CharacterMerchant)client.Character.Exchanger).MovePricedItem(message.objectUID, message.quantity, (uint)message.price);
             }
@@ -214,6 +215,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (merchant == null || merchant.Cell.Id != message.humanVendorCell)
                 return;
 
+            if (client.Character.IsBusy())
+                return;
+
             var shop = new MerchantShopDialog(merchant, client.Character);
             shop.Open();
         }
@@ -222,6 +226,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeRequestOnTaxCollectorMessage(WorldClient client, ExchangeRequestOnTaxCollectorMessage message)
         {
             if (client.Character.Guild == null)
+                return;
+
+            if (client.Character.IsBusy() || client.Character.IsTrading())
                 return;
 
             var taxCollectorNpc = client.Character.Map.TaxCollector;
@@ -265,36 +272,47 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 case StableExchangeActionsEnum.EQUIP_TO_STABLE:
                     exchanger.EquipToStable(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.STABLE_TO_EQUIP:
                     exchanger.StableToEquip(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.STABLE_TO_INVENTORY:
                     exchanger.StableToInventory(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.INVENTORY_TO_STABLE:
-                     exchanger.InventoryToStable(message.rideId);
+                    exchanger.InventoryToStable(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.STABLE_TO_PADDOCK:
                     exchanger.StableToPaddock(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.PADDOCK_TO_STABLE:
                     exchanger.PaddockToStable(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.EQUIP_TO_PADDOCK:
                     exchanger.EquipToPaddock(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.PADDOCK_TO_EQUIP:
                     exchanger.PaddockToEquip(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.EQUIP_TO_INVENTORY:
                     exchanger.EquipToInventory(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.PADDOCK_TO_INVENTORY:
                     exchanger.PaddockToInventory(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.INVENTORY_TO_EQUIP:
                     exchanger.InventoryToEquip(message.rideId);
                     break;
+
                 case StableExchangeActionsEnum.INVENTORY_TO_PADDOCK:
                     exchanger.InventoryToPaddock(message.rideId);
                     break;
@@ -396,6 +414,66 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 68);
         }
 
+        [WorldHandler(ExchangeObjectTransfertAllFromInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertAllFromInvMessage(WorldClient client, ExchangeObjectTransfertAllFromInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(true, new int[0], true, false);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertExistingFromInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertExistingFromInvMessage(WorldClient client, ExchangeObjectTransfertExistingFromInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(true, new int[0], false, true);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertListFromInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertListFromInvMessage(WorldClient client, ExchangeObjectTransfertListFromInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(true, message.ids, false, false);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertAllToInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertAllToInvMessage(WorldClient client, ExchangeObjectTransfertAllToInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(false, new int[0], true, false);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertExistingToInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertExistingToInvMessage(WorldClient client, ExchangeObjectTransfertExistingToInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(false, new int[0], false, true);
+        }
+
+        [WorldHandler(ExchangeObjectTransfertListToInvMessage.Id)]
+        public static void HandleExchangeObjectTransfertListToInvMessage(WorldClient client, ExchangeObjectTransfertListToInvMessage message)
+        {
+            var bank = client.Character.Dialog as BankDialog;
+            if (bank == null)
+                return;
+
+            bank.Customer.MoveItems(false, message.ids, false, false);
+        }
+
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
@@ -479,7 +557,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             merchantBag.Where(x => x.Stack > 0).Select(x => x.GetObjectItemToSell())));
         }
 
-        public static void SendExchangeStartOkMountMessage(IPacketReceiver client, List<Mount> stabledMounts, List<Mount> paddockedMounts)
+        public static void SendExchangeStartOkMountMessage(IPacketReceiver client, IEnumerable<Mount> stabledMounts, IEnumerable<Mount> paddockedMounts)
         {
             client.Send(new ExchangeStartOkMountMessage(stabledMounts.Select(x => x.GetMountClientData()), paddockedMounts.Select(x => x.GetMountClientData())));
         }

@@ -1,23 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
 using MongoDB.Bson;
-using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Logging;
+using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -34,7 +30,6 @@ using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
-using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
@@ -47,6 +42,7 @@ using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Game.Shortcuts;
@@ -60,17 +56,29 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Moderation;
+using Stump.Server.WorldServer.Handlers.Mounts;
 using Stump.Server.WorldServer.Handlers.Titles;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Database.Quests;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Quests;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
+using Stump.Core.Extensions;
+using Stump.Core.Collections;
+using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
         [Variable]
-        private const ushort HonorLimit = 16000;
-
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        public static ushort HonorLimit = 20000;
 
         private readonly CharacterRecord m_record;
         private bool m_recordLoaded;
@@ -81,8 +89,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Client = client;
             SaveSync = new object();
             LoggoutSync = new object();
-
-            LoadRecord();
         }
 
         #region Events
@@ -99,6 +105,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (PrestigeRank > 0 && PrestigeManager.Instance.PrestigeEnabled)
             {
+                AddTitle(PrestigeManager.GetPrestigeTitle(PrestigeRank));
+
+                if (PrestigeRank >= 5)
+                {
+                    AddOrnament(25);
+                    AddEmote(EmotesEnum.EMOTE_GONFLER_SES_MUSCLES);
+                }
+                if (PrestigeRank >= 10)
+                {
+                    AddOrnament(49);
+                    AddEmote(EmotesEnum.EMOTE_SUPER_HEROS);
+                }
+                if (PrestigeRank >= 15)
+                {
+                    AddOrnament(50);
+                    AddEmote(EmotesEnum.EMOTE_ATTITUDE_TÉMÉRAIRE);
+                }
+
                 var item = GetPrestigeItem();
                 if (item == null)
                     CreatePrestigeItem();
@@ -116,6 +140,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     Inventory.RemoveItem(item, true, false);
             }
 
+            var document = new BsonDocument
+            {
+                { "AcctId", Account.Id },
+                { "AcctName", Account.Login },
+                { "CharacterId", Id },
+                { "CharacterName", Name },
+                { "IPAddress", Client.IP },
+                { "Action", "Login" },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            MongoLogger.Instance.Insert("characters_connections", document);
+
             var handler = LoggedIn;
             if (handler != null) handler(this);
         }
@@ -124,6 +161,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnLoggedOut()
         {
+            EnterMap -= OnFollowedMemberEnterMap;
+
+            if (FriendsBook != null)
+                FriendsBook.CheckDC(); // attempt to resolve leaks
+
+            if (Fight != null && Fight.State == FightState.Fighting)
+                Record.LeftFightId = Fight.Id;
+            else
+                Record.LeftFightId = null;
+
             if (GuildMember != null)
                 GuildMember.OnCharacterDisconnected(this);
 
@@ -139,7 +186,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var document = new BsonDocument
             {
                 { "AcctId", Client.Account.Id },
+                { "AcctName", Client.Account.Login },
                 { "CharacterId", Id },
+                { "CharacterName", Name },
                 { "IPAddress", Client.IP },
                 { "Action", "Loggout" },
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
@@ -152,10 +201,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public event Action<Character> Saved;
-        private bool m_isLocalSaving;
 
         public void OnSaved()
         {
+            IsAuthSynced = true;
             UnBlockAccount();
 
             var handler = Saved;
@@ -178,7 +227,29 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (handler != null) handler(this);
         }
 
-        #endregion
+        public event Action<Character> LookRefreshed;
+
+        private void OnLookRefreshed()
+        {
+            var handler = LookRefreshed;
+            if (handler != null) handler(this);
+        }
+
+        public event Action<Character> StatsResfreshed;
+
+        private void OnStatsResfreshed()
+        {
+            var handler = StatsResfreshed;
+            if (handler != null) handler(this);
+        }
+
+        public event Action<Character, Npc, NpcActionTypeEnum, NpcAction> InteractingWith;
+        
+        public void OnInteractingWith(Npc npc, NpcActionTypeEnum actionType, NpcAction action)
+        {
+            InteractingWith?.Invoke(this, npc, actionType, action);
+        }
+        #endregion Events
 
         #region Properties
 
@@ -191,6 +262,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public AccountData Account
         {
             get { return Client.Account; }
+        }
+
+        public WorldAccount WorldAccount
+        {
+            get { return Client.WorldAccount; }
         }
 
         public UserGroup UserGroup
@@ -251,7 +327,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        #endregion
+        #endregion Identifier
 
         #region Inventory
 
@@ -267,7 +343,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             set { Record.Kamas = value; }
         }
 
-        #endregion
+        #endregion Inventory
 
         #region Position
 
@@ -282,7 +358,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        #endregion
+        #endregion Position
 
         #region Dialog
 
@@ -339,6 +415,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SetDialoger(IDialoger dialoger)
         {
+            if (Dialog != null)
+                Dialog.Close();
+
             Dialoger = dialoger;
         }
 
@@ -351,7 +430,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Dialog = dialog;
         }
-
 
         public void CloseDialog(IDialog dialog)
         {
@@ -414,7 +492,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Dialog is ZaapiDialog;
         }
 
-        #endregion
+        #endregion Dialog
 
         #region Party
 
@@ -465,14 +543,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             return null;
         }
+
         public Party GetParty(PartyTypeEnum type)
         {
             switch (type)
             {
                 case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
                     return Party;
+
                 case PartyTypeEnum.PARTY_TYPE_ARENA:
                     return ArenaParty;
+
                 default:
                     throw new NotImplementedException(string.Format("Cannot manage party of type {0}", type));
             }
@@ -485,9 +566,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
                     Party = party;
                     break;
+
                 case PartyTypeEnum.PARTY_TYPE_ARENA:
-                    ArenaParty = (ArenaParty) party;
+                    ArenaParty = (ArenaParty)party;
                     break;
+
                 default:
                     logger.Error("Cannot manage party of type {0} ({1})", party.GetType(), party.Type);
                     break;
@@ -501,9 +584,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
                     Party = null;
                     break;
+
                 case PartyTypeEnum.PARTY_TYPE_ARENA:
                     ArenaParty = null;
                     break;
+
                 default:
                     logger.Error("Cannot manage party of type {0}", type);
                     break;
@@ -512,7 +597,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             CompassHandler.SendCompassResetMessage(Client, CompassTypeEnum.COMPASS_TYPE_PARTY);
         }
 
-        #endregion
+        #endregion Party
 
         #region Trade
 
@@ -520,10 +605,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get { return Dialog as IExchange; }
         }
+
         public Exchanger Exchanger
         {
             get { return Dialoger as Exchanger; }
         }
+
         public ITrade Trade
         {
             get { return Dialog as ITrade; }
@@ -554,7 +641,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return PlayerTrade != null;
         }
 
-        #endregion
+        #endregion Trade
 
         #region Titles & Ornaments
 
@@ -570,7 +657,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return Record.Ornaments.AsReadOnly();
             }
         }
-
 
         public short? SelectedTitle
         {
@@ -685,7 +771,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             RefreshActor();
         }
 
-        #endregion
+        #endregion Titles & Ornaments
 
         #region Apparence
 
@@ -717,7 +803,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 var playerLook = CustomLookActivated && CustomLook != null ? CustomLook.Clone() : RealLook.Clone();
 
-                var equipedMount = GetEquipedMount();
+                var equipedMount = GetEquippedMountSkin();
                 if (equipedMount != -1)
                 {
                     var mountLook = new ActorLook { BonesID = (short)equipedMount };
@@ -740,11 +826,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                     playerLook = mountLook;
                 }
-                else if (IsRiding())
+                else if (IsRiding)
                 {
-                    var mountLook = Mount.Model.EntityLook.Clone();
+                    var mountLook = EquippedMount.Template.EntityLook.Clone();
 
-                    if (Mount.Behaviors.Contains(MountBehaviorEnum.Caméléone))
+                    if (EquippedMount.Behaviors.Contains((int)MountBehaviorEnum.Caméléone))
                     {
                         Color color1;
                         Color color2;
@@ -763,14 +849,31 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     playerLook = mountLook;
                 }
 
-                if (!IsInMovement && Direction == DirectionsEnum.DIRECTION_SOUTH && Level >= 100)
+                if (LastEmoteUsed != null)
                 {
-                    var auraLook = new ActorLook
-                    {
-                        BonesID = Level == 200 ? (short)170 : (short)169
-                    };
+                    var auraLook = new ActorLook();
 
-                    playerLook.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, auraLook));
+                    switch (LastEmoteUsed.First)
+                    {
+                        case EmotesEnum.EMOTE_AURA_DE_PUISSANCE:
+                            auraLook.BonesID = Level == 200 ? (short)170 : (short)169;
+                            break;
+
+                        case EmotesEnum.EMOTE_AURA_VAMPYRIQUE:
+                            auraLook.BonesID = 171;
+                            break;
+
+                        case EmotesEnum.EMOTE_AURA_BLEUTÉE_DE_L_ORNITHORYNQUE_ANCESTRAL:
+                            auraLook.BonesID = 1465;
+                            break;
+
+                        case EmotesEnum.EMOTE_AURA_DE_NELWEEN:
+                            auraLook.BonesID = 1501;
+                            break;
+                    }
+
+                    if (auraLook.BonesID != 0)
+                        playerLook.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, auraLook));
                 }
 
                 return playerLook;
@@ -830,7 +933,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsInFight())
                 Map.Refresh(this);
 
-            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, toggle ? (short) 236 : (short) 237);
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, toggle ? (short)236 : (short)237);
 
             return Invisible;
         }
@@ -870,22 +973,31 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 RealLook.SetPetSkin(petSkin.Item1.Value);
             else
                 RealLook.RemovePets();
-                
+
             if (send)
                 RefreshActor();
         }
 
         public void RefreshActor()
         {
-            if (Map != null)
+            if (Fight != null && Fighter != null)
+            {
+                Fighter.Look = Look.Clone();
+                Fighter.Look.RemoveAuras();
+
+                Fight.Map.Area.ExecuteInContext(() =>
+                    Fight.RefreshActor(Fighter));
+            }
+            else if (Map != null)
             {
                 Map.Area.ExecuteInContext(() =>
-                    Map.Refresh(this)
-                    );
+                    Map.Refresh(this));
             }
+
+            OnLookRefreshed();
         }
 
-        #endregion
+        #endregion Apparence
 
         #region Stats
 
@@ -895,7 +1007,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public delegate void GradeChangedHandler(Character character, sbyte currentGrade, int difference);
 
-        #endregion
+        #endregion Delegates
 
         #region Levels
 
@@ -907,10 +1019,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public long Experience
         {
-            get { return RealExperience - PrestigeRank*ExperienceManager.Instance.HighestCharacterExperience; }
+            get { return RealExperience - PrestigeRank * ExperienceManager.Instance.HighestCharacterExperience; }
             private set
             {
-                RealExperience = PrestigeRank*ExperienceManager.Instance.HighestCharacterExperience + value;
+                RealExperience = PrestigeRank * ExperienceManager.Instance.HighestCharacterExperience + value;
                 if ((value < UpperBoundExperience || Level >= ExperienceManager.Instance.HighestCharacterLevel) &&
                     value >= LowerBoundExperience) return;
                 var lastLevel = Level;
@@ -933,7 +1045,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (levelAdded + Level > ExperienceManager.Instance.HighestCharacterLevel)
                 level = ExperienceManager.Instance.HighestCharacterLevel;
             else
-                level = (byte) (levelAdded + Level);
+                level = (byte)(levelAdded + Level);
 
             var experience = ExperienceManager.Instance.GetCharacterLevelExperience(level);
 
@@ -947,7 +1059,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Level - levelRemoved < 1)
                 level = 1;
             else
-                level = (byte) (Level - levelRemoved);
+                level = (byte)(Level - levelRemoved);
 
             var experience = ExperienceManager.Instance.GetCharacterLevelExperience(level);
 
@@ -966,10 +1078,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void AddExperience(double amount)
         {
-            Experience += (long) amount;
+            Experience += (long)amount;
         }
 
-        #endregion
+        #endregion Levels
 
         public long LowerBoundExperience
         {
@@ -1007,10 +1119,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             set { m_record.Energy = value; }
         }
 
-        public int LifePoints
-        {
-            get { return Stats.Health.Total; }
-        }
+        public int LifePoints => Stats.Health.Total;
 
         public int MaxLifePoints
         {
@@ -1079,7 +1188,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             set { m_record.CanRestat = value; }
         }
 
-        #endregion
+        #endregion Restat
 
         public event LevelChangedHandler LevelChanged;
 
@@ -1087,34 +1196,39 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (difference > 0)
             {
-                SpellsPoints += (ushort) difference;
-                StatsPoints += (ushort) (difference*5);
+                SpellsPoints += (ushort)difference;
+                StatsPoints += (ushort)(difference * 5);
             }
 
-            Stats.Health.Base += (short) (difference*5);
+            Stats.Health.Base += (short)(difference * 5);
             Stats.Health.DamageTaken = 0;
 
             if (currentLevel >= 100 && currentLevel - difference < 100)
             {
                 Stats.AP.Base++;
-                AddOrnament((short) OrnamentEnum.NIVEAU_100);
+                AddOrnament((short)OrnamentEnum.NIVEAU_100);
+                AddEmote(EmotesEnum.EMOTE_AURA_DE_PUISSANCE);
             }
             else if (currentLevel < 100 && currentLevel - difference >= 100)
             {
                 Stats.AP.Base--;
-                RemoveOrnament((short) OrnamentEnum.NIVEAU_100);
+                RemoveOrnament((short)OrnamentEnum.NIVEAU_100);
+                RemoveEmote(EmotesEnum.EMOTE_AURA_DE_PUISSANCE);
             }
 
             if (currentLevel >= 160 && currentLevel - difference < 160)
-                AddOrnament((short) OrnamentEnum.NIVEAU_160);
+                AddOrnament((short)OrnamentEnum.NIVEAU_160);
             else if (currentLevel < 160 && currentLevel - difference >= 160)
-                RemoveOrnament((short) OrnamentEnum.NIVEAU_160);
+                RemoveOrnament((short)OrnamentEnum.NIVEAU_160);
 
             if (currentLevel >= 200 && currentLevel - difference < 200)
-                AddOrnament((short) OrnamentEnum.NIVEAU_200);
+            {
+                AddOrnament((short)OrnamentEnum.NIVEAU_200);
+            }
             else if (currentLevel < 200 && currentLevel - difference >= 200)
-                RemoveOrnament((short) OrnamentEnum.NIVEAU_200);
-
+            {
+                RemoveOrnament((short)OrnamentEnum.NIVEAU_200);
+            }
 
             var shortcuts = Shortcuts.SpellsShortcuts;
             foreach (var spell in Breed.Spells)
@@ -1133,7 +1247,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 {
                     Spells.LearnSpell(spell.Spell);
                     Shortcuts.AddSpellShortcut(Shortcuts.GetNextFreeSlot(ShortcutBarEnum.SPELL_SHORTCUT_BAR),
-                        (short) spell.Spell);
+                        (short)spell.Spell);
                 }
             }
 
@@ -1161,7 +1275,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Stats.Intelligence.Base = PermanentAddedIntelligence;
             Stats.Chance.Base = PermanentAddedChance;
 
-            var newPoints = (Level-1)*5;
+            var newPoints = (Level - 1) * 5;
             StatsPoints = (ushort)newPoints;
 
             RefreshStats();
@@ -1174,6 +1288,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 UpdateRegenedLife();
 
             CharacterHandler.SendCharacterStatsListMessage(Client);
+
+            OnStatsResfreshed();
         }
 
         public void ToggleGodMode(bool state)
@@ -1191,33 +1307,198 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             BreedId = breed;
         }
 
-        #endregion
+        #endregion Stats
 
         #region Mount
 
-        public Mount Mount
+        private List<Mount> m_ownedMounts = new List<Mount>();
+        private Queue<Mount> m_releaseMounts = new Queue<Mount>();
+
+        public Mount EquippedMount
         {
-            get;
-            set;
+            get { return m_equippedMount; }
+            private set
+            {
+                m_equippedMount = value;
+                Record.EquippedMount = value?.Id;
+
+                if (value == null)
+                    IsRiding = false;
+            }
         }
 
-        public int GetEquipedMount()
+        public bool IsRiding
+        {
+            get { return EquippedMount != null && Record.IsRiding; }
+            private set { Record.IsRiding = value; }
+        }
+
+
+        public ReadOnlyCollection<Mount> OwnedMounts => m_ownedMounts.AsReadOnly(); 
+
+        public Mount GetStabledMount(int mountId)
+        {
+            return m_ownedMounts.FirstOrDefault(x => x.Paddock != null && x.IsInStable && x.Id == mountId);
+        }
+
+        public Mount GetPublicPaddockedMount(int mountId)
+        {
+            return m_ownedMounts.FirstOrDefault(x => x.Paddock != null && !x.IsInStable && x.Id == mountId);
+        }
+
+        private void LoadMounts()
+        {
+            m_ownedMounts = MountManager.Instance.GetMounts(Id).Select(x => new Mount(this, x)).ToList();
+            EquippedMount = m_ownedMounts.FirstOrDefault(x => x.Id == Record.EquippedMount);
+            EquippedMount?.ApplyMountEffects();
+
+            if (EquippedMount == null && Record.EquippedMount != null)
+                Record.EquippedMount = null;
+        }
+
+        private void SaveMounts(ORM.Database database)
+        {
+            foreach (var mount in m_ownedMounts)
+            {
+                mount.Save(database);
+            }
+
+            while (m_releaseMounts.Count > 0)
+            {
+                var deletedMount = m_releaseMounts.Dequeue();
+                database.Delete(deletedMount.Record);
+            }
+        }
+
+        public void AddStabledMount(Mount mount, Paddock paddock)
+        {
+            if (mount.Owner != this)
+                SetOwnedMount(mount);
+
+            mount.Paddock = paddock;
+            mount.IsInStable = true;
+        }
+
+        public void RemoveStabledMount(Mount mount)
+        {
+            if (mount.Owner != this)
+                SetOwnedMount(mount);
+
+            mount.Paddock = null;
+            mount.IsInStable = false;
+        }
+
+        public void SetOwnedMount(Mount mount)
+        {
+            if (mount.Owner != this)
+            {
+                mount.Owner?.m_ownedMounts.Remove(mount);
+                mount.Owner = this;
+            }
+
+            if (!m_ownedMounts.Contains(mount))
+                m_ownedMounts.Add(mount);
+        }
+
+        public int GetEquippedMountSkin()
         {
             var petSkin = Inventory.GetPetSkin();
-            return (petSkin != null && petSkin.Item1.HasValue && !petSkin.Item2) ? petSkin.Item1.Value : -1;
+            return (petSkin?.Item1 != null && !petSkin.Item2) ? petSkin.Item1.Value : -1;
         }
 
-        public bool HasEquipedMount()
+        public bool HasEquippedMount() => EquippedMount != null;
+
+        public bool EquipMount(Mount mount)
         {
-            return Mount != null;
+            if (mount.Owner != this)
+                return false;
+
+            EquippedMount = mount;
+
+            MountHandler.SendMountSetMessage(Client, mount.GetMountClientData());
+            MountHandler.SendMountXpRatioMessage(Client, mount.GivenExperience);
+            return true;
         }
 
-        public bool IsRiding()
+        public void UnEquipMount()
         {
-            return HasEquipedMount() && Mount.IsRiding;
+            if (EquippedMount != null)
+            {
+                Dismount();
+                EquippedMount = null;
+
+                MountHandler.SendMountUnSetMessage(Client);
+                //MountHandler.SendMountReleaseMessage(Client, EquippedMount.Id);
+            }
         }
 
-        #endregion
+        public bool ReleaseMount()
+        {
+            if (EquippedMount == null)
+                return false;
+
+            var mount = EquippedMount;
+            UnEquipMount();
+
+            MountHandler.SendMountReleaseMessage(Client, mount.Id);
+            m_releaseMounts.Enqueue(mount);
+            return true;
+        }
+
+        public bool Dismount() => IsRiding && ToggleRiding();
+
+        public bool ToggleRiding()
+        {
+            if (EquippedMount == null)
+                return false;
+
+            if (!IsRiding && Level < Mount.RequiredLevel)
+            {
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 227, Mount.RequiredLevel);
+                return false;
+            }
+
+            if (!IsRiding && (IsBusy() || IsInFight()))
+            {
+                //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
+                BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
+                return false;
+            }
+
+            /*if (!IsRiding && !Map.Outdoor && !Map.SpawningPools.Any(x => x is DungeonSpawningPool))
+            {
+                //Impossible d'être sur une monture à l'intérieur d'une maison.
+                BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 117);
+
+                return false;
+            }*/
+
+            IsRiding = !IsRiding;
+
+            RefreshActor();
+
+            MountHandler.SendMountRidingMessage(Client, IsRiding);
+
+            if (IsRiding)
+            {
+                var pet = Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
+                if (pet != null)
+                    Inventory.MoveItem(pet, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
+                EquippedMount.ApplyMountEffects();
+            }
+            else
+            {
+                //Vous descendez de votre monture.
+                BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+
+                EquippedMount.UnApplyMountEffects();
+            }
+
+            return true;
+        }
+
+        #endregion Mount
 
         #region Guild
 
@@ -1242,7 +1523,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        #endregion
+        #endregion Guild
 
         #region Alignment
 
@@ -1278,10 +1559,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 var lastGrade = AlignmentGrade;
 
-                AlignmentGrade = (sbyte) ExperienceManager.Instance.GetAlignementGrade(m_record.Honor);
+                AlignmentGrade = (sbyte)ExperienceManager.Instance.GetAlignementGrade(m_record.Honor);
 
-                LowerBoundHonor = ExperienceManager.Instance.GetAlignementGradeHonor((byte) AlignmentGrade);
-                UpperBoundHonor = ExperienceManager.Instance.GetAlignementNextGradeHonor((byte) AlignmentGrade);
+                LowerBoundHonor = ExperienceManager.Instance.GetAlignementGradeHonor((byte)AlignmentGrade);
+                UpperBoundHonor = ExperienceManager.Instance.GetAlignementNextGradeHonor((byte)AlignmentGrade);
 
                 var difference = AlignmentGrade - lastGrade;
 
@@ -1386,6 +1667,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
 
+            if (!PvPEnabled)
+            {
+                var amount = (ushort)Math.Round(Honor * 0.05);
+                SubHonor(amount);
+
+                SendServerMessage($"La désactivation du mode PVP vous a fait perdre <b>{amount}</b> points d'honneur.");
+            }
+
             Map.Refresh(this);
             RefreshStats();
 
@@ -1411,7 +1700,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 handler(this, AlignmentSide);
         }
 
-        #endregion
+        #endregion Alignment
 
         #region Fight
 
@@ -1468,7 +1757,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             TaxCollectorDefendFight = null;
         }
 
-        #endregion
+        #endregion Fight
 
         #region Shortcuts
 
@@ -1478,7 +1767,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        #endregion
+        #endregion Shortcuts
 
         #region Regen
 
@@ -1494,7 +1783,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        #endregion
+        #endregion Regen
 
         #region Chat
 
@@ -1516,19 +1805,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             // %1 vous a rendu muet pour %2 minute(s).
             SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 17, from.Name,
-                (int) time.TotalMinutes);
+                (int)time.TotalMinutes);
         }
 
         public void Mute(TimeSpan time)
         {
             MuteUntil = DateTime.Now + time;
             // Le principe de précaution vous a rendu muet pour %1 seconde(s).
-            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int) time.TotalSeconds);
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int)time.TotalSeconds);
         }
 
         public void UnMute()
         {
             MuteUntil = null;
+            SendServerMessage("Vous avez été démuté.");
         }
 
         public bool IsMuted()
@@ -1544,7 +1834,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return MuteUntil.Value - DateTime.Now;
         }
 
-        #endregion
+        #endregion Chat
 
         #region Prestige
 
@@ -1554,12 +1844,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set { m_record.PrestigeRank = value; }
         }
 
-        public long RealExperience 
+        public long RealExperience
         {
             get { return m_record.Experience; }
             private set { m_record.Experience = value; }
         }
-        
+
         public bool IsPrestigeMax()
         {
             return PrestigeRank == PrestigeManager.PrestigeTitles.Length;
@@ -1572,7 +1862,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public PrestigeItem CreatePrestigeItem()
         {
-            return (PrestigeItem) Inventory.AddItem(PrestigeManager.BonusItem, 1, false);
+            return (PrestigeItem)Inventory.AddItem(PrestigeManager.BonusItem, 1, false);
         }
 
         public bool IncrementPrestige()
@@ -1581,20 +1871,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
 
             PrestigeRank++;
-            AddTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
-
-            switch (PrestigeRank)
-            {
-                case 5:
-                    AddOrnament(25);
-                    break;
-                case 10:
-                    AddOrnament(49);
-                    break;
-                case 15:
-                    AddOrnament(50);
-                    break;
-            }
 
             var item = GetPrestigeItem();
 
@@ -1615,7 +1891,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             foreach (var equippedItem in Inventory.ToArray())
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
-            var points = (Spells.CountSpentBoostPoint() + SpellsPoints) - (Level-1);
+            var points = (Spells.CountSpentBoostPoint() + SpellsPoints) - (Level - 1);
 
             Experience = 0;
             Spells.ForgetAllSpells();
@@ -1627,7 +1903,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool DecrementPrestige()
         {
-            RemoveTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
+            RemoveTitle(PrestigeManager.GetPrestigeTitle(PrestigeRank));
             PrestigeRank--;
 
             var item = GetPrestigeItem();
@@ -1658,7 +1934,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 RemoveTitle(title);
             }
             PrestigeRank = 0;
-            
+
             var item = GetPrestigeItem();
 
             if (item != null)
@@ -1667,7 +1943,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        #endregion
+        #endregion Prestige
 
         #region Arena
 
@@ -1719,7 +1995,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (m_record.ArenaDailyDate.Day == DateTime.Now.Day || ArenaDailyMaxRank <= 0)
                 return;
 
-            var amountToken = (int)Math.Floor(ArenaDailyMaxRank/10d);
+            var amountToken = (int)Math.Floor(ArenaDailyMaxRank / 10d);
             var amountKamas = (ArenaDailyMaxRank * 10);
 
             m_record.ArenaDailyDate = DateTime.Now;
@@ -1729,14 +2005,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amountToken);
             Inventory.AddKamas(amountKamas);
-            
+
             //SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 276, amountKamas, amountToken);
             DisplayNotification(NotificationEnum.KOLIZÉUM, amountKamas, amountToken);
         }
 
         public int ComputeWonArenaTokens(int rank)
         {
-            var result = (int) Math.Floor(rank/100d);
+            var result = (int)Math.Floor(rank / 100d);
             return result > 0 ? result : 1;
         }
 
@@ -1796,22 +2072,25 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_record.ArenaRank; }
             set { m_record.ArenaRank = value; }
         }
-        
+
         public int ArenaMaxRank
         {
             get { return m_record.ArenaMaxRank; }
             set { m_record.ArenaMaxRank = value; }
         }
+
         public int ArenaDailyMaxRank
         {
             get { return m_record.ArenaDailyMaxRank; }
             set { m_record.ArenaDailyMaxRank = value; }
         }
+
         public int ArenaDailyMatchsWon
         {
             get { return m_record.ArenaDailyMatchsWon; }
             set { m_record.ArenaDailyMatchsWon = value; }
         }
+
         public int ArenaDailyMatchsCount
         {
             get { return m_record.ArenaDailyMatchsCount; }
@@ -1830,9 +2109,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             set;
         }
 
-        #endregion
+        #endregion Arena
 
-        #endregion
+        #endregion Properties
 
         #region Actions
 
@@ -1869,7 +2148,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 if (item.StackSold <= 0)
                     continue;
 
-                var price = (int) (item.Price*item.StackSold);
+                var price = (int)(item.Price * item.StackSold);
                 kamasMerchant += price;
 
                 //Vous avez gagné %1 kamas suite à la vente en mode marchand de %4 '$item%3' lorsque vous étiez hors jeu.
@@ -1892,7 +2171,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 BidHouseManager.Instance.RemoveBidHouseItem(item, true);
 
                 //Banque : + %1 Kamas (vente de %4 $item%3 hors jeu).
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, kamasBidHouse, 0, item.Template.Id, item.Stack);
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, item.Price, 0, item.Template.Id, item.Stack);
             }
 
             Bank.AddKamas(kamasBidHouse);
@@ -1929,7 +2208,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ModerationHandler.SendPopupWarningMessage(Client, message, sender, lockDuration);
         }
 
-        #endregion
+        #endregion Chat
 
         #region Move
 
@@ -1938,9 +2217,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextRoleplayHandler.SendCurrentMapMessage(Client, map.Id);
 
             if (map.Fights.Count > 0)
-                ContextRoleplayHandler.SendMapFightCountMessage(Client, (short) map.Fights.Count);
+                ContextRoleplayHandler.SendMapFightCountMessage(Client, (short)map.Fights.Count);
 
-            // send actor actions     
+            // send actor actions
             foreach (var actor in map.Actors)
             {
                 if (!actor.IsMoving())
@@ -1963,14 +2242,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             else if (!MustBeJailed() && IsInJail() && !IsGameMaster())
                 Teleport(Breed.GetStartPosition());
 
-            if (IsRiding() && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
-                Mount.Dismount(this);
+            /*if (IsRiding && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
+                Dismount();*/
 
             base.OnEnterMap(map);
         }
 
         public override bool CanMove()
         {
+            if (Fight?.State == FightState.Placement || Fight?.State == FightState.NotStarted)
+                return false;
+
             if (Inventory.Weight <= Inventory.WeightTotal)
                 return base.CanMove() && !IsDialoging();
 
@@ -1982,8 +2264,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return false;
         }
 
+        public override bool IsGonnaChangeZone()
+        {
+            return base.IsGonnaChangeZone() || !IsLoggedIn;
+        }
+
         public override bool StartMove(Path movementPath)
         {
+            StartRegen();
+
             if (IsFighting() || MustBeJailed() || !IsInJail())
                 return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
 
@@ -1991,20 +2280,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return false;
         }
 
-        public override bool StopMove()
-        {
-            return IsFighting() ? Fighter.StopMove() : base.StopMove();
-        }
+        public override bool StopMove() => IsFighting() ? Fighter.StopMove() : base.StopMove();
 
-        public override bool MoveInstant(ObjectPosition destination)
-        {
-            return IsFighting() ? Fighter.MoveInstant(destination) : base.MoveInstant(destination);
-        }
+        public override bool MoveInstant(ObjectPosition destination) => IsFighting() ? Fighter.MoveInstant(destination) : base.MoveInstant(destination);
 
-        public override bool StopMove(ObjectPosition currentObjectPosition)
-        {
-            return IsFighting() ? Fighter.StopMove(currentObjectPosition) : base.StopMove(currentObjectPosition);
-        }
+        public override bool StopMove(ObjectPosition currentObjectPosition) => IsFighting() ? Fighter.StopMove(currentObjectPosition) : base.StopMove(currentObjectPosition);
 
         public override bool Teleport(MapNeighbour mapNeighbour)
         {
@@ -2053,7 +2333,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return JAILS_MAPS.Contains(Map.Id);
         }
 
-        #endregion
+        #endregion Jail
+
         protected override void OnTeleported(ObjectPosition position)
         {
             base.OnTeleported(position);
@@ -2069,13 +2350,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return base.CanChangeMap() && !IsFighting() && !Account.IsJailed;
         }
 
-        #endregion
+        #endregion Move
 
         #region Dialog
 
         public void DisplayNotification(string text, NotificationEnum notification = NotificationEnum.INFORMATION)
         {
-            Client.Send(new NotificationByServerMessage((ushort) notification, new []{text}, true));
+            Client.Send(new NotificationByServerMessage((ushort)notification, new[] { text }, true));
         }
 
         public void DisplayNotification(NotificationEnum notification, params object[] parameters)
@@ -2107,7 +2388,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsTalkingWithNpc())
                 return;
 
-            ((NpcDialog) Dialog).Reply(replyId);
+            ((NpcDialog)Dialog).Reply(replyId);
         }
 
         public void AcceptRequest()
@@ -2139,7 +2420,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 DenyRequest();
         }
 
-        #endregion
+        #endregion Dialog
 
         #region Party
 
@@ -2172,7 +2453,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 if (created)
                     LeaveParty(party);
-                
+
                 return; // already invited
             }
 
@@ -2312,9 +2593,49 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!(actor is Character))
                 return;
 
-            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, Party, (Character) actor);
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, Party, (Character)actor);
         }
 
+        #endregion Party
+
+        #region Quest
+
+        private List<Quest> m_quests = new List<Quest>();
+
+        public ReadOnlyCollection<Quest> Quests => m_quests.AsReadOnly();
+
+        public void LoadQuests()
+        {
+            var database = QuestManager.Instance.Database;
+
+            m_quests = database.Query<QuestRecord>(string.Format(QuestRecordRelator.FetchByOwner, Id)).Select(x => new Quest(this, x)).ToList();
+        }
+
+        public void StartQuest(int questStepId)
+        {
+            var step = QuestManager.Instance.GetQuestStep(questStepId);
+
+            if (step == null)
+                throw new Exception($"Step {questStepId} not found");
+
+            StartQuest(step);
+        }
+
+        public void StartQuest(QuestStepTemplate questStep)
+        {
+            var quest = m_quests.FirstOrDefault(x => x.Template.Steps.Contains(questStep));
+
+            if (quest == null)
+            {
+                quest = new Quest(this, questStep);
+                m_quests.Add(quest);
+            }
+            else
+            {
+                quest.ChangeQuestStep(questStep);
+            }
+        }
+         
         #endregion
 
         #region Fight
@@ -2340,7 +2661,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Direction = dest.Direction;
 
             // energy lost go here
-            Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
+            Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
 
             var handler = Died;
             if (handler != null) handler(this);
@@ -2364,19 +2685,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 target.IsAway)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
-            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy() )
+            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
             if (target == this)
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
 
-            if (target.Map != Map || !Map.AllowFightChallenges)
+            if (target.Map != Map || !Map.AllowChallenge)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
-        public FighterRefusedReasonEnum CanAgress(Character target)
+        public FighterRefusedReasonEnum CanAgress(Character target, bool bypassCheck = false)
         {
             if (target == this)
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
@@ -2387,7 +2708,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy())
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
-            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())
+            if (!bypassCheck && (!IsInWorld || IsFighting() || IsSpectator() || IsBusy()))
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
             if (AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL || target.AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL)
@@ -2396,13 +2717,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.AlignmentSide == AlignmentSide)
                 return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
 
-            if (target.Map != Map || !Map.AllowAggression)
+            if (!bypassCheck && (target.Map != Map || !Map.AllowAggression))
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             if (string.Equals(target.Client.IP, Client.IP))
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
-            if (Level - target.Level > 20)
+            if (Math.Abs(Level - target.Level) > 20)
                 return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
@@ -2413,15 +2734,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null && target.IsTaxCollectorOwner(GuildMember))
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
-            if (target.IsBusy() || IsFighting() || IsSpectator() || !IsInWorld)
+            if (IsFighting() || IsSpectator() || !IsInWorld || IsBusy())
+                return FighterRefusedReasonEnum.IM_OCCUPIED;
+
+            if (target.IsBusy() || target.IsFighting || !target.IsInWorld)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
             if (target.Map != Map)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
-        }        
-        
+        }
+
         public FighterRefusedReasonEnum CanAttack(MonsterGroup group)
         {
             if (IsFighting() || IsSpectator() || !IsInWorld)
@@ -2478,6 +2802,32 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Spectator;
         }
 
+        private CharacterFighter RejoinFightAfterDisconnection(CharacterFighter oldFighter)
+        {
+            Map.Leave(this);
+            Map = oldFighter.Map;
+            NextMap = oldFighter.Character.NextMap;
+
+            StopRegen();
+
+            ContextHandler.SendGameContextDestroyMessage(Client);
+            ContextHandler.SendGameContextCreateMessage(Client, 2);
+            ContextRoleplayHandler.SendCurrentMapMessage(Client, Map.Id);
+            ContextRoleplayHandler.SendMapComplementaryInformationsDataMessage(Client);
+
+            oldFighter.RestoreFighterFromDisconnection(this);
+            Fighter = oldFighter;
+
+            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType);
+            Fighter.Fight.RejoinFightFromDisconnection(Fighter);
+            OnCharacterContextChanged(true);
+
+            foreach(var challenge in Fight.Challenges)
+                ContextHandler.SendChallengeInfoMessage(Client, challenge);
+
+            return Fighter;
+        }
+
         /// <summary>
         /// Rejoin the map after a fight
         /// </summary>
@@ -2491,7 +2841,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (GodMode)
                 Stats.Health.DamageTaken = 0;
-            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team) && !Fight.IsDeathTemporarily)
+            else if (Fighter != null && (Fighter.HasLeft() && !Fighter.IsDisconnected || Fight.Losers == Fighter.Team) && !Fight.IsDeathTemporarily)
                 OnDied();
 
             Fighter = null;
@@ -2501,40 +2851,57 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextHandler.SendGameContextCreateMessage(Client, 1);
 
             RefreshStats();
-            
+
             OnCharacterContextChanged(false);
             StartRegen();
 
             if (Map == null)
                 return;
 
-            NextMap.Area.ExecuteInContext(() =>
+            if (IsLoggedIn)
             {
-                LastMap = Map;
-                Map = NextMap;
-                Map.Enter(this);
-                NextMap = null;
-            });
+                if (!NextMap.Area.IsRunning)
+                    NextMap.Area.Start();
+
+                NextMap.Area.ExecuteInContext(() =>
+                {
+                    if (IsLoggedIn)
+                    {
+                        LastMap = Map;
+                        Map = NextMap;
+                        Map.Enter(this);
+                        NextMap = null;
+                    }
+                });
+            }
+            else
+                SaveLater(); // if disconnected in fight we must save the change at the end of the fight
         }
 
-        #endregion
+        #endregion Fight
 
         #region Regen
 
-        public bool IsRegenActive()
-        {
-            return RegenStartTime.HasValue;
-        }
+        public bool IsRegenActive() => RegenStartTime.HasValue;
 
         public void StartRegen()
         {
-            StartRegen((byte) (20f/Rates.RegenRate));
+            StartRegen((byte)(20f / Rates.RegenRate));
+        }
+
+        public void StartRegenSit()
+        {
+            var rate = Rates.RegenRate * 2;
+            StartRegen((byte)(10f / rate));
         }
 
         public void StartRegen(byte timePerHp)
         {
             if (IsRegenActive())
                 StopRegen();
+
+            if (IsFighting())
+                return;
 
             RegenStartTime = DateTime.Now;
             RegenSpeed = timePerHp;
@@ -2547,14 +2914,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsRegenActive())
                 return;
 
-            var regainedLife = (int) Math.Floor((DateTime.Now - RegenStartTime).Value.TotalSeconds/(RegenSpeed/10f));
+            var regainedLife = (int)Math.Floor((DateTime.Now - RegenStartTime).Value.TotalSeconds / (RegenSpeed / 10f));
 
             if (LifePoints + regainedLife > MaxLifePoints)
                 regainedLife = MaxLifePoints - LifePoints;
 
             if (regainedLife > 0)
             {
-                Stats.Health.DamageTaken -= (short) regainedLife;
+                Stats.Health.DamageTaken -= regainedLife;
             }
 
             CharacterHandler.SendLifePointsRegenEndMessage(Client, regainedLife);
@@ -2569,15 +2936,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsRegenActive())
                 return;
 
-            var regainedLife = (int) Math.Floor((DateTime.Now - RegenStartTime).Value.TotalSeconds/(RegenSpeed/10f));
+            var regainedLife = (int)Math.Floor((DateTime.Now - RegenStartTime).Value.TotalSeconds / (RegenSpeed / 10f));
 
             if (LifePoints + regainedLife > MaxLifePoints)
                 regainedLife = MaxLifePoints - LifePoints;
 
-
             if (regainedLife > 0)
             {
-                Stats.Health.DamageTaken -= (short) regainedLife;
+                Stats.Health.DamageTaken -= regainedLife;
                 CharacterHandler.SendUpdateLifePointsMessage(Client);
             }
 
@@ -2586,7 +2952,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             OnLifeRegened(regainedLife);
         }
 
-        #endregion
+        #endregion Regen
 
         #region Zaaps
 
@@ -2603,7 +2969,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 KnownZaaps.Add(map);
 
             BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 24);
-                // new zaap
+            // new zaap
         }
 
         public void SetSpawnPoint(Map map)
@@ -2612,7 +2978,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_spawnPoint = null;
 
             BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 6);
-                // pos saved
+            // pos saved
         }
 
         public ObjectPosition GetSpawnPoint()
@@ -2634,16 +3000,50 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return new ObjectPosition(map, cell, direction);
         }
 
-        #endregion
+        #endregion Zaaps
 
         #region Emotes
 
+        public ReadOnlyCollection<EmotesEnum> Emotes => Record.Emotes.AsReadOnly();
+
+        public bool HasEmote(EmotesEnum emote) => Record.Emotes.Contains(emote);
+
+        public void AddEmote(EmotesEnum emote)
+        {
+            if (HasEmote(emote))
+                return;
+
+            Record.Emotes.Add(emote);
+            ContextRoleplayHandler.SendEmoteAddMessage(Client, (byte)emote);
+        }
+
+        public bool RemoveEmote(EmotesEnum emote)
+        {
+            var result = Record.Emotes.Remove(emote);
+
+            if (result)
+                ContextRoleplayHandler.SendEmoteRemoveMessage(Client, (byte)emote);
+
+            return result;
+        }
+
         public void PlayEmote(EmotesEnum emote)
         {
+            StartRegen();
+
+            if (LastEmoteUsed != null && (DateTime.Now - LastEmoteUsed.Second).TotalMilliseconds < 500)
+                return;
+
+            if (emote == EmotesEnum.EMOTE_S_ASSEOIR)
+                StartRegenSit();
+
+            LastEmoteUsed = new Pair<EmotesEnum, DateTime>(emote, DateTime.Now);
+            RefreshActor();
+
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
         }
 
-        #endregion
+        #endregion Emotes
 
         #region Friend & Ennemies
 
@@ -2653,7 +3053,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        #endregion
+        #endregion Friend & Ennemies
 
         #region Merchant
 
@@ -2715,9 +3115,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void CheckMerchantModeReconnection()
         {
-           foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
+            foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
             {
-                merchant.Save();
+                merchant.Save(WorldServer.Instance.DBAccessor.Database);
 
                 if (merchant.Record.CharacterId != Id)
                     continue;
@@ -2735,8 +3135,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             MerchantManager.Instance.RemoveMerchantSpawn(record);
         }
 
-        #endregion
-        
+        #endregion Merchant
+
         #region Bank
 
         public Bank Bank
@@ -2745,20 +3145,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        public bool CheckBankIsLoaded(Action callBack)
-        {
-            if (Bank.IsLoaded)
-                return true;
-
-            WorldServer.Instance.IOTaskPool.AddMessage(() => { 
-                Bank.LoadRecord();
-                callBack();
-            });
-
-            return false;
-        }
-
-        #endregion
+        #endregion Bank
 
         #region Drop Items
 
@@ -2788,7 +3175,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (item.IsLinkedToAccount() || item.IsLinkedToPlayer() || item.Template.Id == 20000) //Temporary block orb drop
                 return;
 
-            if(item.Stack < quantity)
+            if (item.Stack < quantity)
             {
                 //Vous ne possédez pas l'objet en quantité suffisante.
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
@@ -2801,8 +3188,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Map.Enter(objectItem);
         }
-        
-        #endregion
+
+        #endregion Drop Items
 
         #region Debug
 
@@ -2824,6 +3211,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             Client.Send(new DebugHighlightCellsMessage(color.ToArgb() & 16777215, new[] { cell.Id }));
         }
+
         public Color HighlightCells(IEnumerable<Cell> cells)
         {
             var rand = new Random();
@@ -2838,9 +3226,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Client.Send(new DebugHighlightCellsMessage(color.ToArgb() & 16777215, cells.Select(x => x.Id)));
         }
 
-        #endregion
+        #endregion Debug
 
-        #endregion
+        #endregion Actions
 
         #region Save & Load
 
@@ -2870,12 +3258,38 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (IsInWorld)
                 return;
 
-            Map.Area.AddMessage(() =>
+            CharacterFighter fighter = null;
+            if (Record.LeftFightId != null)
             {
-                Map.Enter(this);
+                var fight = FightManager.Instance.GetFight(Record.LeftFightId.Value);
 
-                StartRegen();
-            });
+                if (fight != null)
+                {
+                    fighter = fight.GetLeaver(Id);
+                }
+            }
+
+            if (fighter != null && fighter.IsDisconnected)
+            {
+                Map.Area.AddMessage(() =>
+                {
+                    RejoinFightAfterDisconnection(fighter);
+                });
+            }
+            else
+            {
+                ContextHandler.SendGameContextDestroyMessage(Client);
+                ContextHandler.SendGameContextCreateMessage(Client, 1);
+
+                RefreshStats();
+
+                Map.Area.AddMessage(() =>
+                {
+                    Map.Enter(this);
+
+                    StartRegen();
+                });
+            }
 
             World.Instance.Enter(this);
             m_inWorld = true;
@@ -2902,6 +3316,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             lock (LoggoutSync)
             {
+                if (!IsLoggedIn)
+                    return;
+
                 IsLoggedIn = false;
 
                 try
@@ -2927,6 +3344,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                     if (Map != null && Map.IsActor(this))
                         Map.Leave(this);
+                    else if (Area != null)
+                        Area.Leave(this);
 
                     if (Map != null && m_merchantToSpawn != null)
                         Map.Enter(m_merchantToSpawn);
@@ -2941,12 +3360,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 }
                 finally
                 {
+                    BlockAccount();
                     WorldServer.Instance.IOTaskPool.AddMessage(
                         () =>
                         {
                             try
                             {
-                                BlockAccount();
                                 SaveNow();
                                 UnLoadRecord();
                             }
@@ -2955,6 +3374,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                 Delete();
                             }
                         });
+                    
                 }
             }
         }
@@ -2967,57 +3387,65 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         internal void SaveNow()
         {
-            WorldServer.Instance.IOTaskPool.EnsureContext();
-
-            if (!m_recordLoaded)
-                return;
-
-            lock (SaveSync)
+            try
             {
-                using (var transaction = WorldServer.Instance.DBAccessor.Database.GetTransaction())
+                WorldServer.Instance.IOTaskPool.EnsureContext();
+                var database = WorldServer.Instance.DBAccessor.Database;
+
+                lock (SaveSync)
                 {
-                    // do something better here
-                    Inventory.Save();
-                    if (Bank.IsLoaded)
-                        Bank.Save();
-                    MerchantBag.Save();
-                    Spells.Save();
-                    Shortcuts.Save();
-                    FriendsBook.Save();
+                    using (var transaction = database.GetTransaction())
+                    {
+                        Inventory.Save(database, false);
+                        Bank.Save(database);
+                        MerchantBag.Save(database);
+                        Spells.Save();
+                        Shortcuts.Save();
+                        FriendsBook.Save();
 
-                    if (GuildMember != null && GuildMember.IsDirty)
-                        GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
+                        SaveMounts(database);
 
-                    if (Mount != null)
-                        Mount.Save(WorldServer.Instance.DBAccessor.Database);
+                        m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
+                        m_record.CellId = Cell.Id;
+                        m_record.Direction = Direction;
 
-                    m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
-                    m_record.CellId = Cell.Id;
-                    m_record.Direction = Direction;
+                        m_record.AP = Stats[PlayerFields.AP].Base;
+                        m_record.MP = Stats[PlayerFields.MP].Base;
+                        m_record.Strength = Stats[PlayerFields.Strength].Base;
+                        m_record.Agility = Stats[PlayerFields.Agility].Base;
+                        m_record.Chance = Stats[PlayerFields.Chance].Base;
+                        m_record.Intelligence = Stats[PlayerFields.Intelligence].Base;
+                        m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
+                        m_record.Vitality = Stats[PlayerFields.Vitality].Base;
+                        m_record.BaseHealth = Stats.Health.Base;
+                        m_record.DamageTaken = Stats.Health.DamageTaken;
 
-                    m_record.AP = Stats[PlayerFields.AP].Base;
-                    m_record.MP = Stats[PlayerFields.MP].Base;
-                    m_record.Strength = Stats[PlayerFields.Strength].Base;
-                    m_record.Agility = Stats[PlayerFields.Agility].Base;
-                    m_record.Chance = Stats[PlayerFields.Chance].Base;
-                    m_record.Intelligence = Stats[PlayerFields.Intelligence].Base;
-                    m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
-                    m_record.Vitality = Stats[PlayerFields.Vitality].Base;
-                    m_record.BaseHealth = Stats.Health.Base;
-                    m_record.DamageTaken = Stats.Health.DamageTaken;
+                        database.Update(m_record);
+                        database.Update(Client.WorldAccount);
 
-                    WorldServer.Instance.DBAccessor.Database.Update(m_record);
-                    WorldServer.Instance.DBAccessor.Database.Update(Client.WorldAccount);
+                        transaction.Complete();
+                    }
+                }
 
-                    transaction.Complete();
+                if (IsAuthSynced)
+                    OnSaved();
+                else
+                {
+                    IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Account),
+                        msg =>
+                        {
+                            OnSaved();
+                        });
                 }
             }
-
-            if (IsAuthSynced)
-                OnSaved();
+            catch
+            {
+                UnBlockAccount();
+                throw;
+            }
         }
 
-        private void LoadRecord()
+        public void LoadRecord()
         {
             Breed = BreedManager.Instance.GetBreed(BreedId);
             Head = BreedManager.Instance.GetHead(Record.Head);
@@ -3041,15 +3469,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
             UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
 
-            AlignmentGrade = (sbyte) ExperienceManager.Instance.GetAlignementGrade(m_record.Honor);
-            LowerBoundHonor = ExperienceManager.Instance.GetAlignementGradeHonor((byte) AlignmentGrade);
-            UpperBoundHonor = ExperienceManager.Instance.GetAlignementNextGradeHonor((byte) AlignmentGrade);
+            AlignmentGrade = (sbyte)ExperienceManager.Instance.GetAlignementGrade(m_record.Honor);
+            LowerBoundHonor = ExperienceManager.Instance.GetAlignementGradeHonor((byte)AlignmentGrade);
+            UpperBoundHonor = ExperienceManager.Instance.GetAlignementNextGradeHonor((byte)AlignmentGrade);
 
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
             Inventory.LoadPresets();
 
-            Bank = new Bank(this); // lazy loading here !
+            Bank = new Bank(this);
+            Bank.LoadRecord();
 
             MerchantBag = new CharacterMerchantBag(this);
             CheckMerchantModeReconnection();
@@ -3059,7 +3488,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             UpdateLook(false);
 
-            Mount = MountManager.Instance.TryGetMountByCharacterId(Id) != null ? new Mount(this) : null;
+            LoadMounts();
 
             Spells = new SpellInventory(this);
             Spells.LoadSpells();
@@ -3071,6 +3500,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             FriendsBook.Load();
 
             ChatHistory = new ChatHistory(this);
+
+            LoadQuests();
 
             m_recordLoaded = true;
         }
@@ -3100,12 +3531,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             OnAccountUnblocked();
         }
 
-        #endregion
+        #endregion Save & Load
 
         #region Exceptions
 
         private readonly List<KeyValuePair<string, Exception>> m_commandsError =
             new List<KeyValuePair<string, Exception>>();
+
+        private Mount m_equippedMount;
 
         public List<KeyValuePair<string, Exception>> CommandsErrors
         {
@@ -3119,7 +3552,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_errors; }
         }
 
-        #endregion
+        #endregion Exceptions
 
         #region Network
 
@@ -3137,28 +3570,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 GetActorAlignmentInformations());
         }
 
-        #endregion
+        #endregion GameRolePlayCharacterInformations
 
         #region ActorAlignmentInformations
 
         public ActorAlignmentInformations GetActorAlignmentInformations()
         {
             return new ActorAlignmentInformations(
-                (sbyte) (PvPEnabled ? AlignmentSide : 0),
-                (sbyte) (PvPEnabled ? AlignmentValue : 0),
-                (sbyte) (PvPEnabled ? AlignmentGrade : 0),
+                (sbyte)(PvPEnabled ? AlignmentSide : 0),
+                (sbyte)(PvPEnabled ? AlignmentValue : 0),
+                (sbyte)(PvPEnabled ? AlignmentGrade : 0),
                 Dishonor,
                 CharacterPower);
         }
 
-        #endregion
+        #endregion ActorAlignmentInformations
 
         #region ActorExtendedAlignmentInformations
 
         public ActorExtendedAlignmentInformations GetActorAlignmentExtendInformations()
         {
             return new ActorExtendedAlignmentInformations(
-                (sbyte) AlignmentSide,
+                (sbyte)AlignmentSide,
                 AlignmentValue,
                 AlignmentGrade,
                 Dishonor,
@@ -3170,7 +3603,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 );
         }
 
-        #endregion
+        #endregion ActorExtendedAlignmentInformations
 
         #region CharacterBaseInformations
 
@@ -3181,7 +3614,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Level,
                 Name,
                 Look.GetEntityLook(),
-                (sbyte) BreedId,
+                (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
         }
 
@@ -3194,7 +3627,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look.GetEntityLook());
         }
 
-        #endregion
+        #endregion CharacterBaseInformations
 
         #region PartyMemberInformations
 
@@ -3205,12 +3638,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Level,
                 Name,
                 Look.GetEntityLook(),
-                (sbyte) BreedId,
+                (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
-                (short) Map.Position.X,
-                (short) Map.Position.Y,
+                (short)Map.Position.X,
+                (short)Map.Position.Y,
                 Map.Id,
-                (short) Map.SubArea.Id);
+                (short)Map.SubArea.Id);
         }
 
         public PartyMemberInformations GetPartyMemberInformations()
@@ -3220,19 +3653,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Level,
                 Name,
                 Look.GetEntityLook(),
-                (sbyte) BreedId,
+                (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
                 LifePoints,
                 MaxLifePoints,
-                (short) Stats[PlayerFields.Prospecting].Total,
+                (short)Stats[PlayerFields.Prospecting].Total,
                 RegenSpeed,
-                (short) Stats[PlayerFields.Initiative].Total,
+                (short)Stats[PlayerFields.Initiative].Total,
                 PvPEnabled,
-                (sbyte) AlignmentSide,
-                (short) Map.Position.X,
-                (short) Map.Position.Y,
+                (sbyte)AlignmentSide,
+                (short)Map.Position.X,
+                (short)Map.Position.Y,
                 Map.Id,
-                (short) SubArea.Id);
+                (short)SubArea.Id);
         }
 
         public PartyGuestInformations GetPartyGuestInformations(Party party)
@@ -3247,7 +3680,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 invitation.Source.Id,
                 Name,
                 Look.GetEntityLook(),
-                (sbyte) BreedId,
+                (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
         }
 
@@ -3258,23 +3691,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Level,
                 Name,
                 Look.GetEntityLook(),
-                (sbyte) BreedId,
+                (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
                 LifePoints,
                 MaxLifePoints,
-                (short) Stats[PlayerFields.Prospecting].Total,
+                (short)Stats[PlayerFields.Prospecting].Total,
                 RegenSpeed,
-                (short) Stats[PlayerFields.Initiative].Total,
+                (short)Stats[PlayerFields.Initiative].Total,
                 PvPEnabled,
-                (sbyte) AlignmentSide,
-                (short) Map.Position.X,
-                (short) Map.Position.Y,
+                (sbyte)AlignmentSide,
+                (short)Map.Position.X,
+                (short)Map.Position.Y,
                 Map.Id,
-                (short) SubArea.Id,
+                (short)SubArea.Id,
                 (short)ArenaRank);
         }
 
-        #endregion
+        #endregion PartyMemberInformations
 
         public override HumanInformations GetHumanInformations()
         {
@@ -3291,11 +3724,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (SelectedOrnament != null)
                 options.Add(new HumanOptionOrnament(SelectedOrnament.Value));
 
+            if (LastEmoteUsed != null)
+                options.Add(new HumanOptionEmote((sbyte)LastEmoteUsed.First, LastEmoteUsed.Second.GetUnixTimeStampLong()));
+
             human.options = options;
             return human;
         }
 
-        #endregion
+        #endregion Network
 
         public CharacterRecord Record
         {
@@ -3308,7 +3744,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         protected override void OnDisposed()
-        {            
+        {
             if (FriendsBook != null)
                 FriendsBook.Dispose();
 

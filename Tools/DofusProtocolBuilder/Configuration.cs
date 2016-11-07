@@ -1,5 +1,5 @@
-﻿using System;
-using DofusProtocolBuilder.Profiles;
+﻿using DofusProtocolBuilder.Profiles;
+using System;
 
 namespace DofusProtocolBuilder
 {
@@ -83,77 +83,75 @@ namespace DofusProtocolBuilder
 
             XmlMessagesProfile =
                 new XmlMessagesProfile
-                    {
-                        Name = "Xml Messages classes",
-                        OutPutPath = "messages_xml/",
-                        SourcePath = @"com/ankamagames/dofus/network/messages/",
-                        EnableParsing = true,
-                    };
+                {
+                    Name = "Xml Messages classes",
+                    OutPutPath = "messages_xml/",
+                    SourcePath = @"com/ankamagames/dofus/network/messages/",
+                    EnableParsing = true,
+                };
 
             XmlTypesProfile =
                 new XmlTypesProfile
-                    {
-                        Name = "Xml Types classes",
-                        OutPutPath = "types_xml/",
-                        SourcePath = @"com/ankamagames/dofus/network/types/",
-                        EnableParsing = true,
-                        
-                    };
+                {
+                    Name = "Xml Types classes",
+                    OutPutPath = "types_xml/",
+                    SourcePath = @"com/ankamagames/dofus/network/types/",
+                    EnableParsing = true,
+                };
 
             MessagesProfile =
                 new MessagesProfile
-                    {
-                        Name = "Messages classes",
-                        SourcePath = @"com/ankamagames/dofus/network/messages/",
-                        TemplatePath = "./Templates/MessageTemplate.tt",
-                        OutPutPath = "messages/",
-                        OutPutNamespace = ".Messages",
-                    };
+                {
+                    Name = "Messages classes",
+                    SourcePath = @"com/ankamagames/dofus/network/messages/",
+                    TemplatePath = "./Templates/MessageTemplate.tt",
+                    OutPutPath = "messages/",
+                    OutPutNamespace = ".Messages",
+                };
 
             TypesProfile =
                 new TypesProfile
-                    {
-                        Name = "Types classes",
-                        SourcePath = @"com/ankamagames/dofus/network/types/",
-                        TemplatePath = "./Templates/TypeTemplate.tt",
-                        OutPutPath = "types/",
-                        OutPutNamespace = ".Types",
-                    };
+                {
+                    Name = "Types classes",
+                    SourcePath = @"com/ankamagames/dofus/network/types/",
+                    TemplatePath = "./Templates/TypeTemplate.tt",
+                    OutPutPath = "types/",
+                    OutPutNamespace = ".Types",
+                };
 
             EnumsProfile =
                 new EnumsProfile
-                    {
-                        Name = "Enums",
-                        SourcePath = @"com/ankamagames/dofus/network/enums/",
-                        OutPutPath = "enums/",
-                        OutPutNamespace = ".Enums",
-                        TemplatePath = "./Templates/EnumTemplate.tt",
-                        EnableParsing = true,
-                    };
+                {
+                    Name = "Enums",
+                    SourcePath = @"com/ankamagames/dofus/network/enums/",
+                    OutPutPath = "enums/",
+                    OutPutNamespace = ".Enums",
+                    TemplatePath = "./Templates/EnumTemplate.tt",
+                    EnableParsing = true,
+                };
 
             DatacenterProfile =
                 new DatacenterProfile
-                    {
-                        Name = "D2O Data classes",
-                        SourcePath = @"com/ankamagames/dofus/datacenter/",
-                        OutPutPath = "d2oclasses/",
-                        OutPutNamespace = ".D2oClasses",
-                        TemplatePath = "./Templates/DataCenterTemplate.tt",
-                        IgnoreMethods = false,
-                        EnableParsing = true,
-                    };
-
-            DataRecordProfile = new DataRecordProfile
                 {
-                    Name = "DB classes",
+                    Name = "D2O Data classes",
                     SourcePath = @"com/ankamagames/dofus/datacenter/",
-                    OutPutPath = "dbclasses/",
-                    OutPutNamespace = ".Data",
-                    TemplatePath = "./Templates/DBTemplate.tt",
+                    OutPutPath = "d2oclasses/",
+                    OutPutNamespace = ".D2oClasses",
+                    TemplatePath = "./Templates/DataCenterTemplate.tt",
                     IgnoreMethods = false,
                     EnableParsing = true,
-
                 };
+
+            DataRecordProfile = new DataRecordProfile
+            {
+                Name = "DB classes",
+                SourcePath = @"com/ankamagames/dofus/datacenter/",
+                OutPutPath = "dbclasses/",
+                OutPutNamespace = ".Data",
+                TemplatePath = "./Templates/DBTemplate.tt",
+                IgnoreMethods = false,
+                EnableParsing = true,
+            };
         }
     }
 }

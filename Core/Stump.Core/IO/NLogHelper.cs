@@ -26,7 +26,7 @@ namespace Stump.Core.IO
         {
             var config = new LoggingConfiguration();
 
-            var consoleTarget = new ColoredConsoleTarget {Layout = LogFormatConsole};
+            var consoleTarget = new ColoredConsoleTarget { Layout = LogFormatConsole };
 
             var fileTarget = new FileTarget
             {

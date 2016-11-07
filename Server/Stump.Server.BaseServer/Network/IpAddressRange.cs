@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Stump.Core.Extensions;
+using System;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Stump.Core.Extensions;
 
 namespace Stump.Server.BaseServer.Network
 {
@@ -40,7 +40,6 @@ namespace Stump.Server.BaseServer.Network
 
         public static IPAddressRange Parse(string str)
         {
-
             var split = str.Split('.');
             var tokens = new IPAddressToken[4];
 
@@ -123,7 +122,6 @@ namespace Stump.Server.BaseServer.Network
 
         public override string ToString()
         {
-
             if (Star)
                 return "*";
 

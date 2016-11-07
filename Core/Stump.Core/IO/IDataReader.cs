@@ -33,7 +33,6 @@ namespace Stump.Core.IO
         /// <returns></returns>
         Int64 ReadLong();
 
-
         /// <summary>
         ///   Read a UShort from the Buffer
         /// </summary>
@@ -57,6 +56,7 @@ namespace Stump.Core.IO
         /// </summary>
         /// <returns></returns>
         byte ReadByte();
+
         sbyte ReadSByte();
 
         /// <summary>
@@ -101,7 +101,9 @@ namespace Stump.Core.IO
         /// </summary>
         /// <returns></returns>
         string ReadUTFBytes(ushort len);
+
         void Seek(int offset, SeekOrigin seekOrigin);
+
         void SkipBytes(int n);
     }
 }

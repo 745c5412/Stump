@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Stump.Core.Pool;
+using Stump.Server.BaseServer.Initialization;
+using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using Stump.Core.Pool;
-using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Server.WorldServer.Database
 {

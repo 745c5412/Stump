@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -10,6 +7,9 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {
@@ -34,7 +34,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         {
             Spawn = spawn;
         }
-
 
         public NpcTemplate Template
         {
@@ -74,6 +73,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 
         private void OnInteracted(NpcActionTypeEnum actionType, NpcAction action, Character character)
         {
+            character.OnInteractingWith(this, actionType, action);
             var handler = Interacted;
             if (handler != null) handler(this, actionType, action, character);
         }
@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (!CanInteractWith(actionType, dialoguer))
                 return;
 
-            var action = Actions.First(entry => entry.ActionType.Contains(actionType) && entry.CanExecute(this, dialoguer));
+            var action = Actions.Where(entry => entry.ActionType.Contains(actionType) && entry.CanExecute(this, dialoguer)).OrderBy(x => x.Priority).First();
 
             action.Execute(this, dialoguer);
             OnInteracted(actionType, action, dialoguer);
@@ -101,6 +101,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         {
             if (dialoguer.Map != Position.Map)
                 return false;
+
+            if (dialoguer.IsBusy())
+                dialoguer?.Dialog.Close();
 
             return Actions.Count > 0 && Actions.Any(entry => entry.ActionType.Contains(action) && entry.CanExecute(this, dialoguer));
         }
@@ -127,7 +130,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return new GameRolePlayNpcInformations(Id,
                                                    Look.GetEntityLook(),
                                                    GetEntityDispositionInformations(),
-                                                   (short) Template.Id,
+                                                   (short)Template.Id,
                                                    Template.Gender != 0,
                                                    Template.SpecialArtworkId);
         }
@@ -137,6 +140,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return m_gameContextActorInformations;
         }
 
-        #endregion
+        #endregion GameContextActorInformations
     }
 }

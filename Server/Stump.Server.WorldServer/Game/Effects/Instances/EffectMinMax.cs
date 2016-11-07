@@ -1,7 +1,7 @@
-﻿using System;
-using Stump.Core.Threading;
+﻿using Stump.Core.Threading;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Types;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -13,13 +13,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public EffectMinMax()
         {
-            
         }
 
         public EffectMinMax(EffectMinMax copy)
-            : this (copy.Id, copy.ValueMin, copy.ValueMax, copy)
+            : this(copy.Id, copy.ValueMin, copy.ValueMax, copy)
         {
-            
         }
 
         public EffectMinMax(short id, short valuemin, short valuemax, EffectBase effect)
@@ -32,8 +30,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectMinMax(EffectInstanceMinMax effect)
             : base(effect)
         {
-            m_maxvalue = (short) effect.max;
-            m_minvalue = (short) effect.min;
+            m_maxvalue = (short)effect.max;
+            m_minvalue = (short)effect.min;
         }
 
         public override int ProtocoleId
@@ -69,13 +67,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override object[] GetValues()
         {
-            return new object[] {ValueMin, ValueMax};
+            return new object[] { ValueMin, ValueMax };
         }
 
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectMinMax(Id, ValueMin, ValueMax);
         }
+
         public override EffectInstance GetEffectInstance()
         {
             return new EffectInstanceMinMax()
@@ -91,11 +90,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = (uint) ZoneShape,
-                max = (uint) ValueMax,
-                min = (uint) ValueMin
+                zoneShape = (uint)ZoneShape,
+                max = (uint)ValueMax,
+                min = (uint)ValueMin
             };
         }
+
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);
@@ -137,7 +137,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             if (ReferenceEquals(a, b))
                 return true;
 
-            if (((object) a == null) || ((object) b == null))
+            if (((object)a == null) || ((object)b == null))
                 return false;
 
             return a.Equals(b);
@@ -160,8 +160,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             unchecked
             {
                 int result = base.GetHashCode();
-                result = (result*397) ^ m_maxvalue.GetHashCode();
-                result = (result*397) ^ m_minvalue.GetHashCode();
+                result = (result * 397) ^ m_maxvalue.GetHashCode();
+                result = (result * 397) ^ m_minvalue.GetHashCode();
                 return result;
             }
         }

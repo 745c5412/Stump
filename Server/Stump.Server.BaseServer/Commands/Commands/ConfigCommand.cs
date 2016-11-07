@@ -1,6 +1,7 @@
+using Stump.DofusProtocol.Enums;
 using System;
 using System.IO;
-using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Plugins;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -8,7 +9,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public ConfigCommand()
         {
-            Aliases = new [] { "config" };
+            Aliases = new[] { "config" };
             Description = "Provide commands to manage the config file";
             RequiredRole = RoleEnum.Administrator;
         }
@@ -22,13 +23,32 @@ namespace Stump.Server.BaseServer.Commands.Commands
             Aliases = new[] { "reload" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Reload the config file";
+            AddParameter<string>("plugin", "p", "Plugin name whose config will be reloaded", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            ServerBase.InstanceAsBase.Config.Reload();
+            if (!trigger.IsArgumentDefined("plugin"))
+            {
+                ServerBase.InstanceAsBase.Config.Reload();
 
-            trigger.Reply("Config reloaded");
+                trigger.Reply("Config reloaded");
+            }
+            else
+            {
+                var pluginName = trigger.Get<string>("plugin");
+                var plugin = PluginManager.Instance.GetPlugin(pluginName, true);
+                if (plugin == null)
+                    trigger.ReplyError($"Plugin '{pluginName}' not found, check plugins list");
+                else if (plugin.Plugin.Config == null)
+                    trigger.ReplyError($"Plugin '{pluginName}' has no config");
+                else
+                {
+                    plugin.Plugin.Config.Reload();
+                    trigger.Reply($"Config from plugin '{pluginName}' reloaded");
+                }
+            }   
+
         }
     }
 

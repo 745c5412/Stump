@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             // no need to check for CanSummon()
 
             var summon = new SummonedClone(Fight.GetNextContextualId(), Caster, TargetedCell);
-            
+
             Caster.AddSummon(summon);
             Caster.Team.AddFighter(summon);
 

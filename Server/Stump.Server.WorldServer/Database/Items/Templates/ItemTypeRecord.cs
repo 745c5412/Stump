@@ -1,10 +1,10 @@
-using System;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Items.Templates
 {
@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public ItemTypeEnum ItemType
         {
-            get { return (ItemTypeEnum) Id; }
+            get { return (ItemTypeEnum)Id; }
         }
 
         public uint NameId
@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public ItemSuperTypeEnum SuperType
         {
-            get { return (ItemSuperTypeEnum) SuperTypeId; }
+            get { return (ItemSuperTypeEnum)SuperTypeId; }
         }
 
         public Boolean Plural
@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public void AssignFields(object d2oObject)
         {
-            var type = (ItemType) d2oObject;
+            var type = (ItemType)d2oObject;
             Id = type.id;
             NameId = type.nameId;
             SuperTypeId = type.superTypeId;
@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             NeedUseConfirm = type.needUseConfirm;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         private void ParseRawZone(string rawZone)
         {
@@ -122,20 +122,25 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
                 case '+':
                     shape = SpellShapeEnum.plus;
                     break;
+
                 case '-':
                     shape = SpellShapeEnum.minus;
                     break;
+
                 case '/':
                     shape = SpellShapeEnum.slash;
                     break;
+
                 case '*':
                     shape = SpellShapeEnum.star;
                     break;
+
                 case '#':
                     shape = SpellShapeEnum.sharp;
                     break;
+
                 default:
-                    shape = (SpellShapeEnum) Enum.Parse(typeof (SpellShapeEnum), chr.ToString());
+                    shape = (SpellShapeEnum)Enum.Parse(typeof(SpellShapeEnum), chr.ToString());
                     break;
             }
             ZoneShape = shape;

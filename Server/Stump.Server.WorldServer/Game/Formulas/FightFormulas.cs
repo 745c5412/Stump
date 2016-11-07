@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Mathematics;
+﻿using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Fights.Results;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Formulas
 {
@@ -49,7 +48,6 @@ namespace Stump.Server.WorldServer.Game.Formulas
             4.7
         };
 
-
         public static int CalculateWinExp(IFightResult fighter, IEnumerable<FightActor> alliesResults, IEnumerable<FightActor> droppersResults)
         {
             var droppers = droppersResults as MonsterFighter[] ?? droppersResults.ToArray();
@@ -68,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
             if (sumPlayersLevel - 5 > sumMonstersLevel)
                 levelCoeff = (double)sumMonstersLevel / sumPlayersLevel;
             else if (sumPlayersLevel + 10 < sumMonstersLevel)
-                levelCoeff = ( sumPlayersLevel + 10 ) / (double)sumMonstersLevel;
+                levelCoeff = (sumPlayersLevel + 10) / (double)sumMonstersLevel;
 
             var xpRatio = Math.Min(fighter.Level, Math.Truncate(2.5d * maxMonsterLevel)) / sumPlayersLevel * 100d;
 
@@ -81,19 +79,19 @@ namespace Stump.Server.WorldServer.Game.Formulas
             var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
             var challengeBonus = fighter.Fight.GetChallengeBonus();
 
-            var xp = (int)Math.Truncate(Math.Truncate(baseXp * (100 + fighter.Wisdom)/ 100d) * multiplicator * Rates.XpRate);
-            xp += (int)Math.Truncate(xp*(challengeBonus/100d));
-  
+            var xp = (int)Math.Truncate(Math.Truncate(baseXp * (100 + fighter.Wisdom) / 100d) * multiplicator * Rates.XpRate);
+            xp += (int)Math.Truncate(xp * (challengeBonus / 100d));
+
             return InvokeWinXpModifier(fighter, xp);
         }
 
-        public static int AdjustDroppedKamas(IFightResult looter, int teamPP, long baseKamas)
+        public static int AdjustDroppedKamas(IFightResult looter, int teamPP, long baseKamas, bool kamasRate = true)
         {
             var challengeBonus = looter.Fight.GetChallengeBonus();
             var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
 
-            var multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + looter.Fight.AgeBonus / 100d;
-            var kamas = (int)( baseKamas * (looterPP / teamPP) * multiplicator * Rates.KamasRate );
+            var multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + (looter.Fight.AgeBonus / 5) / 100d;
+            var kamas = (int)(baseKamas * (looterPP / teamPP) * multiplicator * (kamasRate ? Rates.KamasRate : 1));
 
             return InvokeWinKamasModifier(looter, kamas);
         }
@@ -110,7 +108,13 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
         public static int CalculatePushBackDamages(FightActor source, FightActor target, int range)
         {
-            return (8 + new CryptoRandom().Next(1, 8) * (source.Level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
+            var level = source.Level;
+
+            var summon = source as SummonedMonster;
+            if (summon != null)
+                level = summon.Summoner.Level;
+
+            return (8 + new CryptoRandom().Next(1, 8) * (level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
         }
     }
 }

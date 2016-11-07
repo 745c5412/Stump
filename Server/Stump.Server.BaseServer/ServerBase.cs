@@ -1,4 +1,19 @@
-﻿using System;
+﻿using NLog;
+using SharpRaven;
+using SharpRaven.Data;
+using Stump.Core.Attributes;
+using Stump.Core.IO;
+using Stump.Core.Threading;
+using Stump.Core.Timers;
+using Stump.Core.Xml.Config;
+using Stump.ORM;
+using Stump.Server.BaseServer.Benchmark;
+using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.Exceptions;
+using Stump.Server.BaseServer.Initialization;
+using Stump.Server.BaseServer.Network;
+using Stump.Server.BaseServer.Plugins;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -9,19 +24,6 @@ using System.Reflection;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
-using SharpRaven;
-using Stump.Core.Attributes;
-using Stump.Core.IO;
-using Stump.Core.Threading;
-using Stump.Core.Timers;
-using Stump.Core.Xml.Config;
-using Stump.ORM;
-using Stump.Server.BaseServer.Commands;
-using Stump.Server.BaseServer.Exceptions;
-using Stump.Server.BaseServer.Initialization;
-using Stump.Server.BaseServer.Network;
-using Stump.Server.BaseServer.Plugins;
 
 namespace Stump.Server.BaseServer
 {
@@ -40,9 +42,10 @@ namespace Stump.Server.BaseServer
         /// In minutes
         /// </summary>
         [Variable]
-        public static int AutomaticShutdownTimer = 6*60;
+        public static int AutomaticShutdownTimer = 6 * 60;
 
-        [Variable] public static string CommandsInfoFilePath = "./commands.xml";
+        [Variable]
+        public static string CommandsInfoFilePath = "./commands.xml";
 
         [Variable(Priority = 10, DefinableRunning = true)]
         public static bool IsExceptionLoggerEnabled = false;
@@ -50,7 +53,7 @@ namespace Stump.Server.BaseServer
         [Variable(Priority = 10)]
         public static string ExceptionLoggerDSN = "";
 
-        public static RavenClient ExceptionLogger
+        public RavenClient ExceptionLogger
         {
             get;
             protected set;
@@ -59,6 +62,8 @@ namespace Stump.Server.BaseServer
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
         private bool m_ignoreReload;
+
+        public event Action ServerStarted;
 
         protected ServerBase(string configFile, string schemaFile)
         {
@@ -179,7 +184,13 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public SimpleTimerEntry ScheduledShutdownTimer
+        public TimedTimerEntry ScheduledShutdownTimer
+        {
+            get;
+            protected set;
+        }
+
+        public string Version
         {
             get;
             protected set;
@@ -189,6 +200,11 @@ namespace Stump.Server.BaseServer
         {
             InstanceAsBase = this;
             Initializing = true;
+
+            Version = ((AssemblyInformationalVersionAttribute)System.Reflection.Assembly.GetExecutingAssembly()
+                        .GetCustomAttributes<AssemblyInformationalVersionAttribute>().FirstOrDefault())
+                        .InformationalVersion;
+                    
 
             /* Initialize Logger */
             NLogHelper.DefineLogProfile(true, true);
@@ -234,7 +250,7 @@ namespace Stump.Server.BaseServer
                 Config.Load();
 
             logger.Info("Initialize Task Pool");
-            IOTaskPool = new SelfRunningTaskPool(IOTaskInterval, "IO Task Pool");
+            IOTaskPool = new BenchmarkedTaskPool(IOTaskInterval, "IO Task Pool");
 
             CommandManager = CommandManager.Instance;
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
@@ -262,7 +278,22 @@ namespace Stump.Server.BaseServer
             PluginManager.Instance.LoadAllPlugins();
 
             if (IsExceptionLoggerEnabled)
+            {
                 ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
+                ExceptionLogger.Release = Version;
+#if DEBUG
+                ExceptionLogger.Environment = "DEBUG";
+#else
+                ExceptionLogger.Environment = "RELEASE";
+#endif
+            }
+        }
+
+        public static void PushLogWithRaven(string levelStr, string message)
+        {
+            ErrorLevel level;
+            if (Enum.TryParse(levelStr, out level))
+                InstanceAsBase.ExceptionLogger.CaptureMessage(new SentryMessage(message), level);
         }
 
         public virtual void UpdateConfigFiles()
@@ -283,7 +314,7 @@ namespace Stump.Server.BaseServer
                 logger.Info("Create {0} file", ConfigFilePath);
 
                 Config = new XmlConfig(ConfigFilePath);
-                Config.AddAssemblies(LoadedAssemblies.Values.ToArray()); 
+                Config.AddAssemblies(LoadedAssemblies.Values.ToArray());
                 Config.Create();
             }
 
@@ -341,12 +372,12 @@ namespace Stump.Server.BaseServer
 
         private void OnClientConnected(BaseClient client)
         {
-            logger.Info("Client {0} connected", client);
+            //logger.Info("Client {0} connected", client);
         }
 
         private void OnClientDisconnected(BaseClient client)
         {
-            logger.Info("Client {0} disconnected", client);
+            //logger.Info("Client {0} disconnected", client);
         }
 
         private static void InitializeGarbageCollector()
@@ -371,7 +402,7 @@ namespace Stump.Server.BaseServer
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
-            HandleCrashException((Exception) args.ExceptionObject);
+            HandleCrashException((Exception)args.ExceptionObject);
 
             if (args.IsTerminating)
                 Shutdown();
@@ -414,8 +445,11 @@ namespace Stump.Server.BaseServer
             Initializing = false;
 
             IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(10).TotalMilliseconds, KeepSQLConnectionAlive);
-        }
 
+            var evnt = ServerStarted;
+            if (evnt != null)
+                evnt();
+        }
 
         /// <summary>
         /// Allow the server to ignore the next modification of the config file.
@@ -480,7 +514,7 @@ namespace Stump.Server.BaseServer
             ScheduledShutdownDate = DateTime.Now + timeBeforeShuttingDown;
 
             if (ScheduledShutdownTimer != null)
-                IOTaskPool.CancelSimpleTimer(ScheduledShutdownTimer);
+                IOTaskPool.RemoveTimer(ScheduledShutdownTimer);
 
             ScheduledShutdownTimer = IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(1).TotalMilliseconds, CheckScheduledShutdown);
         }
@@ -491,13 +525,13 @@ namespace Stump.Server.BaseServer
             ScheduledShutdownDate = DateTime.MaxValue;
             ScheduledShutdownReason = null;
 
-            IOTaskPool.CancelSimpleTimer(ScheduledShutdownTimer);
+            IOTaskPool.RemoveTimer(ScheduledShutdownTimer);
             ScheduledShutdownTimer = null;
         }
 
         protected virtual void CheckScheduledShutdown()
         {
-            if ((ScheduledAutomaticShutdown && UpTime.TotalMinutes > AutomaticShutdownTimer) || 
+            if ((ScheduledAutomaticShutdown && UpTime.TotalMinutes > AutomaticShutdownTimer) ||
                 (IsShutdownScheduled && ScheduledShutdownDate <= DateTime.Now))
             {
                 Shutdown();
@@ -512,7 +546,6 @@ namespace Stump.Server.BaseServer
 
                 OnShutdown();
 
-
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 
@@ -525,7 +558,6 @@ namespace Stump.Server.BaseServer
                     Console.ReadKey(true);
                     Thread.Sleep(500);
                     Console.WriteLine("Press now a key to exit...");
-                    
 
                     Console.ReadKey(true);
                 }
@@ -542,7 +574,6 @@ namespace Stump.Server.BaseServer
         ///   Class singleton
         /// </summary>
         public static T Instance;
-
 
         protected ServerBase(string configFile, string schemaFile)
             : base(configFile, schemaFile)

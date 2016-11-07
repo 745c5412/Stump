@@ -1,8 +1,8 @@
-using System;
-using System.Net;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.Net;
 
 namespace Stump.Server.AuthServer.Database
 {

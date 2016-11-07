@@ -1,32 +1,28 @@
-
-
 // Generated on 03/02/2014 20:42:59
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GameRolePlayTaxCollectorInformations : GameRolePlayActorInformations
     {
         public const short Id = 148;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public short firstNameId;
         public short lastNameId;
         public Types.GuildInformations guildIdentity;
         public byte guildLevel;
         public int taxCollectorAttack;
-        
+
         public GameRolePlayTaxCollectorInformations()
         {
         }
-        
+
         public GameRolePlayTaxCollectorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, short firstNameId, short lastNameId, Types.GuildInformations guildIdentity, byte guildLevel, int taxCollectorAttack)
          : base(contextualId, look, disposition)
         {
@@ -36,7 +32,7 @@ namespace Stump.DofusProtocol.Types
             this.guildLevel = guildLevel;
             this.taxCollectorAttack = taxCollectorAttack;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -46,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteByte(guildLevel);
             writer.WriteInt(taxCollectorAttack);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -63,12 +59,10 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 0 || guildLevel > 255");
             taxCollectorAttack = reader.ReadInt();
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(short) + sizeof(short) + guildIdentity.GetSerializationSize() + sizeof(byte) + sizeof(int);
         }
-        
     }
-    
 }

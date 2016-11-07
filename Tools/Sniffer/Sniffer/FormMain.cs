@@ -9,7 +9,7 @@ using Message = Stump.DofusProtocol.Messages.Message;
 namespace Stump.Tools.Sniffer
 {
     public enum Category { Errors, Map, Move, Fight, Connexion, Chat, Others };
-    
+
     public partial class FormMain : Form
     {
         private readonly Sniffer m_sniffer;
@@ -34,7 +34,6 @@ namespace Stump.Tools.Sniffer
                     (sender as ToolStripButton).Text = "Stop";
             }
         }
-
 
         /// <summary>
         ///   Adds the message to list view.
@@ -61,16 +60,22 @@ namespace Stump.Tools.Sniffer
             {
                 case Category.Errors:
                     return 1;
+
                 case Category.Chat:
                     return 55;
+
                 case Category.Connexion:
                     return 82;
+
                 case Category.Fight:
                     return 84;
+
                 case Category.Map:
                     return 32;
+
                 case Category.Move:
                     return 95;
+
                 case Category.Others:
                     return 149 + ((int)message.GetMsgId % 9);
             }
@@ -122,7 +127,7 @@ namespace Stump.Tools.Sniffer
                 Application.DoEvents();
             }
             messageTreeView.EndUpdate();
-            messageListView.EndUpdate();            
+            messageListView.EndUpdate();
         }
 
         //Export Selected ListViewItems message to xml
@@ -137,11 +142,11 @@ namespace Stump.Tools.Sniffer
             {
                 Parser.ToTreeView(treeView, selectedItem.Tag as Message);
             }
-            
+
             string folder = GetFolderDestination();
             if (folder != "")
-                if (treeView.Nodes.Count>1)
-                   Parser.TreeNodeToXml(Parser.AddParentNode(new TreeNode("Messages"),treeView.Nodes),folder);
+                if (treeView.Nodes.Count > 1)
+                    Parser.TreeNodeToXml(Parser.AddParentNode(new TreeNode("Messages"), treeView.Nodes), folder);
                 else
                     Parser.TreeNodeToXml(treeView.Nodes[0], folder);
         }
@@ -154,7 +159,7 @@ namespace Stump.Tools.Sniffer
             messageListView.BeginUpdate();
             foreach (ListViewItem selectedItem in messageListView.SelectedItems)
                 selectedItem.Remove();
-            messageListView.EndUpdate();            
+            messageListView.EndUpdate();
         }
 
         //Remove all listViewItems message
@@ -181,13 +186,13 @@ namespace Stump.Tools.Sniffer
         private static string GetFolderDestination()
         {
             var sfd = new SaveFileDialog
-                          {
-                              AddExtension = true,
-                              AutoUpgradeEnabled = true,
-                              CheckPathExists = true,
-                              DefaultExt = "xml",
-                              Filter = @"XML files (*.xml)|*.xml"
-                          };
+            {
+                AddExtension = true,
+                AutoUpgradeEnabled = true,
+                CheckPathExists = true,
+                DefaultExt = "xml",
+                Filter = @"XML files (*.xml)|*.xml"
+            };
 
             sfd.ShowDialog();
             return sfd.FileName;
@@ -244,17 +249,14 @@ namespace Stump.Tools.Sniffer
                     (Message.GetType().Name == "QuestListMessage"))
                     return Category.Connexion;
 
-
                 return Category.Others;
             }
-
         }
 
-        #endregion
+        #endregion Nested type: IdentifiedMessage
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)

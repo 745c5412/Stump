@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
@@ -60,7 +59,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             m_invulnerabilityBreaker = null;
         }
 
-        private void OnActorMoved(FightActor fighter, bool takeDamage)
+        private void OnActorMoved(FightActor fighter, FightActor source, bool takeDamage)
         {
             if (fighter == Fighter)
                 return;
@@ -92,6 +91,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
             //Add State
             m_iniMouthHandlers[3].Apply();
+
+            var buff = Fighter.GetBuffs(x => x.Spell.Id == (int)SpellIdEnum.INIMOUTH && x.Effect.EffectId == EffectsEnum.Effect_AddMP_128).FirstOrDefault();
+
+            if (buff != null)
+                Fighter.RemoveAndDispellBuff(buff);
 
             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
         }

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -34,13 +34,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private void OnDamageInflicted(FightActor fighter, Damage damage)
         {
-            var source = (damage.Source is SummonedFighter) ? ((SummonedFighter) damage.Source).Summoner : damage.Source;
+            var source = (damage.Source is SummonedFighter) ? ((SummonedFighter)damage.Source).Summoner : damage.Source;
 
             if (!(source is CharacterFighter))
                 return;
 
             CharacterFighter caster;
-            m_history.TryGetValue((MonsterFighter) fighter, out caster);
+            m_history.TryGetValue((MonsterFighter)fighter, out caster);
 
             if (caster == null)
             {

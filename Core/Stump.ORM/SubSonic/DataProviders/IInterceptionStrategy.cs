@@ -8,5 +8,4 @@ namespace Stump.ORM.SubSonic.DataProviders
 
         bool Accept(Type type);
     }
-
 }

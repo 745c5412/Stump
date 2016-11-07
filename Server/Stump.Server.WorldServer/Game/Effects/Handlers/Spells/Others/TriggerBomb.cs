@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
@@ -16,12 +16,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         public override bool Apply()
         {
-            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter) Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
+            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter)Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
             {
-                if (bomb.HasState((int) SpellStatesEnum.Unmovable))
+                if (bomb.HasState((int)SpellStatesEnum.Unmovable))
                     bomb.RemoveSpellBuffs((int)SpellIdEnum.POUDRE);
 
-                ((SummonedBomb) bomb).Explode();
+                ((SummonedBomb)bomb).Explode();
             }
 
             return true;

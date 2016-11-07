@@ -1,4 +1,8 @@
-﻿using System;
+﻿using NLog;
+using Stump.Core.Attributes;
+using Stump.Core.Reflection;
+using Stump.Core.Xml.Docs;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -9,10 +13,6 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using System.Xml.XPath;
-using NLog;
-using Stump.Core.Attributes;
-using Stump.Core.Reflection;
-using Stump.Core.Xml.Docs;
 
 namespace Stump.Core.Xml.Config
 {
@@ -158,8 +158,8 @@ namespace Stump.Core.Xml.Config
             if (!File.Exists(m_configPath))
                 throw new FileNotFoundException("Config file is not found");
 
-            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath))); 
-            
+            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath)));
+
             if (m_reader.EOF)
                 throw new Exception("Config file is empty, delete it");
 
@@ -350,7 +350,7 @@ namespace Stump.Core.Xml.Config
         {
             m_nodes.Clear();
 
-            foreach (var variableNode in from XPathNavigator navigator in m_document.CreateNavigator().Select("//Variable[@name]") where navigator.IsNode select new XmlConfigNode(((IHasXmlNode) navigator).GetNode()))
+            foreach (var variableNode in from XPathNavigator navigator in m_document.CreateNavigator().Select("//Variable[@name]") where navigator.IsNode select new XmlConfigNode(((IHasXmlNode)navigator).GetNode()))
             {
                 if (string.IsNullOrEmpty(variableNode.Name))
                 {
@@ -378,7 +378,7 @@ namespace Stump.Core.Xml.Config
                     {
                         if (!IgnoreUnloadedAssemblies)
                             logger.Error(string.Format("Cannot found the class '{0}', is the assembly loaded ?", xmlConfigNode.Namespace + "." + xmlConfigNode.ClassName));
-                        
+
                         continue;
                     }
 
@@ -420,7 +420,6 @@ namespace Stump.Core.Xml.Config
                         logger.Warn(string.Format("Cannot cast {0} to the correct type : {1}", xmlConfigNode.Path, elementType));
                     }
                 }
-
                 catch (Exception e)
                 {
                     logger.Warn(string.Format("Cannot define the variable {0} : {1}", xmlConfigNode.Path, e));
@@ -450,11 +449,12 @@ namespace Stump.Core.Xml.Config
         private void BuildConfig()
         {
             var writer = new XmlTextWriter(m_configPath, Encoding.UTF8)
-                             {Formatting = Formatting.Indented, IndentChar = ' ', Indentation = 2};
+            { Formatting = Formatting.Indented, IndentChar = ' ', Indentation = 2 };
 
             writer.WriteStartElement("Configuration");
 
             var groupsByNamespace = from entry in m_nodes
+                                    where entry.Value.Attribute != null
                                     group entry by entry.Value.Namespace
                                     into grp
                                     let priority = grp.Max(subentry => subentry.Value.Attribute.Priority)
@@ -550,7 +550,7 @@ namespace Stump.Core.Xml.Config
                             var value = node.Value.GetValue(true);
 
                             if (value is IFormattable)
-                                writer.WriteValue(( value as IFormattable ).ToString(null, Culture));
+                                writer.WriteValue((value as IFormattable).ToString(null, Culture));
                             else
                                 writer.WriteValue(value.ToString());
                         }
@@ -560,11 +560,11 @@ namespace Stump.Core.Xml.Config
 
                             var stringWriter = new StringWriter();
                             var xmlWriter = new XmlTextWriter(stringWriter)
-                                                {
-                                                    Formatting = Formatting.Indented,
-                                                    IndentChar = '\t',
-                                                    Indentation = 1
-                                                };
+                            {
+                                Formatting = Formatting.Indented,
+                                IndentChar = '\t',
+                                Indentation = 1
+                            };
 
                             new XmlSerializer(elementType).Serialize(xmlWriter, node.Value.GetValue(true));
 

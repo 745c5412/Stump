@@ -2,10 +2,9 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
-using System.Linq.Expressions;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Linq.Structure;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -62,7 +61,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
                 // remap any references to the outer select to the new alias;
                 SelectExpression source =
-                    (SelectExpression) ColumnMapper.Map(proj.Source, newAlias, currentSelect.Alias);
+                    (SelectExpression)ColumnMapper.Map(proj.Source, newAlias, currentSelect.Alias);
 
                 // add outer-join test
                 ProjectionExpression pex = new ProjectionExpression(source, proj.Projector).AddOuterJoinTest();

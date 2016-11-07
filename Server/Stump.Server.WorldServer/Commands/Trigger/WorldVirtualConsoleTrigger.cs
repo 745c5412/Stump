@@ -1,12 +1,12 @@
-﻿using System;
-using Stump.Core.IO;
+﻿using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Network;
+using System;
 
 namespace Stump.Server.WorldServer.Commands.Trigger
 {
-    class WorldVirtualConsoleTrigger : TriggerBase
+    internal class WorldVirtualConsoleTrigger : TriggerBase
     {
         public WorldVirtualConsoleTrigger(StringStream args)
             : base(args, RoleEnum.Administrator)

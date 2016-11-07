@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.ORM;
+﻿using Stump.ORM;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Items
 {
@@ -65,7 +65,9 @@ namespace Stump.Server.WorldServer.Database.Items
         public int ItemId
         {
             get { return m_itemId; }
-            set { m_itemId = value;
+            set
+            {
+                m_itemId = value;
                 m_template = null;
                 IsDirty = true;
             }

@@ -1,20 +1,27 @@
-using System;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace Stump.Server.WorldServer.Database.Accounts
 {
     public class WorldAccountRelator
     {
         public static string FetchQuery = "SELECT * FROM accounts";
+
         /// <summary>
         /// Use string.Format
         /// </summary>
         public static string FetchById = "SELECT * FROM accounts WHERE Id={0}";
+
         /// <summary>
         /// Use parameters
         /// </summary>
         public static string FetchByNickname = "SELECT * FROM accounts WHERE Nickname=@0";
+
+        /// <summary>
+        /// Use string.Format
+        /// </summary>
+        public static string UpdateNewTokens = "UPDATE accounts SET NewTokens={0}";
     }
 
     [TableName("accounts")]
@@ -24,6 +31,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
         {
         }
 
+        [Index]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -62,9 +70,19 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
-        public int LastConnectionTimeStamp
+        public int Tokens
         {
-            get { return LastConnection.HasValue ? (int) (DateTime.Now - LastConnection.Value).TotalHours : 0; }
+            get;
+            set;
         }
+
+        [ResultColumn("NewTokens")]
+        public int NewTokens
+        {
+            get;
+            set;
+        }
+
+        public int LastConnectionTimeStamp => LastConnection.HasValue ? (int)(DateTime.Now - LastConnection.Value).TotalHours : 0;
     }
 }

@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:51
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -26,7 +20,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -53,12 +46,12 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (MapReference)obj;
-            
+
             Id = castedObj.id;
             MapId = castedObj.mapId;
             CellId = castedObj.cellId;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (MapReference)parent : new MapReference();
@@ -67,10 +60,9 @@ namespace DBSynchroniser.Records
             obj.cellId = CellId;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

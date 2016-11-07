@@ -1,20 +1,20 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System.Linq;
 using MapPaddock = Stump.Server.WorldServer.Game.Maps.Paddocks.Paddock;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 {
     public class PaddockExchange : IExchange
     {
-        private readonly PaddockExchanger m_paddock;
+        private readonly PaddockExchanger m_paddockExchanger;
 
         public PaddockExchange(Character character, MapPaddock paddock)
         {
             Character = character;
             Paddock = paddock;
-            m_paddock = new PaddockExchanger(character, paddock, this);
+            m_paddockExchanger = new PaddockExchanger(character, paddock, this);
         }
 
         public Character Character
@@ -29,33 +29,28 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             private set;
         }
 
-        public ExchangeTypeEnum ExchangeType
-        {
-            get { return ExchangeTypeEnum.MOUNT_STABLE; }
-        }
+        public ExchangeTypeEnum ExchangeType => ExchangeTypeEnum.MOUNT_STABLE;
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         #region IDialog Members
 
         public void Open()
         {
-            Character.SetDialoger(m_paddock);
+            Character.SetDialoger(m_paddockExchanger);
 
-            var stabledMounts = Paddock.StabledMounts.Where(x => x.OwnerId == Character.Id).ToList();
-            var paddockedMounts = Paddock.PaddockedMounts.Where(x => x.OwnerId == Character.Id).ToList();
+            var stabledMounts = Character.OwnedMounts.Where(x => x.Paddock == Paddock && x.IsInStable).ToList();
+            var paddockedMounts = Paddock.IsPublicPaddock() ? Character.OwnedMounts.Where(x => x.Paddock == Paddock && !x.IsInStable) : Paddock.PaddockedMounts;
 
             InventoryHandler.SendExchangeStartOkMountMessage(Character.Client, stabledMounts, paddockedMounts);
         }
+
         public void Close()
         {
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
         }
 
-        #endregion
+        #endregion IDialog Members
     }
 }

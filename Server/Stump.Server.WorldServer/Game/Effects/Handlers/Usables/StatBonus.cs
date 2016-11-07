@@ -1,10 +1,10 @@
-﻿using System;
-using System.Drawing;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
+using System;
+using System.Drawing;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
@@ -30,18 +30,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (effect == null)
                 return false;
 
-            var bonus = AdjustBonusStat((short) (effect.Value * NumberOfUses));
+            var bonus = AdjustBonusStat((short)(effect.Value * NumberOfUses));
 
-            if (bonus == 0 || bonus + Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Base > StatBonusLimit)
+            if (bonus == 0)
             {
-                Target.SendServerMessage(string.Format("Bonus limit reached : {0}", StatBonusLimit), Color.Red);
+                //Vos caractéristiques ne conviennent pas
+                Target.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 202);
                 return false;
             }
 
             Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Base += bonus;
-            UsedItems = (uint) Math.Ceiling((double) bonus/effect.Value);
             UpdatePermanentStatField(bonus);
             Target.RefreshStats();
+
+            UsedItems = NumberOfUses;
 
             return true;
         }
@@ -52,16 +54,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             {
                 case EffectsEnum.Effect_AddPermanentChance:
                     return PlayerFields.Chance;
+
                 case EffectsEnum.Effect_AddPermanentAgility:
                     return PlayerFields.Agility;
+
                 case EffectsEnum.Effect_AddPermanentIntelligence:
                     return PlayerFields.Intelligence;
+
                 case EffectsEnum.Effect_AddPermanentStrength:
                     return PlayerFields.Strength;
+
                 case EffectsEnum.Effect_AddPermanentWisdom:
                     return PlayerFields.Wisdom;
+
                 case EffectsEnum.Effect_AddPermanentVitality:
                     return PlayerFields.Vitality;
+
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated Characteristic", effect));
             }
@@ -76,21 +84,27 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
                 case EffectsEnum.Effect_AddPermanentChance:
                     actualPts = Target.PermanentAddedChance;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentAgility:
                     actualPts = Target.PermanentAddedAgility;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentIntelligence:
                     actualPts = Target.PermanentAddedIntelligence;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentStrength:
                     actualPts = Target.PermanentAddedStrength;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentWisdom:
                     actualPts = Target.PermanentAddedWisdom;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentVitality:
-                    actualPts =  Target.PermanentAddedVitality;
+                    actualPts = Target.PermanentAddedVitality;
                     break;
+
                 default:
                     return 0;
             }
@@ -98,29 +112,33 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (actualPts >= StatBonusLimit)
                 return 0;
 
-            return actualPts + bonus > StatBonusLimit ? StatBonusLimit : bonus;
+            return actualPts + bonus > StatBonusLimit ? (short)(StatBonusLimit - Math.Abs((actualPts + bonus) - StatBonusLimit)) : bonus;
         }
 
         private void UpdatePermanentStatField(short bonus)
         {
-
             switch (Effect.EffectId)
             {
                 case EffectsEnum.Effect_AddPermanentChance:
                     Target.PermanentAddedChance += bonus;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentAgility:
                     Target.PermanentAddedAgility += bonus;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentIntelligence:
                     Target.PermanentAddedIntelligence += bonus;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentStrength:
                     Target.PermanentAddedStrength += bonus;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentWisdom:
                     Target.PermanentAddedWisdom += bonus;
                     break;
+
                 case EffectsEnum.Effect_AddPermanentVitality:
                     Target.PermanentAddedVitality += bonus;
                     break;

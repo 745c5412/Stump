@@ -26,11 +26,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Spawn a npc on the current location";
             ParentCommandType = typeof(NpcsCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
-            AddParameter("map", "map", "Map id", isOptional: true, converter:ParametersConverter.MapConverter);
-            AddParameter<short>("cell", "cell", "Cell id", isOptional:true);
-            AddParameter("direction", "dir", "Direction", isOptional:true, converter: ParametersConverter.GetEnumConverter<DirectionsEnum>());
+            AddParameter("map", "map", "Map id", isOptional: true, converter: ParametersConverter.MapConverter);
+            AddParameter<short>("cell", "cell", "Cell id", isOptional: true);
+            AddParameter("direction", "dir", "Direction", isOptional: true, converter: ParametersConverter.GetEnumConverter<DirectionsEnum>());
         }
-
 
         public override void Execute(TriggerBase trigger)
         {
@@ -47,7 +46,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                position = ( trigger as GameTrigger ).Character.Position;
+                position = (trigger as GameTrigger).Character.Position;
             }
 
             if (position == null)
@@ -84,7 +83,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                ( trigger as GameTrigger ).Character.Map.UnSpawnNpc(npcId);
+                (trigger as GameTrigger).Character.Map.UnSpawnNpc(npcId);
             }
             else
             {

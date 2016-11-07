@@ -6,7 +6,7 @@ namespace Stump.Tools.MapControl
     public static class CellIdConverter
     {
         private static readonly Dictionary<int, Point[]> OrthogonalGridReference = new Dictionary<int, Point[]>();
-        
+
         public static Point GetPlanLocation(this MapCell cell, MapControl mapControl)
         {
             return GetPlanLocation(cell, mapControl.MapHeight, mapControl.MapWidth);

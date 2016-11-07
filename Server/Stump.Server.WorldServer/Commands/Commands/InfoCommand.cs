@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Commands;
@@ -12,6 +9,9 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
+using System;
+using System.Globalization;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public InfoMapCommand()
         {
-            Aliases = new [] { "map" };
+            Aliases = new[] { "map" };
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a map";
             ParentCommandType = typeof(InfoCommand);
@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                map = ( trigger as GameTrigger ).Character.Map;
+                map = (trigger as GameTrigger).Character.Map;
             }
 
             if (map == null)
@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                area = ( trigger as GameTrigger ).Character.Area;
+                area = (trigger as GameTrigger).Character.Area;
             }
 
             if (area == null)
@@ -137,30 +137,29 @@ namespace Stump.Server.WorldServer.Commands.Commands
             foreach (var character in GetTargets(trigger))
             {
                 trigger.ReplyBold("{0} ({1})", character.Name, character.Id);
-                trigger.ReplyBold("Account : {0}/{1} ({2}) - {3}", character.Account.Login, character.Account.Nickname,
-                    character.Account.Id, character.UserGroup.Name);
+                trigger.ReplyBold("Account : {0}/{1} ({2}) - {3}", character.Account.Login, character.Account.Nickname, character.Account.Id, character.UserGroup.Name);
                 trigger.ReplyBold("ClientKey : {0}", character.Account.LastClientKey);
                 trigger.ReplyBold("Ip : {0}", character.UserGroup.Role == RoleEnum.Administrator ? "127.0.0.1" : character.Client.IP);
                 trigger.ReplyBold("Level : {0}", character.Level);
-                trigger.ReplyBold("Map : {0}, Cell : {1}, Direction : {2}", character.Map.Id, character.Cell.Id,
-                    character.Direction);
+                trigger.ReplyBold("Map : {0}, Cell : {1}, Direction : {2}", character.Map.Id, character.Cell.Id, character.Direction);
                 trigger.ReplyBold("Kamas : {0}", character.Inventory.Kamas);
                 trigger.ReplyBold("Items : {0}", character.Inventory.Count);
                 trigger.ReplyBold("Spells : {0}", character.Spells.Count());
-                trigger.ReplyBold("Tokens : {0}", character.Account.Tokens);
+
+                if (character.Inventory.Tokens != null)
+                    trigger.ReplyBold("Tokens : {0}", character.Inventory.Tokens);
+
                 trigger.ReplyBold("Fight : {0}",
                     character.IsFighting() ? character.Fight.Id.ToString(CultureInfo.InvariantCulture) : "Not fighting");
 
                 if (!trigger.Get<bool>("stats"))
                     return;
 
-                trigger.ReplyBold("Spells Points : {0}, Stats Points : {1}", character.SpellsPoints,
-                    character.StatsPoints);
+                trigger.ReplyBold("Spells Points : {0}, Stats Points : {1}", character.SpellsPoints, character.StatsPoints);
                 trigger.ReplyBold("Health : {0}/{1}", character.Stats.Health.Total, character.Stats.Health.TotalMax);
                 trigger.ReplyBold("AP : {0}, PM : {1}", character.Stats.AP, character.Stats.MP);
                 trigger.ReplyBold("Vitality : {0}, Wisdom : {1}", character.Stats.Vitality, character.Stats.Wisdom);
-                trigger.ReplyBold("Strength : {0}, Intelligence : {1}", character.Stats.Strength,
-                    character.Stats.Intelligence);
+                trigger.ReplyBold("Strength : {0}, Intelligence : {1}", character.Stats.Strength, character.Stats.Intelligence);
                 trigger.ReplyBold("Agility : {0}, Chance : {1}", character.Stats.Agility, character.Stats.Chance);
             }
         }
@@ -174,9 +173,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a fight";
             ParentCommandType = typeof(InfoCommand);
-            AddParameter("fight", "f", "Gives informations about the given fight", converter:ParametersConverter.FightConverter);
+            AddParameter("fight", "f", "Gives informations about the given fight", converter: ParametersConverter.FightConverter);
         }
-
 
         public override void Execute(TriggerBase trigger)
         {
@@ -220,7 +218,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommandType = typeof(InfoCommand);
             AddParameter<string>("ip", "i", "Gives informations about the given ip");
         }
-
 
         public override void Execute(TriggerBase trigger)
         {

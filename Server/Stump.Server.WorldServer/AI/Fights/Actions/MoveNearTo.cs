@@ -1,5 +1,5 @@
-using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using System.Linq;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions

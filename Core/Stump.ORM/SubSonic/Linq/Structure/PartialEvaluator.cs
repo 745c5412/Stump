@@ -2,7 +2,6 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -43,9 +42,9 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         /// <summary>
         /// Evaluates and replaces sub-trees when first candidate is reached (top-down)
         /// </summary>
-        class SubtreeEvaluator : ExpressionVisitor
+        private class SubtreeEvaluator : ExpressionVisitor
         {
-            HashSet<Expression> candidates;
+            private HashSet<Expression> candidates;
 
             private SubtreeEvaluator(HashSet<Expression> candidates)
             {
@@ -91,11 +90,11 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         /// Performs bottom-up analysis to determine which nodes can possibly
         /// be part of an evaluated sub-tree.
         /// </summary>
-        class Nominator : ExpressionVisitor
+        private class Nominator : ExpressionVisitor
         {
-            Func<Expression, bool> fnCanBeEvaluated;
-            HashSet<Expression> candidates;
-            bool cannotBeEvaluated;
+            private Func<Expression, bool> fnCanBeEvaluated;
+            private HashSet<Expression> candidates;
+            private bool cannotBeEvaluated;
 
             private Nominator(Func<Expression, bool> fnCanBeEvaluated)
             {

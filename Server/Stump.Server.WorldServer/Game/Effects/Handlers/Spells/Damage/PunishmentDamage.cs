@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Handlers.Actions;
+using System;
+using System.Linq;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
@@ -21,13 +21,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors().ToArray())
             {
-                var damages = new Fights.Damage(Dice) {MarkTrigger = MarkTrigger};
+                var damages = new Fights.Damage(Dice) { MarkTrigger = MarkTrigger };
                 damages.GenerateDamages();
 
                 var damagesPercent = Critical ? 0.30d : 0.25d;
                 damages.Amount = (int)((damagesPercent * Math.Pow(Math.Cos(2 * Math.PI * (0.5 - Caster.LifePoints / (double)Caster.MaxLifePoints)) + 1, 2)) / 4 * Caster.MaxLifePoints);
 
-               // spell reflected
+                // spell reflected
                 var buff = actor.GetBestReflectionBuff();
                 if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                 {

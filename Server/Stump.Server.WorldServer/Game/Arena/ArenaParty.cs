@@ -1,19 +1,19 @@
-﻿using System;
-using System.Linq;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Parties;
-using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
+using System;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaParty : Party
     {
-        [Variable] public static int MaxArenaMemberCount = 3;
+        [Variable]
+        public static int MaxArenaMemberCount = 3;
 
-        private int m_rankSum ;
+        private int m_rankSum;
 
         public ArenaParty(int id)
             : base(id)
@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                 }
 
                 error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION;
-                return false;            
+                return false;
             }
 
             if (character.Level >= ArenaManager.ArenaMinLevel)
@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             base.OnGuestPromoted(groupMember);
 
             m_rankSum += groupMember.ArenaRank;
-            GroupRankAverage = m_rankSum/MembersCount;
+            GroupRankAverage = m_rankSum / MembersCount;
 
             ArenaManager.Instance.RemoveFromQueue(groupMember);
         }
@@ -118,7 +118,6 @@ namespace Stump.Server.WorldServer.Game.Arena
             ArenaManager.Instance.RemoveFromQueue(this);
 
             base.OnMemberRemoved(groupMember, kicked);
-
 
             m_rankSum -= groupMember.ArenaRank;
             GroupRankAverage = MembersCount > 0 ? m_rankSum / MembersCount : 0;

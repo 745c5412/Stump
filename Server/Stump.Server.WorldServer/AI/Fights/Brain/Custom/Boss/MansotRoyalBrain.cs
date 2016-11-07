@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Spells;
@@ -17,10 +16,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void OnFightStarted(IFight fight)
         {
-            var spell = new Spell((int) SpellIdEnum.MANSOMURE, 1);
+            var spell = new Spell((int)SpellIdEnum.MANSOMURE, 1);
             Fighter.CastSpell(spell, Fighter.Cell, true, true);
 
-            foreach (var fighter in Fighter.Team.GetAllFighters().Where(fighter => fighter != Fighter))
+            foreach (var fighter in Fighter.Team.GetAllFighters())
             {
                 fighter.Dead += OnActorDead;
             }
@@ -28,6 +27,15 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void OnActorDead(FightActor actor, FightActor killer)
         {
+            if (Fighter == actor)
+            {
+                Fighter.LifePointsChanged += OnLifePointsChanged;
+                return;
+            }
+
+            if (Fighter.IsDead())
+                return;
+
             var mansomonHandler = SpellManager.Instance.GetSpellCastHandler(Fighter, new Spell((int)SpellIdEnum.MANSOMON, 1), Fighter.Cell, false);
             mansomonHandler.Initialize();
 
@@ -37,6 +45,18 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             }
 
             mansomonHandler.Execute();
+        }
+
+        private void OnLifePointsChanged(FightActor fighter, int delta, int shieldDamages, int permanentDamages, FightActor from)
+        {
+            if (fighter != Fighter)
+                return;
+
+            if (delta <= 0)
+                return;
+
+            var spell = new Spell((int)SpellIdEnum.MANSOMURE, 1);
+            Fighter.CastSpell(spell, Fighter.Cell, true, true);
         }
     }
 }

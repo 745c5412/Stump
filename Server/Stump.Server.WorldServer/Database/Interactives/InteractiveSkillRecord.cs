@@ -106,7 +106,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             return ConditionExpression == null || ConditionExpression.Eval(character);
         }
 
-        #endregion
+        #endregion Condition
 
         public virtual Skill GenerateSkill(int id, InteractiveObject interactiveObject)
         {

@@ -1,9 +1,9 @@
-using System;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
+using System;
 using Point = System.Drawing.Point;
 
 namespace Stump.Server.WorldServer.Database.World.Maps
@@ -96,7 +96,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
 
         public void AssignFields(object d2oObject)
         {
-            var map = (MapPosition) d2oObject;
+            var map = (MapPosition)d2oObject;
             Id = map.id;
             NameId = map.nameId;
             PosX = map.posX;
@@ -108,6 +108,6 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             HasPriorityOnWorldmap = map.hasPriorityOnWorldmap;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

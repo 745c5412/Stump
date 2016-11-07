@@ -1,177 +1,183 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Guilds;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 {
     public class Paddock
     {
-        private readonly WorldMapPaddockRecord m_record;
+        private readonly List<Mount> m_mounts;
 
         public Paddock(WorldMapPaddockRecord record)
         {
-            m_record = record;
+            Record = record;
 
             if (record.Map == null)
                 throw new Exception(string.Format("Paddock's map({0}) not found", record.MapId));
 
-            StabledMounts = MountManager.Instance.TryGetMountsByPaddockId(record.Id, true).Select(x => PaddockManager.Instance.LoadMount(x)).ToList();
-            PaddockedMounts = MountManager.Instance.TryGetMountsByPaddockId(record.Id, false).Select(x => PaddockManager.Instance.LoadMount(x)).ToList();
+            m_mounts = Record.Mounts.Select(x => new Mount(x)).ToList();
         }
 
-        public WorldMapPaddockRecord Record
+        private WorldMapPaddockRecord Record
         {
-            get
-            {
-                return m_record;
-            }
+            get;
         }
 
-        public int Id
-        {
-            get { return m_record.Id; }
-            protected set { m_record.Id = value; }
-        }
+        public int Id => Record.Id;
 
         public Guild Guild
         {
-            get { return m_record.Guild; }
-            protected set { m_record.Guild = value; }
+            get { return Record.Guild; }
+            protected set
+            {
+                IsRecordDirty = true;
+                Record.Guild = value;
+            }
         }
 
         public Map Map
         {
-            get { return m_record.Map; }
-            protected set { m_record.Map = value; }
+            get { return Record.Map; }
+            protected set
+            {
+                IsRecordDirty = true;
+                Record.Map = value;
+            }
         }
 
-        public List<Mount> StabledMounts
-        {
-            get;
-            private set;
-        }
-
-        public List<Mount> PaddockedMounts
-        {
-            get;
-            private set;
-        }
+        public ReadOnlyCollection<Mount> PaddockedMounts => m_mounts.AsReadOnly();
 
         public uint MaxOutdoorMount
         {
-            get { return m_record.MaxOutdoorMount; }
-            protected set { m_record.MaxOutdoorMount = value; }
+            get { return Record.MaxOutdoorMount; }
+            protected set
+            {
+                IsRecordDirty = true;
+                Record.MaxOutdoorMount = value;
+            }
         }
 
         public uint MaxItems
         {
-            get { return m_record.MaxItems; }
-            protected set { m_record.MaxItems = value; }
+            get { return Record.MaxItems; }
+            protected set
+            {
+                IsRecordDirty = true;
+                Record.MaxItems = value;
+            }
         }
 
         public bool Abandonned
         {
-            get { return m_record.Abandonned; }
-            protected set { m_record.Abandonned = value; }
+            get { return Record.Abandonned; }
+            protected set
+            {
+                IsRecordDirty = true;
+                Record.Abandonned = value;
+            }
         }
 
         public bool OnSale
         {
-            get { return m_record.OnSale; }
-            protected set { m_record.OnSale = value; }
+            get { return Record.OnSale; }
+            protected set
+            {
+                IsRecordDirty = true;
+                Record.OnSale = value;
+            }
         }
 
         public bool Locked
         {
-            get { return m_record.Locked; }
-            protected set { m_record.Locked = value; }
+            get { return Record.Locked; }
+            protected set
+            {
+                IsRecordDirty = true;
+                Record.Locked = value;
+            }
         }
 
         public int Price
         {
-            get { return m_record.Price; }
-            protected set { m_record.Price = value; }
+            get { return Record.Price; }
+            protected set
+            {
+                IsRecordDirty = true;
+                Record.Price = value;
+            }
         }
 
         public bool IsRecordDirty
         {
             get;
-            set;
+            private set;
         }
 
-        public void Save()
+        public bool IsPublicPaddock() => Guild == null;
+
+        public void Save(ORM.Database database)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            if (IsRecordDirty)
             {
-                WorldServer.Instance.DBAccessor.Database.Update(Record);
+                database.Update(Record);
                 IsRecordDirty = false;
-            });
+
+                foreach (var mount in PaddockedMounts.Where(x => x.IsDirty))
+                    database.Save(mount);
+            }
         }
 
         public bool IsPaddockOwner(Character character)
         {
-            if (Guild == null)
+            if (IsPublicPaddock())
                 return true;
 
-            if (character.Guild == null)
-                return false;
-
-            return character.Guild.Id == Guild.Id;
+            return character.Guild?.Id == Guild.Id;
         }
 
         public void AddMountToPaddock(Mount mount)
         {
-            IsRecordDirty = true;
-            PaddockedMounts.Add(mount);
+            if (!IsPublicPaddock())
+            {
+                m_mounts.Add(mount);
+                Record.Mounts.Add(mount.Record);
+                IsRecordDirty = true;
+            }
 
-            MountManager.Instance.LinkMountToPaddock(this, mount, false);
+            mount.Paddock = this;
+            mount.IsInStable = false;
         }
 
         public void RemoveMountFromPaddock(Mount mount)
         {
-            IsRecordDirty = true;
-            PaddockedMounts.Remove(mount);
+            if (!IsPublicPaddock())
+            {
+                m_mounts.Remove(mount);
+                Record.Mounts.Remove(mount.Record);
+                IsRecordDirty = true;
+            }
 
-            MountManager.Instance.UnlinkMountFromPaddock(mount);
+            mount.Paddock = null;
+            mount.IsInStable = false;
         }
 
-        public void AddMountToStable(Mount mount)
+        public Mount GetPaddockedMount(Character character, int mountId)
         {
-            IsRecordDirty = true;
-            StabledMounts.Add(mount);
-
-            MountManager.Instance.LinkMountToPaddock(this, mount, true);
-        }
-
-        public void RemoveMountFromStable(Mount mount)
-        {
-            IsRecordDirty = true;
-            StabledMounts.Remove(mount);
-
-            MountManager.Instance.UnlinkMountFromPaddock(mount);
-        }
-
-        public Mount GetPaddockedMount(int mountId)
-        {
-            return PaddockedMounts.FirstOrDefault(x => x.Id == mountId);
-        }
-
-        public Mount GetStabledMount(int mountId)
-        {
-            return StabledMounts.FirstOrDefault(x => x.Id == mountId);
+            return IsPublicPaddock() ? character.GetPublicPaddockedMount(mountId) : PaddockedMounts.FirstOrDefault(x => x.Id == mountId);
         }
 
         #region Network
 
         public PaddockPropertiesMessage GetPaddockPropertiesMessage()
         {
-            var informations = new PaddockInformations((short)MaxOutdoorMount, (short)MaxItems);
+            PaddockInformations informations;
 
             if (Abandonned)
                 informations = new PaddockAbandonnedInformations((short)MaxOutdoorMount, (short)MaxItems, Price, Locked, Guild.Id);
@@ -181,11 +187,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
                 informations = new PaddockPrivateInformations((short)MaxOutdoorMount, (short)MaxItems, Price, Locked, Guild.Id, Guild.GetGuildInformations());
             else
                 informations = new PaddockContentInformations((short)MaxOutdoorMount, (short)MaxItems, Id, (short)Map.Position.X, (short)Map.Position.Y,
-                Map.Id, (short)Map.SubArea.Id, Abandonned, PaddockedMounts.Select(x => x.GetMountInformationsForPaddock()));
+                    Map.Id, (short)Map.SubArea.Id, Abandonned, PaddockedMounts.Select(x => x.GetMountInformationsForPaddock()));
 
             return new PaddockPropertiesMessage(informations);
         }
 
-        #endregion
+        #endregion Network
     }
 }

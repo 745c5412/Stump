@@ -1,8 +1,7 @@
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
@@ -20,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
         {
             get
             {
-                return ( (uint)Radius + 1 ) * ( (uint)Radius + 1 ) + Radius * (uint)Radius;
+                return ((uint)Radius + 1) * ((uint)Radius + 1) + Radius * (uint)Radius;
             }
         }
 
@@ -55,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                 return result.ToArray();
             }
 
-            int x = (int) (centerPoint.X - Radius);
+            int x = (int)(centerPoint.X - Radius);
             int y = 0;
             int i = 0;
             int j = 1;
@@ -91,6 +90,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             container.Add(map.Cells[MapPoint.CoordToCellId(x, y)]);
         }
 
-        #endregion
+        #endregion IShape Members
     }
 }

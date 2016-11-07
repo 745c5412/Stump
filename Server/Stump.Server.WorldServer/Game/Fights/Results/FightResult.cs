@@ -20,12 +20,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             protected set;
         }
 
-
         #region IFightResult Members
 
         public bool Alive
         {
-            get { return Fighter.IsAlive() && !Fighter.HasLeft(); }
+            get { return Fighter.IsAlive(); }
         }
 
         public bool HasLeft
@@ -77,14 +76,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public virtual FightResultListEntry GetFightResultListEntry()
         {
-            return new FightResultFighterListEntry((short) Outcome, Loot.GetFightLoot(), Id, Alive);
+            return new FightResultFighterListEntry((short)Outcome, Loot.GetFightLoot(), Id, Alive);
         }
 
         public virtual void Apply()
         {
         }
 
-        #endregion
+        #endregion IFightResult Members
     }
 
     public class FightResult : FightResult<FightActor>
@@ -101,6 +100,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             get;
         }
+
         bool HasLeft
         {
             get;
@@ -144,6 +144,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         bool CanLoot(FightTeam looters);
 
         FightResultListEntry GetFightResultListEntry();
+
         void Apply();
     }
 }

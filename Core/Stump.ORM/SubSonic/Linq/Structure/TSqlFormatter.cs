@@ -2,12 +2,11 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Text;
-using System.Globalization;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -17,11 +16,11 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     public class TSqlFormatter : DbExpressionVisitor
     {
         protected StringBuilder sb;
-        int indent = 2;
-        int depth;
+        private int indent = 2;
+        private int depth;
         public int SkipRecords { get; set; }
         public int TakeRecords { get; set; }
-        Dictionary<TableAlias, string> aliases;
+        private Dictionary<TableAlias, string> aliases;
 
         internal TSqlFormatter()
         {
@@ -76,7 +75,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
         {
             if (exp == null) return null;
 
-            // check for supported node types first 
+            // check for supported node types first
             // non-supported ones should not be visited (as they would produce bad SQL)
             switch (exp.NodeType)
             {
@@ -169,41 +168,49 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Expression);
                         sb.Append(")");
                         return m;
+
                     case "Month":
                         sb.Append("MONTH(");
                         this.Visit(m.Expression);
                         sb.Append(")");
                         return m;
+
                     case "Year":
                         sb.Append("YEAR(");
                         this.Visit(m.Expression);
                         sb.Append(")");
                         return m;
+
                     case "Hour":
                         sb.Append("DATEPART(hour, ");
                         this.Visit(m.Expression);
                         sb.Append(")");
                         return m;
+
                     case "Minute":
                         sb.Append("DATEPART(minute, ");
                         this.Visit(m.Expression);
                         sb.Append(")");
                         return m;
+
                     case "Second":
                         sb.Append("DATEPART(second, ");
                         this.Visit(m.Expression);
                         sb.Append(")");
                         return m;
+
                     case "Millisecond":
                         sb.Append("DATEPART(millisecond, ");
                         this.Visit(m.Expression);
                         sb.Append(")");
                         return m;
+
                     case "DayOfWeek":
                         sb.Append("(DATEPART(weekday, ");
                         this.Visit(m.Expression);
                         sb.Append(") - 1)");
                         return m;
+
                     case "DayOfYear":
                         sb.Append("(DATEPART(dayofyear, ");
                         this.Visit(m.Expression);
@@ -227,6 +234,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Arguments[0]);
                         sb.Append(" + '%')");
                         return m;
+
                     case "EndsWith":
                         sb.Append("(");
                         this.Visit(m.Object);
@@ -234,6 +242,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Arguments[0]);
                         sb.Append(")");
                         return m;
+
                     case "Contains":
                         sb.Append("(");
                         this.Visit(m.Object);
@@ -241,6 +250,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Arguments[0]);
                         sb.Append(" + '%')");
                         return m;
+
                     case "Concat":
                         IList<Expression> args = m.Arguments;
                         if (args.Count == 1 && args[0].NodeType == ExpressionType.NewArrayInit)
@@ -253,6 +263,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             this.Visit(args[i]);
                         }
                         return m;
+
                     case "IsNullOrEmpty":
                         sb.Append("(");
                         this.Visit(m.Arguments[0]);
@@ -260,16 +271,19 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Arguments[0]);
                         sb.Append(" = '')");
                         return m;
+
                     case "ToUpper":
                         sb.Append("UPPER(");
                         this.Visit(m.Object);
                         sb.Append(")");
                         return m;
+
                     case "ToLower":
                         sb.Append("LOWER(");
                         this.Visit(m.Object);
                         sb.Append(")");
                         return m;
+
                     case "Replace":
                         sb.Append("REPLACE(");
                         this.Visit(m.Object);
@@ -279,6 +293,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Arguments[1]);
                         sb.Append(")");
                         return m;
+
                     case "Substring":
                         sb.Append("SUBSTRING(");
                         this.Visit(m.Object);
@@ -295,6 +310,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         }
                         sb.Append(")");
                         return m;
+
                     case "Remove":
                         sb.Append("STUFF(");
                         this.Visit(m.Object);
@@ -311,6 +327,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         }
                         sb.Append(", '')");
                         return m;
+
                     case "IndexOf":
                         sb.Append("(CHARINDEX(");
                         this.Visit(m.Object);
@@ -323,6 +340,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         }
                         sb.Append(") - 1)");
                         return m;
+
                     case "Trim":
                         sb.Append("RTRIM(LTRIM(");
                         this.Visit(m.Object);
@@ -346,10 +364,14 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         }
                         break;
                 }
-            } else if (m.Method.DeclaringType == typeof(System.Data.Linq.SqlClient.SqlMethods)) {
-                switch (m.Method.Name) {
+            }
+            else if (m.Method.DeclaringType == typeof(System.Data.Linq.SqlClient.SqlMethods))
+            {
+                switch (m.Method.Name)
+                {
                     case "DateDiffDay":
-                        if (m.Arguments[1].Type == typeof(DateTime)) {
+                        if (m.Arguments[1].Type == typeof(DateTime))
+                        {
                             sb.Append("DATEDIFF(DAY,");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -358,8 +380,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "DateDiffHour":
-                        if (m.Arguments[1].Type == typeof(DateTime)) {
+                        if (m.Arguments[1].Type == typeof(DateTime))
+                        {
                             sb.Append("DATEDIFF(HOUR,");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -368,8 +392,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "DateDiffMicrosecond":
-                        if (m.Arguments[1].Type == typeof(DateTime)) {
+                        if (m.Arguments[1].Type == typeof(DateTime))
+                        {
                             sb.Append("DATEDIFF(MICROSECOND,");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -378,8 +404,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "DateDiffMillisecond":
-                        if (m.Arguments[1].Type == typeof(DateTime)) {
+                        if (m.Arguments[1].Type == typeof(DateTime))
+                        {
                             sb.Append("DATEDIFF(MILLISECOND,");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -388,8 +416,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "DateDiffMinute":
-                        if (m.Arguments[1].Type == typeof(DateTime)) {
+                        if (m.Arguments[1].Type == typeof(DateTime))
+                        {
                             sb.Append("DATEDIFF(MINUTE,");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -398,8 +428,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "DateDiffMonth":
-                        if (m.Arguments[1].Type == typeof(DateTime)) {
+                        if (m.Arguments[1].Type == typeof(DateTime))
+                        {
                             sb.Append("DATEDIFF(MONTH,");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -408,8 +440,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "DateDiffNanosecond":
-                        if (m.Arguments[1].Type == typeof(DateTime)) {
+                        if (m.Arguments[1].Type == typeof(DateTime))
+                        {
                             sb.Append("DATEDIFF(NANOSECOND,");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -418,8 +452,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "DateDiffSecond":
-                        if (m.Arguments[1].Type == typeof(DateTime)) {
+                        if (m.Arguments[1].Type == typeof(DateTime))
+                        {
                             sb.Append("DATEDIFF(SECOND,");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -428,8 +464,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "DateDiffYear":
-                        if (m.Arguments[1].Type == typeof(DateTime)) {
+                        if (m.Arguments[1].Type == typeof(DateTime))
+                        {
                             sb.Append("DATEDIFF(YEAR,");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -439,9 +477,11 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         }
                         break;
                 }
-            }            
-            else if (m.Method.DeclaringType == typeof(Decimal)) {
-                switch (m.Method.Name) {
+            }
+            else if (m.Method.DeclaringType == typeof(Decimal))
+            {
+                switch (m.Method.Name)
+                {
                     case "Add":
                     case "Subtract":
                     case "Multiply":
@@ -455,11 +495,13 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.VisitValue(m.Arguments[1]);
                         sb.Append(")");
                         return m;
+
                     case "Negate":
                         sb.Append("-");
                         this.Visit(m.Arguments[0]);
                         sb.Append("");
                         return m;
+
                     case "Ceiling":
                     case "Floor":
                         sb.Append(m.Method.Name.ToUpper());
@@ -467,13 +509,17 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Arguments[0]);
                         sb.Append(")");
                         return m;
+
                     case "Round":
-                        if (m.Arguments.Count == 1) {
+                        if (m.Arguments.Count == 1)
+                        {
                             sb.Append("ROUND(");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", 0)");
                             return m;
-                        } else if (m.Arguments.Count == 2 && m.Arguments[1].Type == typeof(int)) {
+                        }
+                        else if (m.Arguments.Count == 2 && m.Arguments[1].Type == typeof(int))
+                        {
                             sb.Append("ROUND(");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -482,14 +528,18 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "Truncate":
                         sb.Append("ROUND(");
                         this.Visit(m.Arguments[0]);
                         sb.Append(", 0, 1)");
                         return m;
                 }
-            } else if (m.Method.DeclaringType == typeof(Math)) {
-                switch (m.Method.Name) {
+            }
+            else if (m.Method.DeclaringType == typeof(Math))
+            {
+                switch (m.Method.Name)
+                {
                     case "Abs":
                     case "Acos":
                     case "Asin":
@@ -508,6 +558,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Arguments[0]);
                         sb.Append(")");
                         return m;
+
                     case "Atan2":
                         sb.Append("ATN2(");
                         this.Visit(m.Arguments[0]);
@@ -515,11 +566,14 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Arguments[1]);
                         sb.Append(")");
                         return m;
+
                     case "Log":
-                        if (m.Arguments.Count == 1) {
+                        if (m.Arguments.Count == 1)
+                        {
                             goto case "Log10";
                         }
                         break;
+
                     case "Pow":
                         sb.Append("POWER(");
                         this.Visit(m.Arguments[0]);
@@ -527,13 +581,17 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.Visit(m.Arguments[1]);
                         sb.Append(")");
                         return m;
+
                     case "Round":
-                        if (m.Arguments.Count == 1) {
+                        if (m.Arguments.Count == 1)
+                        {
                             sb.Append("ROUND(");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", 0)");
                             return m;
-                        } else if (m.Arguments.Count == 2 && m.Arguments[1].Type == typeof(int)) {
+                        }
+                        else if (m.Arguments.Count == 2 && m.Arguments[1].Type == typeof(int))
+                        {
                             sb.Append("ROUND(");
                             this.Visit(m.Arguments[0]);
                             sb.Append(", ");
@@ -542,6 +600,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             return m;
                         }
                         break;
+
                     case "Truncate":
                         sb.Append("ROUND(");
                         this.Visit(m.Arguments[0]);
@@ -652,18 +711,22 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         this.VisitValue(u.Operand);
                     }
                     break;
+
                 case ExpressionType.Negate:
                 case ExpressionType.NegateChecked:
                     sb.Append(op);
                     this.VisitValue(u.Operand);
                     break;
+
                 case ExpressionType.UnaryPlus:
                     this.VisitValue(u.Operand);
                     break;
+
                 case ExpressionType.Convert:
                     // ignore conversions for now
                     this.Visit(u.Operand);
                     break;
+
                 default:
                     throw new NotSupportedException(string.Format("The unary operator '{0}' is not supported", u.NodeType));
             }
@@ -729,17 +792,23 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             this.VisitValue(right);
                         }
                         break;
+
                     case ExpressionType.Equal:
-                        if (right.NodeType == ExpressionType.Constant) {
+                        if (right.NodeType == ExpressionType.Constant)
+                        {
                             ConstantExpression ce = (ConstantExpression)right;
-                            if (ce.Value == null) {
+                            if (ce.Value == null)
+                            {
                                 this.Visit(left);
                                 sb.Append(" IS NULL");
                                 break;
                             }
-                        } else if (left.NodeType == ExpressionType.Constant) {
+                        }
+                        else if (left.NodeType == ExpressionType.Constant)
+                        {
                             ConstantExpression ce = (ConstantExpression)left;
-                            if (ce.Value == null) {
+                            if (ce.Value == null)
+                            {
                                 this.Visit(right);
                                 sb.Append(" IS NULL");
                                 break;
@@ -809,18 +878,21 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                         sb.Append(" ");
                         this.VisitValue(right);
                         break;
+
                     case ExpressionType.RightShift:
                         this.VisitValue(left);
                         sb.Append(" / POWER(2, ");
                         this.VisitValue(right);
                         sb.Append(")");
                         break;
+
                     case ExpressionType.LeftShift:
                         this.VisitValue(left);
                         sb.Append(" * POWER(2, ");
                         this.VisitValue(right);
                         sb.Append(")");
                         break;
+
                     default:
                         throw new NotSupportedException(string.Format("The binary operator '{0}' is not supported", b.NodeType));
                 }
@@ -850,14 +922,18 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case ExpressionType.Negate:
                 case ExpressionType.NegateChecked:
                     return "-";
+
                 case ExpressionType.UnaryPlus:
                     return "+";
+
                 case ExpressionType.Not:
                     return IsBoolean(u.Operand.Type) ? "NOT" : "~";
+
                 default:
                     return "";
             }
         }
+
         private string GetOperator(BinaryExpression b)
         {
             switch (b.NodeType)
@@ -865,36 +941,50 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case ExpressionType.And:
                 case ExpressionType.AndAlso:
                     return (IsBoolean(b.Left.Type)) ? "AND" : "&";
+
                 case ExpressionType.Or:
                 case ExpressionType.OrElse:
                     return (IsBoolean(b.Left.Type) ? "OR" : "|");
+
                 case ExpressionType.Equal:
                     return "=";
+
                 case ExpressionType.NotEqual:
                     return "<>";
+
                 case ExpressionType.LessThan:
                     return "<";
+
                 case ExpressionType.LessThanOrEqual:
                     return "<=";
+
                 case ExpressionType.GreaterThan:
                     return ">";
+
                 case ExpressionType.GreaterThanOrEqual:
                     return ">=";
+
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
                     return "+";
+
                 case ExpressionType.Subtract:
                 case ExpressionType.SubtractChecked:
                     return "-";
+
                 case ExpressionType.Multiply:
                 case ExpressionType.MultiplyChecked:
                     return "*";
+
                 case ExpressionType.Divide:
                     return "/";
+
                 case ExpressionType.Modulo:
                     return "%";
+
                 case ExpressionType.ExclusiveOr:
                     return "^";
+
                 default:
                     return "";
             }
@@ -914,8 +1004,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case ExpressionType.Or:
                 case ExpressionType.OrElse:
                     return IsBoolean(((BinaryExpression)expr).Type);
+
                 case ExpressionType.Not:
                     return IsBoolean(((UnaryExpression)expr).Type);
+
                 case ExpressionType.Equal:
                 case ExpressionType.NotEqual:
                 case ExpressionType.LessThan:
@@ -927,8 +1019,10 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case (ExpressionType)DbExpressionType.Exists:
                 case (ExpressionType)DbExpressionType.In:
                     return true;
+
                 case ExpressionType.Call:
                     return IsBoolean(((MethodCallExpression)expr).Type);
+
                 default:
                     return false;
             }
@@ -1016,38 +1110,49 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                     case TypeCode.Boolean:
                         sb.Append(((bool)value) ? 1 : 0);
                         break;
+
                     case TypeCode.String:
                         sb.Append("'");
                         sb.Append(EscapeString((string)value));
                         sb.Append("'");
                         break;
+
                     case TypeCode.Decimal:
                         sb.Append(((Decimal)value).ToString(CultureInfo.InvariantCulture));
                         break;
+
                     case TypeCode.Double:
                         sb.Append(((Double)value).ToString(CultureInfo.InvariantCulture));
                         break;
+
                     case TypeCode.Int16:
                         sb.Append(((Int16)value).ToString(CultureInfo.InvariantCulture));
                         break;
+
                     case TypeCode.Int32:
                         sb.Append(((Int32)value).ToString(CultureInfo.InvariantCulture));
                         break;
+
                     case TypeCode.Int64:
                         sb.Append(((Int64)value).ToString(CultureInfo.InvariantCulture));
                         break;
+
                     case TypeCode.UInt16:
                         sb.Append(((UInt16)value).ToString(CultureInfo.InvariantCulture));
                         break;
+
                     case TypeCode.UInt32:
                         sb.Append(((UInt32)value).ToString(CultureInfo.InvariantCulture));
                         break;
+
                     case TypeCode.UInt64:
                         sb.Append(((UInt64)value).ToString(CultureInfo.InvariantCulture));
                         break;
+
                     case TypeCode.DateTime:
                         sb.Append(((DateTime)value).ToString(CultureInfo.InvariantCulture));
                         break;
+
                     case TypeCode.Object:
                         if (value.GetType().IsEnum)
                         {
@@ -1058,6 +1163,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             throw new NotSupportedException(string.Format("The constant for '{0}' is not supported", value));
                         }
                         break;
+
                     default:
                         sb.Append(value);
                         break;
@@ -1119,7 +1225,6 @@ namespace Stump.ORM.SubSonic.Linq.Structure
             }
             if (select.Take != null)
             {
-                
                 sb.Append("TOP (");
                 this.Visit(select.Take);
                 sb.Append(") ");
@@ -1209,6 +1314,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                     sb.Append(" AS ");
                     sb.Append(GetAliasName(table.Alias));
                     break;
+
                 case DbExpressionType.Select:
                     SelectExpression select = (SelectExpression)source;
                     sb.Append("(");
@@ -1220,9 +1326,11 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                     sb.Append(GetAliasName(select.Alias));
                     this.Indent(Indentation.Outer);
                     break;
+
                 case DbExpressionType.Join:
                     this.VisitJoin((JoinExpression)source);
                     break;
+
                 default:
                     throw new InvalidOperationException("Select source is not valid type");
             }
@@ -1239,15 +1347,19 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case JoinType.CrossJoin:
                     sb.Append("CROSS JOIN ");
                     break;
+
                 case JoinType.InnerJoin:
                     sb.Append("INNER JOIN ");
                     break;
+
                 case JoinType.CrossApply:
                     sb.Append("CROSS APPLY ");
                     break;
+
                 case JoinType.OuterApply:
                     sb.Append("OUTER APPLY ");
                     break;
+
                 case JoinType.LeftOuter:
                     sb.Append("LEFT OUTER JOIN ");
                     break;

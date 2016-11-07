@@ -1,31 +1,31 @@
+using Stump.Core.Extensions;
+using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Extensions;
-using Stump.Server.WorldServer.Database.Items;
-using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
     public class PersistantItemsCollection<T> : ItemsCollection<T> where T : IPersistantItem
     {
-        public virtual void Save()
+        public virtual void Save(ORM.Database database)
         {
             lock (Locker)
             {
-                var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items.Where(item => !item.Value.IsTemporarily))
                 {
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);
+                        item.Value.OnPersistantItemAdded();
                         item.Value.Record.IsNew = false;
                     }
                     else if (item.Value.Record.IsDirty)
                     {
                         database.Update(item.Value.Record);
+                        item.Value.OnPersistantItemUpdated();
                     }
                 }
 
@@ -34,6 +34,7 @@ namespace Stump.Server.WorldServer.Game.Items
                     var item = ItemsToDelete.Dequeue();
 
                     database.Delete(item.Record);
+                    item.OnPersistantItemDeleted();
                 }
             }
         }
@@ -51,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public delegate void ItemStackChangedEventHandler(ItemsCollection<T> sender, T item, int difference);
 
-        #endregion
+        #endregion Delegates
 
         protected ItemsCollection()
         {
@@ -85,50 +86,50 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public event ItemAddedEventHandler ItemAdded;
 
-        public void NotifyItemAdded(T item, bool addItemMsg)
+        public void NotifyItemAdded(T item, bool sendMessage = true)
         {
-            OnItemAdded(item, addItemMsg);
+            OnItemAdded(item, sendMessage);
 
             var handler = ItemAdded;
             if (handler != null)
                 handler(this, item);
         }
 
-        protected virtual void OnItemAdded(T item, bool addItemMsg)
+        protected virtual void OnItemAdded(T item, bool sendMessage = true)
         {
         }
 
         public event ItemRemovedEventHandler ItemRemoved;
 
-        public void NotifyItemRemoved(T item, bool removeItemMsg)
+        public void NotifyItemRemoved(T item, bool sendMessage)
         {
-            OnItemRemoved(item, removeItemMsg);
+            OnItemRemoved(item, sendMessage);
 
             var handler = ItemRemoved;
             if (handler != null)
                 handler(this, item);
         }
 
-        protected virtual void OnItemRemoved(T item, bool removeItemMsg)
+        protected virtual void OnItemRemoved(T item, bool sendMessage)
         {
         }
 
         public event ItemStackChangedEventHandler ItemStackChanged;
 
-        public void NotifyItemStackChanged(T item, int difference, bool removeMsg = true)
+        public void NotifyItemStackChanged(T item, int difference, bool sendMessage = true)
         {
-            OnItemStackChanged(item, difference, removeMsg);
+            OnItemStackChanged(item, difference, sendMessage);
 
             var handler = ItemStackChanged;
             if (handler != null)
                 handler(this, item, difference);
         }
 
-        protected virtual void OnItemStackChanged(T item, int difference, bool removeMsg = true)
+        protected virtual void OnItemStackChanged(T item, int difference, bool sendMessage = true)
         {
         }
 
-        #endregion
+        #endregion Events
 
         /// <summary>
         /// Add an item to the collection
@@ -166,18 +167,18 @@ namespace Stump.Server.WorldServer.Game.Items
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <param name="delete"></param>
-        public virtual int RemoveItem(T item, int amount, bool delete = true)
+        public virtual int RemoveItem(T item, int amount, bool delete = true, bool sendMessage = true)
         {
             if (!HasItem(item))
                 return 0;
 
             if (item.Stack <= amount)
             {
-                RemoveItem(item, delete);
+                RemoveItem(item, delete, sendMessage);
                 return (int)item.Stack;
             }
 
-            UnStackItem(item, amount);
+            UnStackItem(item, amount, sendMessage);
             return amount;
         }
 
@@ -187,7 +188,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// <param name="item"></param>
         /// <param name="delete"></param>
         /// <param name="removeItemMsg"></param>
-        public virtual bool RemoveItem(T item, bool delete = true, bool removeItemMsg = true)
+        public virtual bool RemoveItem(T item, bool delete = true, bool sendMessage = true)
         {
             if (!HasItem(item))
                 return false;
@@ -197,26 +198,25 @@ namespace Stump.Server.WorldServer.Game.Items
                 var deleted = Items.Remove(item.Guid);
 
                 if (delete)
-                    DeleteItem(item);
+                    DeleteItem(item, sendMessage);
 
                 if (deleted)
-                    NotifyItemRemoved(item, removeItemMsg);
+                    NotifyItemRemoved(item, sendMessage);
 
                 return deleted;
             }
         }
 
-
         /// <summary>
         /// Delete an item persistently.
         /// </summary>
-        protected virtual void DeleteItem(T item)
+        protected virtual void DeleteItem(T item, bool sendMessage = true)
         {
             // theorically the item is removed before
             if (Items.ContainsKey(item.Guid))
             {
                 Items.Remove(item.Guid);
-                NotifyItemRemoved(item, true);
+                NotifyItemRemoved(item, sendMessage);
             }
 
             ItemsToDelete.Enqueue(item);
@@ -242,25 +242,25 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="amount"></param>
-        public virtual void UnStackItem(T item, int amount, bool stackMsg = true)
+        public virtual void UnStackItem(T item, int amount, bool sendMessage = true)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
             if (item.Stack - amount <= 0)
-                RemoveItem(item, true, stackMsg);
+                RemoveItem(item, true, sendMessage);
             else
             {
                 item.Stack -= (uint)amount;
 
-                NotifyItemStackChanged(item, -amount, stackMsg);
+                NotifyItemStackChanged(item, -amount, sendMessage);
             }
         }
 
         public void DeleteAll(bool notify = true)
         {
             if (notify)
-                foreach(var item in this)
+                foreach (var item in this)
                     NotifyItemRemoved(item, true);
 
             ItemsToDelete = new Queue<T>(ItemsToDelete.Concat(Items.Values));
@@ -270,7 +270,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public virtual bool IsStackable(T item, out T stackableWith)
         {
             T stack;
-            if (( stack = TryGetItem(item.Template, item.Effects) ) != null)
+            if ((stack = TryGetItem(item.Template, item.Effects)) != null)
             {
                 stackableWith = stack;
                 return true;
@@ -310,10 +310,10 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         public T TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects)
-        {   
+        {
             var entries = from entry in Items.Values
-                                        where entry.Template.Id == template.Id && effects.CompareEnumerable(entry.Effects)
-                                        select entry;
+                          where entry.Template.Id == template.Id && effects.CompareEnumerable(entry.Effects)
+                          select entry;
 
             return entries.FirstOrDefault();
         }

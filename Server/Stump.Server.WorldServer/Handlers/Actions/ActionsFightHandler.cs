@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
@@ -9,6 +7,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Actions
 {
@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightDeathMessage(IPacketReceiver client, FightActor fighter)
         {
             client.Send(new GameActionFightDeathMessage(
-                            (short) ActionsEnum.ACTION_CHARACTER_DEATH,
+                            (short)ActionsEnum.ACTION_CHARACTER_DEATH,
                             fighter.Id, fighter.Id
                             ));
         }
@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         {
             client.Send(new GameActionFightVanishMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id));
         }
-         
+
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
         {
             var fighterInfos = summon.GetGameFightFighterInformations();
@@ -57,7 +57,6 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightInvisibilityMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id, (sbyte)state));
         }
 
-
         public static void SendGameActionFightDispellSpellMessage(IPacketReceiver client, FightActor source, FightActor target, int spellId)
         {
             client.Send(new GameActionFightDispellSpellMessage(406, source.Id, target.Id, spellId));
@@ -78,7 +77,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                                                                      FightActor target, short delta)
         {
             client.Send(new GameActionFightPointsVariationMessage(
-                            (short) action,
+                            (short)action,
                             source.Id, target.Id, delta
                             ));
         }
@@ -103,7 +102,6 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightDodgePointLossMessage((short)action, source.Id, target.Id, amount));
         }
 
-
         public static void SendGameActionFightReduceDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)
         {
             client.Send(new GameActionFightReduceDamagesMessage(105, source.Id, target.Id, amount));
@@ -126,6 +124,11 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 
         public static void SendGameActionFightCloseCombatMessage(IPacketReceiver client, FightActor source, FightActor target, Cell cell, FightSpellCastCriticalEnum castCritical, bool silentCast, WeaponTemplate weapon)
         {
+            SendGameActionFightCloseCombatMessage(client, source, target, cell, castCritical, silentCast, (short)weapon.Id);
+        }
+
+        public static void SendGameActionFightCloseCombatMessage(IPacketReceiver client, FightActor source, FightActor target, Cell cell, FightSpellCastCriticalEnum castCritical, bool silentCast, short weaponId)
+        {
             var action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT;
             switch (castCritical)
             {
@@ -137,7 +140,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                     break;
             }
 
-            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)castCritical, silentCast, weapon.Id));
+            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)castCritical, silentCast, weaponId));
         }
 
         public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, ActorLook look)

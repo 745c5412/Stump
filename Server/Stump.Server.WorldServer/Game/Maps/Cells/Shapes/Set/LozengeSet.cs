@@ -4,7 +4,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
 {
     public class LozengeSet : Set
     {
-        public LozengeSet(MapPoint center, int radius, int minRadius=0)
+        public LozengeSet(MapPoint center, int radius, int minRadius = 0)
         {
             Center = center;
             Radius = radius;
@@ -43,32 +43,32 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
                 // bottom right side
                 for (int i = 0; i < r; i++)
                 {
-                    yield return new MapPoint(Center.X + (r-i), Center.Y - i);
+                    yield return new MapPoint(Center.X + (r - i), Center.Y - i);
                 }
 
                 //bottom left side
                 for (int i = 0; i < r; i++)
                 {
-                    yield return new MapPoint(Center.X - i, Center.Y - (r-i));
+                    yield return new MapPoint(Center.X - i, Center.Y - (r - i));
                 }
 
                 // top left side
                 for (int i = 0; i < r; i++)
                 {
-                    yield return new MapPoint(Center.X - (r-i), Center.Y + i);
+                    yield return new MapPoint(Center.X - (r - i), Center.Y + i);
                 }
 
                 // top right side
                 for (int i = 0; i < r; i++)
                 {
-                    yield return new MapPoint(Center.X + i, Center.Y + (r-i));
+                    yield return new MapPoint(Center.X + i, Center.Y + (r - i));
                 }
             }
         }
 
         public override bool BelongToSet(MapPoint point)
         {
-            var dist = point.EuclideanDistanceTo(Center);
+            var dist = point.ManhattanDistanceTo(Center);
             return dist <= Radius && dist >= MinRadius;
         }
     }

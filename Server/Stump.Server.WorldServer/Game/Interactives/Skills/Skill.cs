@@ -1,5 +1,4 @@
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
@@ -38,6 +37,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         }
 
         public abstract bool IsEnabled(Character character);
+
         public abstract void Execute(Character character);
 
         public virtual void PostExecute(Character character)

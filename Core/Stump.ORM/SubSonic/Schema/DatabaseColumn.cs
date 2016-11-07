@@ -1,20 +1,20 @@
-﻿// 
+﻿//
 //   SubSonic - http://subsonicproject.com
-// 
+//
 //   The contents of this file are subject to the New BSD
 //   License (the "License"); you may not use this file
 //   except in compliance with the License. You may obtain a copy of
 //   the License at http://www.opensource.org/licenses/bsd-license.php
-//  
-//   Software distributed under the License is distributed on an 
+//
+//   Software distributed under the License is distributed on an
 //   "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //   implied. See the License for the specific language governing
 //   rights and limitations under the License.
-// 
+//
 
+using Stump.ORM.SubSonic.DataProviders;
 using System;
 using System.Data;
-using Stump.ORM.SubSonic.DataProviders;
 
 namespace Stump.ORM.SubSonic.Schema
 {
@@ -34,17 +34,18 @@ namespace Stump.ORM.SubSonic.Schema
             public const string MODIFIED_ON = "ModifiedOn";
         }
 
-        public DatabaseColumn() {}
+        public DatabaseColumn()
+        {
+        }
 
         public DatabaseColumn(ITable tbl)
-            : this(String.Empty, tbl) {}
+            : this(String.Empty, tbl) { }
 
         public DatabaseColumn(string columnName, ITable tbl)
         {
             Table = tbl;
             Name = columnName;
         }
-
 
         #region IColumn Members
 
@@ -58,16 +59,19 @@ namespace Stump.ORM.SubSonic.Schema
         public bool AutoIncrement { get; set; }
         public int NumberScale { get; set; }
         public int NumericPrecision { get; set; }
+
         public bool IsPrimaryKey
         {
             get;
             set;
         }
+
         public bool IsUniqueKey
         {
             get;
             set;
         }
+
         public object DefaultSetting { get; set; }
 
         public string SchemaName
@@ -182,9 +186,7 @@ namespace Stump.ORM.SubSonic.Schema
             get { return Provider.SchemaGenerator.BuildDropColumnStatement(Table.Name, Name); }
         }
 
-
-        #endregion
-
+        #endregion IColumn Members
 
         public override string ToString()
         {
@@ -193,17 +195,17 @@ namespace Stump.ORM.SubSonic.Schema
 
         public override bool Equals(object obj)
         {
-            if(obj.GetType() == typeof(IColumn))
+            if (obj.GetType() == typeof(IColumn))
             {
                 DatabaseColumn compareTo = (DatabaseColumn)obj;
 
-                if(IsPrimaryKey)
+                if (IsPrimaryKey)
                     return true; //no altering the PK
 
-                if(DataType == DbType.String)
+                if (DataType == DbType.String)
                     return compareTo.DataType == DataType && MaxLength == compareTo.MaxLength;
 
-                if(IsNumeric)
+                if (IsNumeric)
                 {
                     return compareTo.DataType == DataType
                            && NumericPrecision == compareTo.NumericPrecision

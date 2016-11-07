@@ -1,7 +1,7 @@
-﻿using System;
-using Stump.DofusProtocol.D2oClasses;
+﻿using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -16,13 +16,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public EffectDate()
         {
-            
         }
 
         public EffectDate(EffectDate copy)
             : this(copy.Id, copy.m_year, copy.m_month, copy.m_day, copy.m_hour, copy.m_minute, copy)
         {
-            
         }
 
         public EffectDate(short id, short year, short month, short day, short hour, short minute, EffectBase effect)
@@ -38,21 +36,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectDate(EffectInstanceDate effect)
             : base(effect)
         {
-            m_year = (short) effect.year;
-            m_month = (short) effect.month;
-            m_day = (short) effect.day;
-            m_hour = (short) effect.hour;
-            m_minute = (short) effect.minute;
+            m_year = (short)effect.year;
+            m_month = (short)effect.month;
+            m_day = (short)effect.day;
+            m_hour = (short)effect.hour;
+            m_minute = (short)effect.minute;
         }
 
         public EffectDate(EffectsEnum id, DateTime date)
             : this(
-                (short) id, (short) date.Year, (short) date.Month, (short) date.Day, (short) date.Hour,
-                (short) date.Minute, new EffectBase())
+                (short)id, (short)date.Year, (short)date.Month, (short)date.Day, (short)date.Hour,
+                (short)date.Minute, new EffectBase())
         {
         }
-
-
 
         public override int ProtocoleId
         {
@@ -72,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new object[]
                 {
                     m_year.ToString(), m_month.ToString("00") + m_day.ToString("00"),
-                    m_hour.ToString("00") + m_minute.ToString("00")
+                    m_hour.ToString("00") + m_minute.ToString("00"), m_month, m_day
                 };
         }
 
@@ -88,11 +84,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public void SetDate(DateTime date)
         {
-            m_year = (short) date.Year;
-            m_month = (short) date.Month;
-            m_day = (short) date.Day;
-            m_hour = (short) date.Hour;
-            m_minute = (short) date.Minute;
+            m_year = (short)date.Year;
+            m_month = (short)date.Month;
+            m_day = (short)date.Day;
+            m_hour = (short)date.Hour;
+            m_minute = (short)date.Minute;
         }
 
         public override ObjectEffect GetObjectEffect()
@@ -115,13 +111,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = (uint) ZoneShape,
-                year = (uint) m_year,
-                month = (uint) m_month,
-                day = (uint) m_day,
-                hour = (uint) m_hour,
-                minute = (uint) m_minute
-
+                zoneShape = (uint)ZoneShape,
+                year = (uint)m_year,
+                month = (uint)m_month,
+                day = (uint)m_day,
+                hour = (uint)m_hour,
+                minute = (uint)m_minute
             };
         }
 
@@ -159,7 +154,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             if (ReferenceEquals(a, b))
                 return true;
 
-            if (((object) a == null) || ((object) b == null))
+            if (((object)a == null) || ((object)b == null))
                 return false;
 
             return a.Equals(b);
@@ -183,11 +178,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             unchecked
             {
                 int result = base.GetHashCode();
-                result = (result*397) ^ m_day.GetHashCode();
-                result = (result*397) ^ m_hour.GetHashCode();
-                result = (result*397) ^ m_minute.GetHashCode();
-                result = (result*397) ^ m_month.GetHashCode();
-                result = (result*397) ^ m_year.GetHashCode();
+                result = (result * 397) ^ m_day.GetHashCode();
+                result = (result * 397) ^ m_hour.GetHashCode();
+                result = (result * 397) ^ m_minute.GetHashCode();
+                result = (result * 397) ^ m_month.GetHashCode();
+                result = (result * 397) ^ m_year.GetHashCode();
                 return result;
             }
         }

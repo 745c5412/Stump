@@ -25,11 +25,13 @@ namespace Stump.Server.AuthServer.Database
             get;
             set;
         }
+
         public int AccountId
         {
             get;
             set;
         }
+
         public int WorldId
         {
             get;

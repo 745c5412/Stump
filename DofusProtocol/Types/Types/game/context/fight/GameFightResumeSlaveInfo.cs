@@ -1,31 +1,29 @@
-
-
 // Generated on 03/02/2014 20:42:59
+using Stump.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GameFightResumeSlaveInfo
     {
         public const short Id = 364;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int slaveId;
         public IEnumerable<Types.GameFightSpellCooldown> spellCooldowns;
         public sbyte summonCount;
         public sbyte bombCount;
-        
+
         public GameFightResumeSlaveInfo()
         {
         }
-        
+
         public GameFightResumeSlaveInfo(int slaveId, IEnumerable<Types.GameFightSpellCooldown> spellCooldowns, sbyte summonCount, sbyte bombCount)
         {
             this.slaveId = slaveId;
@@ -33,7 +31,7 @@ namespace Stump.DofusProtocol.Types
             this.summonCount = summonCount;
             this.bombCount = bombCount;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(slaveId);
@@ -42,8 +40,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in spellCooldowns)
             {
-                 entry.Serialize(writer);
-                 spellCooldowns_count++;
+                entry.Serialize(writer);
+                spellCooldowns_count++;
             }
             var spellCooldowns_after = writer.Position;
             writer.Seek((int)spellCooldowns_before);
@@ -53,7 +51,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(summonCount);
             writer.WriteSByte(bombCount);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             slaveId = reader.ReadInt();
@@ -61,8 +59,8 @@ namespace Stump.DofusProtocol.Types
             var spellCooldowns_ = new Types.GameFightSpellCooldown[limit];
             for (int i = 0; i < limit; i++)
             {
-                 spellCooldowns_[i] = new Types.GameFightSpellCooldown();
-                 spellCooldowns_[i].Deserialize(reader);
+                spellCooldowns_[i] = new Types.GameFightSpellCooldown();
+                spellCooldowns_[i].Deserialize(reader);
             }
             spellCooldowns = spellCooldowns_;
             summonCount = reader.ReadSByte();
@@ -72,12 +70,10 @@ namespace Stump.DofusProtocol.Types
             if (bombCount < 0)
                 throw new Exception("Forbidden value on bombCount = " + bombCount + ", it doesn't respect the following condition : bombCount < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + spellCooldowns.Sum(x => x.GetSerializationSize()) + sizeof(sbyte) + sizeof(sbyte);
         }
-        
     }
-    
 }

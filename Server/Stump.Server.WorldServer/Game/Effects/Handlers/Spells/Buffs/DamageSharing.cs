@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
@@ -19,6 +19,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         public override bool Apply()
         {
             var actors = GetAffectedActors(x => x is CharacterFighter && x.IsFriendlyWith(Caster)).ToArray();
+
+            if (actors.Count() <= 1)
+                return false;
+
             foreach (var actor in actors)
             {
                 var buffId = actor.PopNextBuffId();

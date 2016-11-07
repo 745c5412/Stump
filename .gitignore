@@ -9,6 +9,7 @@
 # Build results
 
 [Dd]ebug/
+[Dd]ebug-uptodate/
 [Rr]elease/
 x64/
 build/
@@ -97,7 +98,7 @@ publish/
 
 # NuGet Packages Directory
 ## TODO: If you have NuGet Package Restore enabled, uncomment the next line
-#packages/
+packages/
 
 # Windows Azure Build Output
 csx

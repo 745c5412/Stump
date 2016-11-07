@@ -1,36 +1,32 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class GameRolePlayHumanoidInformations : GameRolePlayNamedActorInformations
     {
         public const short Id = 159;
+
         public override short TypeId
         {
             get { return Id; }
         }
-        
+
         public Types.HumanInformations humanoidInfo;
         public int accountId;
-        
+
         public GameRolePlayHumanoidInformations()
         {
         }
-        
+
         public GameRolePlayHumanoidInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, string name, Types.HumanInformations humanoidInfo, int accountId)
          : base(contextualId, look, disposition, name)
         {
             this.humanoidInfo = humanoidInfo;
             this.accountId = accountId;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
@@ -38,7 +34,7 @@ namespace Stump.DofusProtocol.Types
             humanoidInfo.Serialize(writer);
             writer.WriteInt(accountId);
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
@@ -48,12 +44,10 @@ namespace Stump.DofusProtocol.Types
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
         }
-        
+
         public override int GetSerializationSize()
         {
             return base.GetSerializationSize() + sizeof(short) + humanoidInfo.GetSerializationSize() + sizeof(int);
         }
-        
     }
-    
 }

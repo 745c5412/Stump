@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 {
@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (item.IsLinkedToPlayer() || item.IsLinkedToAccount())
                 return false;
 
-            if (item.Template.Level > ((BidHouseExchange) Dialog).MaxItemLevel)
+            if (item.Template.Level > ((BidHouseExchange)Dialog).MaxItemLevel)
                 return false;
 
             if (BidHouseManager.Instance.GetBidHouseItems(Character.Account.Id, ((BidHouseExchange)Dialog).Types).Count() >= Character.Level)
@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 
             var bidItem = BidHouseManager.Instance.CreateBidHouseItem(Character, item, quantity, price);
             BidHouseManager.Instance.AddBidHouseItem(bidItem);
-
+            
             Character.Inventory.RemoveItem(item, quantity);
 
             InventoryHandler.SendExchangeBidHouseItemAddOkMessage(Character.Client, bidItem.GetObjectItemToSellInBid());

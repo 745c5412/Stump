@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
@@ -46,31 +45,38 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             var centerPoint = new MapPoint(centerCell);
             var result = new List<Cell>();
 
-            for (int i = (int) MinRadius; i <= Radius; i++)
+            for (int i = (int)MinRadius; i <= Radius; i++)
             {
                 switch (Direction)
                 {
                     case DirectionsEnum.DIRECTION_WEST:
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
+
                     case DirectionsEnum.DIRECTION_NORTH:
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y + i, map, result);
                         break;
+
                     case DirectionsEnum.DIRECTION_EAST:
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y + i, map, result);
                         break;
+
                     case DirectionsEnum.DIRECTION_SOUTH:
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y - i, map, result);
                         break;
+
                     case DirectionsEnum.DIRECTION_NORTH_WEST:
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y, map, result);
                         break;
+
                     case DirectionsEnum.DIRECTION_SOUTH_WEST:
                         AddCellIfValid(centerPoint.X, centerPoint.Y - i, map, result);
                         break;
+
                     case DirectionsEnum.DIRECTION_SOUTH_EAST:
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y, map, result);
                         break;
+
                     case DirectionsEnum.DIRECTION_NORTH_EAST:
                         AddCellIfValid(centerPoint.X, centerPoint.Y + i, map, result);
                         break;
@@ -87,6 +93,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
             container.Add(map.Cells[MapPoint.CoordToCellId(x, y)]);
         }
-        #endregion
+
+        #endregion IShape Members
     }
 }

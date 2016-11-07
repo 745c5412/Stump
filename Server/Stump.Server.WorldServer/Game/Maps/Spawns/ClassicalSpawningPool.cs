@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Maps.Spawns
 {
@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         private void RandomQueue()
         {
-            var array = Enum.GetValues(typeof (GroupSize));
+            var array = Enum.GetValues(typeof(GroupSize));
 
             foreach (var size in array.Cast<GroupSize>().Shuffle())
             {
@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         /// </summary>
         public MonsterGroup SmallGroup
         {
-            get { return m_groupsBySize[(int) GroupSize.Small]; }
+            get { return m_groupsBySize[(int)GroupSize.Small]; }
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         /// </summary>
         public MonsterGroup MediumGroup
         {
-            get { return m_groupsBySize[(int) GroupSize.Medium]; }
+            get { return m_groupsBySize[(int)GroupSize.Medium]; }
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         /// </summary>
         public MonsterGroup BigGroup
         {
-            get { return m_groupsBySize[(int) GroupSize.Big]; }
+            get { return m_groupsBySize[(int)GroupSize.Big]; }
         }
 
         protected override bool IsLimitReached()
@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                 var size = m_groupsToSpawn.Dequeue();
 
                 MonsterGroup group;
-                if (m_groupsToRespawn[(int) size].Count > 0)
+                if (m_groupsToRespawn[(int)size].Count > 0)
                 {
                     group = m_groupsToRespawn[(int)size].Dequeue();
                     group = Map.GenerateRandomMonsterGroup(group);
@@ -110,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                 group.SpawningPool = this;
                 group.GroupSize = size;
 
-                return m_groupsBySize[(int) size] = group;
+                return m_groupsBySize[(int)size] = group;
             }
         }
 
@@ -119,10 +119,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             var rand = new AsyncRandom();
             if (rand.Next(0, 2) == 0)
             {
-                return (int) ((Interval - (rand.NextDouble()*Interval/4))*1000);
+                return (int)((Interval - (rand.NextDouble() * Interval / 4)) * 1000);
             }
 
-            return (int) ((Interval + (rand.NextDouble()*Interval/4))*1000);
+            return (int)((Interval + (rand.NextDouble() * Interval / 4)) * 1000);
         }
 
         protected override void OnGroupUnSpawned(MonsterGroup monster)
@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             {
                 if (monster.GroupSize != GroupSize.None)
                 {
-                    m_groupsBySize[(int) monster.GroupSize] = null;
+                    m_groupsBySize[(int)monster.GroupSize] = null;
                     m_groupsToSpawn.Enqueue(monster.GroupSize);
                 }
             }
@@ -143,16 +143,16 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         private void RespawnGroup(MonsterGroup group)
         {
-            m_groupsToRespawn[(int) group.GroupSize].Enqueue(group);
+            m_groupsToRespawn[(int)group.GroupSize].Enqueue(group);
         }
 
         private void OnExitFight(MonsterGroup monster, IFight fight)
         {
             FightMonsterTeam team;
             if (fight.DefendersTeam is FightMonsterTeam)
-                team = (FightMonsterTeam) fight.DefendersTeam;
+                team = (FightMonsterTeam)fight.DefendersTeam;
             else if (fight.ChallengersTeam is FightMonsterTeam)
-                team = (FightMonsterTeam) fight.ChallengersTeam;
+                team = (FightMonsterTeam)fight.ChallengersTeam;
             else
                 return;
 

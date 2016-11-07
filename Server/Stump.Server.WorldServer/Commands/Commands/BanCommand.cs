@@ -1,5 +1,3 @@
-using System;
-using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Messages;
@@ -7,8 +5,12 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Social;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Social;
+using System;
+using System.Drawing;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -37,10 +39,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-
             foreach (var target in GetTargets(trigger))
             {
-
                 var message = new BanAccountMessage
                 {
                     AccountId = target.Account.Id,
@@ -75,7 +75,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                             trigger.Get<int>("time"), reason),
                     error => trigger.ReplyError("Account {0} not banned : {1}", target.Account.Login, error.Message));
 
-
                 if (!trigger.IsArgumentDefined("ip"))
                     return;
 
@@ -90,7 +89,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 IPCAccessor.Instance.SendRequest(banIPMessage,
                     ok => trigger.Reply("IP {0} banned", target.Client.IP),
                     error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));
-
             }
         }
     }
@@ -288,7 +286,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-
             if (accDefined)
             {
                 var message = new AccountRequestMessage { Login = trigger.Get<string>("account") };
@@ -463,6 +460,32 @@ namespace Stump.Server.WorldServer.Commands.Commands
             IPCAccessor.Instance.SendRequest(new UnBanAccountMessage(accountName),
                 ok => trigger.Reply("Account {0} unbanned", accountName),
                 error => trigger.ReplyError("Account {0} not unbanned : {1}", accountName, error.Message));
+        }
+    }
+
+    public class BadWordCommand : CommandBase
+    {
+        public BadWordCommand()
+        {
+            Aliases = new[] { "badword" };
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Blacklist a word";
+
+            AddParameter<string>("word", "w", "Word to blacklist");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var badword = trigger.Get<string>("word");
+
+            if (string.IsNullOrEmpty(badword))
+            {
+                trigger.ReplyError("Please enter a word to blacklist !");
+                return;
+            }
+
+            ChatManager.Instance.BadWords.Add(new BadWordRecord { IsNew = true, Text = badword });
+            trigger.Reply($"Word {badword} successfully blacklisted !");
         }
     }
 }

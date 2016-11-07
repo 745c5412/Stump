@@ -10,7 +10,7 @@ namespace Stump.Server.AuthServer.Commands
     {
         public AccountCommands()
         {
-            Aliases = new[] {"account", "acc"};
+            Aliases = new[] { "account", "acc" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Provides many commands to manage accounts";
         }
@@ -20,8 +20,8 @@ namespace Stump.Server.AuthServer.Commands
     {
         public AccountCreateCommand()
         {
-            Aliases = new[] {"create", "cr", "new"};
-            ParentCommandType = typeof (AccountCommands);
+            Aliases = new[] { "create", "cr", "new" };
+            ParentCommandType = typeof(AccountCommands);
             RequiredRole = RoleEnum.Administrator;
             Description = "Create a new account.";
 
@@ -37,18 +37,18 @@ namespace Stump.Server.AuthServer.Commands
             var accname = trigger.Get<string>("accountname");
 
             var acc = new Account
-                {
-                    Login = accname,
-                    PasswordHash = trigger.Get<string>("password").GetMD5(),
-                    Nickname = trigger.Get<string>("accountname"),
-                    SecretQuestion = trigger.Get<string>("question"),
-                    SecretAnswer = trigger.Get<string>("answer"),
-                    UserGroupId = trigger.Get<int>("group"),
-                    Email = "",
-                    AvailableBreeds = AccountManager.AvailableBreeds,
-                    Lang = "fr",
-                    // todo manage lang
-                };
+            {
+                Login = accname,
+                PasswordHash = trigger.Get<string>("password").GetMD5(),
+                Nickname = trigger.Get<string>("accountname"),
+                SecretQuestion = trigger.Get<string>("question"),
+                SecretAnswer = trigger.Get<string>("answer"),
+                UserGroupId = trigger.Get<int>("group"),
+                Email = "",
+                AvailableBreeds = AccountManager.AvailableBreeds,
+                Lang = "fr",
+                // todo manage lang
+            };
 
             if (AccountManager.Instance.CreateAccount(acc))
                 trigger.Reply("Created Account \"{0}\". Group : {1}.", accname, acc.UserGroupId);

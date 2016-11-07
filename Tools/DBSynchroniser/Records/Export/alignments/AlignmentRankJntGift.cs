@@ -1,15 +1,12 @@
- 
-
-
 // Generated on 11/02/2013 14:55:46
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DBSynchroniser.Records
 {
@@ -27,7 +24,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -50,6 +46,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_giftsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -76,6 +73,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_parametersBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -102,6 +100,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_levelsBin;
+
         [D2OIgnore]
         [BinaryField]
         [Browsable(false)]
@@ -118,13 +117,13 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (AlignmentRankJntGift)obj;
-            
+
             Id = castedObj.id;
             Gifts = castedObj.gifts;
             Parameters = castedObj.parameters;
             Levels = castedObj.levels;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (AlignmentRankJntGift)parent : new AlignmentRankJntGift();
@@ -134,13 +133,12 @@ namespace DBSynchroniser.Records
             obj.levels = Levels;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
             m_giftsBin = gifts == null ? null : gifts.ToBinary();
             m_parametersBin = parameters == null ? null : parameters.ToBinary();
             m_levelsBin = levels == null ? null : levels.ToBinary();
-        
         }
     }
 }

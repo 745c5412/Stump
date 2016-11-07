@@ -1,6 +1,6 @@
 ﻿using Stump.Core.IO;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -50,12 +50,12 @@ namespace Stump.Server.WorldServer.Database.World.Maps
 
         public void AssignFields(object d2oObject)
         {
-            var map = (MapCoordinates) d2oObject;
+            var map = (MapCoordinates)d2oObject;
             CompressedCoords = map.compressedCoords;
             MapIds = map.mapIds.ToArray();
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
 
         #region ISaveIntercepter Members
 
@@ -64,6 +64,6 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             m_mapIdsCSV = MapIds.ToCSV(",");
         }
 
-        #endregion
+        #endregion ISaveIntercepter Members
     }
 }

@@ -1,18 +1,17 @@
-﻿using System;
+﻿using Stump.Core.Xml;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Stump.Core.Cryptography;
-using Stump.Core.Xml;
 using Uplauncher.Patcher;
 
 namespace PatchBuilder
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             string patchDir;
             if (args.Length == 0)
@@ -28,8 +27,14 @@ namespace PatchBuilder
             if (File.Exists(Path.Combine(patchDir, "patch.xml")))
                 File.Delete(Path.Combine(patchDir, "patch.xml"));
 
-            var files =
-                Directory.EnumerateFiles(patchDir, "*", SearchOption.AllDirectories).OrderBy(p => p).ToList();
+            var files = Directory.EnumerateFiles(patchDir, "*", SearchOption.AllDirectories).OrderBy(p => p).ToList();
+
+            foreach (var file in files.Where(file => file.StartsWith("patch\\Resources")).ToArray())
+            {
+                files.Remove(file);
+                files.Add(file);
+            }
+
             var tasks = new List<MetaFileEntry>();
             using (var md5Hasher = MD5.Create())
             {
@@ -42,7 +47,7 @@ namespace PatchBuilder
 
                     var content = File.ReadAllBytes(file);
                     var md5Hasher2 = MD5.Create();
-                    
+
                     var task =
                         new MetaFileEntry
                         {
@@ -71,7 +76,6 @@ namespace PatchBuilder
                     FolderChecksum = BitConverter.ToString(md5Hasher.Hash).Replace("-", "").ToLower(),
                 };
 
-
                 XmlUtils.Serialize(Path.Combine(patchDir, "patch.xml"), patch);
                 Console.WriteLine(@"Created Patch in {0} !", Path.Combine(patchDir, "patch.xml"));
             }
@@ -79,7 +83,7 @@ namespace PatchBuilder
             Console.Read();
         }
 
-        static string GetRelativePath(string fullPath, string relativeTo)
+        private static string GetRelativePath(string fullPath, string relativeTo)
         {
             var foldersSplitted = fullPath.Split(new[] { relativeTo.Replace("/", "\\").Replace("\\\\", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
 

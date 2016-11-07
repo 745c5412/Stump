@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Stump.Core.Reflection;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Stump.Core.Reflection;
 
 namespace Stump.Core.Pool
 {
@@ -13,7 +13,6 @@ namespace Stump.Core.Pool
         where T : class
         where TSingleton : class
     {
-
     }
 
     /// <summary>

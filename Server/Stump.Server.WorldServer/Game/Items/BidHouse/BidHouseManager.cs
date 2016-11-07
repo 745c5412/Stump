@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
@@ -14,6 +11,9 @@ using Stump.Server.WorldServer.Database.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.BidHouse
 {
@@ -21,21 +21,19 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
     {
         #region Fields
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private UniqueIdProvider m_idProvider;
 
         private ConcurrentList<BidHouseItem> m_bidHouseItems = new ConcurrentList<BidHouseItem>();
-        private ConcurrentList<BidHouseCategory> m_bidHouseCategories = new ConcurrentList<BidHouseCategory>();
+        private readonly ConcurrentList<BidHouseCategory> m_bidHouseCategories = new ConcurrentList<BidHouseCategory>();
 
         public static int UnsoldDelay = 672;
 
         [Variable]
         public static float TaxPercent = 2;
 
-        [Variable]
         public static IEnumerable<int> Quantities = new[] { 1, 10, 100 };
 
-        #endregion
+        #endregion Fields
 
         #region Creators
 
@@ -43,7 +41,6 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
-
 
             var guid = BidHouseItemRecord.PopNextId();
             var record = new BidHouseItemRecord // create the associated record
@@ -61,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return new BidHouseItem(record);
         }
 
-        #endregion
+        #endregion Creators
 
         #region Loading
 
@@ -87,7 +84,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             World.Instance.RegisterSaveableInstance(this);
         }
 
-        #endregion
+        #endregion Loading
 
         #region Getters
 
@@ -129,7 +126,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         public int GetAveragePriceForItem(int itemId)
         {
-            var items = m_bidHouseItems.Where(x => x.Template.Id == itemId && !x.Sold).Select(x => (int)(x.Price / x.Stack)).ToArray();
+            var items = m_bidHouseItems.Where(x => x.Template.Id == itemId && !x.Sold && x.Stack != 0).Select(x => (int)(x.Price / x.Stack)).ToArray();
 
             if (!items.Any())
                 return 0;
@@ -137,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return (int)Math.Round(items.Average());
         }
 
-        #endregion
+        #endregion Getters
 
         #region Functions
 
@@ -160,10 +157,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
             category.Items.Add(item);
 
-            var handler = ItemAdded;
-
-            if (handler != null)
-                handler(item, category, newCategory);
+            ItemAdded?.Invoke(item, category, newCategory);
         }
 
         public event Action<BidHouseItem, BidHouseCategory, bool> ItemRemoved;
@@ -192,33 +186,21 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
                 categoryDeleted = true;
             }
 
-            var handler = ItemRemoved;
-
-            if (handler != null)
-                handler(item, category, categoryDeleted);
+            ItemRemoved?.Invoke(item, category, categoryDeleted);
         }
 
-        #endregion
+        #endregion Functions
 
         public void Save()
         {
             foreach (var item in m_bidHouseItems.Where(item => item.Record.IsDirty))
-            {
                 item.Save(Database);
-            }
         }
     }
 
     public class BidHouseItemComparer : IEqualityComparer<BidHouseItem>
     {
-        public bool Equals(BidHouseItem x, BidHouseItem y)
-        {
-            return x.Effects.CompareEnumerable(y.Effects);
-        }
-
-        public int GetHashCode(BidHouseItem obj)
-        {
-            return 0;
-        }
+        public bool Equals(BidHouseItem x, BidHouseItem y) => x.Effects.CompareEnumerable(y.Effects);
+        public int GetHashCode(BidHouseItem obj) => 0;
     }
 }

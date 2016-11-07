@@ -1,23 +1,24 @@
-﻿using System;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Handlers.Context;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaPopup : Notification
     {
-        [Variable] public static int DisplayTime = 60;
+        [Variable]
+        public static int DisplayTime = 60;
+
         private TimedTimerEntry m_timer;
 
         public ArenaPopup(ArenaWaitingCharacter character)
         {
             WaitingCharacter = character;
         }
-
 
         public ArenaWaitingCharacter WaitingCharacter
         {
@@ -43,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         public override void Display()
         {
             ContextHandler.SendGameRolePlayArenaFightPropositionMessage(Character.Client, this, DisplayTime);
-            
+
             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Character.Client, false,
                 PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
 
@@ -57,7 +58,6 @@ namespace Stump.Server.WorldServer.Game.Arena
             {
                 Deny();
             }
-
         }
 
         public void Accept()
@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             if (disposePopup)
                 Character.ArenaPopup = null;
-                // send something ?
+            // send something ?
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Net.Sockets;
-using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Messages.Custom;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Handlers.Connection;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.Network;
+using System;
+using System.Net.Sockets;
 
 namespace Stump.Server.AuthServer.Network
 {
@@ -38,7 +38,7 @@ namespace Stump.Server.AuthServer.Network
                 ConnectionHandler.ConnectionQueue.Add(this);
             InQueueUntil = DateTime.Now;
         }
-        
+
         public string Login
         {
             get { return m_login; }
@@ -86,7 +86,7 @@ namespace Stump.Server.AuthServer.Network
 
         protected override void OnMessageReceived(Message message)
         {
-            AuthPacketHandler.Instance.Dispatch(this, message); 
+            AuthPacketHandler.Instance.Dispatch(this, message);
 
             base.OnMessageReceived(message);
         }
@@ -99,17 +99,8 @@ namespace Stump.Server.AuthServer.Network
         public void SaveNow()
         {
             AuthServer.Instance.IOTaskPool.EnsureContext();
-
-            if (Account.Tokens + Account.NewTokens <= 0)
-                Account.Tokens = 0;
-            else
-                Account.Tokens += (uint)Account.NewTokens;
-            
-            Account.NewTokens = 0;
-
             AuthServer.Instance.DBAccessor.Database.Save(Account);
         }
-
 
         public override string ToString()
         {

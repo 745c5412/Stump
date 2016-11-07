@@ -1,20 +1,21 @@
 ﻿#region License GNU GPL
+
 // MerchantTrade.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System.Linq;
+#endregion License GNU GPL
+
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -23,6 +24,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
 {
@@ -72,28 +74,27 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
         {
             var item = Merchant.Bag.FirstOrDefault(x => x.Guid == itemGuid);
 
-            if (item == null || quantity <= 0 || !CanBuy(item, quantity))
+            if (item == null || item.Stack <= 0 || quantity <= 0 || !CanBuy(item, quantity))
             {
                 Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.BUY_ERROR));
                 return false;
             }
 
+            var removed = Merchant.Bag.RemoveItem(item, quantity);
 
-            Merchant.Bag.RemoveItem(item, quantity);
-
-            var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, quantity,
+            var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, removed,
                                                             item.Effects);
 
             Character.Inventory.AddItem(newItem);
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    21, quantity, item.Template.Id);
+                                                    21, removed, item.Template.Id);
 
-            var finalPrice = item.Price*quantity;
+            var finalPrice = item.Price * removed;
             Character.Inventory.SubKamas((int)finalPrice);
 
             Character.Client.Send(new ExchangeBuyOkMessage());
 
-            Merchant.Save();
+            Merchant.Save(MerchantManager.Instance.Database);
             Character.SaveLater();
 
             return true;

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Collections;
+﻿using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.BidHouse
 {
@@ -23,37 +23,31 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         public int Id
         {
             get;
-            private set;
         }
 
         public int TemplateId
         {
             get;
-            private set;
         }
 
         public ItemTypeEnum ItemType
         {
             get;
-            private set;
         }
 
         public int ItemLevel
         {
             get;
-            private set;
         }
 
         public List<EffectBase> Effects
         {
             get;
-            private set;
         }
 
         public ConcurrentList<BidHouseItem> Items
         {
             get;
-            private set;
         }
 
         #region Functions
@@ -64,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
             foreach (var quantity in BidHouseManager.Quantities)
             {
-                var item = Items.OrderBy(x => x.Price).FirstOrDefault(x => x.Stack == quantity);
+                var item = Items.OrderBy(x => x.Price).FirstOrDefault(x => x.Stack == quantity && !x.Sold);
                 if (item == null)
                     continue;
 
@@ -78,34 +72,22 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         {
             var prices = new List<int>();
 
-            foreach (var item in BidHouseManager.Quantities.Select(quantity => Items.ToArray().Where(x => x.Stack == quantity)
+            foreach (var item in BidHouseManager.Quantities.Select(quantity => Items.Where(x => x.Stack == quantity && !x.Sold)
                 .OrderBy(x => x.Price).FirstOrDefault()))
             {
-                if (item != null)
-                    prices.Add((int)item.Price);
-                else
-                    prices.Add(0);
+                prices.Add(item != null ? (int)item.Price : 0);
             }
 
             return prices;
         }
 
-        public BidHouseItem GetItem(int quantity, int price)
-        {
-            return Items.FirstOrDefault(x => x.Stack == quantity && x.Price == price && !x.Sold);
-        }
+        public BidHouseItem GetItem(int quantity, int price) => Items.FirstOrDefault(x => x.Stack == quantity && x.Price == price && !x.Sold);
 
-        public bool IsValidForThisCategory(BidHouseItem item)
-        {
-            return item.Template.Id == TemplateId && Effects.CompareEnumerable(item.Effects);
-        }
+        public bool IsValidForThisCategory(BidHouseItem item) => item.Template.Id == TemplateId && Effects.CompareEnumerable(item.Effects);
 
-        public bool IsEmpty()
-        {
-            return !Items.Any();
-        }
+        public bool IsEmpty() => !Items.Any();
 
-        #endregion
+        #endregion Functions
 
         #region Network
 
@@ -114,6 +96,6 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return new BidExchangerObjectInfo(Id, 0, false, Effects.Select(x => x.GetObjectEffect()), GetPrices());
         }
 
-        #endregion
+        #endregion Network
     }
 }

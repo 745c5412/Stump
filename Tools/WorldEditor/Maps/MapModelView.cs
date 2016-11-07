@@ -1,19 +1,24 @@
 ﻿#region License GNU GPL
+
 // MapModelView.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
+#endregion License GNU GPL
+
+using Stump.DofusProtocol.D2oClasses.Tools.Dlm;
+using Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,11 +26,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using Stump.DofusProtocol.D2oClasses.Tools.Dlm;
-using Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 using WorldEditor.Helpers;
-using WorldEditor.Helpers.Collections;
 using WorldEditor.Maps.Elements;
 using WorldEditor.Maps.Layers;
 
@@ -50,7 +51,6 @@ namespace WorldEditor.Maps
 
             BuildMap();
         }
-
 
         public DlmReader DlmFile
         {
@@ -85,9 +85,11 @@ namespace WorldEditor.Maps
         public GfxElement SelectedItem
         {
             get { return m_selectedItem; }
-            set { m_selectedItem = value;
-            SelectedItems.Clear();
-            SelectedItems.Add(value);
+            set
+            {
+                m_selectedItem = value;
+                SelectedItems.Clear();
+                SelectedItems.Add(value);
             }
         }
 
@@ -96,7 +98,8 @@ namespace WorldEditor.Maps
         public GfxElement OverElement
         {
             get { return m_overElement; }
-            private set {
+            private set
+            {
                 if (m_overElement != null)
                     m_overElement.IsMouseOver = false;
 
@@ -105,7 +108,6 @@ namespace WorldEditor.Maps
                     m_overElement.IsMouseOver = true;
             }
         }
-
 
         private void OnSelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -128,7 +130,7 @@ namespace WorldEditor.Maps
             {
                 foreach (GfxElement element in e.OldItems)
                     element.IsSelected = false;
-            } 
+            }
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
                 foreach (GfxElement element in e.OldItems)
@@ -176,7 +178,6 @@ namespace WorldEditor.Maps
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 m_elements.AddRange(e.NewItems.OfType<DisplayedElement>());
-
             }
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -195,6 +196,7 @@ namespace WorldEditor.Maps
         }
 
         #region MakeMap
+
         public void BuildMap()
         {
             Map = DlmFile.ReadMap();
@@ -208,7 +210,7 @@ namespace WorldEditor.Maps
                 {
                     elements.AddRange(from element in cell.Elements.OfType<DlmGraphicalElement>()
                                       let graphicElement =
-                                          WorldGFXManager.GetElement((int) element.ElementId) as
+                                          WorldGFXManager.GetElement((int)element.ElementId) as
                                           NormalGraphicalElementData
                                       where graphicElement != null
                                       let gfx = WorldGFXManager.GetGfx(graphicElement.Gfx)
@@ -224,8 +226,6 @@ namespace WorldEditor.Maps
             {
                 IsVisible = true
             });
-
-
         }
 
         public DlmMap Map
@@ -234,7 +234,7 @@ namespace WorldEditor.Maps
             private set;
         }
 
-        #endregion
+        #endregion MakeMap
 
         #region OverElementChangedCommand
 
@@ -255,7 +255,7 @@ namespace WorldEditor.Maps
             OverElement = parameter as GfxElement;
         }
 
-        #endregion
+        #endregion OverElementChangedCommand
 
         #region SelectedSingleElementCommand
 
@@ -280,21 +280,19 @@ namespace WorldEditor.Maps
             SelectedItem = element;
         }
 
-        #endregion
-
-
+        #endregion SelectedSingleElementCommand
 
         public static Point GetCellCoords(short cellId)
         {
-            return new Point((int)( cellId % MapEditorModelView.MapWidth ), (int)Math.Floor(cellId / (double)MapEditorModelView.MapWidth));
+            return new Point((int)(cellId % MapEditorModelView.MapWidth), (int)Math.Floor(cellId / (double)MapEditorModelView.MapWidth));
         }
 
         public static Point GetCellPixelCoords(short cellId)
         {
             var coords = GetCellCoords(cellId);
 
-            coords.X = (int)( coords.X * MapEditorModelView.CellWidth + ( coords.Y % 2 == 1 ? ( MapEditorModelView.CellHalfWidth ) : ( 0 ) ) );
-            coords.Y = (int)( coords.Y * MapEditorModelView.CellHalfHeight );
+            coords.X = (int)(coords.X * MapEditorModelView.CellWidth + (coords.Y % 2 == 1 ? (MapEditorModelView.CellHalfWidth) : (0)));
+            coords.Y = (int)(coords.Y * MapEditorModelView.CellHalfHeight);
 
             return coords;
         }
@@ -302,7 +300,7 @@ namespace WorldEditor.Maps
         public static short GetCellByPixel(Point pixel)
         {
             var y = (int)Math.Floor(pixel.Y / MapEditorModelView.CellHalfHeight);
-            var x = (int)( y % 2 == 1 ? Math.Floor(( pixel.X - MapEditorModelView.CellHalfWidth ) / MapEditorModelView.CellWidth) : Math.Floor(pixel.X / MapEditorModelView.CellWidth) );
+            var x = (int)(y % 2 == 1 ? Math.Floor((pixel.X - MapEditorModelView.CellHalfWidth) / MapEditorModelView.CellWidth) : Math.Floor(pixel.X / MapEditorModelView.CellWidth));
 
             return (short)MapPoint.CoordToCellId(x, y);
         }
@@ -313,6 +311,6 @@ namespace WorldEditor.Maps
             if (handler != null) handler(this, new PropertyChangedEventArgs(name));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged; 
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

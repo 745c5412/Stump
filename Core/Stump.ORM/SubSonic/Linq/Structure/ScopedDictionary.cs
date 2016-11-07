@@ -8,8 +8,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 {
     public class ScopedDictionary<TKey, TValue>
     {
-        ScopedDictionary<TKey, TValue> previous;
-        Dictionary<TKey, TValue> map;
+        private ScopedDictionary<TKey, TValue> previous;
+        private Dictionary<TKey, TValue> map;
 
         public ScopedDictionary(ScopedDictionary<TKey, TValue> previous)
         {

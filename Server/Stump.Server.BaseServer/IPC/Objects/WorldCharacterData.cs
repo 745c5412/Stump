@@ -8,7 +8,6 @@ namespace Stump.Server.BaseServer.IPC.Objects
     {
         public WorldCharacterData()
         {
-            
         }
 
         public WorldCharacterData(int characterId, int worldId)

@@ -1,25 +1,28 @@
 ﻿#region License GNU GPL
+
 // BigEndianWriter.cs
-// 
+//
 // Copyright (C) 2012 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
+
+#endregion License GNU GPL
+
 using System;
 using System.IO;
 using System.Text;
 
 namespace Stump.Core.IO
 {
-    public class BigEndianWriter : IDataWriter,IDisposable
+    public class BigEndianWriter : IDataWriter, IDisposable
     {
         #region Properties
 
@@ -30,7 +33,7 @@ namespace Stump.Core.IO
             get { return m_writer.BaseStream; }
         }
 
-            /// <summary>
+        /// <summary>
         ///   Gets available bytes number in the buffer
         /// </summary>
         public long BytesAvailable
@@ -63,7 +66,7 @@ namespace Stump.Core.IO
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Initialisation
 
@@ -84,7 +87,7 @@ namespace Stump.Core.IO
             m_writer = new BinaryWriter(stream, Encoding.UTF8);
         }
 
-        #endregion
+        #endregion Initialisation
 
         #region Private Methods
 
@@ -99,7 +102,7 @@ namespace Stump.Core.IO
             }
         }
 
-        #endregion
+        #endregion Private Methods
 
         #region Public Methods
 
@@ -170,6 +173,7 @@ namespace Stump.Core.IO
         {
             m_writer.Write(@byte);
         }
+
         /// <summary>
         ///   Write a Float into the buffer
         /// </summary>
@@ -258,7 +262,6 @@ namespace Stump.Core.IO
             m_writer.Write(data);
         }
 
-        
         public void Seek(int offset)
         {
             Seek(offset, SeekOrigin.Begin);
@@ -269,13 +272,12 @@ namespace Stump.Core.IO
             m_writer.BaseStream.Seek(offset, seekOrigin);
         }
 
-
         public void Clear()
         {
             m_writer = new BinaryWriter(new MemoryStream(), Encoding.UTF8);
         }
 
-        #endregion
+        #endregion Public Methods
 
         #region Dispose
 
@@ -286,6 +288,6 @@ namespace Stump.Core.IO
             m_writer = null;
         }
 
-        #endregion
+        #endregion Dispose
     }
 }

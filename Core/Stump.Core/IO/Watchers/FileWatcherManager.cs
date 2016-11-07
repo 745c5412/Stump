@@ -26,14 +26,14 @@ namespace Stump.Core.IO.Watchers
         public static void Watch(string path, WatcherType watcherType, WatchAction action)
         {
             var watcher = new FileWatcher(Path.GetFullPath(path), watcherType, action)
-                { Watching = true };
+            { Watching = true };
 
             Watchers.Add(watcher);
         }
 
         public static void StopWatching(string path)
         {
-            var watchers = Watchers.Where(entry => 
+            var watchers = Watchers.Where(entry =>
                 entry.FullPath == Path.GetFullPath(path)).ToArray();
 
             foreach (var watcher in watchers)

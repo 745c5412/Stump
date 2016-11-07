@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.BaseServer.IPC.Messages;
-using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -20,6 +15,9 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -29,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
     public sealed class Inventory : ItemsStorage<BasePlayerItem>, IDisposable
     {
         [Variable(true)]
-        private const int MaxInventoryKamas = 150000000;
+        private const int MaxInventoryKamas = 2000000000;
 
         [Variable(true)]
         private const int MaxPresets = 8;
@@ -39,12 +37,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         [Variable]
         public static readonly int TokenTemplateId = (int)ItemIdEnum.GameMasterToken;
+
         public static ItemTemplate TokenTemplate;
 
         [Variable(true, DefinableRunning = true)]
         public static bool WeightEnabled = true;
 
-        [Initialization(typeof(ItemManager), Silent=true)]
+        [Initialization(typeof(ItemManager), Silent = true)]
         private static void InitializeTokenTemplate()
         {
             if (ActiveTokens)
@@ -57,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public delegate void ItemMovedEventHandler(Inventory sender, BasePlayerItem item, CharacterInventoryPositionEnum lastPosition);
 
-        #endregion
+        #endregion Delegates
 
         public event ItemMovedEventHandler ItemMoved;
 
@@ -69,8 +68,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (handler != null) handler(this, item, lastPosition);
         }
 
-
-        #endregion
+        #endregion Events
 
         private readonly Dictionary<CharacterInventoryPositionEnum, List<BasePlayerItem>> m_itemsByPosition
             = new Dictionary<CharacterInventoryPositionEnum, List<BasePlayerItem>>
@@ -198,7 +196,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if ((weapon = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)) != null)
                 {
                     return weapon.Template is WeaponTemplate
-                               ? (uint) ((WeaponTemplate) weapon.Template).CriticalHitBonus
+                               ? (uint)((WeaponTemplate)weapon.Template).CriticalHitBonus
                                : 0;
                 }
 
@@ -228,13 +226,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             var records = ItemManager.Instance.FindPlayerItems(Owner.Id);
 
-            Items = records.Select(entry => ItemManager.Instance.LoadPlayerItem(Owner, entry)).ToDictionary(entry => entry.Guid);
-            foreach (var item in this)
+            var items = records.Select(entry => ItemManager.Instance.LoadPlayerItem(Owner, entry)).ToDictionary(entry => entry.Guid);
+            foreach (var item in items)
             {
-                m_itemsByPosition[item.Position].Add(item);
+                Items.Add(item.Key, item.Value);
 
-                if (item.IsEquiped())
-                    ApplyItemEffects(item, false);
+                m_itemsByPosition[item.Value.Position].Add(item.Value);
+
+                if (item.Value.IsEquiped())
+                    ApplyItemEffects(item.Value, false);
             }
 
             foreach (var itemSet in GetEquipedItems().
@@ -244,10 +244,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 ApplyItemSetEffects(itemSet, CountItemSetEquiped(itemSet), true, false);
             }
 
-            if (TokenTemplate == null || !ActiveTokens || Owner.Account.Tokens <= 0)
+            if (TokenTemplate == null || !ActiveTokens || Owner.WorldAccount.Tokens <= 0)
                 return;
 
-            CreateTokenItem(Owner.Account.Tokens);
+            CreateTokenItem(Owner.WorldAccount.Tokens);
         }
 
         internal void LoadPresets()
@@ -266,28 +266,35 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         private void UnLoadInventory()
         {
-            Items.Clear();
+            // we must keep then in case it's a fight disconnection
+            /*Items.Clear();
             foreach (var item in m_itemsByPosition)
             {
                 m_itemsByPosition[item.Key].Clear();
-            }
+            }*/
         }
 
-        public override void Save()
+        public override void Save(ORM.Database database)
+        {
+            Save(database, true);
+        }
+
+        public void Save(ORM.Database database, bool updateAccount)
         {
             lock (Locker)
             {
-                var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items.Where(item => Tokens == null || item.Value != Tokens).Where(item => !item.Value.IsTemporarily))
                 {
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);
+                        item.Value.OnPersistantItemAdded();
                         item.Value.Record.IsNew = false;
                     }
                     else if (item.Value.Record.IsDirty)
                     {
                         database.Update(item.Value.Record);
+                        item.Value.OnPersistantItemUpdated();
                     }
                 }
 
@@ -309,6 +316,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     var item = ItemsToDelete.Dequeue();
 
                     database.Delete(item.Record);
+                    item.OnPersistantItemDeleted();
                 }
 
                 while (PresetsToDelete.Count > 0)
@@ -318,20 +326,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     database.Delete(preset);
                 }
 
-                // update tokens amount
-                if ((Tokens != null || Owner.Account.Tokens <= 0) && (Tokens == null || Owner.Account.Tokens == Tokens.Stack))
-                {
-                    Owner.IsAuthSynced = true;
-                    return;
-                }
-
-                Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
-
-                IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Owner.Account),
-                    msg =>
-                    {
-                        Owner.OnSaved();
-                    });
+                Owner.WorldAccount.Tokens = Tokens == null ? 0 : (int)Tokens.Stack;
+                if (updateAccount)
+                    database.Update(Owner.WorldAccount);
             }
         }
 
@@ -343,15 +340,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             TeardownEvents();
         }
 
-        #endregion
+        #endregion IDisposable Members
 
         public override void SetKamas(int amount)
         {
             if (amount >= MaxInventoryKamas)
             {
-                Kamas = MaxInventoryKamas;            
-                //344	Vous avez atteint le seuil maximum de kamas dans votre inventaire.
+                amount = MaxInventoryKamas;
+                //Vous avez atteint le seuil maximum de kamas dans votre inventaire.
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 344);
+            }
+            else if (amount >= (MaxInventoryKamas - 50000000))
+            {
+                //Un de vos inventaires (banque, inventaire du personnage) va dépasser le seuil de 2 milliards de Kamas, les kamas supplémentaires seront donc perdus. Surveillez vos stocks de kamas et vos ventes (mode marchand, enclos, maisons, hdv).
+                Owner.SendSystemMessage(55, true);
             }
 
             base.SetKamas(amount);
@@ -390,8 +392,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             var item = TryGetItem(template);
 
-            if (item != null && !item.IsEquiped())
-            {            
+            if (item != null && !item.IsEquiped() && IsStackable(item, out item))
+            {
                 if (!item.OnAddItem())
                     return null;
 
@@ -412,9 +414,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return item.OnRemoveItem() && base.RemoveItem(item, delete, removeItemMsg);
         }
 
-        public void CreateTokenItem(uint amount)
+        public void CreateTokenItem(int amount)
         {
-            Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, (int)amount);
+            Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, amount);
             Items.Add(Tokens.Guid, Tokens); // cannot stack
         }
 
@@ -466,7 +468,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             else
             {
                 foreach (var item in GetEquipedItems())
-                    preset.AddObject(new PresetItem((byte)item.Position, item.Template.Id, item.Guid));       
+                    preset.AddObject(new PresetItem((byte)item.Position, item.Template.Id, item.Guid));
             }
 
             RemovePreset(presetId);
@@ -516,12 +518,17 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return PresetSaveUpdateErrorEnum.PRESET_UPDATE_ERR_UNKNOWN;
         }
 
-        public PresetUseResultEnum EquipPreset(int presetId)
+        public void EquipPreset(int presetId)
         {
+            var unlinkedPosition = new List<byte>();
+
             var preset = GetPreset(presetId);
 
             if (preset == null)
-                return PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID;
+            {
+                InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID, unlinkedPosition);
+                return;
+            }
 
             var itemsToMove = new List<Pair<BasePlayerItem, CharacterInventoryPositionEnum>>();
 
@@ -540,6 +547,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_MALUS)
                     continue;
 
+                if (preset.Objects.Exists(x => x.objUid == item.Guid))
+                    continue;
+
+                unlinkedPosition.Add((byte)item.Position);
+
                 MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
 
@@ -555,17 +567,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 }
 
                 if (!CanEquip(item, (CharacterInventoryPositionEnum)presetItem.position))
-                    return PresetUseResultEnum.PRESET_USE_ERR_CRITERION;
+                {
+                    InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), PresetUseResultEnum.PRESET_USE_ERR_CRITERION, unlinkedPosition);
+                    return;
+                }
 
                 itemsToMove.Add(new Pair<BasePlayerItem, CharacterInventoryPositionEnum>(item, (CharacterInventoryPositionEnum)presetItem.position));
             }
+
+            InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK, unlinkedPosition);
 
             foreach (var item in itemsToMove)
             {
                 MoveItem(item.First, item.Second);
             }
-
-            return partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK;
         }
 
         public PlayerPresetRecord[] GetPresetsByItemGuid(int itemGuid)
@@ -596,6 +611,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 return true;
 
+            if (item.Template.TypeId == (uint)ItemTypeEnum.EXO_POTION)
+                return false;
+
             if (!GetItemPossiblePositions(item).Contains(position))
                 return false;
 
@@ -619,7 +637,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
             if (!(item.Template is WeaponTemplate) || !item.Template.TwoHanded || shield == null)
                 return true;
- 
+
             if (send)
                 BasicHandler.SendTextInformationMessage(Owner.Client,
                     TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
@@ -652,7 +670,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     if (!equipedItem.Feed(item))
                         return;
 
-                    RemoveItem(item);
+                    UnStackItem(item, 1);
                     return;
                 }
 
@@ -661,7 +679,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     if (!item.Drop(equipedItem))
                         return;
 
-                    RemoveItem(item);
+                    UnStackItem(item, 1);
                     return;
                 }
 
@@ -708,7 +726,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             BasePlayerItem stacktoitem;
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
                 IsStackable(item, out stacktoitem) && stacktoitem != null)
-                // check if we must stack the moved item
+            // check if we must stack the moved item
             {
                 //Update PresetItem
                 var presets = GetPresetsByItemGuid(item.Guid);
@@ -736,7 +754,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         private void UnEquipedDouble(IItem itemToEquip)
         {
-            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS || itemToEquip.Template.Type.ItemType == ItemTypeEnum.TROPHY || itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS_SHOP)
+            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS || itemToEquip.Template.Type.ItemType == ItemTypeEnum.TROPHY)
             {
                 var item = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.Template.Id == itemToEquip.Template.Id);
 
@@ -760,9 +778,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             MoveItem(ring, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
         }
 
-
         public void ChangeItemOwner(Character newOwner, BasePlayerItem item, int amount)
-        {            
+        {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
@@ -782,8 +799,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 UnStackItem(item, amount);
             }
 
-            DeleteItemFromPresets(item);
-
             var copy = ItemManager.Instance.CreatePlayerItem(newOwner, item, amount);
             newOwner.Inventory.AddItem(copy, false);
         }
@@ -801,7 +816,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (!HasItem(item.Guid) || !item.IsUsable())
                 return false;
 
-            if (Owner.IsInFight() && Owner.Fight.State != FightState.Placement)
+            if (Owner.IsInExchange() || (Owner.IsInFight() && Owner.Fight.State != FightState.Placement))
                 return false;
 
             if (!item.AreConditionFilled(Owner))
@@ -816,25 +831,26 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (send)
                 BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 3);
+
             return false;
         }
 
         public void UseItem(BasePlayerItem item, int amount = 1)
         {
             UseItem(item, amount, null, null);
-        }        
-        
+        }
+
         public void UseItem(BasePlayerItem item, Cell targetCell, int amount = 1)
         {
             UseItem(item, amount, targetCell, null);
-        }        
-        
+        }
+
         public void UseItem(BasePlayerItem item, Character target, int amount = 1)
         {
             UseItem(item, amount, null, target);
-        }        
-        
-        public void UseItem(BasePlayerItem item, int amount , Cell targetCell, Character target)
+        }
+
+        public void UseItem(BasePlayerItem item, int amount, Cell targetCell, Character target)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
@@ -875,16 +891,31 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void ApplyItemEffects(BasePlayerItem item, bool send = true, bool forceApply = false)
         {
+            var exoError = false;
+
             foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, item)))
             {
                 if (forceApply)
                     handler.Operation = ItemEffectHandler.HandlerOperation.APPLY;
+
+                if (GetEquipedItems().Any(x => x != item && x.GetExoEffects().ToList().Exists(y => item.GetExoEffects().Any(z => z == y)))
+                    && item.GetExoEffects().Any(x => x == handler.Effect))
+                {
+                    exoError = true;
+                    handler.Operation = ItemEffectHandler.HandlerOperation.NONAPPLY;
+                }
 
                 handler.Apply();
             }
 
             if (send)
                 Owner.RefreshStats();
+
+            if (exoError)
+            {
+                //Impossible de cumuler des bonus de forgemagie supérieurs à 1 PA, 1 PM et 1 PO, ou de dépasser 12 PA, 6 PM ou 6 PO via l'équipement.
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 255);
+            }
         }
 
         private void ApplyItemSetEffects(ItemSetTemplate itemSet, int count, bool apply, bool send = true)
@@ -900,12 +931,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 Owner.RefreshStats();
         }
 
-        protected override void DeleteItem(BasePlayerItem item)
+        protected override void DeleteItem(BasePlayerItem item, bool sendMessage = true)
         {
             if (item == Tokens)
                 return;
 
-            base.DeleteItem(item);
+            base.DeleteItem(item, sendMessage);
         }
 
         protected override void OnItemAdded(BasePlayerItem item, bool addItemMsg)
@@ -970,7 +1001,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.OnItemRemoved(item, removeItemMsg);
         }
 
-        private void OnItemMoved(BasePlayerItem  item, CharacterInventoryPositionEnum lastPosition)
+        private void OnItemMoved(BasePlayerItem item, CharacterInventoryPositionEnum lastPosition)
         {
             m_itemsByPosition[lastPosition].Remove(item);
             m_itemsByPosition[item.Position].Add(item);
@@ -984,7 +1015,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (!item.OnEquipItem(wasEquiped))
                 return;
-            
+
             if (item.Template.ItemSet != null && !(wasEquiped && isEquiped))
             {
                 var count = CountItemSetEquiped(item.Template.ItemSet);
@@ -1033,7 +1064,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             if (amount != 0)
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, amount > 0 ? (short)45 : (short)46, Math.Abs(amount));
-            
+
             InventoryHandler.SendKamasUpdateMessage(Owner.Client, Kamas);
 
             base.OnKamasAmountChanged(amount);
@@ -1047,7 +1078,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public override bool IsStackable(BasePlayerItem item, out BasePlayerItem stackableWith)
         {
             BasePlayerItem stack;
-            if (( stack = TryGetItem(item.Template, item.Effects, item.Position, item) ) != null)
+            if ((stack = TryGetItem(item.Template, item.Effects, item.Position, item)) != null)
             {
                 stackableWith = stack;
                 return true;
@@ -1061,12 +1092,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             return Items.Values.FirstOrDefault(entry => entry.Position == position);
         }
-        
+
         public BasePlayerItem TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects, CharacterInventoryPositionEnum position)
         {
             var entries = from entry in Items.Values
-                                              where entry.Template.Id == template.Id && entry.Position == position && effects.CompareEnumerable(entry.Effects)
-                                              select entry;
+                          where entry.Template.Id == template.Id && entry.Position == position && effects.CompareEnumerable(entry.Effects)
+                          select entry;
 
             return entries.FirstOrDefault();
         }
@@ -1074,8 +1105,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public BasePlayerItem TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects, CharacterInventoryPositionEnum position, BasePlayerItem except)
         {
             var entries = from entry in Items.Values
-                                              where entry != except && entry.Template.Id == template.Id && entry.Position == position && effects.CompareEnumerable(entry.Effects)
-                                              select entry;
+                          where entry != except && entry.Template.Id == template.Id && entry.Position == position && effects.CompareEnumerable(entry.Effects)
+                          select entry;
 
             return entries.FirstOrDefault();
         }
@@ -1085,11 +1116,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return Items.Values.Where(entry => entry.Position == position).ToArray();
         }
 
+        public BasePlayerItem[] GetItems() => Items.Values.ToArray();
+
+        public BasePlayerItem[] GetItems(Predicate<BasePlayerItem> predicate) => Items.Values.Where(entry => predicate(entry)).ToArray();
+
         public BasePlayerItem[] GetEquipedItems()
         {
             return (from entry in Items
-                   where entry.Value.IsEquiped()
-                   select entry.Value).ToArray();
+                    where entry.Value.IsEquiped()
+                    select entry.Value).ToArray();
         }
 
         public int CountItemSetEquiped(ItemSetTemplate itemSet)
@@ -1128,6 +1163,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             Owner.FightEnded += OnFightEnded;
         }
+
         private void TeardownEvents()
         {
             Owner.FightEnded -= OnFightEnded;
@@ -1156,6 +1192,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        #endregion
+        #endregion Events
     }
 }

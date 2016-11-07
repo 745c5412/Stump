@@ -1,8 +1,8 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using System;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
@@ -37,6 +37,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddAPAttack)]
     [EffectHandler(EffectsEnum.Effect_AddPushDamageBonus)]
     [EffectHandler(EffectsEnum.Effect_AddShield)]
+    [EffectHandler(EffectsEnum.Effect_AddAirResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddFireResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddEarthResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddWaterResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddNeutralResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddProspecting)]
     public class StatsBuff : SpellEffectHandler
     {
         public StatsBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -65,59 +71,102 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             {
                 case EffectsEnum.Effect_AddVitality:
                     return PlayerFields.Vitality;
+
                 case EffectsEnum.Effect_AddAgility:
                     return PlayerFields.Agility;
+
                 case EffectsEnum.Effect_AddChance:
                     return PlayerFields.Chance;
+
                 case EffectsEnum.Effect_AddIntelligence:
                     return PlayerFields.Intelligence;
+
                 case EffectsEnum.Effect_AddStrength:
                     return PlayerFields.Strength;
+
                 case EffectsEnum.Effect_AddWisdom:
                     return PlayerFields.Wisdom;
+
                 case EffectsEnum.Effect_AddRange:
                 case EffectsEnum.Effect_AddRange_136:
                     return PlayerFields.Range;
+
                 case EffectsEnum.Effect_AddSummonLimit:
                     return PlayerFields.SummonLimit;
+
                 case EffectsEnum.Effect_AddDamageBonus:
                 case EffectsEnum.Effect_AddDamageBonus_121:
                     return PlayerFields.DamageBonus;
+
                 case EffectsEnum.Effect_IncreaseDamage_138:
                 case EffectsEnum.Effect_IncreaseDamage_1054:
                 case EffectsEnum.Effect_AddDamageBonusPercent:
                     return PlayerFields.DamageBonusPercent;
+
                 case EffectsEnum.Effect_AddHealBonus:
                     return PlayerFields.HealBonus;
+
                 case EffectsEnum.Effect_AddDamageReflection:
                     return PlayerFields.DamageReflection;
+
                 case EffectsEnum.Effect_AddPhysicalDamage_137:
                 case EffectsEnum.Effect_AddPhysicalDamage_142:
                     return PlayerFields.PhysicalDamage;
+
                 case EffectsEnum.Effect_AddPhysicalDamageReduction:
                     return PlayerFields.PhysicalDamageReduction;
+
                 case EffectsEnum.Effect_AddMagicDamageReduction:
                     return PlayerFields.MagicDamageReduction;
+
                 case EffectsEnum.Effect_AddLock:
                     return PlayerFields.TackleBlock;
+
                 case EffectsEnum.Effect_AddDodge:
                     return PlayerFields.TackleEvade;
+
                 case EffectsEnum.Effect_AddDodgeAPProbability:
                     return PlayerFields.DodgeAPProbability;
+
                 case EffectsEnum.Effect_AddDodgeMPProbability:
                     return PlayerFields.DodgeMPProbability;
+
                 case EffectsEnum.Effect_AddCriticalHit:
                     return PlayerFields.CriticalHit;
+
                 case EffectsEnum.Effect_AddCriticalMiss:
                     return PlayerFields.CriticalMiss;
+
                 case EffectsEnum.Effect_AddMPAttack:
                     return PlayerFields.MPAttack;
+
                 case EffectsEnum.Effect_AddAPAttack:
                     return PlayerFields.APAttack;
+
                 case EffectsEnum.Effect_AddPushDamageBonus:
                     return PlayerFields.PushDamageBonus;
+
                 case EffectsEnum.Effect_AddShield:
                     return PlayerFields.Shield;
+
+                case EffectsEnum.Effect_AddAirResistPercent:
+                    return PlayerFields.AirResistPercent;
+
+                case EffectsEnum.Effect_AddFireResistPercent:
+                    return PlayerFields.FireResistPercent;
+
+                case EffectsEnum.Effect_AddEarthResistPercent:
+                    return PlayerFields.EarthResistPercent;
+
+                case EffectsEnum.Effect_AddWaterResistPercent:
+                    return PlayerFields.WaterResistPercent;
+
+                case EffectsEnum.Effect_AddNeutralResistPercent:
+                    return PlayerFields.NeutralResistPercent;
+
+                case EffectsEnum.Effect_AddProspecting:
+                    return PlayerFields.Prospecting;
+
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }

@@ -4,6 +4,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Interfaces
 {
     public interface IStatsOwner
     {
-        StatsFields Stats { get;}
+        StatsFields Stats { get; }
     }
 }

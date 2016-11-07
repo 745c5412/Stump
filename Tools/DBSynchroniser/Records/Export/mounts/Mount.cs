@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:49
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -18,8 +12,10 @@ namespace DBSynchroniser.Records
     public class MountRecord : ID2ORecord, ISaveIntercepter
     {
         public uint id;
+
         [I18NField]
         public uint nameId;
+
         public String look;
         private String MODULE = "Mounts";
 
@@ -27,7 +23,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -56,12 +51,12 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Mount)obj;
-            
+
             Id = castedObj.id;
             NameId = castedObj.nameId;
             Look = castedObj.look;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (Mount)parent : new Mount();
@@ -70,10 +65,9 @@ namespace DBSynchroniser.Records
             obj.look = Look;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using System.Linq;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             foreach (var actor in GetAffectedActors())
             {
                 var buffId = actor.PopNextBuffId();
-                var buff = new TriggerBuff(buffId, actor, Caster, Dice, Spell, false, false,
+                var buff = new TriggerBuff(buffId, actor, Caster, Dice, Spell, Spell, false, false,
                     BuffTriggerType.AFTER_ATTACKED, PutschBuffTrigger);
 
                 actor.AddAndApplyBuff(buff);

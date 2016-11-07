@@ -7,7 +7,6 @@ namespace Stump.Server.BaseServer.IPC.Messages
     {
         public DisconnectedClientMessage()
         {
-            
         }
 
         public DisconnectedClientMessage(bool disconnected)

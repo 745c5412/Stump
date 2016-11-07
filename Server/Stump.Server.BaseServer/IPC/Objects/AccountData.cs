@@ -1,8 +1,8 @@
+using ProtoBuf;
+using Stump.DofusProtocol.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProtoBuf;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.IPC.Objects
 {
@@ -106,12 +106,12 @@ namespace Stump.Server.BaseServer.IPC.Objects
                     return m_breeds;
 
                 m_breeds = new List<PlayableBreedEnum>();
-                m_breeds.AddRange(Enum.GetValues(typeof (PlayableBreedEnum)).Cast<PlayableBreedEnum>().
-                    Where(breed => CanUseBreed((int) breed)));
+                m_breeds.AddRange(Enum.GetValues(typeof(PlayableBreedEnum)).Cast<PlayableBreedEnum>().
+                    Where(breed => CanUseBreed((int)breed)));
 
                 return m_breeds;
             }
-            set { BreedFlags = (uint) value.Aggregate(0, (current, breedEnum) => current | (1 << ((int) breedEnum - 1))); }
+            set { BreedFlags = (uint)value.Aggregate(0, (current, breedEnum) => current | (1 << ((int)breedEnum - 1))); }
         }
 
         private IList<WorldCharacterData> m_characters = new List<WorldCharacterData>();
@@ -176,7 +176,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
             get;
             set;
         }
-        
+
         [ProtoMember(24)]
         public bool IsBanned
         {
@@ -193,13 +193,6 @@ namespace Stump.Server.BaseServer.IPC.Objects
 
         [ProtoMember(21)]
         public string BanReason
-        {
-            get;
-            set;
-        }
-
-        [ProtoMember(22)]
-        public uint Tokens
         {
             get;
             set;

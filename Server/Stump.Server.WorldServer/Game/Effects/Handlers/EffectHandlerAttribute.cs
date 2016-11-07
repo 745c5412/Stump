@@ -1,10 +1,9 @@
-using System;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.AI.Fights.Spells;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public class EffectHandlerAttribute : Attribute
     {
         public EffectHandlerAttribute(EffectsEnum effect)

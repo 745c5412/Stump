@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Maps;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Stump.Plugins.DefaultPlugin.Global
 {
@@ -44,7 +44,7 @@ namespace Stump.Plugins.DefaultPlugin.Global
 
                 counter++;
 
-                console.Update(string.Format("{0:0.0}% " + "({1} patches)", ( counter / (double)maps.Length ) * 100, patches));
+                console.Update(string.Format("{0:0.0}% " + "({1} patches)", (counter / (double)maps.Length) * 100, patches));
             }
         }
 

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Items;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using System;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Database.Breeds
 {
@@ -63,14 +62,14 @@ namespace Stump.Server.WorldServer.Database.Breeds
             List<EffectBase> effects = ItemManager.Instance.GenerateItemEffects(template, MaxEffects);
 
             var record = new PlayerItemRecord
-                {
-                    Id = PlayerItemRecord.PopNextId(),
-                    OwnerId = character.Id,
-                    Template = template,
-                    Stack = Amount,
-                    Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
-                    Effects = effects,
-                };
+            {
+                Id = PlayerItemRecord.PopNextId(),
+                OwnerId = character.Id,
+                Template = template,
+                Stack = Amount,
+                Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
+                Effects = effects,
+            };
 
             return record;
         }

@@ -1,6 +1,6 @@
-﻿using System;
-using NLog;
+﻿using NLog;
 using Stump.Core.Collections;
+using System;
 
 namespace Stump.Core.Pool.Task
 {

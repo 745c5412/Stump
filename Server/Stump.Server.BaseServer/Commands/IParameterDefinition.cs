@@ -34,7 +34,9 @@ namespace Stump.Server.BaseServer.Commands
         /// If value equals null or an empty string, it returns the default value
         /// </summary>
         object ConvertString(string value, TriggerBase trigger);
+
         IParameter CreateParameter();
+
         string GetUsage();
     }
 
@@ -45,7 +47,7 @@ namespace Stump.Server.BaseServer.Commands
             get;
         }
 
-         T DefaultValue
+        T DefaultValue
         {
             get;
         }

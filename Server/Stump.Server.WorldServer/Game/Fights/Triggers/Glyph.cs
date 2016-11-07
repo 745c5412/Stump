@@ -1,18 +1,23 @@
-using System.Drawing;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Drawing;
+using System.Linq;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Glyph : MarkTrigger
     {
-        private static readonly int[] SPELLS_GLYPH_END_TURN = {13, 2035}; // glyphe de répulsion
+        private static readonly int[] SPELLS_GLYPH_END_TURN =
+        {
+            (int)SpellIdEnum.GLYPHE_DE_RÉPULSION,
+            (int)SpellIdEnum.GLYPHE_DE_RÉPULSION_DU_DOPEUL,
+            (int)SpellIdEnum.GLYPHE_DAIVAIN
+        };
 
         public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
                      Cell centerCell, byte size, Color color)
@@ -74,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override GameActionMark GetGameActionMark()
         {
-            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type,
+            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte)Type,
                                       Shapes.Select(entry => entry.GetGameActionMarkedCell()));
         }
 

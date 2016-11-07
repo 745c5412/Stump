@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -32,39 +33,31 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.StartFighting();
         }
 
-        public override FightTypeEnum FightType
-        {
-            get { return FightTypeEnum.FIGHT_TYPE_AGRESSION; }
-        }
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_AGRESSION;
 
-        public override bool IsPvP
-        {
-            get { return true; }
-        }
-        public override bool IsMultiAccountRestricted
-        {
-            get { return true; }
-        }
+        public override bool IsPvP => true;
 
-        protected override void ApplyResults(IEnumerable<IFightResult> results)
+        public override bool IsMultiAccountRestricted => true;
+
+        protected override void ApplyResults()
         {
-            foreach (var fightResult in results)
+            foreach (var fightResult in Results)
             {
                 fightResult.Apply();
             }
         }
 
-        protected override IEnumerable<IFightResult> GenerateResults()
+        protected override List<IFightResult> GetResults()
         {
-            base.GenerateResults();
-
-            var results = GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)).
-                Select(fighter => fighter.GetFightResult()).ToArray();
+            var results = GetFightersAndLeavers().Where(entry => entry.HasResult).
+                 Select(fighter => fighter.GetFightResult()).ToList();
 
             foreach (var playerResult in results.OfType<FightPlayerResult>())
             {
                 playerResult.SetEarnedHonor(CalculateEarnedHonor(playerResult.Fighter),
                     CalculateEarnedDishonor(playerResult.Fighter));
+
+                CalculateEarnedPevetons(playerResult);
             }
 
             return results;
@@ -82,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public override int GetPlacementTimeLeft()
         {
-            var timeleft = FightConfiguration.PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
+            var timeleft = FightConfiguration.PlacementPhaseTime - (DateTime.Now - CreationTime).TotalMilliseconds;
 
             if (timeleft < 0)
                 timeleft = 0;
@@ -93,6 +86,39 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected override bool CanCancelFight()
         {
             return false;
+        }
+
+        private void CalculateEarnedPevetons(FightPlayerResult result)
+        {
+            var pvpSeek = result.Character.Inventory.GetItems(x => x.Template.Id == (int)ItemIdEnum.OrderofExecution).FirstOrDefault();
+
+            if (pvpSeek != null && ChallengersTeam.Fighters.Contains(result.Fighter))
+            {
+                var seekEffect = pvpSeek.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek) as EffectString;
+
+                if (seekEffect != null)
+                {
+                    var target = result.Fighter.OpposedTeam.GetAllFightersWithLeavers<CharacterFighter>().FirstOrDefault(x => x.Name == seekEffect.Text);
+
+                    if (target != null)
+                    {
+                        result.Character.Inventory.RemoveItem(pvpSeek);
+
+                        if (Winners == result.Fighter.Team)
+                        {
+                            result.Loot.AddItem((int)ItemIdEnum.Stroken, 2);
+                            result.Character.SendServerMessage("Vous avez abattu votre cible avec succès, vous avez gagné 2 Pévétons !");
+                        }
+                        else
+                        {
+                            target.Loot.AddItem((int)ItemIdEnum.Stroken, 2);
+                            target.Character.SendServerMessage("Vous avez vaincu votre traqueur, vous avez gagné 2 Pévétons !");
+                        }
+                    }
+                }
+                else
+                    result.Character.Inventory.RemoveItem(pvpSeek);
+            }
         }
 
         public short CalculateEarnedHonor(CharacterFighter character)
@@ -106,21 +132,20 @@ namespace Stump.Server.WorldServer.Game.Fights
             var winnersLevel = (double)Winners.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
             var losersLevel = (double)Losers.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
 
-            var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * ( losersLevel / winnersLevel ));
+            var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * (losersLevel / winnersLevel));
 
             if (Losers == character.Team)
-                delta = -delta;
+                delta = -(character.Character.Honor * 0.10);
 
-            return (short) delta;
+            return (short)delta;
         }
-
 
         public short CalculateEarnedDishonor(CharacterFighter character)
         {
             if (Draw)
                 return 0;
 
-            return character.OpposedTeam.AlignmentSide != AlignmentSideEnum.ALIGNMENT_NEUTRAL ? (short) 0 : (short) 1;
+            return character.OpposedTeam.AlignmentSide != AlignmentSideEnum.ALIGNMENT_NEUTRAL ? (short)0 : (short)1;
         }
     }
 }

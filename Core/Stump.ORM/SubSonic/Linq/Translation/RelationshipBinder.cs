@@ -2,10 +2,9 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -14,8 +13,8 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class RelationshipBinder : DbExpressionVisitor
     {
-        QueryMapping mapping;
-        Expression currentFrom;
+        private QueryMapping mapping;
+        private Expression currentFrom;
 
         private RelationshipBinder(QueryMapping mapping)
         {

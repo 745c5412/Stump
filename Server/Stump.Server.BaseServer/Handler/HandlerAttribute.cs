@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace Stump.Server.BaseServer.Handler
 {
@@ -11,9 +10,14 @@ namespace Stump.Server.BaseServer.Handler
             MessageId = messageId;
         }
 
+        protected HandlerAttribute()
+        {
+            throw new NotImplementedException();
+        }
+
         public uint MessageId
         {
-            get; 
+            get;
             set;
         }
 

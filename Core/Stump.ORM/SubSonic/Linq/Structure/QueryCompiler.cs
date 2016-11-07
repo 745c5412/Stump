@@ -67,8 +67,8 @@ namespace Stump.ORM.SubSonic.Linq.Structure
 
         public class CompiledQuery
         {
-            LambdaExpression query;
-            Delegate fnQuery;
+            private LambdaExpression query;
+            private Delegate fnQuery;
 
             internal CompiledQuery(LambdaExpression query)
             {
@@ -91,7 +91,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                             );
                         body = PartialEvaluator.Eval(replaced);
                         root = RootQueryableFinder.Find(body) as ConstantExpression;
-                    }                    
+                    }
                     if (root == null)
                     {
                         throw new InvalidOperationException("Could not find query provider");

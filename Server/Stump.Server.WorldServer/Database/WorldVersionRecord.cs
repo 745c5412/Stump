@@ -1,6 +1,6 @@
-using System;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Database.Interfaces;
+using System;
 
 namespace Stump.Server.WorldServer.Database
 {
@@ -21,12 +21,13 @@ namespace Stump.Server.WorldServer.Database
             get;
             set;
         }
+
         public DateTime UpdateDate
         {
             get;
             set;
         }
 
-        #endregion
+        #endregion IVersionRecord Members
     }
 }

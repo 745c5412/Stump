@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:46
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -20,6 +14,7 @@ namespace DBSynchroniser.Records
         private const String MODULE = "AbuseReasons";
         public uint _abuseReasonId;
         public uint _mask;
+
         [I18NField]
         public int _reasonTextId;
 
@@ -27,7 +22,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)_abuseReasonId; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("AbuseReasonId", false)]
@@ -55,12 +49,12 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (AbuseReasons)obj;
-            
+
             AbuseReasonId = castedObj._abuseReasonId;
             Mask = castedObj._mask;
             ReasonTextId = castedObj._reasonTextId;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (AbuseReasons)parent : new AbuseReasons();
@@ -69,10 +63,9 @@ namespace DBSynchroniser.Records
             obj._reasonTextId = ReasonTextId;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

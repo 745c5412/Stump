@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -20,6 +17,10 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -28,12 +29,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
     {
         private int m_criticalWeaponBonus;
         private int m_damageTakenBeforeFight;
-        private short m_earnedDishonor;
-        private int m_earnedExp;
-        private int m_guildEarnedExp;
-        private short m_earnedHonor;
         private bool m_isUsingWeapon;
-
 
         public CharacterFighter(Character character, FightTeam team)
             : base(team)
@@ -85,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Character.Position; }
         }
 
-        public override byte Level
+        public override short Level
         {
             get { return Character.Level; }
         }
@@ -96,6 +92,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public bool IsDisconnected
+        {
+            get;
+            private set;
+        }
+
+        public int LeftRound
         {
             get;
             private set;
@@ -115,28 +117,53 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             if (PersonalReadyChecker != null)
                 PersonalReadyChecker.ToggleReady(this, ready);
-
             else if (Fight.ReadyChecker != null)
                 Fight.ReadyChecker.ToggleReady(this, ready);
         }
 
-        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
+        #region Leave
+
+        public void LeaveFight(bool force = false)
+        {
+            if (HasLeft())
+                return;
+
+            m_left = !force;
+
+            OnLeft();
+        }
+
+        private bool m_left;
+
+        public override bool HasLeft()
+        {
+            return m_left;
+        }
+
+        public override bool CanPlay()
+        {
+            return base.CanPlay() && (!HasLeft() || IsDisconnected);
+        }
+
+        #endregion Leave
+
+        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
         {
             if (!IsFighterTurn() && !force)
                 return false;
 
             // weapon attack
-            if (spell.Id != 0 ||
-                Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
-                return base.CastSpell(spell, cell, force, ApFree);
+            if (spell.Id != 0 || Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
+                return base.CastSpell(spell, cell, force, apFree);
+
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
-            var weaponTemplate =  weapon.Template as WeaponTemplate;
+            var weaponTemplate = weapon.Template as WeaponTemplate;
 
             if (weaponTemplate == null || !CanUseWeapon(cell, weaponTemplate))
             {
                 OnSpellCastFailed(spell, cell);
                 return false;
-            }  
+            }
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
@@ -148,14 +175,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 case FightSpellCastCriticalEnum.CRITICAL_FAIL:
                     OnWeaponUsed(weaponTemplate, cell, critical, false);
 
-                    if (!ApFree)
-                        UseAP((short) weaponTemplate.ApCost);
-                
+                    if (!apFree)
+                        UseAP((short)weaponTemplate.ApCost);
+
                     Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
                     PassTurn();
 
                     return false;
+
                 case FightSpellCastCriticalEnum.CRITICAL_HIT:
                     m_criticalWeaponBonus = weaponTemplate.CriticalHitBonus;
                     break;
@@ -169,7 +197,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 if (effect.Random > 0)
                 {
-                    if (random.NextDouble() > effect.Random/100d)
+                    if (random.NextDouble() > effect.Random / 100d)
                     {
                         // effect ignored
                         continue;
@@ -180,7 +208,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     critical ==
                     FightSpellCastCriticalEnum
                         .CRITICAL_HIT);
-                handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize,
+                handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte)weaponTemplate.Type.ZoneSize,
                     handler.CastPoint.OrientationTo(handler.TargetedPoint));
                 handler.Targets = SpellTargetType.ENEMY_ALL | SpellTargetType.ALLY_ALL;
                 handlers.Add(handler);
@@ -190,8 +218,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             OnWeaponUsed(weaponTemplate, cell, critical, silentCast);
 
-            if (!ApFree)
-                UseAP((short) weaponTemplate.ApCost);
+            if (!apFree)
+                UseAP((short)weaponTemplate.ApCost);
 
             foreach (var handler in handlers)
                 handler.Apply();
@@ -209,7 +237,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override SpellCastResult CanCastSpell(Spell spell, Cell cell)
         {
-             var result = base.CanCastSpell(spell, cell);
+            var result = base.CanCastSpell(spell, cell);
 
             if (result == SpellCastResult.OK)
                 return result;
@@ -220,22 +248,27 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     // Impossible de lancer ce sort : un obstacle gène votre vue !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 174);
                     break;
+
                 case SpellCastResult.HAS_NOT_SPELL:
                     // Impossible de lancer ce sort : vous ne le possédez pas !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 169);
                     break;
+
                 case SpellCastResult.NOT_ENOUGH_AP:
                     // Impossible de lancer ce sort : Vous avez %1 PA disponible(s) et il vous en faut %2 pour ce sort !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, spell.CurrentSpellLevel.ApCost);
                     break;
+
                 case SpellCastResult.UNWALKABLE_CELL:
                     // Impossible de lancer ce sort : la cellule visée n'est pas disponible !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 172);
                     break;
+
                 case SpellCastResult.CELL_NOT_FREE:
                     //Impossible de lancer ce sort : la cellule visée n'est pas valide !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 193);
                     break;
+
                 default:
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
                     Character.SendServerMessage("(" + result + ")", Color.Red);
@@ -244,7 +277,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return result;
         }
-
 
         public override int CalculateDamage(int damage, EffectSchoolEnum type, bool critical)
         {
@@ -312,9 +344,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (weapon.CriticalHitProbability != 0 && random.Next(weapon.CriticalFailureProbability) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
-
             else if (weapon.CriticalHitProbability != 0 &&
-                     random.Next((int) CalculateCriticRate(weapon.CriticalHitProbability)) == 0)
+                     random.Next((int)CalculateCriticRate(weapon.CriticalHitProbability)) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;
@@ -327,12 +358,37 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (Fight.IsDeathTemporarily)
                 Stats.Health.DamageTaken = m_damageTakenBeforeFight;
             else if (Stats.Health.Total <= 0)
-                Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
+                Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
+        }
+
+        public override bool MustSkipTurn()
+        {
+            return base.MustSkipTurn() || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
         }
 
         public void EnterDisconnectedState()
         {
             IsDisconnected = true;
+            LeftRound = Fight.TimeLine.RoundNumber;
+        }
+
+        public void LeaveDisconnectedState(bool left = true)
+        {
+            IsDisconnected = false;
+
+            if (left)
+                m_left = false;
+        }
+
+        public void RestoreFighterFromDisconnection(Character character)
+        {
+            if (!IsDisconnected)
+            {
+                throw new Exception("Fighter wasn't disconnected");
+            }
+
+            Character.Stats.CopyContext(character.Stats);
+            Character = character;
         }
 
         public override IFightResult GetFightResult(FightOutcomeEnum outcome)
@@ -356,7 +412,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                                       Name,
                                                       Character.Level,
                                                       Character.GetActorAlignmentInformations(),
-                                                      (sbyte) Character.Breed.Id);
+                                                      (sbyte)Character.Breed.Id);
         }
 
         public override string ToString()
@@ -365,6 +421,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         #region God state
+
         public override bool UseAP(short amount)
         {
             if (!Character.GodMode)
@@ -397,7 +454,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return Character.GodMode || base.LostMP(amount, source);
         }
 
-
         public override int InflictDamage(Damage damage)
         {
             if (!Character.GodMode)
@@ -419,6 +475,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return 0;
         }
 
-        #endregion
+        #endregion God state
     }
 }

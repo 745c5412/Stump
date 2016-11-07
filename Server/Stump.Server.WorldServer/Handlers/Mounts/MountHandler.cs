@@ -2,7 +2,6 @@
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 
 namespace Stump.Server.WorldServer.Handlers.Mounts
@@ -12,46 +11,50 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
         [WorldHandler(MountToggleRidingRequestMessage.Id)]
         public static void HandleMountToggleRidingRequestMessage(WorldClient client, MountToggleRidingRequestMessage message)
         {
-            if (client.Character.HasEquipedMount())
-                client.Character.Mount.ToggleRiding(client.Character);
+            if (client.Character.HasEquippedMount())
+                client.Character.ToggleRiding();
         }
 
         [WorldHandler(MountRenameRequestMessage.Id)]
         public static void HandleMountRenameRequestMessage(WorldClient client, MountRenameRequestMessage message)
         {
-            if (client.Character.HasEquipedMount())
-                client.Character.Mount.RenameMount(client.Character, message.name);
+            if (client.Character.HasEquippedMount())
+                client.Character.EquippedMount.RenameMount(message.name);
         }
 
         [WorldHandler(MountReleaseRequestMessage.Id)]
         public static void HandleMountReleaseRequestMessage(WorldClient client, MountReleaseRequestMessage message)
         {
-            if (client.Character.HasEquipedMount())
-                client.Character.Mount.Release(client.Character);
+            if (client.Character.HasEquippedMount())
+                client.Character.ReleaseMount();
         }
 
         [WorldHandler(MountSterilizeRequestMessage.Id)]
         public static void HandleMountSterilizeRequestMessage(WorldClient client, MountSterilizeRequestMessage message)
         {
-            if (client.Character.HasEquipedMount())
-                client.Character.Mount.Sterelize(client.Character);
+            if (client.Character.HasEquippedMount())
+                client.Character.EquippedMount.Sterelize(client.Character);
         }
 
         [WorldHandler(MountSetXpRatioRequestMessage.Id)]
         public static void HandleMountSetXpRatioRequestMessage(WorldClient client, MountSetXpRatioRequestMessage message)
         {
-            if (client.Character.HasEquipedMount())
-                client.Character.Mount.SetGivenExperience(client.Character, message.xpRatio);
+            if (client.Character.HasEquippedMount())
+                client.Character.EquippedMount.SetGivenExperience(client.Character, message.xpRatio);
         }
 
         [WorldHandler(MountInformationRequestMessage.Id)]
         public static void HandleMountInformationRequestMessage(WorldClient client, MountInformationRequestMessage message)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
             {
-                var record = MountManager.Instance.TryGetMount((int) message.id);
+                var record = MountManager.Instance.GetMount((int) message.id);
+
                 if (record == null)
+                {
+                    client.Send(new MountDataErrorMessage(0));
                     return;
+                }
 
                 var mount = new Mount(record);
 
@@ -81,7 +84,7 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
 
         public static void SendMountRenamedMessage(WorldClient client, int mountId, string name)
         {
-            if (client.Character.HasEquipedMount())
+            if (client.Character.HasEquippedMount())
                 client.Send(new MountRenamedMessage(mountId, name));
         }
 
@@ -97,13 +100,8 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
 
         public static void SendMountXpRatioMessage(WorldClient client, sbyte xp)
         {
-            if (client.Character.HasEquipedMount())
+            if (client.Character.HasEquippedMount())
                 client.Send(new MountXpRatioMessage(xp));
-        }
-
-        public static void SendMountReleasedMessage(IPacketReceiver client, int mountId)
-        {
-            client.Send(new MountReleasedMessage());
         }
     }
 }

@@ -1,15 +1,9 @@
- 
-
-
 // Generated on 11/02/2013 14:55:49
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using System;
 
 namespace DBSynchroniser.Records
 {
@@ -21,8 +15,10 @@ namespace DBSynchroniser.Records
         public uint id;
         public uint typeId;
         public String name;
+
         [I18NField]
         public uint descriptionId;
+
         public Boolean trusted;
         public Boolean needInteraction;
         public uint maxUsePerFrame;
@@ -33,7 +29,6 @@ namespace DBSynchroniser.Records
         {
             get { return (int)id; }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -104,7 +99,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (ActionDescription)obj;
-            
+
             Id = castedObj.id;
             TypeId = castedObj.typeId;
             Name = castedObj.name;
@@ -115,7 +110,7 @@ namespace DBSynchroniser.Records
             MinimalUseInterval = castedObj.minimalUseInterval;
             NeedConfirmation = castedObj.needConfirmation;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (ActionDescription)parent : new ActionDescription();
@@ -130,10 +125,9 @@ namespace DBSynchroniser.Records
             obj.needConfirmation = NeedConfirmation;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
         }
     }
 }

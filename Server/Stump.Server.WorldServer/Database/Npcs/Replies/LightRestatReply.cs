@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             character.Stats.Intelligence.Base = character.PermanentAddedIntelligence;
             character.Stats.Chance.Base = character.PermanentAddedChance;
 
-            character.StatsPoints = (ushort) (character.Level*5);
+            character.StatsPoints = (ushort)(character.Level * 5);
 
             character.RefreshStats();
 

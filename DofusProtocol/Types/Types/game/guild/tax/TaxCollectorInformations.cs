@@ -1,22 +1,18 @@
-
-
 // Generated on 03/02/2014 20:43:02
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.Core.IO;
+using System;
 
 namespace Stump.DofusProtocol.Types
 {
     public class TaxCollectorInformations
     {
         public const short Id = 167;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public int uniqueId;
         public short firtNameId;
         public short lastNameId;
@@ -30,11 +26,11 @@ namespace Stump.DofusProtocol.Types
         public double experience;
         public int pods;
         public int itemsValue;
-        
+
         public TaxCollectorInformations()
         {
         }
-        
+
         public TaxCollectorInformations(int uniqueId, short firtNameId, short lastNameId, Types.AdditionalTaxCollectorInformations additionalInfos, short worldX, short worldY, short subAreaId, sbyte state, Types.EntityLook look, int kamas, double experience, int pods, int itemsValue)
         {
             this.uniqueId = uniqueId;
@@ -51,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             this.pods = pods;
             this.itemsValue = itemsValue;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(uniqueId);
@@ -68,7 +64,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(pods);
             writer.WriteInt(itemsValue);
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             uniqueId = reader.ReadInt();
@@ -105,12 +101,10 @@ namespace Stump.DofusProtocol.Types
             if (itemsValue < 0)
                 throw new Exception("Forbidden value on itemsValue = " + itemsValue + ", it doesn't respect the following condition : itemsValue < 0");
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return sizeof(int) + sizeof(short) + sizeof(short) + additionalInfos.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + look.GetSerializationSize() + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int);
         }
-        
     }
-    
 }

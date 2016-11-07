@@ -1,7 +1,7 @@
-﻿using System;
-using Stump.DofusProtocol.D2oClasses;
+﻿using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -12,13 +12,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public EffectInteger()
         {
-            
         }
 
         public EffectInteger(EffectInteger copy)
             : this(copy.Id, copy.Value, copy)
         {
-            
         }
 
         public EffectInteger(short id, short value, EffectBase effect)
@@ -26,15 +24,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             m_value = value;
         }
+
         public EffectInteger(EffectsEnum id, short value)
-            : this((short) id, value, new EffectBase())
+            : this((short)id, value, new EffectBase())
         {
         }
 
         public EffectInteger(EffectInstanceInteger effect)
             : base(effect)
         {
-            m_value = (short) effect.value;
+            m_value = (short)effect.value;
         }
 
         public override int ProtocoleId
@@ -61,17 +60,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override object[] GetValues()
         {
-            return new object[] {Value};
+            return new object[] { Value };
         }
 
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectInteger(Id, Value);
         }
+
         public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
         {
             return new EffectInteger(this);
         }
+
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);
@@ -104,7 +105,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             unchecked
             {
-                return (base.GetHashCode()*397) ^ m_value.GetHashCode();
+                return (base.GetHashCode() * 397) ^ m_value.GetHashCode();
             }
         }
 

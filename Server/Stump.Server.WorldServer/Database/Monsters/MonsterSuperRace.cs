@@ -1,5 +1,4 @@
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
@@ -39,11 +38,11 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
         public void AssignFields(object d2oObject)
         {
-            var race = (DofusProtocol.D2oClasses.MonsterSuperRace) d2oObject;
+            var race = (DofusProtocol.D2oClasses.MonsterSuperRace)d2oObject;
             Id = race.id;
             NameId = race.nameId;
         }
 
-        #endregion
+        #endregion IAssignedByD2O Members
     }
 }

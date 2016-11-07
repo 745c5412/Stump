@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -15,7 +15,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public Character Owner
         {
             get;
-            private set;
         }
 
         public bool IsLoaded
@@ -45,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public int GetMerchantTax()
         {
-            var resultTax = Items.Aggregate<KeyValuePair<int, MerchantItem>, double>(0, (current, item) => current + (item.Value.Price*item.Value.Stack));
+            var resultTax = Items.Aggregate<KeyValuePair<int, MerchantItem>, double>(0, (current, item) => current + (item.Value.Price * item.Value.Stack));
 
             resultTax = (resultTax * 0.01);
 
@@ -85,8 +84,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             Owner.Inventory.AddItem(newItem);
 
-            WorldServer.Instance.IOTaskPool.AddMessage(Save);
-
             return true;
         }
 
@@ -99,13 +96,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 var playerItem = Owner.Inventory.TryGetItem(item.Template, item.Effects);
                 if (playerItem != null)
-                    StoreItem(playerItem, (int) (quantity - item.Stack), price);
+                    StoreItem(playerItem, (int)(quantity - item.Stack), price);
             }
 
             if (quantity > 0 && quantity < item.Stack)
-                TakeBack(item, (int) (item.Stack - quantity));
+                TakeBack(item, (int)(item.Stack - quantity));
 
-            WorldServer.Instance.IOTaskPool.AddMessage(Save);
+            InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.Client, item);
 
             return true;
         }

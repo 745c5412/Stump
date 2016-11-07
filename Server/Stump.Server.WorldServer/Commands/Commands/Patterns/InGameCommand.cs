@@ -7,7 +7,7 @@ namespace Stump.Server.WorldServer.Commands.Commands.Patterns
     {
         public override void Execute(TriggerBase trigger)
         {
-            if (!( trigger is GameTrigger ))
+            if (!(trigger is GameTrigger))
             {
                 trigger.ReplyError("This command can only be executed in game");
                 return;
@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Commands.Commands.Patterns
     {
         public override void Execute(TriggerBase trigger)
         {
-            if (!( trigger is GameTrigger ))
+            if (!(trigger is GameTrigger))
             {
                 trigger.ReplyError("This command can only be executed in game");
                 return;

@@ -1,9 +1,9 @@
+using DofusProtocolBuilder.Parsing;
+using DofusProtocolBuilder.XmlPatterns;
 using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using DofusProtocolBuilder.Parsing;
-using DofusProtocolBuilder.XmlPatterns;
 
 namespace DofusProtocolBuilder.Profiles
 {
@@ -39,7 +39,7 @@ namespace DofusProtocolBuilder.Profiles
                         // convert method ReadUnsingedByte to ReadByte (default is a byte unsigned)
 
                         {@"flash\.geom\.", string.Empty},
-                        // delete "flash.geom" 
+                        // delete "flash.geom"
 
                         {@"Vector\.([\w_\d]+) = new ([\w_\d]+)();", "$1 = new List<$2>();"},
                         // convert "Vector." to List (C#) (and its props)
@@ -71,9 +71,9 @@ namespace DofusProtocolBuilder.Profiles
             if (results.Length != 1)
                 return null;
 
-            var deserializer = new XmlSerializer(typeof (XmlMessage));
+            var deserializer = new XmlSerializer(typeof(XmlMessage));
 
-            return (XmlMessage) deserializer.Deserialize(XmlReader.Create(results[0]));
+            return (XmlMessage)deserializer.Deserialize(XmlReader.Create(results[0]));
         }
 
         public override void ExecuteProfile(Parser parser)
@@ -85,12 +85,12 @@ namespace DofusProtocolBuilder.Profiles
             var builder = new XmlMessageBuilder(parser);
 
             XmlWriter writer = XmlWriter.Create(xmlfile, new XmlWriterSettings
-                                                             {
-                                                                 OmitXmlDeclaration = true,
-                                                                 Indent = true,
-                                                                 IndentChars = "\t",
-                                                                 NamespaceHandling = NamespaceHandling.OmitDuplicates,
-                                                             });
+            {
+                OmitXmlDeclaration = true,
+                Indent = true,
+                IndentChars = "\t",
+                NamespaceHandling = NamespaceHandling.OmitDuplicates,
+            });
             builder.WriteToXml(writer);
             writer.Close();
 

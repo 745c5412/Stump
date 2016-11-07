@@ -1,6 +1,5 @@
-using System;
-using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Plugins;
+using System;
 
 namespace Stump.Plugins.EditorPlugin
 {
@@ -46,7 +45,6 @@ namespace Stump.Plugins.EditorPlugin
 
         public override void Dispose()
         {
-
         }
 
         public static Plugin CurrentPlugin

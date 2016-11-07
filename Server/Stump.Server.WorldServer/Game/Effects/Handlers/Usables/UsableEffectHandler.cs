@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
     public abstract class UsableEffectHandler : EffectHandler
     {
         protected UsableEffectHandler(EffectBase effect, Character target, BasePlayerItem item)
-            : base (effect)
+            : base(effect)
         {
             Target = target;
             Item = item;

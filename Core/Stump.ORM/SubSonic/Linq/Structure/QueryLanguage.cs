@@ -2,11 +2,10 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
-using System;
-using System.Linq.Expressions;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Linq.Translation;
+using System;
+using System.Linq.Expressions;
 
 namespace Stump.ORM.SubSonic.Linq.Structure
 {
@@ -15,16 +14,19 @@ namespace Stump.ORM.SubSonic.Linq.Structure
     /// </summary>
     public abstract class QueryLanguage : IQueryLanguage
     {
+        private IDataProvider _provider;
 
-        IDataProvider _provider;
-        public QueryLanguage(IDataProvider provider) {
+        public QueryLanguage(IDataProvider provider)
+        {
             _provider = provider;
         }
 
         public string ClientName { get; set; }
 
-        public IDataProvider DataProvider {
-            get {
+        public IDataProvider DataProvider
+        {
+            get
+            {
                 return _provider;
             }
             set
@@ -32,7 +34,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 _provider = value;
             }
         }
-        
+
         public virtual string Quote(string name)
         {
             return name;
@@ -51,6 +53,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case TypeCode.Empty:
                 case TypeCode.DBNull:
                     return false;
+
                 case TypeCode.Object:
                     return
                         type == typeof(DateTime) ||
@@ -78,6 +81,7 @@ namespace Stump.ORM.SubSonic.Linq.Structure
                 case (ExpressionType)DbExpressionType.AggregateSubquery:
                 case (ExpressionType)DbExpressionType.Aggregate:
                     return true;
+
                 default:
                     return false;
             }

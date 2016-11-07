@@ -1,5 +1,5 @@
-using System.Xml;
 using DofusProtocolBuilder.Parsing;
+using System.Xml;
 
 namespace DofusProtocolBuilder.XmlPatterns
 {

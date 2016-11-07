@@ -5,20 +5,19 @@ using System.Threading;
 
 namespace UplauncherReplacer
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var pid = int.Parse(args[0]);
             var temp = args[1];
             var replace = args[2];
 
-
             try
             {
                 var process = Process.GetProcessById(pid);
 
-                process.WaitForExit(10*1000);
+                process.WaitForExit(10 * 1000);
             }
             catch
             {

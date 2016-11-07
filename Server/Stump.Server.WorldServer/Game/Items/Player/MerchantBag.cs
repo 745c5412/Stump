@@ -1,25 +1,27 @@
 ﻿#region License GNU GPL
+
 // MerchantBagOffline.cs
-// 
+//
 // Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
+//
+// This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
 // either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program;
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#endregion License GNU GPL
+
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -43,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
         /// <summary>
-        /// Must be saved 
+        /// Must be saved
         /// </summary>
         public bool IsDirty
         {
@@ -51,10 +53,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             set;
         }
 
-        public override int Count
-        {
-            get { return Items.Count(x => x.Value.Stack != 0); }
-        }
+        public override int Count => Items.Count(x => x.Value.Stack != 0);
 
         protected override void OnItemStackChanged(MerchantItem item, int difference, bool removeMsg = true)
         {
@@ -72,19 +71,21 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.OnItemAdded(item, false);
         }
 
-        public override int RemoveItem(MerchantItem item, int amount, bool delete = true)
+        public override int RemoveItem(MerchantItem item, int amount, bool delete = true, bool removeItemMsg = true)
         {
-            if (!HasItem(item))
+            if (!HasItem(item) || item.Stack == 0)
                 return 0;
 
             if (item.Stack <= amount)
             {
-                item.StackSold += item.Stack;
+                var removed = item.Stack;
+
+                item.StackSold += removed;
                 item.Stack = 0;
 
                 NotifyItemRemoved(item, false);
 
-                return (int)item.Stack;
+                return (int)removed;
             }
 
             UnStackItem(item, amount);
@@ -105,8 +106,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
             else
             {
-                item.Stack -= (uint) amount;
-                item.StackSold += (uint) amount;
+                item.Stack -= (uint)amount;
+                item.StackSold += (uint)amount;
 
                 NotifyItemStackChanged(item, -amount, stackMsg);
             }
@@ -129,9 +130,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Items = records.Select(entry => new MerchantItem(entry)).ToDictionary(entry => entry.Guid);
         }
 
-        public override void Save()
+        public override void Save(ORM.Database database)
         {
-            base.Save();
+            base.Save(database);
 
             IsDirty = false;
         }

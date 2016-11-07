@@ -1,37 +1,34 @@
-
-
 // Generated on 03/02/2014 20:43:00
-using System;
+using Stump.Core.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
     public class HumanInformations
     {
         public const short Id = 157;
+
         public virtual short TypeId
         {
             get { return Id; }
         }
-        
+
         public Types.ActorRestrictionsInformations restrictions;
         public bool sex;
         public IEnumerable<Types.HumanOption> options;
-        
+
         public HumanInformations()
         {
         }
-        
+
         public HumanInformations(Types.ActorRestrictionsInformations restrictions, bool sex, IEnumerable<Types.HumanOption> options)
         {
             this.restrictions = restrictions;
             this.sex = sex;
             this.options = options;
         }
-        
+
         public virtual void Serialize(IDataWriter writer)
         {
             restrictions.Serialize(writer);
@@ -41,17 +38,16 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in options)
             {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-                 options_count++;
+                writer.WriteShort(entry.TypeId);
+                entry.Serialize(writer);
+                options_count++;
             }
             var options_after = writer.Position;
             writer.Seek((int)options_before);
             writer.WriteUShort((ushort)options_count);
             writer.Seek((int)options_after);
-
         }
-        
+
         public virtual void Deserialize(IDataReader reader)
         {
             restrictions = new Types.ActorRestrictionsInformations();
@@ -61,17 +57,15 @@ namespace Stump.DofusProtocol.Types
             var options_ = new Types.HumanOption[limit];
             for (int i = 0; i < limit; i++)
             {
-                 options_[i] = Types.ProtocolTypeManager.GetInstance<Types.HumanOption>(reader.ReadShort());
-                 options_[i].Deserialize(reader);
+                options_[i] = Types.ProtocolTypeManager.GetInstance<Types.HumanOption>(reader.ReadShort());
+                options_[i].Deserialize(reader);
             }
             options = options_;
         }
-        
+
         public virtual int GetSerializationSize()
         {
             return restrictions.GetSerializationSize() + sizeof(bool) + sizeof(short) + options.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
-        
     }
-    
 }

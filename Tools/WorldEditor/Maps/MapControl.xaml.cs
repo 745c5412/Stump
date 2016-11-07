@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Stump.DofusProtocol.D2oClasses.Tools.Dlm;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Stump.DofusProtocol.D2oClasses.Tools.Dlm;
 
 namespace WorldEditor.Maps
 {
@@ -63,7 +54,6 @@ namespace WorldEditor.Maps
 
         private void ZoomAndPanControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-
             e.Handled = true;
 
             if (e.Delta > 0)

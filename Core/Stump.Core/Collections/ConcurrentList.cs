@@ -83,7 +83,7 @@ namespace Stump.Core.Collections
         {
             if (m_requiresSync)
                 lock (m_syncRoot)
-                    foreach(var item in items)
+                    foreach (var item in items)
                         m_underlyingQueue.Enqueue(item);
             else
                 foreach (var item in items)
@@ -136,8 +136,6 @@ namespace Stump.Core.Collections
                 m_underlyingList.RemoveAt(index);
             }
         }
-
-
 
         public T this[int index]
         {

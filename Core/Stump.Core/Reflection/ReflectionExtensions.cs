@@ -1,8 +1,8 @@
+using Stump.Core.Extensions;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Stump.Core.Extensions;
 
 namespace Stump.Core.Reflection
 {
@@ -95,7 +95,7 @@ namespace Stump.Core.Reflection
             {
                 if (methodInfo.GetGenericArguments().Length != genericArgumentsCount)
                     continue;
-                
+
                 // Check that the parameter counts and types match, with 'loose' matching on generic parameters
                 ParameterInfo[] parameterInfos = methodInfo.GetParameters();
                 if (parameterInfos.Length == parameterTypes.Length)
@@ -142,7 +142,7 @@ namespace Stump.Core.Reflection
                 return thisType.GetElementType().IsSimilarType(type.GetElementType());
 
             // If the types are identical, or they're both generic parameters or the special 'T' type, treat as a match
-            if (thisType == type || ( ( thisType.IsGenericParameter || thisType == typeof(T) ) && ( type.IsGenericParameter || type == typeof(T) ) ))
+            if (thisType == type || ((thisType.IsGenericParameter || thisType == typeof(T)) && (type.IsGenericParameter || type == typeof(T))))
                 return true;
 
             // Handle any generic arguments

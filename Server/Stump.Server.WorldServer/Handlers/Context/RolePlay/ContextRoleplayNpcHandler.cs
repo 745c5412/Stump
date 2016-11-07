@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
@@ -7,6 +6,7 @@ using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             if (npc == null)
                 return;
 
-            npc.InteractWith((NpcActionTypeEnum) message.npcActionId, client.Character);
+            npc.InteractWith((NpcActionTypeEnum)message.npcActionId, client.Character);
         }
 
         [WorldHandler(NpcDialogReplyMessage.Id)]

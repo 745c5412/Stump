@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using Stump.Server.BaseServer.Database;
+﻿using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.World;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using MerchantSpawn = Stump.Server.WorldServer.Database.World.WorldMapMerchantRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
@@ -14,7 +14,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
     {
         private Dictionary<int, MerchantSpawn> m_merchantSpawns;
         private readonly List<Merchant> m_activeMerchants = new List<Merchant>();
-
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
@@ -86,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
         {
             foreach (var merchant in m_activeMerchants.Where(merchant => merchant.IsRecordDirty))
             {
-                merchant.Save();
+                merchant.Save(Database);
             }
         }
     }

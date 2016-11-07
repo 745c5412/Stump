@@ -2,12 +2,11 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 //Original code created by Matt Warren: http://iqtoolkit.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=19725
 
-
+using Stump.ORM.SubSonic.Linq.Structure;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Stump.ORM.SubSonic.Linq.Structure;
 
 namespace Stump.ORM.SubSonic.Linq.Translation
 {
@@ -16,7 +15,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
     /// </summary>
     public class RedundantColumnRemover : DbExpressionVisitor
     {
-        Dictionary<ColumnExpression, ColumnExpression> map;
+        private Dictionary<ColumnExpression, ColumnExpression> map;
 
         private RedundantColumnRemover()
         {
@@ -40,7 +39,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
 
         protected override Expression VisitSelect(SelectExpression select)
         {
-            select = (SelectExpression) base.VisitSelect(select);
+            select = (SelectExpression)base.VisitSelect(select);
 
             // look for redundant column declarations
             List<ColumnDeclaration> cols = select.Columns.OrderBy(c => c.Name).ToList();
@@ -81,7 +80,7 @@ namespace Stump.ORM.SubSonic.Linq.Translation
             return select;
         }
 
-        bool SameExpression(Expression a, Expression b)
+        private bool SameExpression(Expression a, Expression b)
         {
             if (a == b) return true;
             ColumnExpression ca = a as ColumnExpression;

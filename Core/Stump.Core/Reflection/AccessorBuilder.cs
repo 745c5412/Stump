@@ -37,7 +37,7 @@ namespace Stump.Core.Reflection
         /// </summary>
         public delegate void SetFieldValueUnboundDelegate(object instance, object value);
 
-        #endregion
+        #endregion Delegates
 
         //note: first argument for bound delegates is the object itself,
         //and we generate methods that receives this first parameter even if delegate signature "omits" it
@@ -65,7 +65,6 @@ namespace Stump.Core.Reflection
                                               fieldType,
                                               new[] { instanceType },
                                               instanceType);
-
 
             ILGenerator getterIL = getterDef.GetILGenerator();
 
@@ -95,16 +94,16 @@ namespace Stump.Core.Reflection
                                                " can not be casted to " + fieldType.FullName);
 
             //build setter
-//            var setterDef = new DynamicMethod(instanceType.Name + "_" + fieldName + "_Setter",
-//                                              typeof (void),
-//                                              new[] { typeof(object), typeof(object) },
-//                                              instanceType);
+            //            var setterDef = new DynamicMethod(instanceType.Name + "_" + fieldName + "_Setter",
+            //                                              typeof (void),
+            //                                              new[] { typeof(object), typeof(object) },
+            //                                              instanceType);
 
-//            ILGenerator setterIL = setterDef.GetILGenerator();
-//            setterIL.Emit(OpCodes.Ldarg_0); //we expect in top of the stack object instance
-//            setterIL.Emit(OpCodes.Ldarg_1);
-//            setterIL.Emit(OpCodes.Stfld, fInfo);
-//            setterIL.Emit(OpCodes.Ret); //note: we have to return, even if method is void
+            //            ILGenerator setterIL = setterDef.GetILGenerator();
+            //            setterIL.Emit(OpCodes.Ldarg_0); //we expect in top of the stack object instance
+            //            setterIL.Emit(OpCodes.Ldarg_1);
+            //            setterIL.Emit(OpCodes.Stfld, fInfo);
+            //            setterIL.Emit(OpCodes.Ret); //note: we have to return, even if method is void
 
             var setterDef = new DynamicMethod(
                 instanceType.Name + "_" + fieldName + "_Setter"
@@ -148,7 +147,7 @@ namespace Stump.Core.Reflection
 
             getter =
                 (GetFieldValueUnboundDelegate)
-                DynamicExtension.CreateDelegate(getterDef, typeof (GetFieldValueUnboundDelegate));
+                DynamicExtension.CreateDelegate(getterDef, typeof(GetFieldValueUnboundDelegate));
 
             return getter;
         }
@@ -168,7 +167,7 @@ namespace Stump.Core.Reflection
 
             var getter =
                 (GetFieldValueBoundDelegate)
-                getterDef.CreateDelegate(typeof (GetFieldValueBoundDelegate), instance);
+                getterDef.CreateDelegate(typeof(GetFieldValueBoundDelegate), instance);
 
             return getter;
         }
@@ -185,7 +184,7 @@ namespace Stump.Core.Reflection
 
             setter =
                 (SetFieldValueUnboundDelegate)
-                DynamicExtension.CreateDelegate(setterDef, typeof (SetFieldValueUnboundDelegate));
+                DynamicExtension.CreateDelegate(setterDef, typeof(SetFieldValueUnboundDelegate));
 
             return setter;
         }
@@ -206,7 +205,7 @@ namespace Stump.Core.Reflection
 
             setter =
                 (SetFieldValueBoundDelegate)
-                setterDef.CreateDelegate(typeof (SetFieldValueBoundDelegate), instance);
+                setterDef.CreateDelegate(typeof(SetFieldValueBoundDelegate), instance);
 
             return setter;
         }

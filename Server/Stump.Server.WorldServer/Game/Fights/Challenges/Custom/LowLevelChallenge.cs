@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -24,17 +24,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             }
         }
 
-        public override bool IsEligible()
-        {
-            return Fight.GetAllCharacters().Count() > 1;
-        }
+        public override bool IsEligible() => Fight.GetAllCharacters().Count() > 1;
 
         private void OnDead(FightActor fighter, FightActor killer)
         {
             if (!(killer is CharacterFighter))
                 return;
 
-            if (killer.Team.Fighters.OrderBy(x => x.Level).FirstOrDefault(x => x.IsAlive()) == killer)
+            if (killer.Team.Fighters.OrderBy(x => x.Level).FirstOrDefault(x => x.IsAlive() && x is CharacterFighter) == killer)
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);

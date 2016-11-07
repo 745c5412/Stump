@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Fights.Challenges;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -15,15 +16,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.IsFighting())
                 return;
 
-            var challenge = client.Character.Fight.Challenge;
+            var challenge = client.Character.Fight.Challenges.FirstOrDefault(x => x.Id == message.challengeId);
 
-            if (challenge == null)
+            if (challenge?.Target == null)
                 return;
 
-            if (challenge.Id != message.challengeId)
-                return;
-
-            if (challenge.Target == null)
+            if (!challenge.Target.IsVisibleFor(client.Character))
                 return;
 
             SendChallengeTargetsListMessage(challenge.Fight.Clients, new[] { challenge.Target.Id }, new[] { challenge.Target.Cell.Id });
