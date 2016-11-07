@@ -1350,7 +1350,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             m_ownedMounts = MountManager.Instance.GetMounts(Id).Select(x => new Mount(this, x)).ToList();
             EquippedMount = m_ownedMounts.FirstOrDefault(x => x.Id == Record.EquippedMount);
-            EquippedMount?.ApplyMountEffects();
+            if (IsRiding && EquippedMount != null)
+                EquippedMount.ApplyMountEffects();
 
             if (EquippedMount == null && Record.EquippedMount != null)
                 Record.EquippedMount = null;
