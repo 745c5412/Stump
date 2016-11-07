@@ -1411,7 +1411,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool EquipMount(Mount mount)
         {
             if (mount.Owner != this)
-                return false;
+                SetOwnedMount(mount);
 
             EquippedMount = mount;
 
