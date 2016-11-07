@@ -898,7 +898,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (forceApply)
                     handler.Operation = ItemEffectHandler.HandlerOperation.APPLY;
 
-                if (GetEquipedItems().Any(x => x != item && x.GetExoEffects().ToList().Exists(y => item.GetExoEffects().Any(z => z == y)))
+                if (GetEquipedItems().Any(x => x != item && x.GetExoEffects().ToList().Exists(y => item.GetExoEffects().Any(z => z.EffectId == y.EffectId)))
                     && item.GetExoEffects().Any(x => x == handler.Effect))
                 {
                     exoError = true;

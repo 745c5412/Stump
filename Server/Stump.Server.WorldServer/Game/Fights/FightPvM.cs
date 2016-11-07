@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             AddChallenge(challenge);
 
-            if (Map.IsDungeon())
+            if (Map.IsDungeon() || IsPvMArenaFight)
             {
                 challenge = ChallengeManager.Instance.GetRandomChallenge(this);
                 

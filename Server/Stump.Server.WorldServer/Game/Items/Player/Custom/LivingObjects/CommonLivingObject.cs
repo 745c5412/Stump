@@ -14,8 +14,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             0, 10, 21, 33, 46, 60, 75, 91, 108, 126, 145, 165, 186, 208, 231, 255,
             280, 306, 333, 361
         };
-
-        private LivingObjectRecord m_record;
         private EffectInteger m_categoryEffect;
         private EffectInteger m_experienceEffect;
         private EffectInteger m_moodEffect;
@@ -52,17 +50,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
             if ((m_categoryEffect = (EffectInteger)
                 (Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LivingObjectCategory))) != null) return;
-            m_categoryEffect = new EffectInteger(EffectsEnum.Effect_LivingObjectCategory, (short)m_record.ItemType);
+            m_categoryEffect = new EffectInteger(EffectsEnum.Effect_LivingObjectCategory, (short)LivingObjectRecord.ItemType);
             Effects.Add(m_categoryEffect);
 
             OnObjectModified();
         }
 
-        protected LivingObjectRecord LivingObjectRecord
-        {
-            get { return m_record; }
-            set { m_record = value; }
-        }
+        protected LivingObjectRecord LivingObjectRecord { get; set; }
 
         protected EffectInteger SelectedLevelEffect
         {
@@ -169,8 +163,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             {
                 var icon = Template.IconId;
 
-                if (m_record.Moods.Count > Mood && m_record.Moods[Mood].Count > SelectedLevel - 1)
-                    icon = m_record.Moods[Mood][SelectedLevel - 1];
+                if (LivingObjectRecord.Moods.Count > Mood && LivingObjectRecord.Moods[Mood].Count > SelectedLevel - 1)
+                    icon = LivingObjectRecord.Moods[Mood][SelectedLevel - 1];
 
                 return icon;
             }
@@ -182,8 +176,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             {
                 var skin = Template.AppearanceId;
 
-                if (SelectedLevel > 0 && m_record.Skins.Count > SelectedLevel - 1)
-                    skin = (uint)m_record.Skins[SelectedLevel - 1];
+                if (SelectedLevel > 0 && LivingObjectRecord.Skins.Count > SelectedLevel - 1)
+                    skin = (uint)LivingObjectRecord.Skins[SelectedLevel - 1];
 
                 return skin;
             }

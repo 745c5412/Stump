@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
@@ -39,7 +40,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         #region Functions
 
-        public EffectBase[] GetExoEffects() => Effects.Where(x => !Template.Effects.Exists(y => x.EffectId == y.EffectId)).ToArray();
+        public EffectBase[] GetExoEffects() => Effects.Where(x => !Template.Effects.Exists(y => x.EffectId == y.EffectId) && Template.Id != MountTemplate.DEFAULT_SCROLL_ITEM)
+            .Where(x => x.EffectId == EffectsEnum.Effect_AddMP_128 || x.EffectId == EffectsEnum.Effect_AddAP_111 || x.EffectId == EffectsEnum.Effect_AddRange_136).ToArray();
 
         public virtual bool AreConditionFilled(Character character)
         {
@@ -205,10 +207,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 (int)Stack);
         }
 
-        public override ObjectItem GetObjectItem()
-        {
-            return m_objectItemValidator;
-        }
+        public override ObjectItem GetObjectItem() => m_objectItemValidator;
 
         /// <summary>
         /// Call it each time you modify part of the item
