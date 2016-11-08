@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
                 return false;
 
             if (dialoguer.IsBusy())
-                dialoguer?.Dialog.Close();
+                dialoguer?.Dialog?.Close();
 
             return Actions.Count > 0 && Actions.Any(entry => entry.ActionType.Contains(action) && entry.CanExecute(this, dialoguer));
         }
