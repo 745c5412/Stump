@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game
             new ConcurrentDictionary<int, Character>(Environment.ProcessorCount, ClientManager.MaxConcurrentConnections);
 
         private readonly ConcurrentDictionary<string, Character> m_charactersByName =
-            new ConcurrentDictionary<string, Character>(Environment.ProcessorCount, ClientManager.MaxConcurrentConnections);
+            new ConcurrentDictionary<string, Character>(Environment.ProcessorCount, ClientManager.MaxConcurrentConnections, StringComparer.OrdinalIgnoreCase);
 
         private readonly ConcurrentDictionary<int, WorldAccount> m_connectedAccounts =
             new ConcurrentDictionary<int, WorldAccount>();
