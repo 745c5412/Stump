@@ -18,6 +18,7 @@
 
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using System;
 
@@ -84,6 +85,27 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             get;
             set;
+        }
+
+        [Ignore]
+        public uint MaxCastPerTurn
+        {
+            get
+            {
+                if (ApCost >= 4)
+                    return 1;
+
+                if (ApCost >= 3 && Level >= 60)
+                    return 2;
+
+                if (ApCost >= 3)
+                    return 1;
+
+                if (Level >= 60)
+                    return 2;
+
+                return 3;
+            }
         }
 
         public override void AssignFields(object d2oObject)

@@ -29,6 +29,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
     {
         private int m_criticalWeaponBonus;
         private int m_damageTakenBeforeFight;
+        private int m_weaponUses;
         private bool m_isUsingWeapon;
 
         public CharacterFighter(Character character, FightTeam team)
@@ -147,6 +148,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #endregion Leave
 
+        public override void ResetUsedPoints()
+        {
+            base.ResetUsedPoints();
+            m_weaponUses = 0;
+        }
+
         public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
         {
             if (!IsFighterTurn() && !force)
@@ -235,6 +242,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
+        protected override void OnWeaponUsed(WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
+        {
+            m_weaponUses++;
+            base.OnWeaponUsed(weapon, cell, critical, silentCast);
+        }
+
         public override SpellCastResult CanCastSpell(Spell spell, Cell cell)
         {
             var result = base.CanCastSpell(spell, cell);
@@ -302,6 +315,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (point.ManhattanDistanceTo(Position.Point) > weapon.WeaponRange ||
                 point.ManhattanDistanceTo(Position.Point) < weapon.MinRange)
                 return false;
+
+            if (m_weaponUses >= weapon.MaxCastPerTurn)
+            {
+                Character.SendServerMessage($"Vous ne pouvez pas frapper plus de {weapon.MaxCastPerTurn} fois au Corps à Corps par tour", Color.Red);
+                return false;
+            }
 
             return AP >= weapon.ApCost && Fight.CanBeSeen(cell, Position.Cell);
         }
