@@ -2,7 +2,9 @@
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Results;
+using Stump.Server.WorldServer.Game.Fights.Results.Data;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using System.Collections.Generic;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 
 namespace Stump.Server.WorldServer.Game.Arena
@@ -32,19 +34,28 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             var amount = 0;
             var kamas = 0;
+            var xp = 0;
 
             if (CanLoot(Fighter.Team))
             {
                 amount = Fighter.Character.ComputeWonArenaTokens(Rank);
                 kamas = Fighter.Character.ComputeWonArenaKamas();
+                xp = Fighter.Character.ComputeWonArenaXP();
             }
 
             var items = amount > 0 ? new[] { (short)ItemIdEnum.Kolizeton, (short)amount } : new short[0];
 
             var loot = new DofusProtocol.Types.FightLoot(items, kamas);
+            var xpData = new FightExperienceData(Fighter.Character)
+            {
+                ShowExperience = true,
+                ShowExperienceFightDelta = true,
+                ShowExperienceLevelFloor = true,
+                ShowExperienceNextLevelFloor = true
+            };
+            xpData.ExperienceFightDelta += xp;
 
-            return new FightResultPlayerListEntry((short)Outcome, loot, Id, Alive, (byte)Level,
-                new FightResultAdditionalData[0]);
+            return new FightResultPlayerListEntry((short)Outcome, loot, Id, Alive, (byte)Level, new List<DofusProtocol.Types.FightResultAdditionalData> { xpData.GetFightResultAdditionalData() });
         }
 
         public override void Apply()

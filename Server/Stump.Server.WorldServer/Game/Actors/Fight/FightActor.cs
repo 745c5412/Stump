@@ -163,9 +163,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, Fight.GetOneFighter(target));
 
-            var handler = SpellCasted;
-            if (handler != null)
-                handler(this, spell, target, critical, silentCast);
+            SpellCasted?.Invoke(this, spell, target, critical, silentCast);
         }
 
         protected virtual void OnSpellCasted(Spell spell, FightActor target, FightSpellCastCriticalEnum critical, bool silentCast)
@@ -182,17 +180,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
 
-            var handler = SpellCasted;
-            if (handler != null)
-                handler(this, spell, target.Cell, critical, silentCast);
+            SpellCasted?.Invoke(this, spell, target.Cell, critical, silentCast);
         }
 
         public event Action<FightActor, Spell, Cell> SpellCastFailed;
 
         protected virtual void OnSpellCastFailed(Spell spell, Cell cell)
         {
-            var handler = SpellCastFailed;
-            if (handler != null) handler(this, spell, cell);
+            SpellCastFailed?.Invoke(this, spell, cell);
         }
 
         public event Action<FightActor, WeaponTemplate, Cell, FightSpellCastCriticalEnum, bool> WeaponUsed;
@@ -215,16 +210,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnBuffAdded(Buff buff)
         {
-            var handler = BuffAdded;
-            if (handler != null) handler(this, buff);
+            BuffAdded?.Invoke(this, buff);
         }
 
         public event Action<FightActor, Buff> BuffRemoved;
 
         protected virtual void OnBuffRemoved(Buff buff)
         {
-            var handler = BuffRemoved;
-            if (handler != null) handler(this, buff);
+            BuffRemoved?.Invoke(this, buff);
         }
 
         public event Action<FightActor, FightActor> Dead;
@@ -1176,18 +1169,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
 
-            if (spell.CriticalFailureProbability != 0 && random.Next((int)spell.CriticalFailureProbability) == 0)
-                critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
-            else if (spell.CriticalHitProbability != 0 && random.Next((int)CalculateCriticRate(spell.CriticalHitProbability)) == 0)
+            if (spell.CriticalHitProbability != 0 && random.Next((int)CalculateCriticRate(spell.CriticalHitProbability)) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;
         }
 
-        public virtual int CalculateReflectedDamageBonus(int spellBonus)
-        {
-            return (int)(spellBonus * (1 + (Stats[PlayerFields.Wisdom].TotalSafe / 100d)) + Stats[PlayerFields.DamageReflection].TotalSafe);
-        }
+        public virtual int CalculateReflectedDamageBonus(int spellBonus) => (int)(spellBonus * (1 + (Stats[PlayerFields.Wisdom].TotalSafe / 100d)) + Stats[PlayerFields.DamageReflection].TotalSafe);
 
         public virtual bool RollAPLose(FightActor from, int value)
         {

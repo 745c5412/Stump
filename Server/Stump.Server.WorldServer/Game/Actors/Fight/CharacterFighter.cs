@@ -318,22 +318,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (m_weaponUses >= weapon.MaxCastPerTurn)
             {
-                Character.SendServerMessage($"Vous ne pouvez pas frapper plus de {weapon.MaxCastPerTurn} fois au Corps à Corps par tour", Color.Red);
+                Character.SendServerMessage($"Vous ne pouvez pas frapper plus de {weapon.MaxCastPerTurn} fois par tour avec cette arme", Color.Red);
                 return false;
             }
 
             return AP >= weapon.ApCost && Fight.CanBeSeen(cell, Position.Cell);
         }
 
-        public override Spell GetSpell(int id)
-        {
-            return Character.Spells.GetSpell(id);
-        }
+        public override Spell GetSpell(int id) => Character.Spells.GetSpell(id);
 
-        public override bool HasSpell(int id)
-        {
-            return Character.Spells.HasSpell(id);
-        }
+        public override bool HasSpell(int id) => Character.Spells.HasSpell(id);
 
         public bool IsSlaveTurn()
         {
@@ -361,10 +355,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
 
-            if (weapon.CriticalHitProbability != 0 && random.Next(weapon.CriticalFailureProbability) == 0)
-                critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
-            else if (weapon.CriticalHitProbability != 0 &&
-                     random.Next((int)CalculateCriticRate(weapon.CriticalHitProbability)) == 0)
+            if (weapon.CriticalHitProbability != 0 && random.Next((int)CalculateCriticRate(weapon.CriticalHitProbability)) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;
@@ -380,10 +371,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
         }
 
-        public override bool MustSkipTurn()
-        {
-            return base.MustSkipTurn() || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
-        }
+        public override bool MustSkipTurn() => base.MustSkipTurn()
+            || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
 
         public void EnterDisconnectedState()
         {

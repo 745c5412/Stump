@@ -1,7 +1,11 @@
+using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using System;
+using System.Globalization;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -22,45 +26,21 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         #region IFightResult Members
 
-        public bool Alive
-        {
-            get { return Fighter.IsAlive(); }
-        }
+        public bool Alive => Fighter.IsAlive();
 
-        public bool HasLeft
-        {
-            get { return Fighter.HasLeft(); }
-        }
+        public bool HasLeft => Fighter.HasLeft();
 
-        public int Id
-        {
-            get { return Fighter.Id; }
-        }
+        public int Id => Fighter.Id;
 
-        public int Prospecting
-        {
-            get { return Fighter.Stats[PlayerFields.Prospecting].Total; }
-        }
+        public int Prospecting => Fighter.Stats[PlayerFields.Prospecting].Total;
 
-        public int Wisdom
-        {
-            get { return Fighter.Stats[PlayerFields.Wisdom].Total; }
-        }
+        public int Wisdom => Fighter.Stats[PlayerFields.Wisdom].Total;
 
-        public int Level
-        {
-            get { return Fighter.Level; }
-        }
+        public int Level => Fighter.Level;
 
-        public virtual bool CanLoot(FightTeam team)
-        {
-            return false;
-        }
+        public virtual bool CanLoot(FightTeam team) => false;
 
-        public IFight Fight
-        {
-            get { return Fighter.Fight; }
-        }
+        public IFight Fight => Fighter.Fight;
 
         public FightLoot Loot
         {
@@ -74,10 +54,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             protected set;
         }
 
-        public virtual FightResultListEntry GetFightResultListEntry()
-        {
-            return new FightResultFighterListEntry((short)Outcome, Loot.GetFightLoot(), Id, Alive);
-        }
+        public virtual FightResultListEntry GetFightResultListEntry() => new FightResultFighterListEntry((short)Outcome, Loot.GetFightLoot(), Id, Alive);
 
         public virtual void Apply()
         {

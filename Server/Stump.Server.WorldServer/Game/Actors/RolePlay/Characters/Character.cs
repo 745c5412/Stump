@@ -2017,10 +2017,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return result > 0 ? result : 1;
         }
 
-        public int ComputeWonArenaKamas()
-        {
-            return (int)Math.Floor((50 * (Level * (Level / 200d))));
-        }
+        public int ComputeWonArenaKamas() => 50 * Level;
+
+        public int ComputeWonArenaXP() => 8000 * Level;
 
         public void UpdateArenaProperties(int rank, bool win)
         {
@@ -2048,6 +2047,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, ComputeWonArenaTokens(ArenaRank));
             Inventory.AddKamas(ComputeWonArenaKamas());
+            AddExperience(ComputeWonArenaXP());
         }
 
         public void SetArenaPenality(TimeSpan time)

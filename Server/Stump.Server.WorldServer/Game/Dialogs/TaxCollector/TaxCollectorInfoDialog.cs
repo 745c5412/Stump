@@ -17,19 +17,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
         public TaxCollectorNpc TaxCollector
         {
             get;
-            private set;
         }
 
         public Character Character
         {
             get;
-            private set;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_DIALOG; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_DIALOG;
 
         public void Close()
         {
