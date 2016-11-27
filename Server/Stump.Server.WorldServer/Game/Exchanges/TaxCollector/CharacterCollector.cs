@@ -26,6 +26,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 
         public override bool MoveItem(int id, int quantity)
         {
+            if (TaxCollector.IsFighting || !TaxCollector.IsInWorld)
+                return false;
+
             if (quantity >= 0)
             {
                 Character.SendSystemMessage(7, false); // Action invalide
@@ -51,6 +54,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 
         public override bool SetKamas(int amount)
         {
+            if (TaxCollector.IsFighting || !TaxCollector.IsInWorld)
+                return false;
+
             if (amount > 0)
                 return false;
 

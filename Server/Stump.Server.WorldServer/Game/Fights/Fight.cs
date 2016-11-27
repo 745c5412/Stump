@@ -45,6 +45,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        Guid UniqueId
+        {
+            get;
+        }
+
         Map Map
         {
             get;
@@ -454,6 +459,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected Fight(int id, Map fightMap, TBlueTeam defendersTeam, TRedTeam challengersTeam)
         {
             Id = id;
+            UniqueId = Guid.NewGuid();
             Map = fightMap;
             DefendersTeam = defendersTeam;
             DefendersTeam.Fight = this;
@@ -494,30 +500,21 @@ namespace Stump.Server.WorldServer.Game.Fights
         public int Id
         {
             get;
-            private set;
+        }
+
+        public Guid UniqueId
+        {
+            get;
         }
 
         public Map Map
         {
             get;
-            private set;
         }
 
-        public override Cell[] Cells
-        {
-            get
-            {
-                return Map.Cells;
-            }
-        }
+        public override Cell[] Cells => Map.Cells;
 
-        protected override IReadOnlyCollection<WorldObject> Objects
-        {
-            get
-            {
-                return Fighters;
-            }
-        }
+        protected override IReadOnlyCollection<WorldObject> Objects => Fighters;
 
         public abstract FightTypeEnum FightType
         {
@@ -529,10 +526,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        public virtual bool IsMultiAccountRestricted
-        {
-            get { return false; }
-        }
+        public virtual bool IsMultiAccountRestricted => false;
 
         public FightState State
         {
@@ -549,7 +543,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         public DateTime CreationTime
         {
             get;
-            private set;
         }
 
         public DateTime StartTime
@@ -564,26 +557,18 @@ namespace Stump.Server.WorldServer.Game.Fights
             protected set;
         }
 
-        FightTeam IFight.ChallengersTeam
-        {
-            get { return ChallengersTeam; }
-        }
+        FightTeam IFight.ChallengersTeam => ChallengersTeam;
 
-        FightTeam IFight.DefendersTeam
-        {
-            get { return DefendersTeam; }
-        }
+        FightTeam IFight.DefendersTeam => DefendersTeam;
 
         public TRedTeam ChallengersTeam
         {
             get;
-            private set;
         }
 
         public TBlueTeam DefendersTeam
         {
             get;
-            private set;
         }
 
         public FightTeam Winners
@@ -607,13 +592,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         public TimeLine TimeLine
         {
             get;
-            private set;
         }
 
-        public FightActor FighterPlaying
-        {
-            get { return TimeLine.Current; }
-        }
+        public FightActor FighterPlaying => TimeLine.Current;
 
         private List<DefaultChallenge> m_challenges = new List<DefaultChallenge>();
 
@@ -625,10 +606,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             protected set;
         }
 
-        public TimeSpan TurnTimeLeft
-        {
-            get { return TurnStartTime + TimeSpan.FromMilliseconds(FightConfiguration.TurnTime) - DateTime.Now; }
-        }
+        public TimeSpan TurnTimeLeft => TurnStartTime + TimeSpan.FromMilliseconds(FightConfiguration.TurnTime) - DateTime.Now;
 
         public ReadyChecker ReadyChecker
         {
@@ -666,18 +644,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         public FightLoot TaxCollectorLoot
         {
             get;
-            private set;
         }
 
-        public virtual bool IsDeathTemporarily
-        {
-            get { return false; }
-        }
+        public virtual bool IsDeathTemporarily => false;
 
-        public virtual bool CanKickPlayer
-        {
-            get { return true; }
-        }
+        public virtual bool CanKickPlayer => true;
 
         public bool AIDebugMode
         {
@@ -807,9 +778,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 fighter.FightStartPosition = fighter.Position.Clone();
             }
 
-            var handler = FightStarted;
-            if (handler != null)
-                handler(this);
+            FightStarted?.Invoke(this);
         }
 
         public event Action<IFight> FightEnded;
@@ -832,17 +801,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             Dispose();
 
-            var handler = FightEnded;
-            if (handler != null)
-                handler(this);
+            FightEnded?.Invoke(this);
         }
 
         public event FightWinnersDelegate WinnersDetermined;
 
         protected virtual void OnWinnersDetermined(FightTeam winners, FightTeam losers, bool draw)
         {
-            var handler = WinnersDetermined;
-            if (handler != null) handler(this, winners, losers, draw);
+            WinnersDetermined?.Invoke(this, winners, losers, draw);
         }
 
         protected virtual void DeterminsWinners()
@@ -883,23 +849,16 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected void GenerateResults()
         {
-            var handler = GeneratingResults;
-            if (handler != null)
-                handler(this);
+            GeneratingResults?.Invoke(this);
 
             var results = GetResults();
 
-            var handler2 = ResultsGenerated;
-            if (handler2 != null)
-                handler2(this, results);
+            ResultsGenerated?.Invoke(this, results);
 
             Results = results;
         }
 
-        protected virtual List<IFightResult> GetResults()
-        {
-            return new List<IFightResult>();
-        }
+        protected virtual List<IFightResult> GetResults() => new List<IFightResult>();
 
         protected virtual IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver,
             out IFightResult leaverResult)

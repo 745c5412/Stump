@@ -29,6 +29,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
     {
         private int m_criticalWeaponBonus;
         private int m_damageTakenBeforeFight;
+        private int m_weaponUses;
         private bool m_isUsingWeapon;
 
         public CharacterFighter(Character character, FightTeam team)
@@ -147,6 +148,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #endregion Leave
 
+        public override void ResetUsedPoints()
+        {
+            base.ResetUsedPoints();
+            m_weaponUses = 0;
+        }
+
         public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
         {
             if (!IsFighterTurn() && !force)
@@ -235,6 +242,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
+        protected override void OnWeaponUsed(WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
+        {
+            m_weaponUses++;
+            base.OnWeaponUsed(weapon, cell, critical, silentCast);
+        }
+
         public override SpellCastResult CanCastSpell(Spell spell, Cell cell)
         {
             var result = base.CanCastSpell(spell, cell);
@@ -303,18 +316,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 point.ManhattanDistanceTo(Position.Point) < weapon.MinRange)
                 return false;
 
+            if (m_weaponUses >= weapon.MaxCastPerTurn)
+            {
+                Character.SendServerMessage($"Vous ne pouvez pas frapper plus de {weapon.MaxCastPerTurn} fois par tour avec cette arme", Color.Red);
+                return false;
+            }
+
             return AP >= weapon.ApCost && Fight.CanBeSeen(cell, Position.Cell);
         }
 
-        public override Spell GetSpell(int id)
-        {
-            return Character.Spells.GetSpell(id);
-        }
+        public override Spell GetSpell(int id) => Character.Spells.GetSpell(id);
 
-        public override bool HasSpell(int id)
-        {
-            return Character.Spells.HasSpell(id);
-        }
+        public override bool HasSpell(int id) => Character.Spells.HasSpell(id);
 
         public bool IsSlaveTurn()
         {
@@ -342,10 +355,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
 
-            if (weapon.CriticalHitProbability != 0 && random.Next(weapon.CriticalFailureProbability) == 0)
-                critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
-            else if (weapon.CriticalHitProbability != 0 &&
-                     random.Next((int)CalculateCriticRate(weapon.CriticalHitProbability)) == 0)
+            if (weapon.CriticalHitProbability != 0 && random.Next((int)CalculateCriticRate(weapon.CriticalHitProbability)) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;
@@ -361,10 +371,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
         }
 
-        public override bool MustSkipTurn()
-        {
-            return base.MustSkipTurn() || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
-        }
+        public override bool MustSkipTurn() => base.MustSkipTurn()
+            || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
 
         public void EnterDisconnectedState()
         {

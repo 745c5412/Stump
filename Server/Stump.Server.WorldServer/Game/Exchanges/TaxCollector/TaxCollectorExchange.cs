@@ -20,24 +20,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
         public TaxCollectorNpc TaxCollector
         {
             get;
-            private set;
         }
 
         public Character Character
         {
             get;
-            private set;
         }
 
-        public ExchangeTypeEnum ExchangeType
-        {
-            get { return ExchangeTypeEnum.TAXCOLLECTOR; }
-        }
+        public ExchangeTypeEnum ExchangeType => ExchangeTypeEnum.TAXCOLLECTOR;
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         #region IDialog Members
 

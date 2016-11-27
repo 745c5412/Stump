@@ -855,7 +855,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
-            if (!CanUseItem(item))
+            if ((target != null && !target.Inventory.CanUseItem(item)) || !CanUseItem(item))
                 return;
 
             if (amount > item.Stack)
@@ -898,7 +898,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (forceApply)
                     handler.Operation = ItemEffectHandler.HandlerOperation.APPLY;
 
-                if (GetEquipedItems().Any(x => x != item && x.GetExoEffects().ToList().Exists(y => item.GetExoEffects().Any(z => z == y)))
+                if (GetEquipedItems().Any(x => x != item && x.GetExoEffects().ToList().Exists(y => item.GetExoEffects().Any(z => z.EffectId == y.EffectId)))
                     && item.GetExoEffects().Any(x => x == handler.Effect))
                 {
                     exoError = true;

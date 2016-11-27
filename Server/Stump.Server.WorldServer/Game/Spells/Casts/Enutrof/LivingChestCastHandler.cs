@@ -1,6 +1,7 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Fight.Customs;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 
@@ -28,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Enutrof
             if (killEffect == null || summonEffect == null)
                 return;
 
-            var chests = Fight.GetAllFighters<SummonedMonster>(entry =>
+            var chests = Fight.GetAllFighters<LivingChest>(entry =>
                         entry.Team == Caster.Team &&
                         entry.Monster.MonsterId == summonEffect.Dice.DiceNum);
 

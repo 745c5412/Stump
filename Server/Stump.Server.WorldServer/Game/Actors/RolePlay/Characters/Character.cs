@@ -1350,7 +1350,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             m_ownedMounts = MountManager.Instance.GetMounts(Id).Select(x => new Mount(this, x)).ToList();
             EquippedMount = m_ownedMounts.FirstOrDefault(x => x.Id == Record.EquippedMount);
-            EquippedMount?.ApplyMountEffects();
+            if (IsRiding && EquippedMount != null)
+                EquippedMount.ApplyMountEffects();
 
             if (EquippedMount == null && Record.EquippedMount != null)
                 Record.EquippedMount = null;
@@ -1411,7 +1412,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool EquipMount(Mount mount)
         {
             if (mount.Owner != this)
-                return false;
+                SetOwnedMount(mount);
 
             EquippedMount = mount;
 
@@ -2016,10 +2017,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return result > 0 ? result : 1;
         }
 
-        public int ComputeWonArenaKamas()
-        {
-            return (int)Math.Floor((50 * (Level * (Level / 200d))));
-        }
+        public int ComputeWonArenaKamas() => 50 * Level;
+
+        public int ComputeWonArenaXP() => 8000 * Level;
 
         public void UpdateArenaProperties(int rank, bool win)
         {
@@ -2047,6 +2047,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, ComputeWonArenaTokens(ArenaRank));
             Inventory.AddKamas(ComputeWonArenaKamas());
+            AddExperience(ComputeWonArenaXP());
         }
 
         public void SetArenaPenality(TimeSpan time)

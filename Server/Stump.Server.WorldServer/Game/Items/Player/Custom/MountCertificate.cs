@@ -76,14 +76,21 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 if (m_mountEffect.Date < DateTime.Now - MountManager.MountStorageValidity)
                     return;
 
+                Mount = Owner.OwnedMounts.FirstOrDefault(x => x.Id == m_mountEffect.MountId);
+                if (Mount != null)
+                    return;
+
                 var record = MountManager.Instance.GetMount(m_mountEffect.MountId);
 
                 if (record != null)
-                    Mount = new Mount(Owner, record);
-                
-                if (record == null)
                 {
-                    logger.Error($"Invalid certificate mount id {m_mountEffect.MountId} doesn't exist or doesn't belong to ${Owner} (${Owner.Id})");
+                    Mount = new Mount(Owner, record);
+                    Owner.SetOwnedMount(Mount);
+                }
+
+                if (Mount == null)
+                {
+                    logger.Error($"Invalid certificate mount id {m_mountEffect.MountId} doesn't exist");
                     CreateMount();
                 }
             }
@@ -103,8 +110,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             Effects.Add(m_validityEffect = new EffectDuration(EffectsEnum.Effect_Validity, MountManager.MountStorageValidity));
 
             Mount = mount;
-            mount.StoredSince = DateTime.Now;
             Owner.SetOwnedMount(mount);
+            mount.StoredSince = DateTime.Now;
         }
 
         private void CreateMount()
