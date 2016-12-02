@@ -26,7 +26,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public short Value
         {
             get;
-            private set;
         }
 
         public PlayerFields Caracteristic
@@ -50,9 +49,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Target.CheckDead(Target);
         }
 
-        public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
-        {
-            return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 0 : 1), (short)Spell.Id, 0, Math.Abs(Value));
-        }
+        public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect() => new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 0 : 1), (short)Spell.Id, 0, Math.Abs(Value));
     }
 }

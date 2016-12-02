@@ -406,6 +406,7 @@
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Items\EmoteItemEffect.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\BuffTrigger.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\WeaponsBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPLost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Armor\GiveShieldPercent.cs" />

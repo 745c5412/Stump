@@ -24,13 +24,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public Spell BoostedSpell
         {
             get;
-            private set;
         }
 
         public short Boost
         {
             get;
-            private set;
         }
 
         public override void Apply()
@@ -43,9 +41,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Target.UnBuffSpell(BoostedSpell, Boost);
         }
 
-        public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
-        {
-            return new FightTemporarySpellBoostEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 1 : 0), (short)Spell.Id, 0, Boost, (short)BoostedSpell.Id);
-        }
+        public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect() => new FightTemporarySpellBoostEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 1 : 0), (short)Spell.Id, 0, Boost, (short)BoostedSpell.Id);
     }
 }
