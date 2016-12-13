@@ -20477,7 +20477,7 @@
         // Item [Level : 1]
         GuildEmblemChangePotion = 13270,
         Kolizeton = 12736,
-        TokenScroll = 20715,
+        TokenScroll = 20824,
         End,
     }
 }
