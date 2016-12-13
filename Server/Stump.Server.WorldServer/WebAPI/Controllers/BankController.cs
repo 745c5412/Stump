@@ -1,5 +1,6 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 using System.Linq;
 using System.Net;
@@ -51,6 +52,12 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
 
             if (item == null)
                 return StatusCode(HttpStatusCode.InternalServerError);
+
+            if (item.Template.Id == (int)ItemIdEnum.TokenScroll)
+            {
+                item.Effects.Add(new EffectInteger(EffectsEnum.Effect_AddOgrines, (short)amount));
+                item.Stack = 1;
+            }
 
             var playerItem = character.Bank.AddItem(item);
 

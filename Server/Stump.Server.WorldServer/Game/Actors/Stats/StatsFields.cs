@@ -153,6 +153,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.HealBonus, new StatsData(Owner, PlayerFields.HealBonus, 0));
             Fields.Add(PlayerFields.DamageBonus, new StatsData(Owner, PlayerFields.DamageBonus, 0));
             Fields.Add(PlayerFields.WeaponDamageBonus, new StatsData(Owner, PlayerFields.WeaponDamageBonus, 0));
+            Fields.Add(PlayerFields.WeaponDamageBonusPercent, new StatsData(Owner, PlayerFields.WeaponDamageBonusPercent, 0));
             Fields.Add(PlayerFields.DamageBonusPercent, new StatsData(Owner, PlayerFields.DamageBonusPercent, 0));
             Fields.Add(PlayerFields.TrapBonus, new StatsData(Owner, PlayerFields.TrapBonus, 0));
             Fields.Add(PlayerFields.TrapBonusPercent, new StatsData(Owner, PlayerFields.TrapBonusPercent, 0));
@@ -236,6 +237,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.HealBonus, new StatsData(Owner, PlayerFields.HealBonus, 0));
             Fields.Add(PlayerFields.DamageBonus, new StatsData(Owner, PlayerFields.DamageBonus, 0));
             Fields.Add(PlayerFields.WeaponDamageBonus, new StatsData(Owner, PlayerFields.WeaponDamageBonus, 0));
+            Fields.Add(PlayerFields.WeaponDamageBonusPercent, new StatsData(Owner, PlayerFields.WeaponDamageBonusPercent, 0));
             Fields.Add(PlayerFields.DamageBonusPercent, new StatsData(Owner, PlayerFields.DamageBonusPercent, 0));
             Fields.Add(PlayerFields.TrapBonus, new StatsData(Owner, PlayerFields.TrapBonus, 0));
             Fields.Add(PlayerFields.TrapBonusPercent, new StatsData(Owner, PlayerFields.TrapBonusPercent, 0));
@@ -323,6 +325,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.HealBonus, new StatsData(Owner, PlayerFields.HealBonus, 0));
             Fields.Add(PlayerFields.DamageBonus, new StatsData(Owner, PlayerFields.DamageBonus, taxCollector.Guild.TaxCollectorDamageBonuses));
             Fields.Add(PlayerFields.WeaponDamageBonus, new StatsData(Owner, PlayerFields.WeaponDamageBonus, 0));
+            Fields.Add(PlayerFields.WeaponDamageBonusPercent, new StatsData(Owner, PlayerFields.WeaponDamageBonusPercent, 0));
             Fields.Add(PlayerFields.DamageBonusPercent, new StatsData(Owner, PlayerFields.DamageBonusPercent, 0));
             Fields.Add(PlayerFields.TrapBonus, new StatsData(Owner, PlayerFields.TrapBonus, 0));
             Fields.Add(PlayerFields.TrapBonusPercent, new StatsData(Owner, PlayerFields.TrapBonusPercent, 0));

@@ -2,7 +2,6 @@
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using System;
@@ -10,7 +9,6 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace Stump.Server.WorldServer.WebAPI.Controllers
@@ -34,7 +32,7 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
         public IHttpActionResult AddTokens(int accountId, int amount)
         {
             IHttpActionResult result = null;
-            bool timeout = false;
+            var timeout = false;
             var resetEvent = new ManualResetEventSlim();
             WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
             {

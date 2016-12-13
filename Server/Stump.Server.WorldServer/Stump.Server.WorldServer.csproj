@@ -406,6 +406,7 @@
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Items\EmoteItemEffect.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\BuffTrigger.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\WeaponsBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPLost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Armor\GiveShieldPercent.cs" />
@@ -415,6 +416,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Move\Retreat.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\GiveOgrines.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnEmote.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\SeekPlayer.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\SwitchAlignment.cs" />
@@ -599,6 +601,7 @@
     <Compile Include="Game\Items\Player\Custom\KamasPouch.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\MountCertificate.cs" />
+    <Compile Include="Game\Items\Player\Custom\OgrineScroll.cs" />
     <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />

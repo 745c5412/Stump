@@ -202,8 +202,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     SetInvisibilityState(VisibleStateEnum.VISIBLE);
             }
 
-            var handler = WeaponUsed;
-            if (handler != null) handler(this, weapon, cell, critical, silentCast);
+            WeaponUsed?.Invoke(this, weapon, cell, critical, silentCast);
         }
 
         public event Action<FightActor, Buff> BuffAdded;
@@ -703,10 +702,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return shape;
         }
 
-        public int GetSpellRange(SpellLevelTemplate spell)
-        {
-            return (int)(spell.Range + (spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0));
-        }
+        public int GetSpellRange(SpellLevelTemplate spell) => (int)(spell.Range + (spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0));
 
         public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
         {
@@ -766,12 +762,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public SpellReflectionBuff GetBestReflectionBuff()
-        {
-            return m_buffList.OfType<SpellReflectionBuff>().
+        public SpellReflectionBuff GetBestReflectionBuff() => m_buffList.OfType<SpellReflectionBuff>().
                 OrderByDescending(entry => entry.ReflectedLevel).
                 FirstOrDefault();
-        }
 
         public void Die()
         {
@@ -780,15 +773,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnDead(this);
         }
 
-        public int InflictDirectDamage(int damage, FightActor from)
-        {
-            return InflictDamage(new Damage(damage) { Source = from, School = EffectSchoolEnum.Unknown, IgnoreDamageBoost = true, IgnoreDamageReduction = true });
-        }
+        public int InflictDirectDamage(int damage, FightActor from) => InflictDamage(new Damage(damage) { Source = from, School = EffectSchoolEnum.Unknown, IgnoreDamageBoost = true, IgnoreDamageReduction = true });
 
-        public int InflictDirectDamage(int damage)
-        {
-            return InflictDirectDamage(damage, this);
-        }
+        public int InflictDirectDamage(int damage) => InflictDirectDamage(damage, this);
 
         public virtual int InflictDamage(Damage damage)
         {
@@ -1497,15 +1484,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 m_buffedSpells.Remove(spell);
         }
 
-        public short GetSpellBoost(Spell spell)
-        {
-            return !m_buffedSpells.ContainsKey(spell) ? (short)0 : m_buffedSpells[spell];
-        }
+        public short GetSpellBoost(Spell spell) => !m_buffedSpells.ContainsKey(spell) ? (short)0 : m_buffedSpells[spell];
 
-        public virtual bool MustSkipTurn()
-        {
-            return GetBuffs(x => x is SkipTurnBuff).Any();
-        }
+        public virtual bool MustSkipTurn() => GetBuffs(x => x is SkipTurnBuff).Any();
 
         #endregion Buffs
 

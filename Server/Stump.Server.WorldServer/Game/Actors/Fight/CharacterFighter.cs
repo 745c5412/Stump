@@ -296,6 +296,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (Character.GodMode)
                 return short.MaxValue;
 
+            if (m_isUsingWeapon)
+                damage += (int)Math.Round((damage * Stats[PlayerFields.WeaponDamageBonusPercent].TotalSafe) / 100d);
+
             return
                 base.CalculateDamage(
                 ((m_isUsingWeapon ? m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus] : 0) + damage),

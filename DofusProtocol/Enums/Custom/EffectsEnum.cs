@@ -2447,6 +2447,8 @@
         /// </summary>
         Effect_1142 = 1142,
 
+        Effect_AddOgrines = 2003,
+
         End,
     }
 }
