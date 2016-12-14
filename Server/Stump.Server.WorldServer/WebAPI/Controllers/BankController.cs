@@ -55,8 +55,11 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
 
             if (item.Template.Id == (int)ItemIdEnum.TokenScroll)
             {
-                item.Effects.Add(new EffectInteger(EffectsEnum.Effect_AddOgrines, (short)amount));
-                item.Stack = 1;
+                if (!item.Effects.Any(x => x.EffectId == EffectsEnum.Effect_AddOgrines))
+                {
+                    item.Effects.Add(new EffectInteger(EffectsEnum.Effect_AddOgrines, (short)amount));
+                    item.Stack = 1;
+                }
             }
 
             var playerItem = character.Bank.AddItem(item);

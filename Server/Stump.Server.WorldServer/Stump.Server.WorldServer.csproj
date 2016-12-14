@@ -601,7 +601,7 @@
     <Compile Include="Game\Items\Player\Custom\KamasPouch.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\MountCertificate.cs" />
-    <Compile Include="Game\Items\Player\Custom\OgrineScroll.cs" />
+    <Compile Include="Game\Items\Player\Custom\TokenScroll.cs" />
     <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />

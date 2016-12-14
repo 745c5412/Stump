@@ -4,7 +4,9 @@ using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using System;
@@ -32,13 +34,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             CanSell = true;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get
-            {
-                return DialogTypeEnum.DIALOG_EXCHANGE;
-            }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         public IEnumerable<NpcItem> Items
         {
@@ -112,23 +108,23 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             var item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
 
-            Character.Inventory.AddItem(item);
-
             if (Token != null)
             {
-                Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
-                // decrease performance, not the right way to fix it
-                /*WorldServer.Instance.IOTaskPool.AddMessage(() =>
+                if (Token.Id == Inventory.TokenTemplate.Id)
                 {
-                    Character.Inventory.Save();
-                });*/
+                    item.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
+                }
+
+                Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
             }
             else
             {
                 Character.Inventory.SubKamas(finalPrice);
             }
 
+            Character.Inventory.AddItem(item);
             Character.Client.Send(new ExchangeBuyOkMessage());
+
             return true;
         }
 
