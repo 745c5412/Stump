@@ -53,6 +53,9 @@ namespace Stump.Server.WorldServer.WebAPI.Controllers
             if (item == null)
                 return StatusCode(HttpStatusCode.InternalServerError);
 
+            if (!item.Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
+                item.Effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
+
             if (item.Template.Id == (int)ItemIdEnum.TokenScroll)
             {
                 if (!item.Effects.Any(x => x.EffectId == EffectsEnum.Effect_AddOgrines))
