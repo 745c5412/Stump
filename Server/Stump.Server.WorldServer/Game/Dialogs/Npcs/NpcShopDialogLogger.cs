@@ -13,7 +13,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 {
     public class NpcShopDialogLogger : NpcShopDialog
     {
-        public NpcShopDialogLogger(Character character, Npc npc, IEnumerable<NpcItem> items) : base(character, npc, items)
+        public NpcShopDialogLogger(Character character, Npc npc, IEnumerable<NpcItem> items)
+            : base(character, npc, items)
         {
             Character = character;
             Npc = npc;
@@ -21,7 +22,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             CanSell = true;
         }
 
-        public NpcShopDialogLogger(Character character, Npc npc, IEnumerable<NpcItem> items, ItemTemplate token) : base(character, npc, items, token)
+        public NpcShopDialogLogger(Character character, Npc npc, IEnumerable<NpcItem> items, ItemTemplate token)
+            : base(character, npc, items, token)
         {
             Character = character;
             Npc = npc;
