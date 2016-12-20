@@ -176,7 +176,7 @@ namespace Stump.Server.WorldServer.Game.Items
             return CreateTaxCollectorItem(owner, m_itemTemplates[id], amount);
         }
 
-        public BankItem CreateBankItem(Character character, int id, int amount)
+        public BankItem CreateBankItem(Character character, int id, int amount, bool maxStats = false)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
@@ -184,10 +184,10 @@ namespace Stump.Server.WorldServer.Game.Items
             if (!m_itemTemplates.ContainsKey(id))
                 throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
 
-            return CreateBankItem(character, m_itemTemplates[id], amount);
+            return CreateBankItem(character, m_itemTemplates[id], amount, maxStats);
         }
 
-        public BankItem CreateBankItem(Character character, ItemTemplate template, int amount)
+        public BankItem CreateBankItem(Character character, ItemTemplate template, int amount, bool maxStats = false)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
@@ -199,7 +199,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 OwnerAccountId = character.Account.Id,
                 Template = template,
                 Stack = (uint) amount,
-                Effects = GenerateItemEffects(template),
+                Effects = GenerateItemEffects(template, maxStats),
                 IsNew = true
             };
 
