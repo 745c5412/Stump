@@ -21,6 +21,7 @@ namespace DofusProtocolBuilder.Profiles
                         // add '@' on variable name that are keyword in c#,
                         {@"(var\s|this\.)object(?![\w\d])", @"$1@object"},
                         {@"(var\s|this\.)operator(?![\w\d])", @"$1@operator"},
+                        {@"(var\s|this\.)params(?![\w\d])", @"$1@params"},
                         {@"this\.", string.Empty},
                         // delete this, it's useless
 

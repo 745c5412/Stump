@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:55
+// Generated on 12/26/2016 21:58:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,24 +18,21 @@ namespace Stump.DofusProtocol.Types
         }
         
         public byte nbMembers;
-        public bool enabled;
         
         public GuildInAllianceInformations()
         {
         }
         
-        public GuildInAllianceInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem, byte nbMembers, bool enabled)
+        public GuildInAllianceInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem, byte nbMembers)
          : base(guildId, guildName, guildLevel, guildEmblem)
         {
             this.nbMembers = nbMembers;
-            this.enabled = enabled;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
             writer.WriteByte(nbMembers);
-            writer.WriteBoolean(enabled);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -44,7 +41,6 @@ namespace Stump.DofusProtocol.Types
             nbMembers = reader.ReadByte();
             if (nbMembers < 1 || nbMembers > 240)
                 throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 1 || nbMembers > 240");
-            enabled = reader.ReadBoolean();
         }
         
         

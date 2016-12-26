@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:36
+// Generated on 12/26/2016 21:57:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +21,13 @@ namespace Stump.DofusProtocol.Messages
         public long casterId;
         public short targetCellId;
         public short spellId;
-        public sbyte spellLevel;
+        public short spellLevel;
         
         public GameRolePlaySpellAnimMessage()
         {
         }
         
-        public GameRolePlaySpellAnimMessage(long casterId, short targetCellId, short spellId, sbyte spellLevel)
+        public GameRolePlaySpellAnimMessage(long casterId, short targetCellId, short spellId, short spellLevel)
         {
             this.casterId = casterId;
             this.targetCellId = targetCellId;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarLong(casterId);
             writer.WriteVarShort(targetCellId);
             writer.WriteVarShort(spellId);
-            writer.WriteSByte(spellLevel);
+            writer.WriteShort(spellLevel);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -54,9 +54,9 @@ namespace Stump.DofusProtocol.Messages
             spellId = reader.ReadVarShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
-            spellLevel = reader.ReadSByte();
-            if (spellLevel < 1 || spellLevel > 6)
-                throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 6");
+            spellLevel = reader.ReadShort();
+            if (spellLevel < 1 || spellLevel > 200)
+                throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 200");
         }
         
     }

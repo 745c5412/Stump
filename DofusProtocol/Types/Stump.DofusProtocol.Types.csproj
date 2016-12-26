@@ -386,6 +386,7 @@
     <Compile Include="Types\game\data\items\SellerBuyerDescriptor.cs" />
     <Compile Include="Types\game\data\items\SpellItem.cs" />
     <Compile Include="Types\game\fight\ProtectedEntityWaitingForHelpInfo.cs" />
+    <Compile Include="Types\game\finishmoves\FinishMoveInformations.cs" />
     <Compile Include="Types\game\friend\AbstractContactInformations.cs" />
     <Compile Include="Types\game\friend\FriendInformations.cs" />
     <Compile Include="Types\game\friend\FriendOnlineInformations.cs" />

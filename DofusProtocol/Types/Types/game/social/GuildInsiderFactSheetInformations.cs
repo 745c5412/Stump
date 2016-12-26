@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:21:00
+// Generated on 12/26/2016 21:58:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,20 +21,18 @@ namespace Stump.DofusProtocol.Types
         public short nbConnectedMembers;
         public sbyte nbTaxCollectors;
         public int lastActivity;
-        public bool enabled;
         
         public GuildInsiderFactSheetInformations()
         {
         }
         
-        public GuildInsiderFactSheetInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem, long leaderId, short nbMembers, string leaderName, short nbConnectedMembers, sbyte nbTaxCollectors, int lastActivity, bool enabled)
+        public GuildInsiderFactSheetInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem, long leaderId, short nbMembers, string leaderName, short nbConnectedMembers, sbyte nbTaxCollectors, int lastActivity)
          : base(guildId, guildName, guildLevel, guildEmblem, leaderId, nbMembers)
         {
             this.leaderName = leaderName;
             this.nbConnectedMembers = nbConnectedMembers;
             this.nbTaxCollectors = nbTaxCollectors;
             this.lastActivity = lastActivity;
-            this.enabled = enabled;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -44,7 +42,6 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(nbConnectedMembers);
             writer.WriteSByte(nbTaxCollectors);
             writer.WriteInt(lastActivity);
-            writer.WriteBoolean(enabled);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -60,7 +57,6 @@ namespace Stump.DofusProtocol.Types
             lastActivity = reader.ReadInt();
             if (lastActivity < 0)
                 throw new Exception("Forbidden value on lastActivity = " + lastActivity + ", it doesn't respect the following condition : lastActivity < 0");
-            enabled = reader.ReadBoolean();
         }
         
         

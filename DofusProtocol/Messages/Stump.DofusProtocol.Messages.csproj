@@ -722,6 +722,8 @@
     <Compile Include="Messages\game\context\roleplay\spell\SpellModifyFailureMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\spell\SpellModifyRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\spell\SpellModifySuccessMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\spell\SpellVariantActivationMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\spell\SpellVariantActivationRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\stats\StatsUpgradeRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\stats\StatsUpgradeResultMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\StopToListenRunningFightRequestMessage.cs" />
@@ -767,6 +769,9 @@
     <Compile Include="Messages\game\dialog\LeaveDialogMessage.cs" />
     <Compile Include="Messages\game\dialog\LeaveDialogRequestMessage.cs" />
     <Compile Include="Messages\game\dialog\PauseDialogMessage.cs" />
+    <Compile Include="Messages\game\finishmoves\FinishMoveListMessage.cs" />
+    <Compile Include="Messages\game\finishmoves\FinishMoveListRequestMessage.cs" />
+    <Compile Include="Messages\game\finishmoves\FinishMoveSetRequestMessage.cs" />
     <Compile Include="Messages\game\friend\FriendAddedMessage.cs" />
     <Compile Include="Messages\game\friend\FriendAddFailureMessage.cs" />
     <Compile Include="Messages\game\friend\FriendAddRequestMessage.cs" />
@@ -1135,6 +1140,7 @@
     <Compile Include="Messages\game\shortcut\ShortcutBarRemovedMessage.cs" />
     <Compile Include="Messages\game\shortcut\ShortcutBarRemoveErrorMessage.cs" />
     <Compile Include="Messages\game\shortcut\ShortcutBarRemoveRequestMessage.cs" />
+    <Compile Include="Messages\game\shortcut\ShortcutBarReplacedMessage.cs" />
     <Compile Include="Messages\game\shortcut\ShortcutBarSwapErrorMessage.cs" />
     <Compile Include="Messages\game\shortcut\ShortcutBarSwapRequestMessage.cs" />
     <Compile Include="Messages\game\social\BulletinMessage.cs" />

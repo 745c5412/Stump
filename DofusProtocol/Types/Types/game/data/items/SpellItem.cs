@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:57
+// Generated on 12/26/2016 21:58:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Types
         }
         
         public int spellId;
-        public sbyte spellLevel;
+        public short spellLevel;
         
         public SpellItem()
         {
         }
         
-        public SpellItem(int spellId, sbyte spellLevel)
+        public SpellItem(int spellId, short spellLevel)
         {
             this.spellId = spellId;
             this.spellLevel = spellLevel;
@@ -34,16 +34,16 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteInt(spellId);
-            writer.WriteSByte(spellLevel);
+            writer.WriteShort(spellLevel);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             spellId = reader.ReadInt();
-            spellLevel = reader.ReadSByte();
-            if (spellLevel < 1 || spellLevel > 6)
-                throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 6");
+            spellLevel = reader.ReadShort();
+            if (spellLevel < 1 || spellLevel > 200)
+                throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 200");
         }
         
         

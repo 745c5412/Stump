@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:38
+// Generated on 12/26/2016 21:57:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,19 +21,17 @@ namespace Stump.DofusProtocol.Messages
         public Types.GuildFactSheetInformations infos;
         public int creationDate;
         public short nbTaxCollectors;
-        public bool enabled;
         public IEnumerable<Types.CharacterMinimalInformations> members;
         
         public GuildFactsMessage()
         {
         }
         
-        public GuildFactsMessage(Types.GuildFactSheetInformations infos, int creationDate, short nbTaxCollectors, bool enabled, IEnumerable<Types.CharacterMinimalInformations> members)
+        public GuildFactsMessage(Types.GuildFactSheetInformations infos, int creationDate, short nbTaxCollectors, IEnumerable<Types.CharacterMinimalInformations> members)
         {
             this.infos = infos;
             this.creationDate = creationDate;
             this.nbTaxCollectors = nbTaxCollectors;
-            this.enabled = enabled;
             this.members = members;
         }
         
@@ -43,7 +41,6 @@ namespace Stump.DofusProtocol.Messages
             infos.Serialize(writer);
             writer.WriteInt(creationDate);
             writer.WriteVarShort(nbTaxCollectors);
-            writer.WriteBoolean(enabled);
             var members_before = writer.Position;
             var members_count = 0;
             writer.WriteUShort(0);
@@ -69,7 +66,6 @@ namespace Stump.DofusProtocol.Messages
             nbTaxCollectors = reader.ReadVarShort();
             if (nbTaxCollectors < 0)
                 throw new Exception("Forbidden value on nbTaxCollectors = " + nbTaxCollectors + ", it doesn't respect the following condition : nbTaxCollectors < 0");
-            enabled = reader.ReadBoolean();
             var limit = reader.ReadUShort();
             var members_ = new Types.CharacterMinimalInformations[limit];
             for (int i = 0; i < limit; i++)

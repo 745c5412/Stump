@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:38
+// Generated on 12/26/2016 21:57:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,13 +27,13 @@ namespace Stump.DofusProtocol.Messages
         public short taxCollectorWisdom;
         public short boostPoints;
         public IEnumerable<short> spellId;
-        public IEnumerable<sbyte> spellLevel;
+        public IEnumerable<short> spellLevel;
         
         public GuildInfosUpgradeMessage()
         {
         }
         
-        public GuildInfosUpgradeMessage(sbyte maxTaxCollectorsCount, sbyte taxCollectorsCount, short taxCollectorLifePoints, short taxCollectorDamagesBonuses, short taxCollectorPods, short taxCollectorProspecting, short taxCollectorWisdom, short boostPoints, IEnumerable<short> spellId, IEnumerable<sbyte> spellLevel)
+        public GuildInfosUpgradeMessage(sbyte maxTaxCollectorsCount, sbyte taxCollectorsCount, short taxCollectorLifePoints, short taxCollectorDamagesBonuses, short taxCollectorPods, short taxCollectorProspecting, short taxCollectorWisdom, short boostPoints, IEnumerable<short> spellId, IEnumerable<short> spellLevel)
         {
             this.maxTaxCollectorsCount = maxTaxCollectorsCount;
             this.taxCollectorsCount = taxCollectorsCount;
@@ -75,7 +75,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in spellLevel)
             {
-                 writer.WriteSByte(entry);
+                 writer.WriteShort(entry);
                  spellLevel_count++;
             }
             var spellLevel_after = writer.Position;
@@ -119,10 +119,10 @@ namespace Stump.DofusProtocol.Messages
             }
             spellId = spellId_;
             limit = reader.ReadUShort();
-            var spellLevel_ = new sbyte[limit];
+            var spellLevel_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 spellLevel_[i] = reader.ReadSByte();
+                 spellLevel_[i] = reader.ReadShort();
             }
             spellLevel = spellLevel_;
         }

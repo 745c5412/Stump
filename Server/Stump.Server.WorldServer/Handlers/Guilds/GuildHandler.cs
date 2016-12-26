@@ -291,7 +291,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 return;
             }
 
-            client.Send(new GuildFactsMessage(guild.GetGuildFactSheetInformations(), guild.CreationDate.GetUnixTimeStamp(), (short)guild.TaxCollectors.Count, true, guild.Members.Select(x => x.GetCharacterMinimalInformations())));
+            client.Send(new GuildFactsMessage(guild.GetGuildFactSheetInformations(), guild.CreationDate.GetUnixTimeStamp(), (short)guild.TaxCollectors.Count, guild.Members.Select(x => x.GetCharacterMinimalInformations())));
         }
 
         public static void SendGuildMemberWarnOnConnectionStateMessage(IPacketReceiver client, bool state)
@@ -326,12 +326,12 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildMembershipMessage(IPacketReceiver client, GuildMember member)
         {
-            client.Send(new GuildMembershipMessage(member.Guild.GetGuildInformations(), (int)member.Rights, true));
+            client.Send(new GuildMembershipMessage(member.Guild.GetGuildInformations(), (int)member.Rights));
         }
 
         public static void SendGuildInformationsGeneralMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildInformationsGeneralMessage(true, false, guild.Level, guild.ExperienceLevelFloor, guild.Experience,
+            client.Send(new GuildInformationsGeneralMessage(false, guild.Level, guild.ExperienceLevelFloor, guild.Experience,
                 guild.ExperienceNextLevelFloor, guild.CreationDate.GetUnixTimeStamp(), (short)guild.Members.Count(), (short)guild.Members.Count(x => x.IsConnected))); 
         }
 
@@ -349,7 +349,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         {
             client.Send(new GuildInfosUpgradeMessage((sbyte)guild.MaxTaxCollectors, (sbyte)guild.TaxCollectors.Count, (short)guild.TaxCollectorHealth, (short)guild.TaxCollectorDamageBonuses,
                 (short)guild.TaxCollectorPods, (short)guild.TaxCollectorProspecting, (short)guild.TaxCollectorWisdom, (short)guild.Boost,
-                Guild.TAX_COLLECTOR_SPELLS, guild.GetTaxCollectorSpellsLevels().Select(x => (sbyte)x)));
+                Guild.TAX_COLLECTOR_SPELLS, guild.GetTaxCollectorSpellsLevels().Select(x => (short)x)));
         }
 
         public static void SendGuildInformationsPaddocksMessage(IPacketReceiver client)
@@ -364,7 +364,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildJoinedMessage(IPacketReceiver client, GuildMember member)
         {
-            client.Send(new GuildJoinedMessage(member.Guild.GetGuildInformations(), (int)member.Rights, true));
+            client.Send(new GuildJoinedMessage(member.Guild.GetGuildInformations(), (int)member.Rights));
         }
 
         public static void SendGuildMemberLeavingMessage(IPacketReceiver client, GuildMember member, bool kicked)

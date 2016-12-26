@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:52
+// Generated on 12/26/2016 21:58:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Stump.DofusProtocol.Types
         public double markAuthorId;
         public sbyte markTeamId;
         public int markSpellId;
-        public sbyte markSpellLevel;
+        public short markSpellLevel;
         public short markId;
         public sbyte markType;
         public short markimpactCell;
@@ -31,7 +31,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameActionMark(double markAuthorId, sbyte markTeamId, int markSpellId, sbyte markSpellLevel, short markId, sbyte markType, short markimpactCell, IEnumerable<Types.GameActionMarkedCell> cells, bool active)
+        public GameActionMark(double markAuthorId, sbyte markTeamId, int markSpellId, short markSpellLevel, short markId, sbyte markType, short markimpactCell, IEnumerable<Types.GameActionMarkedCell> cells, bool active)
         {
             this.markAuthorId = markAuthorId;
             this.markTeamId = markTeamId;
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteDouble(markAuthorId);
             writer.WriteSByte(markTeamId);
             writer.WriteInt(markSpellId);
-            writer.WriteSByte(markSpellLevel);
+            writer.WriteShort(markSpellLevel);
             writer.WriteShort(markId);
             writer.WriteSByte(markType);
             writer.WriteShort(markimpactCell);
@@ -80,9 +80,9 @@ namespace Stump.DofusProtocol.Types
             markSpellId = reader.ReadInt();
             if (markSpellId < 0)
                 throw new Exception("Forbidden value on markSpellId = " + markSpellId + ", it doesn't respect the following condition : markSpellId < 0");
-            markSpellLevel = reader.ReadSByte();
-            if (markSpellLevel < 1 || markSpellLevel > 6)
-                throw new Exception("Forbidden value on markSpellLevel = " + markSpellLevel + ", it doesn't respect the following condition : markSpellLevel < 1 || markSpellLevel > 6");
+            markSpellLevel = reader.ReadShort();
+            if (markSpellLevel < 1 || markSpellLevel > 200)
+                throw new Exception("Forbidden value on markSpellLevel = " + markSpellLevel + ", it doesn't respect the following condition : markSpellLevel < 1 || markSpellLevel > 200");
             markId = reader.ReadShort();
             markType = reader.ReadSByte();
             markimpactCell = reader.ReadShort();

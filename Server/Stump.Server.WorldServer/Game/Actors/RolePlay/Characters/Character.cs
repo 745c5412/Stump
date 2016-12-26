@@ -3868,6 +3868,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         Experience, // EXPERIENCE
                         LowerBoundExperience, // EXPERIENCE level floor
                         UpperBoundExperience, // EXPERIENCE nextlevel floor
+                        UpperBoundExperience, // TODO: EXPERIENCE bonus limit
 
                         Kamas, // Amount of kamas.
 

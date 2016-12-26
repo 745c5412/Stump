@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:20
+// Generated on 12/26/2016 21:57:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short spellId;
-        public sbyte spellLevel;
+        public short spellLevel;
         public IEnumerable<short> portalsIds;
         
         public GameActionFightSpellCastMessage()
         {
         }
         
-        public GameActionFightSpellCastMessage(short actionId, double sourceId, bool silentCast, bool verboseCast, double targetId, short destinationCellId, sbyte critical, short spellId, sbyte spellLevel, IEnumerable<short> portalsIds)
+        public GameActionFightSpellCastMessage(short actionId, double sourceId, bool silentCast, bool verboseCast, double targetId, short destinationCellId, sbyte critical, short spellId, short spellLevel, IEnumerable<short> portalsIds)
          : base(actionId, sourceId, silentCast, verboseCast, targetId, destinationCellId, critical)
         {
             this.spellId = spellId;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteVarShort(spellId);
-            writer.WriteSByte(spellLevel);
+            writer.WriteShort(spellLevel);
             var portalsIds_before = writer.Position;
             var portalsIds_count = 0;
             writer.WriteUShort(0);
@@ -60,9 +60,9 @@ namespace Stump.DofusProtocol.Messages
             spellId = reader.ReadVarShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
-            spellLevel = reader.ReadSByte();
-            if (spellLevel < 1 || spellLevel > 6)
-                throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 6");
+            spellLevel = reader.ReadShort();
+            if (spellLevel < 1 || spellLevel > 200)
+                throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 200");
             var limit = reader.ReadUShort();
             var portalsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)

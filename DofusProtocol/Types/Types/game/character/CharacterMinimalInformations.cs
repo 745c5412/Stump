@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:52
+// Generated on 12/26/2016 21:58:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,8 +39,8 @@ namespace Stump.DofusProtocol.Types
         {
             base.Deserialize(reader);
             level = reader.ReadByte();
-            if (level < 1 || level > 200)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 200");
+            if (level < 1 || level > 206)
+                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 206");
         }
         
         

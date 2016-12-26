@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:39
+// Generated on 12/26/2016 21:57:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,24 +20,21 @@ namespace Stump.DofusProtocol.Messages
         
         public Types.GuildInformations guildInfo;
         public int memberRights;
-        public bool enabled;
         
         public GuildJoinedMessage()
         {
         }
         
-        public GuildJoinedMessage(Types.GuildInformations guildInfo, int memberRights, bool enabled)
+        public GuildJoinedMessage(Types.GuildInformations guildInfo, int memberRights)
         {
             this.guildInfo = guildInfo;
             this.memberRights = memberRights;
-            this.enabled = enabled;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             guildInfo.Serialize(writer);
             writer.WriteVarInt(memberRights);
-            writer.WriteBoolean(enabled);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -47,7 +44,6 @@ namespace Stump.DofusProtocol.Messages
             memberRights = reader.ReadVarInt();
             if (memberRights < 0)
                 throw new Exception("Forbidden value on memberRights = " + memberRights + ", it doesn't respect the following condition : memberRights < 0");
-            enabled = reader.ReadBoolean();
         }
         
     }

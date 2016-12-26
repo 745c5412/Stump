@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:39
+// Generated on 12/26/2016 21:57:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GuildMembershipMessage(Types.GuildInformations guildInfo, int memberRights, bool enabled)
-         : base(guildInfo, memberRights, enabled)
+        public GuildMembershipMessage(Types.GuildInformations guildInfo, int memberRights)
+         : base(guildInfo, memberRights)
         {
         }
         

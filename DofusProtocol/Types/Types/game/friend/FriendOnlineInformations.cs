@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:57
+// Generated on 12/26/2016 21:58:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,8 +68,8 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9007199254740990");
             playerName = reader.ReadUTF();
             level = reader.ReadByte();
-            if (level < 0 || level > 200)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 200");
+            if (level < 0 || level > 206)
+                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 206");
             alignmentSide = reader.ReadSByte();
             breed = reader.ReadSByte();
             if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage)

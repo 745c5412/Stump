@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:38
+// Generated on 12/26/2016 21:57:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,6 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public bool enabled;
         public bool abandonnedPaddock;
         public byte level;
         public long expLevelFloor;
@@ -32,9 +31,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GuildInformationsGeneralMessage(bool enabled, bool abandonnedPaddock, byte level, long expLevelFloor, long experience, long expNextLevelFloor, int creationDate, short nbTotalMembers, short nbConnectedMembers)
+        public GuildInformationsGeneralMessage(bool abandonnedPaddock, byte level, long expLevelFloor, long experience, long expNextLevelFloor, int creationDate, short nbTotalMembers, short nbConnectedMembers)
         {
-            this.enabled = enabled;
             this.abandonnedPaddock = abandonnedPaddock;
             this.level = level;
             this.expLevelFloor = expLevelFloor;
@@ -47,10 +45,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, enabled);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, abandonnedPaddock);
-            writer.WriteByte(flag1);
+            writer.WriteBoolean(abandonnedPaddock);
             writer.WriteByte(level);
             writer.WriteVarLong(expLevelFloor);
             writer.WriteVarLong(experience);
@@ -62,9 +57,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            byte flag1 = reader.ReadByte();
-            enabled = BooleanByteWrapper.GetFlag(flag1, 0);
-            abandonnedPaddock = BooleanByteWrapper.GetFlag(flag1, 1);
+            abandonnedPaddock = reader.ReadBoolean();
             level = reader.ReadByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");

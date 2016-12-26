@@ -21,6 +21,7 @@ namespace DofusProtocolBuilder.Profiles
                         // add '@' on variable name that are keyword in c#,
                         {@"(var\s|this\.)object(?![\w\d])", @"$1@object"},
                         {@"(var\s|this\.)operator(?![\w\d])", @"$1@operator"},
+                        {@"(var\s|this\.)params(?![\w\d])", @"$1@params"},
                         // operator to @operator because it's a keyword
 
                         {@"this\.", string.Empty},
@@ -54,7 +55,7 @@ namespace DofusProtocolBuilder.Profiles
                         // convert super keyword to C# base keyword
 
                         // add a cast and preffix Enums before each enum
-                        {@"\b(\w+)Enum\.", "(byte)Enums.$1Enum."}
+                        {@"\b(\w+)Enum\.", "(byte)Enums.$1Enum."},
                     };
         }
 

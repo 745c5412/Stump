@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:36
+// Generated on 12/26/2016 21:57:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +40,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             questLevel = reader.ReadByte();
-            if (questLevel < 1 || questLevel > 200)
-                throw new Exception("Forbidden value on questLevel = " + questLevel + ", it doesn't respect the following condition : questLevel < 1 || questLevel > 200");
+            if (questLevel < 1 || questLevel > 206)
+                throw new Exception("Forbidden value on questLevel = " + questLevel + ", it doesn't respect the following condition : questLevel < 1 || questLevel > 206");
             questType = reader.ReadSByte();
             if (questType < 0)
                 throw new Exception("Forbidden value on questType = " + questType + ", it doesn't respect the following condition : questType < 0");

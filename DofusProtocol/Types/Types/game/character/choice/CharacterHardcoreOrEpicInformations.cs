@@ -1,6 +1,6 @@
 
 
-// Generated on 10/30/2016 16:20:53
+// Generated on 12/26/2016 21:58:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,8 +51,8 @@ namespace Stump.DofusProtocol.Types
             if (deathCount < 0)
                 throw new Exception("Forbidden value on deathCount = " + deathCount + ", it doesn't respect the following condition : deathCount < 0");
             deathMaxLevel = reader.ReadByte();
-            if (deathMaxLevel < 1 || deathMaxLevel > 200)
-                throw new Exception("Forbidden value on deathMaxLevel = " + deathMaxLevel + ", it doesn't respect the following condition : deathMaxLevel < 1 || deathMaxLevel > 200");
+            if (deathMaxLevel < 1 || deathMaxLevel > 206)
+                throw new Exception("Forbidden value on deathMaxLevel = " + deathMaxLevel + ", it doesn't respect the following condition : deathMaxLevel < 1 || deathMaxLevel > 206");
         }
         
         
