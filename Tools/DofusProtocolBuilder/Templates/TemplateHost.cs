@@ -126,9 +126,8 @@ namespace DofusProtocolBuilder.Templates
         {
             get
             {
-                return new[]
+                return new string[0]
                            {
-                               "System",
                            };
             }
         }
@@ -201,7 +200,7 @@ namespace DofusProtocolBuilder.Templates
             //----------------------------------------------------------------
 
             //If we cannot do better - return the original file name.
-            return "";
+            return assemblyReference;
         }
 
 
