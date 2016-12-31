@@ -69,12 +69,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_LivingObjectId);
             var newInstance = Owner.Inventory.RefreshItemInstance(this);
 
-            if (m_livingObjectTemplate.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
-                effectsLiving.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
-
-            if (m_livingObjectTemplate.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981))
-                effectsLiving.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_981, 0));
-
             var livingObject = ItemManager.Instance.CreatePlayerItem(Owner, m_livingObjectTemplate, 1, effectsLiving);
 
             Owner.Inventory.AddItem(livingObject, false);
