@@ -13,6 +13,12 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         {
             var nickname = message.nickname;
 
+            if (client.Account.Nickname != string.Empty)
+            {
+                client.Send(new NicknameRefusedMessage((sbyte)NicknameErrorEnum.UNKNOWN_NICK_ERROR));
+                return;
+            }
+
             /* Check the Username */
             if (!CheckNickName(nickname))
             {

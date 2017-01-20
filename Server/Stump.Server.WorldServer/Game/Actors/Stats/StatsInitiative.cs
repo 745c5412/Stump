@@ -33,5 +33,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get { return (int)(Total * (Owner.Stats.Health.Total / (double)Owner.Stats.Health.TotalMax)); }
         }
+
+        public override StatsData CloneAndChangeOwner(IStatsOwner owner)
+        {
+            var clone = new StatsInitiative(owner, (short)ValueBase)
+            {
+                Base = Base,
+                Context = Context,
+                Equiped = Equiped,
+                Given = Given
+            };
+
+            return clone;
+        }
     }
 }

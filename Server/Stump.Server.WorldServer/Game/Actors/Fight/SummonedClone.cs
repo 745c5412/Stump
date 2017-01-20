@@ -18,6 +18,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Look = caster.Look.Clone();
             m_stats = new StatsFields(this);
             m_stats.InitializeFromStats(caster.Stats);
+            ResetUsedPoints();
         }
 
         public FightActor Caster

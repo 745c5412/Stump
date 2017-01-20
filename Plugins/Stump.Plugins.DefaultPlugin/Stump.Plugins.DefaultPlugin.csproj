@@ -121,7 +121,6 @@
     <Compile Include="Global\Placements\PlacementComplexityCalculator.cs" />
     <Compile Include="Global\Placements\PlacementPattern.cs" />
     <Compile Include="Global\Placements\PlacementsFix.cs" />
-    <Compile Include="Global\ZaapFinder.cs" />
     <Compile Include="Monsters\MonsterStatsFix.cs" />
     <Compile Include="Npcs\NpcBank.cs" />
     <Compile Include="Plugin.cs" />

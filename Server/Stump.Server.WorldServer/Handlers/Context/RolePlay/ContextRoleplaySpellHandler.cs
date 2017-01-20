@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             var panel = client.Character.Dialog as SpellForgetPanel;
             if (panel != null)
             {
-                panel.DowngradeSpell(client, message.spellId);
+                SpellForgetPanel.DowngradeSpell(client, message.spellId);
             }
         }
 

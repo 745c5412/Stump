@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public const int TAX_COLLECTOR_MAX_WISDOM = 400;
 
         [Variable(true)]
-        public static int MaxMembersNumber = 50;
+        public static int BaseMaxMembers = 30;
 
         [Variable(true)]
         public static int MaxGuildXP = 300000;
@@ -141,6 +141,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public GuildMember Boss
         {
             get { return Members.FirstOrDefault(x => x.RankId == 1); }
+        }
+
+        public int MaxMembers
+        {
+            get { return BaseMaxMembers + (Level / 2); }
         }
 
         public long Experience
@@ -658,7 +663,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool CanAddMember()
         {
-            return m_members.Count < MaxMembersNumber;
+            return m_members.Count < MaxMembers;
         }
 
         public GuildMember TryGetMember(int id)

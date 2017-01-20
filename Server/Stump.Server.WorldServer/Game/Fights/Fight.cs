@@ -1379,10 +1379,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, DefendersTeam, 0, SpectatorClosed);
         }
 
-        public virtual bool CanSpectatorJoin(Character spectator)
-        {
-            return !SpectatorClosed && State == FightState.Fighting;
-        }
+        public virtual bool CanSpectatorJoin(Character spectator) => (!SpectatorClosed && (State == FightState.Placement || State == FightState.Fighting)) || spectator.IsGameMaster();
 
         public bool AddSpectator(FightSpectator spectator)
         {
@@ -1420,9 +1417,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach(var challenge in Challenges)
                 ContextHandler.SendChallengeInfoMessage(spectator.Client, challenge);
 
-            // Spectator 'X' joined
             if (!spectator.Character.Invisible)
+            {
+                // Spectator 'X' joined
                 BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 36, spectator.Character.Name);
+            }
 
             if (TimeLine.Current != null)
             {

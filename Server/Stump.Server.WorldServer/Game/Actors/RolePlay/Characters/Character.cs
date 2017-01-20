@@ -13,7 +13,6 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -42,7 +41,6 @@ using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
-using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Game.Shortcuts;
@@ -1279,6 +1277,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             StatsPoints = (ushort)newPoints;
 
             RefreshStats();
+            Inventory.CheckItemsCriterias();
+
             SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 15, newPoints);
         }
 
@@ -1459,7 +1459,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if (!IsRiding && (IsBusy() || IsInFight()))
+            if (IsBusy() || (IsInFight() && Fight.State != FightState.Placement))
             {
                 //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
                 BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
@@ -1985,7 +1985,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if (Fight is FightAgression || Fight is FightPvT)
+            if (Fight is FightAgression || Fight is FightPvT || Fight is FightDuel)
                 return false;
 
             return true;
@@ -2232,8 +2232,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 ContextHandler.SendGameMapMovementMessage(Client, moveKeys, actorMoving);
                 BasicHandler.SendBasicNoOperationMessage(Client);
             }
-
-            BasicHandler.SendBasicTimeMessage(Client);
 
             if (map.Zaap != null && !KnownZaaps.Contains(map))
                 DiscoverZaap(map);
@@ -2514,6 +2512,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             DenyAllInvitations(party.Type);
             UpdateRegenedLife();
 
+            if (party.Disbanded)
+                return false;
+
             SetParty(party);
             party.MemberRemoved += OnPartyMemberRemoved;
             party.PartyDeleted += OnPartyDeleted;
@@ -2735,7 +2736,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null && target.IsTaxCollectorOwner(GuildMember))
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
-            if (IsFighting() || IsSpectator() || !IsInWorld || IsBusy())
+            if (IsBusy() || IsFighting() || IsSpectator() || !IsInWorld)
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
             if (target.IsBusy() || target.IsFighting || !target.IsInWorld)

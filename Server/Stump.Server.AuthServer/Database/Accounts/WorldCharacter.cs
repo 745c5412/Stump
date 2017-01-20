@@ -13,12 +13,6 @@ namespace Stump.Server.AuthServer.Database
     {
         // Primitive properties
 
-        public long Id
-        {
-            get;
-            set;
-        }
-
         [PrimaryKey("CharacterId", false)]
         public int CharacterId
         {

@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         [Ignore]
         public MonsterSuperRace SuperRace
         {
-            get { return m_superRace ?? (m_superRace = MonsterManager.Instance.GetSuperRace(SuperRaceId)); }
+            get { return m_superRace ?? (m_superRace = MonsterManager.Instance.GetMonsterSuperRace(SuperRaceId)); }
             set
             {
                 m_superRace = value;

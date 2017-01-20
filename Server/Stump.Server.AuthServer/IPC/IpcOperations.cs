@@ -1,22 +1,4 @@
-﻿#region License GNU GPL
-
-// IPCOperations.cs
-//
-// Copyright (C) 2013 - BehaviorIsManaged
-//
-// This program is free software; you can redistribute it and/or modify it
-// under the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with this program;
-// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
-#endregion License GNU GPL
-
-using NLog;
+﻿using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database;
@@ -309,22 +291,6 @@ namespace Stump.Server.AuthServer.IPC
                 Client.SendError(string.Format("Cannot add {0} character to {1} account", message.CharacterId, message.AccountId), message);
         }
 
-        private void Handle(DeleteCharacterMessage message)
-        {
-            var account = AccountManager.FindAccountById(message.AccountId);
-
-            if (account == null)
-            {
-                Client.SendError(string.Format("Account {0} not found", message.AccountId), message);
-                return;
-            }
-
-            if (AccountManager.DeleteAccountCharacter(account, WorldServer, message.CharacterId))
-                Client.ReplyRequest(new CommonOKMessage(), message);
-            else
-                Client.SendError(string.Format("Cannot delete {0} character from {1} account", message.CharacterId, message.AccountId), message);
-        }
-
         private void Handle(BanAccountMessage message)
         {
             Account victimAccount;
@@ -386,7 +352,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(BanIPMessage message)
         {
-            var ipBan = AccountManager.FindIpBan(message.IPRange);
+            var ipBan = AccountManager.Instance.FindIpBan(message.IPRange);
             var ip = IPAddressRange.Parse(message.IPRange);
             if (ipBan != null)
             {
@@ -409,7 +375,7 @@ namespace Stump.Server.AuthServer.IPC
                 };
 
                 Database.Insert(record);
-                AccountManager.AddIPBan(record);
+                AccountManager.Instance.AddIPBan(record);
             }
 
             Client.ReplyRequest(new CommonOKMessage(), message);
@@ -417,7 +383,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(UnBanIPMessage message)
         {
-            var ipBan = AccountManager.FindIpBan(message.IPRange);
+            var ipBan = AccountManager.Instance.FindIpBan(message.IPRange);
             if (ipBan == null)
             {
                 Client.SendError(string.Format("IP ban {0} not found", message.IPRange), message);
@@ -425,13 +391,15 @@ namespace Stump.Server.AuthServer.IPC
             else
             {
                 Database.Delete(ipBan);
+                AccountManager.Instance.AddIPBan(ipBan);
+
                 Client.ReplyRequest(new CommonOKMessage(), message);
             }
         }
 
         private void Handle(BanClientKeyMessage message)
         {
-            var key = AccountManager.FindClientKeyBan(message.ClientKey);
+            var key = AccountManager.Instance.FindClientKeyBan(message.ClientKey);
             if (key != null)
             {
                 key.BanReason = message.BanReason;
@@ -461,7 +429,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(UnBanClientKeyMessage message)
         {
-            var keyBan = AccountManager.FindClientKeyBan(message.ClientKey);
+            var keyBan = AccountManager.Instance.FindClientKeyBan(message.ClientKey);
             if (keyBan == null)
             {
                 Client.SendError(string.Format("ClientKey ban {0} not found", message.ClientKey), message);

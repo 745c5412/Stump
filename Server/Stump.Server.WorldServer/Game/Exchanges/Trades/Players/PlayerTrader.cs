@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             if (playerItem == null)
                 return false;
 
-            if (amount > playerItem.Stack || amount <= 0)
+            if (amount <= 0 || amount > playerItem.Stack || playerItem.IsEquiped())
                 return false;
 
             if ((playerItem.IsLinkedToAccount() || playerItem.IsLinkedToPlayer()) && Trade is PlayerTrade)

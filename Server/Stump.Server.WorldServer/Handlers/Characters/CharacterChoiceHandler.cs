@@ -203,6 +203,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             SendCharacterSelectedSuccessMessage(client);
 
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
+            BasicHandler.SendBasicTimeMessage(client);
 
             if (client.Character.Inventory.Presets.Any())
                 InventoryHandler.SendInventoryContentAndPresetMessage(client);
@@ -251,6 +252,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client, client.Character);
 
             SendCharacterCapabilitiesMessage(client);
+
+            BasicHandler.SendServerExperienceModificatorMessage(client);
 
             // Update LastConnection and Last Ip
             client.WorldAccount.LastConnection = DateTime.Now;

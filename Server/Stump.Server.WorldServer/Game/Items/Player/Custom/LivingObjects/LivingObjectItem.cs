@@ -30,6 +30,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
         public override bool Drop(BasePlayerItem dropOnItem)
         {
+            if (Owner.IsInFight())
+                return false;
+
             if (dropOnItem.Template.TypeId != LivingObjectRecord.ItemType)
                 return false;
 

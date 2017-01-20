@@ -16,13 +16,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Spells
         public Character Character
         {
             get;
-            private set;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_SPELL_FORGET; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_SPELL_FORGET;
 
         public void Open()
         {
@@ -36,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Spells
             ContextRoleplayHandler.SendSpellForgetUIMessage(Character.Client, false);
         }
 
-        public void DowngradeSpell(WorldClient client, int spellId)
+        public static void DowngradeSpell(WorldClient client, int spellId)
         {
             var winPoints = client.Character.Spells.DowngradeSpell(spellId);
 
