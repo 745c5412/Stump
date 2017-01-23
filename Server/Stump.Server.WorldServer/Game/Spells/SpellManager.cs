@@ -231,6 +231,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             return m_spellsCastHandler.TryGetValue(cast.Spell.Template.Id, out var ctor) ? ctor(cast) : new DefaultSpellCastHandler(cast);
         }
 
+
         public SpellCastHandler GetSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
         {
             return GetSpellCastHandler(new SpellCastInformations(caster, spell, targetedCell, critical));

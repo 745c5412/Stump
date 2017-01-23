@@ -81,10 +81,10 @@ namespace Stump.Server.WorldServer.Game.Effects
 
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        delegate ItemEffectHandler ItemEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
-        delegate ItemEffectHandler ItemSetEffectConstructor(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply);
-        delegate UsableEffectHandler UsableEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
-        delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical);
+        public delegate ItemEffectHandler ItemEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
+        public delegate ItemEffectHandler ItemSetEffectConstructor(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply);
+        public delegate UsableEffectHandler UsableEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
+        public delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical);
 
         Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
         readonly Dictionary<EffectsEnum, ItemEffectConstructor> m_itemsEffectHandler = new Dictionary<EffectsEnum, ItemEffectConstructor>();
@@ -92,6 +92,10 @@ namespace Stump.Server.WorldServer.Game.Effects
         readonly Dictionary<EffectsEnum, UsableEffectConstructor> m_usablesEffectHandler = new Dictionary<EffectsEnum, UsableEffectConstructor>();
         readonly Dictionary<EffectsEnum, SpellEffectConstructor> m_spellsEffectHandler = new Dictionary<EffectsEnum, SpellEffectConstructor>();
         readonly Dictionary<EffectsEnum, List<Type>> m_effectsHandlers = new Dictionary<EffectsEnum, List<Type>>();
+
+        public IReadOnlyDictionary<EffectsEnum, SpellEffectConstructor> SpellsEffectHandler => m_spellsEffectHandler;
+        public IReadOnlyDictionary<short, EffectTemplate> Effects => m_effects;
+
 
         [Initialization(InitializationPass.Third)]
         public override void Initialize()

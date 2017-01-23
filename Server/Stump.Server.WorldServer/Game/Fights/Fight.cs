@@ -2055,11 +2055,11 @@ namespace Stump.Server.WorldServer.Game.Fights
                         ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target,
                             castHandler.SeeCast(entry) ? castHandler.Informations.TargetedCell : GetInvisibleSpellCastCell(caster.Cell, castHandler.Informations.TargetedCell),
                             castHandler.Informations.Critical,
-                            !caster.IsVisibleFor(entry) || castHandler.Informations.Silent, 0), true);
+                            !caster.IsVisibleFor(entry) || castHandler.SilentCast, 0), true);
             else
                 ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
                     caster, target, castHandler.SeeCast(entry) ? castHandler.Informations.TargetedCell : GetInvisibleSpellCastCell(caster.Cell, castHandler.Informations.TargetedCell),
-                    castHandler.Informations.Critical, !caster.IsVisibleFor(entry) || castHandler.Informations.Silent, castHandler.Spell), true);
+                    castHandler.Informations.Critical, !caster.IsVisibleFor(entry) || castHandler.SilentCast, castHandler.Spell), true);
         }
 
         private Cell GetInvisibleSpellCastCell(Cell casterCell, Cell targetedCell)

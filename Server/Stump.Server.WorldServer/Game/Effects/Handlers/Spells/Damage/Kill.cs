@@ -1,4 +1,5 @@
 ﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -7,6 +8,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
+    [AISpellEffect(SpellCategory.Damages)]
     [EffectHandler(EffectsEnum.Effect_Kill)]
     public class Kill : SpellEffectHandler
     {

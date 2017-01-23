@@ -79,6 +79,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels((int)SpellIdEnum.TRAVERSÉE, 4, (level, effect, critical) => effect.ZoneSize = 4);
 
             #endregion HUPPERMAGE
+
+            #region MONSTERS
+
+            // Terristocrate (3747)
+            FixAllLevels((int)SpellIdEnum.BOMBE_ILLICALE, level => level.NeedFreeCell = true);
+
+            #endregion  
         }
 
         #region Methods
@@ -95,6 +102,22 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                 fixer(level, level.Effects[effectIndex], false);
                 if (critical && level.CriticalEffects.Count > effectIndex)
                     fixer(level, level.CriticalEffects[effectIndex], true);
+            }
+        }
+
+        public static void FixAllLevels(int spellId, Action<SpellLevelTemplate> fixer)
+        {
+              var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+            {
+                logger.Error($"Cannot apply fix on spell {spellId} : spell do not exists");
+                return;
+            }
+
+            foreach (var level in spellLevels)
+            {
+                fixer(level);
             }
         }
 

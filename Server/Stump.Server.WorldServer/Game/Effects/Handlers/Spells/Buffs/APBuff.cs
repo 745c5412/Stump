@@ -1,4 +1,5 @@
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -9,6 +10,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_RegainAP)]
     [EffectHandler(EffectsEnum.Effect_AddAP_111)]
+    [AISpellEffect(SpellCategory.Buff)]
     public class APBuff : SpellEffectHandler
     {
         public APBuff(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)

@@ -1,4 +1,5 @@
 ﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -6,6 +7,7 @@ using Stump.Server.WorldServer.Handlers.Actions;using Stump.Server.WorldServer.
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
+    [AISpellEffect(SpellCategory.Curse)]
     [EffectHandler(EffectsEnum.Effect_SubVitalityPercent)]
     [EffectHandler(EffectsEnum.Effect_SubVitalityPercent_1048)]
     public class SubVitalityPercent : SpellEffectHandler

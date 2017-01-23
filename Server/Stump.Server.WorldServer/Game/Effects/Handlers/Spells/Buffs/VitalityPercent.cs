@@ -1,4 +1,5 @@
 ﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -7,6 +8,7 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_AddVitalityPercent)]
+    [AISpellEffect(SpellCategory.Buff)]
     public class VitalityPercent : SpellEffectHandler
     {
         public VitalityPercent(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)

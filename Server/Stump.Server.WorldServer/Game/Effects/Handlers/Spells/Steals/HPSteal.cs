@@ -1,5 +1,6 @@
 ﻿using System;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -9,6 +10,13 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 {
+    
+    [AISpellEffect(SpellCategory.DamagesAir, EffectsEnum.Effect_StealHPAir)]
+    [AISpellEffect(SpellCategory.DamagesFire, EffectsEnum.Effect_StealHPFire)]
+    [AISpellEffect(SpellCategory.DamagesWater, EffectsEnum.Effect_StealHPWater)]
+    [AISpellEffect(SpellCategory.DamagesEarth, EffectsEnum.Effect_StealHPEarth)]
+    [AISpellEffect(SpellCategory.DamagesNeutral, EffectsEnum.Effect_StealHPNeutral)]
+    [AISpellEffect(SpellCategory.Healing)]
     [EffectHandler(EffectsEnum.Effect_StealHPWater)]
     [EffectHandler(EffectsEnum.Effect_StealHPEarth)]
     [EffectHandler(EffectsEnum.Effect_StealHPAir)]

@@ -5,9 +5,11 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using System;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 {
+    [AISpellEffect(SpellCategory.Healing)]
     [EffectHandler(EffectsEnum.Effect_HealReceivedDamages)]
     public class HealReceivedDamages : SpellEffectHandler
     {

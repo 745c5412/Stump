@@ -554,7 +554,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightResumeMessage(IPacketReceiver client, CharacterFighter fighter)
         {
-            var slaves = fighter.Summons.Where(x => x.IsControlled());
+            var slaves = fighter.Summons.Where(x => x.IsControlled()).ToArray();
 
             if (slaves.Any())
             {

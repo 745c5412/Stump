@@ -1,5 +1,6 @@
 ﻿using System;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -7,6 +8,18 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
+    
+    [AISpellEffect(SpellCategory.DamagesAir, EffectsEnum.Effect_DamageAirPerHPEroded)]
+    [AISpellEffect(SpellCategory.DamagesFire, EffectsEnum.Effect_DamageFirePerHPEroded)]
+    [AISpellEffect(SpellCategory.DamagesWater, EffectsEnum.Effect_DamageWaterPerHPEroded)]
+    [AISpellEffect(SpellCategory.DamagesEarth, EffectsEnum.Effect_DamageEarthPerHPEroded)]
+    [AISpellEffect(SpellCategory.DamagesNeutral, EffectsEnum.Effect_DamageNeutralPerHPEroded)]
+    [AISpellEffect(SpellCategory.DamagesAir, EffectsEnum.Effect_DamageAirPerCasterHPEroded)]
+    [AISpellEffect(SpellCategory.DamagesFire, EffectsEnum.Effect_DamageFirePerCasterHPEroded)]
+    [AISpellEffect(SpellCategory.DamagesWater, EffectsEnum.Effect_DamageWaterPerCasterHPEroded)]
+    [AISpellEffect(SpellCategory.DamagesEarth, EffectsEnum.Effect_DamageEarthPerCasterHPEroded)]
+    [AISpellEffect(SpellCategory.DamagesNeutral, EffectsEnum.Effect_DamageNeutralPerCasterHPEroded)]
+
     [EffectHandler(EffectsEnum.Effect_DamageAirPerHPEroded)]
     [EffectHandler(EffectsEnum.Effect_DamageEarthPerHPEroded)]
     [EffectHandler(EffectsEnum.Effect_DamageFirePerHPEroded)]

@@ -1,4 +1,5 @@
 ﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -10,6 +11,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
+    [AISpellEffect(SpellCategory.Summoning)]
     [EffectHandler(EffectsEnum.Effect_KillAndSummon)]
     [EffectHandler(EffectsEnum.Effect_KillAndSummon_2796)]
     public class KillAndSummon : SpellEffectHandler

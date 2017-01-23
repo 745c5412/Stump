@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -9,6 +10,7 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
+    [AISpellEffect(SpellCategory.Buff)]
     [EffectHandler(EffectsEnum.Effect_Punishment)]
     public class Punishment : SpellEffectHandler
     {

@@ -8,10 +8,12 @@ using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using System;
 using Stump.DofusProtocol.Enums.Extensions;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
+    [AISpellEffect(SpellCategory.Movement)]
     [EffectHandler(EffectsEnum.Effect_PushBack)]
     [EffectHandler(EffectsEnum.Effect_PushBack_1103)]
     [EffectHandler(EffectsEnum.Effect_PullForward)]

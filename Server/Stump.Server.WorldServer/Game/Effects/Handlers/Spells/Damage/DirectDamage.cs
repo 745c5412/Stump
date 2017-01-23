@@ -1,5 +1,6 @@
 using System;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -10,6 +11,12 @@ using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
+    
+    [AISpellEffect(SpellCategory.DamagesAir, EffectsEnum.Effect_DamageAir)]
+    [AISpellEffect(SpellCategory.DamagesFire, EffectsEnum.Effect_DamageFire)]
+    [AISpellEffect(SpellCategory.DamagesWater, EffectsEnum.Effect_DamageWater)]
+    [AISpellEffect(SpellCategory.DamagesEarth, EffectsEnum.Effect_DamageEarth)]
+    [AISpellEffect(SpellCategory.DamagesNeutral, EffectsEnum.Effect_DamageNeutral)]
     [EffectHandler(EffectsEnum.Effect_DamageWater)]
     [EffectHandler(EffectsEnum.Effect_DamageEarth)]
     [EffectHandler(EffectsEnum.Effect_DamageAir)]

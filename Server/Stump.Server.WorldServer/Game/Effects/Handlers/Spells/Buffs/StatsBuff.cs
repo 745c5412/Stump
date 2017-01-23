@@ -1,11 +1,13 @@
 using System;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
+    [AISpellEffect(SpellCategory.Buff)]
     [EffectHandler(EffectsEnum.Effect_AddAgility)]
     [EffectHandler(EffectsEnum.Effect_AddChance)]
     [EffectHandler(EffectsEnum.Effect_AddIntelligence)]

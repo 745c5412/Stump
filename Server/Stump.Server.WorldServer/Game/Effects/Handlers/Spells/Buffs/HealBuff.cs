@@ -6,9 +6,11 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using System;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
+    [AISpellEffect(SpellCategory.Buff)]
     [EffectHandler(EffectsEnum.Effect_HealBuff)]
     public class HealBuff : SpellEffectHandler
     {

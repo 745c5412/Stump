@@ -188,6 +188,7 @@
     <Compile Include="AI\Fights\Brain\Custom\Summons\TreeBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
+    <Compile Include="AI\Fights\Spells\AISpellEffectAttribute.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
     <Compile Include="AI\Fights\Spells\SpellCastImpact.cs" />
     <Compile Include="AI\Fights\Spells\SpellCategory.cs" />

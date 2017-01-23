@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
     public enum SpellCategory
     {
         Healing = 0x0001,
-        Teleport = 0x0002,
+        Movement = 0x0002,
         Summoning = 0x0004,
         Buff = 0x0008,
         DamagesWater = 0x0010,
