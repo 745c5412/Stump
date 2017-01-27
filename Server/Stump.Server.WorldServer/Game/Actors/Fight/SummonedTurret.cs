@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using System.Linq;
+using Stump.Server.WorldServer.AI.Fights;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -222,6 +223,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 (sbyte)(client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
                 );
+        }
+
+        public override FightActor GetAICopy(AIFightCopy fight)
+        {
+            throw new NotImplementedException();
         }
     }
 }

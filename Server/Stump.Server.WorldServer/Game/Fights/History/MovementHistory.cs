@@ -25,6 +25,14 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             Owner.StopMoving += OnStopMoving;
         }
 
+        private MovementHistory(FightActor owner, MovementHistory original)
+        {
+            Owner = owner;
+            Owner.PositionChanged += OnPositionChanged;
+            Owner.StopMoving += OnStopMoving;
+            m_underlyingStack = new LimitedStack<MovementHistoryEntry>(HistoryEntriesLimit, original.m_underlyingStack);
+        }
+
         void OnStopMoving(ContextActor actor, Path path, bool canceled)
         {
             if (canceled)
@@ -61,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         {
             var entry = GetPreviousPosition();
 
-            while(entry != null && predicate(entry))
+            while (entry != null && predicate(entry))
                 entry = PopPreviousPosition();
 
             return entry;
@@ -87,7 +95,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         public MovementHistoryEntry PopWhile(Predicate<MovementHistoryEntry> predicate, int lifetime)
         {
             var entry = PopPreviousPosition(lifetime);
-            
+
             while (entry != null && predicate(entry) && CurrentRound - entry.Round < lifetime)
                 entry = PopPreviousPosition();
 
@@ -99,5 +107,11 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         public IEnumerable<MovementHistoryEntry> GetEntries(Predicate<MovementHistoryEntry> predicate) => m_underlyingStack.Where(entry => predicate(entry));
 
         public IEnumerable<MovementHistoryEntry> GetEntries(int lifetime) => GetEntries(x => CurrentRound - x.Round < lifetime);
+
+        public MovementHistory Copy(FightActor owner)
+        {
+            return new MovementHistory(owner);
+        }
+
     }
 }

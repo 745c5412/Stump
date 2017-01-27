@@ -4,6 +4,7 @@ using System.Linq;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Spells;
@@ -28,15 +29,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public sealed class CharacterFighter : NamedFighter
     {
-        int m_criticalWeaponBonus;
-        int m_damageTakenBeforeFight;
-        int m_weaponUses;
+        private int m_criticalWeaponBonus;
+        private int m_damageTakenBeforeFight;
+        private int m_weaponUses;
+
+        private StatsFields m_stats;
 
         public CharacterFighter(Character character, FightTeam team)
             : base(team)
         {
             Character = character;
 
+            m_stats = Character.Stats;
             Look = Character.Look.Clone();
             Look.RemoveAuras();
 
@@ -47,6 +51,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Position = new ObjectPosition(character.Map, cell, character.Direction);
 
             InitializeCharacterFighter();
+        }
+
+        private CharacterFighter(CharacterFighter original, AIFightCopy fight)
+            :base(original, fight)
+        {
+            Character = original.Character;
+            m_stats = original.m_stats.Clone(this);
+            Look = original.Look.Clone(); // necessary ?
+            Position = original.Position.Clone();
+
+            m_criticalWeaponBonus = original.m_criticalWeaponBonus;
+            m_damageTakenBeforeFight = original.m_damageTakenBeforeFight;
+            m_weaponUses = original.m_weaponUses;
         }
 
         public Character Character
@@ -82,10 +99,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Character.Level; }
         }
 
-        public override StatsFields Stats
-        {
-            get { return Character.Stats; }
-        }
+        public override StatsFields Stats => m_stats;
 
         public bool IsDisconnected
         {
@@ -428,6 +442,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Level,
                 (sbyte)Character.Breed.Id,
                 Name);
+
+        public override FightActor GetAICopy(AIFightCopy fight)
+        {
+            throw new NotImplementedException();
+        }
 
         public override string ToString()
         {

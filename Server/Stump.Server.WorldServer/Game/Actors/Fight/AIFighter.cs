@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Fights;
@@ -28,6 +29,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Spells = spells.ToDictionary(entry => entry.Id);
             Brain = BrainManager.Instance.GetBrain(identifier, this);
             Fight.TurnStarted += OnTurnStarted;
+        }
+
+        protected AIFighter(AIFighter original, AIFightCopy fight)
+            : base(original, fight)
+        {
+            Spells = original.Spells;
+            Brain = original.Brain;
         }
 
         public Brain Brain

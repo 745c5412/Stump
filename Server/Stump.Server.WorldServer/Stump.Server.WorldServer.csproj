@@ -172,6 +172,8 @@
     <Compile Include="AI\Fights\Actions\RandomMove.cs" />
     <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
     <Compile Include="AI\Fights\Actions\StayInRange.cs" />
+    <Compile Include="AI\Fights\AIFightCopy.cs" />
+    <Compile Include="AI\Fights\AITeamCopy.cs" />
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\KorriandreBrain.cs" />
@@ -632,6 +634,7 @@
     <Compile Include="Game\Fights\Damage.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
     <Compile Include="Game\Fights\FightAgression.cs" />
+    <Compile Include="Game\Fights\FightBase.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />
     <Compile Include="Game\Fights\FightPath.cs" />

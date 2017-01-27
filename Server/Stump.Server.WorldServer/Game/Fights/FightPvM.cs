@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var taxCollectors = Map.SubArea.Maps.Select(x => x.TaxCollector).Where(x => x != null && x.CanGatherLoots());
             results.AddRange(taxCollectors.Select(x => new TaxCollectorProspectingResult(x, this)));
 
-            foreach (var team in m_teams)
+            foreach (var team in Teams)
             {
                 IEnumerable<FightActor> droppers = team.OpposedTeam.GetAllFighters(entry => entry.IsDead() && entry.CanDrop()).ToList();
                 var looters = results.Where(x => x.CanLoot(team) && !(x is TaxCollectorProspectingResult)).OrderByDescending(entry => entry.Prospecting).

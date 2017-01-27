@@ -7,6 +7,7 @@ using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
@@ -77,6 +78,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Team.FighterAdded += OnFighterAdded;
 
             m_initialized = true;
+        }
+
+        private SummonedBomb(SummonedBomb original, AIFightCopy fight)
+            : base(original, fight)
+        {
+            Id = original.Id;
+            Position = original.Position.Clone();
+            Look = original.Look.Clone();
+            MonsterBombTemplate = original.MonsterBombTemplate;
         }
 
         void OnFighterAdded(FightTeam team, FightActor actor)
@@ -431,5 +441,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 (sbyte)(client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
                 );
+
+        public override FightActor GetAICopy(AIFightCopy fight)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

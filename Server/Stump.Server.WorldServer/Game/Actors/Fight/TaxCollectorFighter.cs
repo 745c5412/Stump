@@ -4,6 +4,7 @@ using NLog.LayoutRenderers;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
@@ -104,5 +105,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 TaxCollectorNpc.FirstNameId,
                 TaxCollectorNpc.LastNameId,
                 TaxCollectorNpc.Level);
+
+        public override FightActor GetAICopy(AIFightCopy fight)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

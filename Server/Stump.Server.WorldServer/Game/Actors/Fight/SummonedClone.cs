@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using System.Linq;
+using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.Core.Network;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -57,5 +58,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberInformations(Id);
+        public override FightActor GetAICopy(AIFightCopy fight)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

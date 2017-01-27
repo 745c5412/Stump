@@ -4,6 +4,7 @@ using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
@@ -39,6 +40,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Cell cell;
             Fight.FindRandomFreeCell(this, out cell, false);
             Position = new ObjectPosition(monster.Group.Map, cell, monster.Group.Direction);
+        }
+
+        private MonsterFighter(MonsterFighter original, AIFightCopy fight)
+            : base(original, fight)
+        {
+            Monster = original.Monster;
+            Look = original.Look;
+
+            m_stats = original.Stats.Clone(this);
+            Position = original.Position.Clone();
         }
 
         public Monster Monster
@@ -206,6 +217,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override string GetMapRunningFighterName()
         {
             return Monster.Template.Id.ToString();
+        }
+
+        public override FightActor GetAICopy(AIFightCopy fight)
+        {
+            return new MonsterFighter(this, fight);
         }
 
         public override string ToString()

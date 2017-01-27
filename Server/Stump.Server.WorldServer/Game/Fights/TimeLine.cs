@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Fights
     {
         private readonly List<FightActor> m_passedActors = new List<FightActor>();  
 
-        public TimeLine(IFight fight)
+        public TimeLine(FightBase fight)
         {
             Fight = fight;
             Fighters = new List<FightActor>();
@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public IFight Fight
+        public FightBase Fight
         {
             get;
         }

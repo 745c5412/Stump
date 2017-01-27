@@ -24,10 +24,18 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         {
             Owner = owner;
         }
+
         public SpellHistory(FightActor owner, IEnumerable<SpellHistoryEntry> entries)
         {
             Owner = owner;
             m_underlyingStack = new LimitedStack<SpellHistoryEntry>(HistoryEntriesLimit, entries);
+        }
+
+        // for AI purpose
+        private SpellHistory(FightActor owner, SpellHistory original)
+        {
+            Owner = owner;
+            m_underlyingStack = new LimitedStack<SpellHistoryEntry>(HistoryEntriesLimit, original.m_underlyingStack);
         }
 
         public FightActor Owner
@@ -86,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         {
             if (spell.GlobalCooldown != 0 &&
                 Owner.Team.Fighters.OfType<CharacterFighter>().Any(x => x.SpellHistory.GetMostRecentEntry(spell) != null &&
-                                            x.SpellHistory.GetMostRecentEntry(spell).IsGlobalCooldownActive(CurrentRound)))
+                                                                        x.SpellHistory.GetMostRecentEntry(spell).IsGlobalCooldownActive(CurrentRound)))
                 return false;
 
             var mostRecentEntry = GetMostRecentEntry(spell);
@@ -148,6 +156,11 @@ namespace Stump.Server.WorldServer.Game.Fights.History
                 let cd = GetSpellCooldown(spell)
                 where cd > 0
                 select new GameFightSpellCooldown((int) spell.SpellId, (sbyte) cd)).ToArray();
+        }
+
+        public SpellHistory Copy(FightActor owner)
+        {
+            return new SpellHistory(owner, this);
         }
     }
 }

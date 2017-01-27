@@ -4,6 +4,7 @@ using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 
@@ -46,6 +47,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             Owner = owner;
             Fields = new Dictionary<PlayerFields, StatsData>();
+        }
+
+        public StatsFields(IStatsOwner owner, StatsFields statsFields)
+        {
+            Owner = owner;
+            InitializeFromStats(statsFields);
         }
 
         public Dictionary<PlayerFields, StatsData> Fields
@@ -382,12 +389,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public void InitializeFromStats(StatsFields fields)
         {
-            Fields.Clear();
+            Fields = new Dictionary<PlayerFields, StatsData>(fields.Fields.Count);
 
             foreach (var field in fields.Fields)
             {
                 Fields.Add(field.Key, field.Value.CloneAndChangeOwner(Owner));
             }
+        }
+
+        public StatsFields Clone(IStatsOwner owner)
+        {
+            return new StatsFields(owner, this);
         }
     }
 }

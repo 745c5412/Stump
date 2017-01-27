@@ -1,3 +1,4 @@
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Spells;
@@ -193,6 +194,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
                 effect.Value = (short)( effect.Value * Efficiency );
 
             return effect;
+        }
+
+        public virtual bool IsSimilarTo(Buff buff)
+        {
+            return Spell.Id == buff.Spell.Id
+                   && Effect.Id == buff.Effect.Id
+                   && (buff.Critical || Critical || Effect.GetValues().SequenceEqual(buff.Effect.GetValues()))
+                   && GetType() == buff.GetType();
         }
 
         public FightDispellableEffectExtendedInformations GetFightDispellableEffectExtendedInformations()

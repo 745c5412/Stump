@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
@@ -167,6 +168,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 (sbyte)(client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
                 );
+        }
+
+        public override FightActor GetAICopy(AIFightCopy fight)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

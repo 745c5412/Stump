@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         protected override bool InternalApply()
         {
-            foreach (var trigger in Fight.GetTriggers().OfType<Rune>().Where(x => x.Caster == Caster).ToArray())
+            foreach (var trigger in Fight.Triggers.OfType<Rune>().Where(x => x.Caster == Caster).ToArray())
             {
                 var target = Fight.GetOneFighter(trigger.CenterCell);
 

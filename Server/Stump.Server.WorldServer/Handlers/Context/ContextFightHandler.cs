@@ -370,8 +370,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameFightSpectateMessage(IPacketReceiver client, IFight fight)
         {
             client.Send(new GameFightSpectateMessage(
-                fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
-                fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
+                fight.Buffs.Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
+                fight.Triggers.Select(entry => entry.GetHiddenGameActionMark()),
                 fight.TimeLine.RoundNumber, !fight.IsStarted ? 0 : fight.StartTime.GetUnixTimeStamp(), new Idol[0]));
         }
 
@@ -559,8 +559,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (slaves.Any())
             {
                 client.Send(new GameFightResumeWithSlavesMessage(
-                    fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
-                    fighter.Fight.GetTriggers().Select(entry => entry.GetGameActionMark(fighter)),
+                    fighter.Fight.Buffs.Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
+                    fighter.Fight.Triggers.Select(entry => entry.GetGameActionMark(fighter)),
                     fighter.Fight.TimeLine.RoundNumber,
                     !fighter.Fight.IsStarted ? 0 : fighter.Fight.StartTime.GetUnixTimeStamp(),
                     new Idol[0],
@@ -572,8 +572,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
             else
             {
                 client.Send(new GameFightResumeMessage(
-                    fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
-                    fighter.Fight.GetTriggers().Select(entry => entry.GetGameActionMark(fighter)),
+                    fighter.Fight.Buffs.Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
+                    fighter.Fight.Triggers.Select(entry => entry.GetGameActionMark(fighter)),
                     fighter.Fight.TimeLine.RoundNumber,
                     !fighter.Fight.IsStarted ? 0 : fighter.Fight.StartTime.GetUnixTimeStamp(),
                     new Idol[0],

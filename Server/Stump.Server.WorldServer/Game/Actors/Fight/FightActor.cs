@@ -42,6 +42,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 using Stump.Core.Extensions;
+using Stump.Server.WorldServer.AI.Fights;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -279,6 +280,28 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Fight.FightStarted += OnFightStarted;
         }
 
+        // copy for AI purpose
+        protected FightActor(FightActor original, AIFightCopy fight)
+        {
+            Team = original.Team;
+            VisibleState = original.VisibleState;
+            Loot = original.Loot;
+            SpellHistory = original.SpellHistory.Copy(this);
+            MovementHistory = original.MovementHistory.Copy(this);
+
+            IsReady = original.IsReady;
+            TurnStartPosition = original.TurnStartPosition.Clone();
+            TurnTimeReport = original.TurnTimeReport;
+            FightStartPosition = original.FightStartPosition.Clone();
+            NeedTelefragState = original.NeedTelefragState;
+            IsSacrificeProtected = original.IsSacrificeProtected;
+            IsRevived = original.IsRevived;
+            RevivedBy = original.RevivedBy;
+            Loot = original.Loot;
+
+            IsAIBrainCopy = true;
+        }
+
         #endregion
 
         #region Properties
@@ -335,7 +358,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public int TurnTimeReport
         {
             get;
-            internal set;
+            protected set;
         }
 
         public ObjectPosition FightStartPosition
@@ -374,9 +397,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Stats
 
-            public abstract 
-
-        byte Level
+        public abstract byte Level
         {
             get;
         }
@@ -423,6 +444,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public FightLoot Loot
+        {
+            get;
+        }
+
+        public bool IsAIBrainCopy
         {
             get;
         }
@@ -480,6 +506,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             if (!IsFighterTurn() || Fight.Freezed)
                 return;
+
+            var time = (int) Math.Floor(Fight.GetTurnTimeLeft().TotalSeconds / 2);
+            if (Fight.TimeLine.RoundNumber > 1)
+                TurnTimeReport = time > 0 ? time : 0;
 
             Fight.StopTurn();
 
@@ -941,20 +971,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 permanentDamages = CalculateErosionDamage(damageWithoutArmor);
             }
 
-            var shieldDamages = 0;
-            if (Stats.Shield.TotalSafe > 0)
-            {
-                if (Stats.Shield.TotalSafe > damage.Amount)
-                {
-                    shieldDamages += damage.Amount;
-                    damage.Amount = 0;
-                }
-                else
-                {
-                    shieldDamages += Stats.Shield.TotalSafe;
-                    damage.Amount -= Stats.Shield.TotalSafe;
-                }
-            }
+            // Shield
+            var shieldDamages = Math.Min(Stats.Shield.TotalSafe, damage.Amount);
+            damage.Amount -= shieldDamages;
+            ReduceShieldBonus(shieldDamages);
 
             TriggerDamageBuffs(damage);
 
@@ -972,7 +992,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
-            Stats.Shield.Context -= shieldDamages;
 
             OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source, damage.School);
 
@@ -1481,10 +1500,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool BuffMaxStackReached(Buff buff)
             => buff.Spell.CurrentSpellLevel.MaxStack > 0
-               && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell.Id == buff.Spell.Id
-                                                                                     && entry.Effect.Id == buff.Effect.Id
-                                                                                     && (buff.Critical || entry.Critical || Enumerable.SequenceEqual(entry.Effect.GetValues(), buff.Effect.GetValues()))
-                                                                                     && entry.GetType().Name == buff.GetType().Name
+               && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.IsSimilarTo(buff)
                                                                                      && buff.Delay == 0);
 
         public bool AddBuff(Buff buff, bool bypassMaxStack = false)
@@ -1497,10 +1513,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (!bypassMaxStack && BuffMaxStackReached(buff))
             {
-                var oldBuff = m_buffList.Where(x => x.Spell.Id == buff.Spell.Id
-                                                    && x.Effect.EffectId == buff.Effect.EffectId
-                                                    && (buff.Critical || x.Critical || Enumerable.SequenceEqual(x.Effect.GetValues(), buff.Effect.GetValues()))
-                                                    && x.GetType() == buff.GetType()).OrderBy(x => x.Duration).FirstOrDefault();
+                var oldBuff = m_buffList.Where(x => x.IsSimilarTo(buff)).OrderBy(x => x.Duration).FirstOrDefault();
 
                 if (oldBuff == null)
                 {
@@ -1638,6 +1651,36 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (m_buffedSpells[spell] == 0)
                 m_buffedSpells.Remove(spell);
+        }
+
+        public virtual void ReduceShieldBonus(int amount)
+        {
+            amount = Math.Min(Stats.Shield.Context, amount);
+
+            if (amount <= 0)
+                return;
+
+            Stats.Shield.Context -= amount;
+            
+            var shieldBuffs = Buffs.OfType<StatBuff>().Where(x => x.Caracteristic == PlayerFields.Shield).ToArray();
+
+            
+            foreach (var shieldBuff in shieldBuffs)
+            {
+                if (amount <= 0)
+                    return;
+
+                var diff = Math.Max(0, shieldBuff.Value - amount);
+
+                amount -= (shieldBuff.Value - diff);
+                shieldBuff.Value = (short)diff;
+
+                if (shieldBuff.Value <= 0)
+                    RemoveBuff(shieldBuff);
+                else
+                    Fight.UpdateBuff(shieldBuff);
+            }
+            
         }
 
         public short GetSpellBoost(Spell spell) => !m_buffedSpells.ContainsKey(spell) ? (short) 0 : m_buffedSpells[spell];
@@ -2276,6 +2319,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             => GetGameFightFighterInformations();
 
         public abstract string GetMapRunningFighterName();
+
+        #endregion
+
+        #region Copy
+
+        public abstract FightActor GetAICopy(AIFightCopy fight);
 
         #endregion
     }

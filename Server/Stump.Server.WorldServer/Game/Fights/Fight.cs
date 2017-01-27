@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ServiceStack.Text;
+using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.Game.Fights.Sequences;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 
@@ -43,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Fights
     public delegate void FightWinnersDelegate(IFight fight, FightTeam winners, FightTeam losers, bool draw);
 
     public delegate void ResultsGeneratedDelegate(IFight fight, List<IFightResult> results);
-
+    
     public interface IFight : ICharacterContainer
     {
         int Id
@@ -295,7 +296,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         event Action<IFight, FightActor> TurnStarted;
 
-        void StopTurn();
+        bool StopTurn();
 
         event Action<IFight, FightActor> BeforeTurnStopped;
 
@@ -303,7 +304,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         event Action<FightActor, int, int> Tackled;
 
-        IEnumerable<Buff> GetBuffs();
+        ReadOnlyCollection<Buff> Buffs { get; }
 
         void UpdateBuff(Buff buff, bool updateAction = true);
         
@@ -315,7 +316,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         bool AcknowledgeAction(CharacterFighter fighter, int sequenceId);
 
-        IEnumerable<MarkTrigger> GetTriggers();
+        ReadOnlyCollection<MarkTrigger> Triggers { get; }
 
         bool ShouldTriggerOnMove(Cell cell, FightActor actor);
 
@@ -423,6 +424,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         void RefreshActor(FightActor actor);
     }
 
+
+
     // this is necessary since we can't read static field dynamically in a generic class
     public static class FightConfiguration
     {
@@ -456,8 +459,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         [Variable]
         public static int TurnsBeforeDisconnection = 20;
     }
-
-    public abstract class Fight<TBlueTeam, TRedTeam> : WorldObjectsContext, IFight
+    
+    public abstract class Fight<TBlueTeam, TRedTeam> : FightBase, IFight
         where TRedTeam : FightTeam
         where TBlueTeam : FightTeam
     {
@@ -468,76 +471,23 @@ namespace Stump.Server.WorldServer.Game.Fights
         #region Constructor
 
         protected Fight(int id, Map fightMap, TBlueTeam defendersTeam, TRedTeam challengersTeam)
+            : base(id, fightMap, defendersTeam, challengersTeam)
         {
-            Id = id;
-            Map = fightMap;
-            DefendersTeam = defendersTeam;
-            DefendersTeam.Fight = this;
-            ChallengersTeam = challengersTeam;
-            ChallengersTeam.Fight = this;
-            m_teams = new[] { (FightTeam)ChallengersTeam, DefendersTeam };
-
-            TimeLine = new TimeLine(this);
             m_leavers = new List<FightActor>();
             m_spectators = new List<FightSpectator>();
-
-            DefendersTeam.FighterAdded += OnFighterAdded;
-            DefendersTeam.FighterRemoved += OnFighterRemoved;
-            ChallengersTeam.FighterAdded += OnFighterAdded;
-            ChallengersTeam.FighterRemoved += OnFighterRemoved;
-
-            CreationTime = DateTime.Now;
+            DefendersTeam.Fight = this;
+            ChallengersTeam.Fight = this;
         }
-
+        
         #endregion Constructor
 
         #region Properties
-
-        protected readonly ReversedUniqueIdProvider m_contextualIdProvider = new ReversedUniqueIdProvider(0);
-        protected readonly UniqueIdProvider m_triggerIdProvider = new UniqueIdProvider();
-
-        protected readonly List<Buff> m_buffs = new List<Buff>();
-
         protected TimedTimerEntry m_placementTimer;
         protected TimedTimerEntry m_turnTimer;
 
         private bool m_isInitialized;
         private bool m_disposed;
-
-        protected FightTeam[] m_teams;
-
-        public int Id
-        {
-            get;
-            private set;
-        }
-
-        public Map Map
-        {
-            get;
-            private set;
-        }
-
-        public override Cell[] Cells
-        {
-            get
-            {
-                return Map.Cells;
-            }
-        }
-
-        protected override IReadOnlyCollection<WorldObject> Objects
-        {
-            get
-            {
-                return Fighters;
-            }
-        }
-
-        public abstract FightTypeEnum FightType
-        {
-            get;
-        }
+      
 
         public abstract bool IsPvP
         {
@@ -547,12 +497,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         public virtual bool IsMultiAccountRestricted
         {
             get { return false; }
-        }
-
-        public FightState State
-        {
-            get;
-            private set;
         }
 
         public bool IsStarted
@@ -589,46 +533,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return DefendersTeam; }
         }
 
-        public TRedTeam ChallengersTeam
-        {
-            get;
-            private set;
-        }
+        public new TRedTeam  ChallengersTeam => (TRedTeam)base.ChallengersTeam;
 
-        public TBlueTeam DefendersTeam
-        {
-            get;
-            private set;
-        }
-
-        public FightTeam[] Teams => new FightTeam[] {ChallengersTeam, DefendersTeam};
-
-        public FightTeam Winners
-        {
-            get;
-            protected set;
-        }
-
-        public FightTeam Losers
-        {
-            get;
-            protected set;
-        }
-
-        public bool Draw
-        {
-            get;
-            protected set;
-        }
-
-        public TimeLine TimeLine
-        {
-            get;
-            private set;
-        }
-
-        public FightActor FighterPlaying => TimeLine.Current;
-
+        public new TBlueTeam DefendersTeam => (TBlueTeam)base.DefendersTeam;
+        
         public DefaultChallenge Challenge
         {
             get;
@@ -646,9 +554,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
             protected set;
         }
-
-        public ReadOnlyCollection<FightActor> Fighters => TimeLine.Fighters.AsReadOnly();
-
+        
         public ReadOnlyCollection<FightActor> Leavers
         {
             get { return m_leavers.AsReadOnly(); }
@@ -745,16 +651,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region EndFight
 
-        public bool CheckFightEnd(bool endFight = true)
-        {
-            if (!ChallengersTeam.AreAllDead() && !DefendersTeam.AreAllDead())
-                return false;
 
-            if (endFight)
-                EndFight();
-
-            return true;
-        }
 
         public void CancelFight()
         {
@@ -779,7 +676,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             Dispose();
         }
 
-        public void EndFight()
+        public override void EndFight()
         {
             if (State == FightState.Placement)
                 CancelFight();
@@ -839,30 +736,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         public event FightWinnersDelegate WinnersDetermined;
-
-        protected virtual void OnWinnersDetermined(FightTeam winners, FightTeam losers, bool draw)
+        protected override void OnWinnersDetermined(FightTeam winners, FightTeam losers, bool draw)
         {
             WinnersDetermined?.Invoke(this, winners, losers, draw);
         }
 
-        protected virtual void DeterminsWinners()
-        {
-            if (DefendersTeam.AreAllDead() && !ChallengersTeam.AreAllDead())
-            {
-                Winners = ChallengersTeam;
-                Losers = DefendersTeam;
-                Draw = false;
-            }
-            else if (!DefendersTeam.AreAllDead() && ChallengersTeam.AreAllDead())
-            {
-                Winners = DefendersTeam;
-                Losers = ChallengersTeam;
-                Draw = false;
-            }
-            else Draw = true;
-
-            OnWinnersDetermined(Winners, Losers, Draw);
-        }
 
         protected void ResetFightersProperties()
         {
@@ -947,7 +825,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             Map.RemoveFight(this);
             FightManager.Instance.Remove(this);
-            GC.SuppressFinalize(this);
         }
 
         protected virtual void OnDisposed()
@@ -1247,28 +1124,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Add/Remove Fighter
 
-        protected virtual void OnFighterAdded(FightTeam team, FightActor actor)
+        protected override void OnFighterAdded(FightTeam team, FightActor actor)
         {
             if (State == FightState.Ended)
-            {
                 return;
-            }
-
-            if (actor is SummonedFighter)
-            {
-                OnSummonAdded(actor as SummonedFighter);
-                return;
-            }
-
-            if (actor is SummonedBomb)
-            {
-                OnBombAdded(actor as SummonedBomb);
-                return;
-            }
-
-            TimeLine.Fighters.Add(actor);
-
-            BindFighterEvents(actor);
+            
+            base.OnFighterAdded(team, actor);
 
             if (State == FightState.Placement)
             {
@@ -1276,35 +1137,17 @@ namespace Stump.Server.WorldServer.Game.Fights
                     return;
             }
 
-            if (actor is CharacterFighter)
-                OnCharacterAdded(actor as CharacterFighter);
-
             ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, actor), true);
 
             UpdateBlades(team);
 
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
+        
 
-        protected virtual void OnSummonAdded(SummonedFighter fighter)
+        protected override void OnCharacterAdded(CharacterFighter fighter)
         {
-            TimeLine.InsertFighter(fighter, TimeLine.Fighters.IndexOf(fighter.Summoner) + 1);
-            BindFighterEvents(fighter);
-            fighter.OnGetAlive();
-
-            ContextHandler.SendGameFightTurnListMessage(Clients, this);
-        }
-
-        protected virtual void OnBombAdded(SummonedBomb bomb)
-        {
-            TimeLine.InsertFighter(bomb, TimeLine.Fighters.IndexOf(bomb.Summoner) + 1);
-            BindFighterEvents(bomb);
-
-            ContextHandler.SendGameFightTurnListMessage(Clients, this);
-        }
-
-        protected virtual void OnCharacterAdded(CharacterFighter fighter)
-        {
+            base.OnCharacterAdded(fighter);
             var character = fighter.Character;
 
             character.RefreshActor();
@@ -1332,26 +1175,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightUpdateTeamMessage(Clients, this, fighter.Team);
         }
 
-        protected virtual void OnFighterRemoved(FightTeam team, FightActor actor)
+        protected override void OnFighterRemoved(FightTeam team, FightActor actor)
         {
-            if (actor is SummonedFighter)
-            {
-                OnSummonRemoved(actor as SummonedFighter);
-                return;
-            }
-
-            if (actor is SummonedBomb)
-            {
-                OnBombRemoved(actor as SummonedBomb);
-                return;
-            }
-
-            TimeLine.RemoveFighter(actor);
-            UnBindFighterEvents(actor);
-
-            if (actor is CharacterFighter)
-                OnCharacterRemoved(actor as CharacterFighter);
-
+            base.OnFighterRemoved(team, actor);
+         
             switch (State)
             {
                 case FightState.Placement:
@@ -1365,26 +1192,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             UpdateBlades(team);
-        }
-
-        protected virtual void OnSummonRemoved(SummonedFighter fighter)
-        {
-            TimeLine.RemoveFighter(fighter);
-            UnBindFighterEvents(fighter);
-
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
 
-        protected virtual void OnBombRemoved(SummonedBomb bomb)
+        protected override void OnCharacterRemoved(CharacterFighter fighter)
         {
-            TimeLine.RemoveFighter(bomb);
-            UnBindFighterEvents(bomb);
-
-            ContextHandler.SendGameFightTurnListMessage(Clients, this);
-        }
-
-        protected virtual void OnCharacterRemoved(CharacterFighter fighter)
-        {
+            base.OnCharacterRemoved(fighter);
             Clients.Remove(fighter.Character.Client);
         }
 
@@ -1501,61 +1314,26 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Turn Management
 
-        public void StartTurn()
+        public override void StartTurn()
         {
-            if (State != FightState.Fighting)
-                return;
-
-            if (!CheckFightEnd())
-            {
-                OnTurnStarted();
-            }
+            base.StartTurn();
         }
 
         public event Action<IFight, FightActor> TurnStarted;
 
-        protected virtual void OnTurnStarted()
+        protected override void OnNewRound()
         {
-            ResetSequences();
+            base.OnNewRound();
+            ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
+        }
 
-            if (TimeLine.NewRound)
-            {
-                ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
-            }
-
+        protected override bool OnTurnStarted()
+        {
             ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id, FighterPlaying.TurnTime / 100);
 
-            using (StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START))
-            {
-                if (!FighterPlaying.IsSummoned())
-                {
-                    FighterPlaying.DecrementAllCastedBuffsDuration();
-                    FighterPlaying.DecrementSummonsCastedBuffsDuration();
-                }
-
-                foreach (var passedFighter in TimeLine.PassedActors)
-                {
-                    passedFighter.DecrementAllCastedBuffsDuration();
-                    passedFighter.DecrementSummonsCastedBuffsDuration();
-                }
-
-                DecrementGlyphDuration(FighterPlaying);
-                TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnBegin);
-                FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnBegin);
-            }
-
-            // can die with triggers
-            if (CheckFightEnd())
-                return;
-
-            if (FighterPlaying.MustSkipTurn())
-            {
-                FighterPlaying.ResetUsedPoints();
-                PassTurn();
-
-                return;
-            }
-
+            if (!base.OnTurnStarted())
+                return false;
+            
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => entry.RefreshStats());
 
@@ -1570,9 +1348,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 ContextHandler.SendGameFightTurnStartPlayingMessage((FighterPlaying as SummonedFighter).Controller.Character.Client);
             }
-
-            FighterPlaying.TurnStartPosition = FighterPlaying.Position.Clone();
-
+            
             TurnStartTime = DateTime.Now;
 
             if (!Freezed)
@@ -1580,16 +1356,20 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (!Map.Area.IsRunning)
                     Map.Area.Start();
 
-                m_turnTimer = Map.Area.CallDelayed(FighterPlaying.TurnTime, StopTurn);
+                m_turnTimer = Map.Area.CallDelayed(FighterPlaying.TurnTime, () => StopTurn());
             }
 
             TurnStarted?.Invoke(this, FighterPlaying);
+            return true;
         }
 
-        public void StopTurn()
+        public override bool StopTurn()
         {
             if (State != FightState.Fighting)
-                return;
+                return false;
+
+            if (!base.StopTurn())
+                return false;
 
             if (m_turnTimer != null)
                 m_turnTimer.Dispose();
@@ -1601,46 +1381,26 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ReadyChecker = null;
             }
 
-            if (CheckFightEnd())
-                return;
-
             OnTurnStopped();
             ReadyChecker = ReadyChecker.RequestCheck(this, PassTurnAndCheck, LagAndPassTurn);
+            return true;
         }
 
         public event Action<IFight, FightActor> BeforeTurnStopped;
 
         public event Action<IFight, FightActor> TurnStopped;
 
-        protected virtual void OnTurnStopped()
+        protected override bool OnTurnStopped()
         {
             BeforeTurnStopped?.Invoke(this, FighterPlaying);
 
-            using (StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END))
-            {
-
-                if (FighterPlaying.IsAlive())
-                {
-                    FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnEnd);
-                    FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
-                    TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnEnd);
-                }
-
-                var time = (int)Math.Floor(GetTurnTimeLeft().TotalSeconds / 2);
-                if (TimeLine.RoundNumber > 1)
-                    FighterPlaying.TurnTimeReport = time > 0 ? time : 0;
-            }
-
-            // can die with triggers
-            if (CheckFightEnd())
-                return;
-
-            if (IsSequencing)
-                EndAllSequences();
-
+            if (!base.OnTurnStopped())
+                return false;
+           
             TurnStopped?.Invoke(this, FighterPlaying);
 
             ContextHandler.SendGameFightTurnEndMessage(Clients, FighterPlaying);
+            return true;
         }
 
         protected void LagAndPassTurn(NamedFighter[] laggers)
@@ -1665,104 +1425,72 @@ namespace Stump.Server.WorldServer.Game.Fights
             PassTurn();
         }
 
-        protected void PassTurn()
+        protected override bool SelectNextFighter()
         {
-            if (State != FightState.Fighting)
-                return;
-
-            if (CheckFightEnd())
-                return;
-
-            redo:
-            if (!TimeLine.SelectNextFighter())
+            // Loop to avoid infinite recursion
+            for (int i = 0; i < Fighters.Count; i++)
             {
-                if (!CheckFightEnd())
+                if (!base.SelectNextFighter())
+                    return false;
+
+                if (FighterPlaying.HasLeft() && FighterPlaying is CharacterFighter)
                 {
-                    logger.Error("Something goes wrong : no more actors are available to play but the fight is not ended");
+                    var leaver = (CharacterFighter) FighterPlaying;
+                    if (leaver.IsDisconnected && leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection <= TimeLine.RoundNumber)
+                    {
+                        leaver.Die();
+
+                        if (CheckFightEnd())
+                            return false;
+
+                        var results = GenerateLeaverResults(leaver, out var leaverResult);
+
+                        leaverResult.Apply();
+
+                        ContextHandler.SendGameFightLeaveMessage(Clients, leaver);
+
+                        leaver.ResetFightProperties();
+
+                        leaver.Team.AddLeaver(leaver);
+                        m_leavers.Add(leaver);
+                        leaver.Team.RemoveFighter(leaver);
+
+                        leaver.LeaveDisconnectedState(false);
+
+                        leaver.Character.RejoinMap();
+                        leaver.Character.SaveLater();
+
+                        continue;
+                    }
+
+                    // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
+                    BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182, FighterPlaying.GetMapRunningFighterName(), leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection - TimeLine.RoundNumber);
                 }
 
-                return;
+                return true;
             }
 
-            // player left but is disconnected
-            // pass turn is there are others players
-            if (FighterPlaying.HasLeft() && FighterPlaying is CharacterFighter)
-            {
-                var leaver = (CharacterFighter)FighterPlaying;
-                if (leaver.IsDisconnected &&
-                    leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection <= TimeLine.RoundNumber)
-                {
-                    leaver.Die();
-
-                    if (CheckFightEnd())
-                        return;
-
-                    var results = GenerateLeaverResults(leaver, out var leaverResult);
-
-                    leaverResult.Apply();
-
-                    ContextHandler.SendGameFightLeaveMessage(Clients, leaver);
-
-                    leaver.ResetFightProperties();
-
-                    leaver.Team.AddLeaver(leaver);
-                    m_leavers.Add(leaver);
-                    leaver.Team.RemoveFighter(leaver);
-
-                    leaver.LeaveDisconnectedState(false);
-
-                    leaver.Character.RejoinMap();
-                    leaver.Character.SaveLater();
-
-                    goto redo;
-                }
-
-                // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
-                BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182,
-                    FighterPlaying.GetMapRunningFighterName(), leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection - TimeLine.RoundNumber);
-            }
-
-            OnTurnPassed();
-
-            StartTurn();
+            return false;
         }
-
-        protected virtual void OnTurnPassed()
-        {
-            if (IsSequencing)
-                EndAllSequences();
-        }
+        
 
         #endregion Turn Management
 
         #region Events Binders
-
-        private void UnBindFightersEvents()
+        
+        protected override void UnBindFighterEvents(FightActor actor)
         {
-            foreach (var fighter in Fighters)
-            {
-                UnBindFighterEvents(fighter);
-            }
-        }
-
-        private void UnBindFighterEvents(FightActor actor)
-        {
+            base.UnBindFighterEvents(actor);
             actor.ReadyStateChanged -= OnSetReady;
             actor.PrePlacementChanged -= OnChangePreplacementPosition;
             actor.PrePlacementSwapped -= OnSwapPreplacementPosition;
             actor.FighterLeft -= OnPlayerLeft;
 
-            actor.StartMoving -= OnStartMoving;
-            actor.StopMoving -= OnStopMoving;
-            actor.PositionChanged -= OnPositionChanged;
             actor.FightPointsVariation -= OnFightPointsVariation;
             actor.LifePointsChanged -= OnLifePointsChanged;
             actor.DamageReducted -= OnDamageReducted;
             actor.SpellCasting -= OnSpellCasting;
-            actor.SpellCasted -= OnSpellCasted;
             actor.WeaponUsed -= OnCloseCombat;
-            actor.BuffAdded -= OnBuffAdded;
-            actor.BuffRemoved -= OnBuffRemoved;
             actor.Dead -= OnDead;
 
             var fighter = actor as CharacterFighter;
@@ -1773,17 +1501,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                 fighter.Character.StatsResfreshed -= OnStatsRefreshed;
             }
         }
-
-        private void BindFightersEvents()
+        
+        protected override void BindFighterEvents(FightActor actor)
         {
-            foreach (var fighter in Fighters)
-            {
-                BindFighterEvents(fighter);
-            }
-        }
-
-        private void BindFighterEvents(FightActor actor)
-        {
+            base.BindFighterEvents(actor);
             if (State == FightState.Placement)
             {
                 actor.FighterLeft += OnPlayerLeft;
@@ -1797,20 +1518,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 actor.FighterLeft += OnPlayerLeft;
 
-                actor.StartMoving += OnStartMoving;
-                actor.StopMoving += OnStopMoving;
-                actor.PositionChanged += OnPositionChanged;
                 actor.FightPointsVariation += OnFightPointsVariation;
                 actor.LifePointsChanged += OnLifePointsChanged;
                 actor.DamageReducted += OnDamageReducted;
 
                 actor.SpellCasting += OnSpellCasting;
-                actor.SpellCasted += OnSpellCasted;
                 actor.SpellCastFailed += OnSpellCastFailed;
                 actor.WeaponUsed += OnCloseCombat;
-
-                actor.BuffAdded += OnBuffAdded;
-                actor.BuffRemoved += OnBuffRemoved;
 
                 actor.Dead += OnDead;
             }
@@ -1844,7 +1558,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ActionsHandler.SendGameActionFightDeathMessage(Clients, fighter);
             }
 
-            foreach (var trigger in m_triggers.Where(trigger => trigger.Caster == fighter).ToArray())
+            foreach (var trigger in Triggers.Where(trigger => trigger.Caster == fighter).ToArray())
             {
                 RemoveTrigger(trigger);
             }
@@ -1854,8 +1568,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Movement
 
-        protected virtual void OnStartMoving(ContextActor actor, Path path)
+        protected override void OnStartMoving(ContextActor actor, Path path)
         {
+
             var fighter = actor as FightActor;
             var character = actor is CharacterFighter ? (actor as CharacterFighter).Character : null;
 
@@ -1880,10 +1595,13 @@ namespace Stump.Server.WorldServer.Game.Fights
                                 ContextHandler.SendGameMapMovementMessage(entry.Client, fightPath.Cells.Skip(index).Take(tackle.PathIndex - index + 1).Select(x => x.Id), fighter);
                         }, true);
                     }
+
+
                     OnTackled(fighter, tackle);
                     index = tackle.PathIndex;
                 }
 
+                            
                 if (path.Cells.Length - index > 0)
                 {
                     ForEach(entry =>
@@ -1905,50 +1623,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public event Action<FightActor, int, int> Tackled;
 
-        protected virtual void OnTackled(FightActor actor, FightTackle tackle)
+        protected override void OnTackled(FightActor actor, FightTackle tackle)
         {
-            if (actor.MP - tackle.TackledMP < 0)
-            {
-                logger.Error("Cannot apply tackle : mp tackled ({0}) > available mp ({1})", tackle.TackledMP, actor.MP);
-                return;
-            }
-
             ActionsHandler.SendGameActionFightTackledMessage(Clients, actor, tackle.Tacklers);
-            actor.LostAP((short)tackle.TackledAP, actor);
-            actor.LostMP((short)tackle.TackledMP, actor);
-
-            actor.TriggerBuffs(actor, BuffTriggerType.OnTackled);
-
-            foreach (var tackler in tackle.Tacklers)
-                tackler.TriggerBuffs(tackler, BuffTriggerType.OnTackle);
-
-            Tackled?.Invoke(actor, tackle.TackledAP, tackle.TackledMP);
-        }
-
-        protected virtual void OnStopMoving(ContextActor actor, Path path, bool canceled)
-        {
-            var fighter = actor as FightActor;
-
-            if (fighter != null && !fighter.IsFighterTurn())
-                return;
-
-            if (canceled)
-                return; // error, mouvement shouldn't be canceled in a fight.
-
-            if (fighter == null)
-                return;
-
-            fighter.UseMP((short)path.MPCost);
-        }
-
-        protected virtual void OnPositionChanged(ContextActor actor, ObjectPosition objectPosition)
-        {
-            var fighter = actor as FightActor;
-
-            if (fighter == null)
-                return;
-
-            TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
+            base.OnTackled(actor, tackle);
         }
 
         #endregion Movement
@@ -1991,31 +1669,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                     break;
             }
 
-            var shieldBuffs = actor.GetBuffs(x => x is StatBuff && ((StatBuff)x).Caracteristic == PlayerFields.Shield).Select(x => x as StatBuff).ToArray();
 
-            if (!shieldBuffs.Any() && shieldDamages == 0)
+            if (shieldDamages == 0)
                 ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, action, from ?? actor, actor, loss, (short)permanentDamages);
             else
-            {
                 ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, action, from ?? actor, actor, loss,
                     (short)permanentDamages, (short)shieldDamages);
-
-                foreach (var shieldBuff in shieldBuffs)
-                {
-                    if (shieldDamages <= 0)
-                        continue;
-
-                    var diff = Math.Max(0, shieldBuff.Value - shieldDamages);
-
-                    shieldDamages -= (shieldBuff.Value - diff);
-                    shieldBuff.Value = (short)diff;
-
-                    if (shieldBuff.Value <= 0)
-                        actor.RemoveBuff(shieldBuff);
-                    else
-                        ContextHandler.SendGameActionFightDispellableEffectMessage(Clients, shieldBuff, true);
-                }
-            }
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
@@ -2064,14 +1723,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private Cell GetInvisibleSpellCastCell(Cell casterCell, Cell targetedCell)
             => Cells[((MapPoint)casterCell).GetCellInDirection(((MapPoint)casterCell).OrientationTo(targetedCell), 1).CellId];
+        
 
-        protected virtual void OnSpellCasted(FightActor caster, SpellCastHandler castHandler)
+        protected override void OnSpellCastFailed(FightActor caster, SpellCastInformations cast)
         {
-            CheckFightEnd();
-        }
-
-        protected virtual void OnSpellCastFailed(FightActor caster, SpellCastInformations cast)
-        {
+            base.OnSpellCastFailed(caster, cast);
             ContextHandler.SendGameActionFightNoSpellCastMessage(Clients, cast.Spell);
         }
 
@@ -2079,26 +1735,20 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Buffs
 
-        public IEnumerable<Buff> GetBuffs()
-        {
-            return m_buffs;
-        }
-
         public void UpdateBuff(Buff buff, bool updateAction = true)
         {
             ContextHandler.SendGameActionFightDispellableEffectMessage(Clients, buff, updateAction);
         }
 
-        protected virtual void OnBuffAdded(FightActor target, Buff buff)
+        protected override void OnBuffAdded(FightActor target, Buff buff)
         {
-            m_buffs.Add(buff);
+            base.OnBuffAdded(target, buff);
             ContextHandler.SendGameActionFightDispellableEffectMessage(Clients, buff);
         }
 
-        protected virtual void OnBuffRemoved(FightActor target, Buff buff)
+        protected override void OnBuffRemoved(FightActor target, Buff buff)
         {
-            m_buffs.Remove(buff);
-
+            base.OnBuffRemoved(target, buff);
             // regular debuffing is done automatically
             ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
         }
@@ -2106,94 +1756,14 @@ namespace Stump.Server.WorldServer.Game.Fights
         #endregion Buffs
 
         #region Sequences
-        
-        private int m_nextSequenceId = 1;
-        private readonly List<FightSequence> m_sequencesRoot = new List<FightSequence>();
-
-        public FightSequence CurrentSequence
-        {
-            get;
-            private set;
-        }
-
-        public FightSequence CurrentRootSequence
-        {
-            get;
-            private set;
-        }
-
-        public bool IsSequencing => CurrentRootSequence != null && !CurrentRootSequence.Ended;
-        
-        public DateTime LastSequenceEndTime => m_sequencesRoot.Count > 0 ? m_sequencesRoot.Max(x => x.EndTime) : DateTime.Now;
-
-        public FightSequence StartMoveSequence(FightPath path)
-        {
-            var id = m_nextSequenceId++;
-            var sequence = new FightMoveSequence(id, TimeLine.Current, path);
-            StartSequence(sequence);
-            return sequence;
-        }
-
-        public FightSequence StartSequence(SequenceTypeEnum type)
-        {
-            var id = m_nextSequenceId++;
-            var sequence = new FightSequence(id, type, TimeLine.Current);
-            StartSequence(sequence);
-            return sequence;
-        }
-
-        private void StartSequence(FightSequence sequence)
-        {
-            if (!IsSequencing)
-            {
-                if (sequence.Parent != null)
-                {
-                    logger.Error($"Sequence {sequence.Type} is a root and cannot have a parent");
-                }
-
-                m_sequencesRoot.Add(sequence);
-                CurrentRootSequence = sequence;
-            }
-            else
-                CurrentSequence.AddChildren(sequence);
-            
-
-            CurrentSequence = sequence;
-             
+        protected override void OnSequenceStarted(FightSequence sequence)
+        {  
             // just send the root sequence
             if (sequence.Parent == null)
                 ActionsHandler.SendSequenceStartMessage(Clients, sequence);
-        }
-
-        public void OnSequenceEnded(FightSequence sequence)
-        {
-            if (CurrentSequence != sequence)
-            {
-                logger.Error($"Sequence incoherence {sequence} instead of {CurrentSequence}");
-            }
-
-            CurrentSequence = sequence.Parent;
+            base.OnSequenceStarted(sequence);
         }
         
-
-        public void EndAllSequences()
-        {
-            foreach (var sequence in m_sequencesRoot)
-                sequence.EndSequence();
-        }
-
-        public void ResetSequences()
-        {
-            m_sequencesRoot.Clear();
-            CurrentSequence = null;
-            m_nextSequenceId = 1;
-        }
-
-        public virtual bool AcknowledgeAction(CharacterFighter fighter, int sequenceId)
-        {
-            return m_sequencesRoot.Any(x => x.Acknowledge(sequenceId, fighter));
-        }
-
         #endregion Sequences
 
         #endregion Turn Actions
@@ -2357,91 +1927,28 @@ namespace Stump.Server.WorldServer.Game.Fights
         #endregion Challenges
 
         #region Triggers
-
-        private readonly List<MarkTrigger> m_triggers = new List<MarkTrigger>();
-
-        public IEnumerable<MarkTrigger> GetTriggers() => m_triggers;
-
-        public bool ShouldTriggerOnMove(Cell cell, FightActor actor)
-            => m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.StopMovement  && entry.ContainsCell(cell) && entry.CanTrigger(actor));
-
-        public MarkTrigger[] GetTriggersByCell(Cell cell) => m_triggers.Where(entry => entry.ContainsCell(cell)).ToArray();
-
-        public MarkTrigger[] GetTriggers(Cell cell) => m_triggers.Where(entry => entry.CenterCell.Id == cell.Id).ToArray();
-
-        public void AddTriger(MarkTrigger trigger)
+        protected override void OnTriggerAdded(MarkTrigger trigger)
         {
-            trigger.Triggered += OnMarkTriggered;
-            m_triggers.Add(trigger);
-
             foreach (var character in GetCharactersAndSpectators())
             {
                 ContextHandler.SendGameActionFightMarkCellsMessage(character.Client, trigger, character.Fighter != null && trigger.DoesSeeTrigger(character.Fighter));
             }
 
-            if (!trigger.TriggerType.HasFlag(TriggerType.CREATION))
-                return;
-
-            var fighters = GetAllFighters(trigger.GetCells());
-            foreach (var fighter in fighters)
-                trigger.Trigger(fighter);
+            base.OnTriggerAdded(trigger);
         }
 
-        public void RemoveTrigger(MarkTrigger trigger)
+        protected override void OnTriggerRemoved(MarkTrigger trigger)
         {
-            trigger.Triggered -= OnMarkTriggered;
-            m_triggers.Remove(trigger);
-            trigger.NotifyRemoved();
-
             ContextHandler.SendGameActionFightUnmarkCellsMessage(Clients, trigger);
+
+            base.OnTriggerRemoved(trigger);
         }
 
-        public void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType)
-        {
-            var triggers = m_triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell) && markTrigger.CanTrigger(trigger)).OrderByDescending(x => x.Priority).ToArray();
-
-            foreach (var markTrigger in triggers.OfType<Trap>())
-                markTrigger.WillBeTriggered = true;
-
-            // we use a copy 'cause a trigger can be deleted when a fighter die with it
-            foreach (var markTrigger in triggers)
-            {
-                if (!trigger.CanPlay() && (triggerType == TriggerType.OnTurnBegin || triggerType == TriggerType.OnTurnEnd)
-                    && (markTrigger is Wall || markTrigger is Glyph))
-                    continue;
-
-                using (StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP))
-                    markTrigger.Trigger(trigger, cell);
-            }
-        }
-
-        public void DecrementGlyphDuration(FightActor caster)
-        {
-            var triggersToRemove = m_triggers.Where(trigger => trigger.Caster == caster).
-                Where(trigger => trigger.DecrementDuration()).ToList();
-
-            if (triggersToRemove.Count == 0)
-                return;
-
-            using (StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP))
-            {
-                foreach (var trigger in triggersToRemove)
-                {
-                    RemoveTrigger(trigger);
-                }
-            }
-        }
-
-        public int PopNextTriggerId() => m_triggerIdProvider.Pop();
-
-        public void FreeTriggerId(int id)
-        {
-            m_triggerIdProvider.Push(id);
-        }
-
-        private void OnMarkTriggered(MarkTrigger markTrigger, FightActor trigger, Spell triggerSpell)
+        protected override void OnMarkTriggered(MarkTrigger markTrigger, FightActor trigger, Spell triggerSpell)
         {
             ContextHandler.SendGameActionFightTriggerGlyphTrapMessage(Clients, markTrigger, trigger, triggerSpell);
+
+            base.OnMarkTriggered(markTrigger, trigger, triggerSpell);
         }
 
         #endregion Triggers
@@ -2481,7 +1988,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (Freezed)
                     m_turnTimer.Stop();
                 else
-                    m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+                    m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, () => StopTurn());
             }
         }
 
@@ -2563,12 +2070,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         protected abstract bool CanCancelFight();
-
-        public bool IsCellFree(Cell cell)
-        {
-            return cell.Walkable && !cell.NonWalkableDuringFight && GetOneFighter(cell) == null;
-        }
-
+        
         public TimeSpan GetFightDuration()
         {
             return TimeSpan.FromMilliseconds(!IsStarted ? 0 : (int)(DateTime.Now - StartTime).TotalMilliseconds);
@@ -2584,103 +2086,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             return TimeSpan.FromMilliseconds(time > 0 ? (FighterPlaying.TurnTime - (int)time) : 0);
         }
 
-        public sbyte GetNextContextualId()
-        {
-            return (sbyte)m_contextualIdProvider.Pop();
-        }
-
-        public void FreeContextualId(sbyte id)
-        {
-            m_contextualIdProvider.Push(id);
-        }
-
-        public T GetRandomFighter<T>() where T : FightActor
-        {
-            var fighters = Fighters.Where(x => x is T && x.IsAlive()).ToArray();
-
-            if (!fighters.Any())
-                return null;
-
-            var random = new CryptoRandom().Next(0, fighters.Count());
-
-            return fighters[random] as T;
-        }
-
-        public FightActor GetOneFighter(int id)
-        {
-            return Fighters.FirstOrDefault(entry => entry.Id == id);
-        }
-
-        public FightActor GetOneFighter(Cell cell)
-        {
-            return Fighters.FirstOrDefault(entry => entry.IsAlive() && entry.Cell.Id == cell.Id);
-        }
-
-        public FightActor GetOneFighter(Predicate<FightActor> predicate)
-        {
-            var entries = Fighters.Where(entry => predicate(entry));
-
-            var fightActors = entries as FightActor[] ?? entries.ToArray();
-            return fightActors.Count() != 0 ? null : fightActors.FirstOrDefault();
-        }
-
-        public T GetOneFighter<T>(int id) where T : FightActor
-        {
-            return Fighters.OfType<T>().FirstOrDefault(entry => entry.Id == id);
-        }
-
-        public T GetOneFighter<T>(Cell cell) where T : FightActor
-        {
-            return Fighters.OfType<T>().FirstOrDefault(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell));
-        }
-
-        public T GetOneFighter<T>(Predicate<T> predicate) where T : FightActor
-        {
-            return Fighters.OfType<T>().FirstOrDefault(entry => predicate(entry));
-        }
-
-        public T GetFirstFighter<T>(int id) where T : FightActor
-        {
-            return Fighters.OfType<T>().FirstOrDefault(entry => entry.Id == id);
-        }
-
-        public T GetFirstFighter<T>(Cell cell) where T : FightActor
-        {
-            return Fighters.OfType<T>().FirstOrDefault(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell));
-        }
-
-        public T GetFirstFighter<T>(Predicate<T> predicate) where T : FightActor
-        {
-            return Fighters.OfType<T>().FirstOrDefault(entry => predicate(entry));
-        }
-
-        public List<FightActor> GetAllFightersInLine(MapPoint startCell, int range, DirectionsEnum direction)
-        {
-            var fighters = new List<FightActor>();
-            var nextCell = startCell.GetNearestCellInDirection(direction);
-            var i = 0;
-
-            while (nextCell != null && Map.Cells[nextCell.CellId].Walkable && !Map.Cells[nextCell.CellId].NonWalkableDuringFight && i < range)
-            {
-                var fighter = GetOneFighter(Map.Cells[nextCell.CellId]);
-
-                if (fighter == null && fighters.Any())
-                    break;
-
-                if (fighter != null)
-                    fighters.Add(fighter);
-
-                nextCell = nextCell.GetNearestCellInDirection(direction);
-                i++;
-            }
-
-            return fighters;
-        }
-
-        public ReadOnlyCollection<FightActor> GetAllFighters()
-        {
-            return Fighters;
-        }
 
         public ReadOnlyCollection<FightActor> GetLeavers()
         {
@@ -2697,41 +2102,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             return Spectators;
         }
 
-        public IEnumerable<Character> GetCharactersAndSpectators()
-        {
-            return GetAllCharacters().Concat(GetSpectators().Select(entry => entry.Character));
-        }
-
-        public IEnumerable<FightActor> GetFightersAndLeavers()
-        {
-            return Fighters.Concat(Leavers.Where(x => !(x is CharacterFighter) || !((CharacterFighter)x).IsDisconnected));
-        }
-
-        public IEnumerable<FightActor> GetAllFighters(Cell[] cells)
-        {
-            return GetAllFighters<FightActor>(entry => entry.IsAlive() && cells.Contains(entry.Position.Cell));
-        }
-
-        public IEnumerable<FightActor> GetAllFighters(IEnumerable<Cell> cells)
-        {
-            return GetAllFighters(cells.ToArray());
-        }
-
-        public IEnumerable<FightActor> GetAllFighters(Predicate<FightActor> predicate)
-        {
-            return Fighters.Where(entry => predicate(entry));
-        }
-
-        public IEnumerable<T> GetAllFighters<T>() where T : FightActor
-        {
-            return Fighters.OfType<T>();
-        }
-
-        public IEnumerable<T> GetAllFighters<T>(Predicate<T> predicate) where T : FightActor
-        {
-            return Fighters.OfType<T>().Where(entry => predicate(entry));
-        }
-
         public IEnumerable<int> GetDeadFightersIds()
         {
             return GetFightersAndLeavers().Where(entry => entry.IsDead() && entry.IsVisibleInTimeline).Select(entry => entry.Id);
@@ -2742,40 +2112,44 @@ namespace Stump.Server.WorldServer.Game.Fights
             return GetAllFighters<FightActor>(entry => entry.IsAlive() && entry.IsVisibleInTimeline).Select(entry => entry.Id);
         }
 
-        public FightCommonInformations GetFightCommonInformations()
+        public IEnumerable<Character> GetCharactersAndSpectators()
         {
-            return new FightCommonInformations(Id,
-                                               (sbyte)FightType,
-                                               m_teams.Select(entry => entry.GetFightTeamInformations()),
-                                               m_teams.Select(entry => entry.BladePosition.Cell.Id),
-                                               m_teams.Select(entry => entry.GetFightOptionsInformations()));
+            return GetAllCharacters().Concat(GetSpectators().Select(entry => entry.Character));
         }
 
+        public IEnumerable<FightActor> GetFightersAndLeavers()
+        {
+            return Fighters.Concat(Leavers.Where(x => !(x is CharacterFighter) || !((CharacterFighter)x).IsDisconnected));
+        }
+        
         public FightExternalInformations GetFightExternalInformations(Character character)
         {
             return new FightExternalInformations(Id, (sbyte)FightType, !IsStarted ? 0 : StartTime.GetUnixTimeStamp(), SpectatorClosed,
-                m_teams.Select(entry => entry.GetFightTeamLightInformations(character)), m_teams.Select(entry => entry.GetFightOptionsInformations()));
+                Teams.Select(entry => entry.GetFightTeamLightInformations(character)), Teams.Select(entry => entry.GetFightOptionsInformations()));
         }
-
-        public IEnumerable<NamedPartyTeam> GetPartiesName()
-        {
-            var redParty = ChallengersTeam.GetTeamParty();
-            var blueParty = DefendersTeam.GetTeamParty();
-
-            var parties = new[] {redParty, blueParty};
-            return parties.Select((x, i) => Tuple.Create(i, x?.Name)).Where(x => x.Item2 != null).Select(x => new NamedPartyTeam((sbyte)x.Item1, x.Item2));
-        }
-
-        public IEnumerable<NamedPartyTeamWithOutcome> GetPartiesNameWithOutcome()
-        {
-            var redParty = ChallengersTeam.GetTeamParty();
-            var blueParty = ChallengersTeam.GetTeamParty();
-
-            var parties = new[] {redParty, blueParty};
-            return parties.Select((x, i) => Tuple.Create(i, x?.Name)).Where(x => x.Item2 != null).
-                Select(x => new NamedPartyTeamWithOutcome(new NamedPartyTeam((sbyte)x.Item1, x.Item2), (short)Teams[x.Item1].GetOutcome()));
-        }
+        
 
         #endregion Get Methods
+
+        #region Copy
+        /// <summary>
+        /// Copy the instance of AI purpose
+        /// </summary>
+        /// <returns></returns>
+        public virtual AIFightCopy GetAIFightCopy()
+        {
+            // we need to copy
+            // - timeline = Fighters
+            //      + Position
+            //      + Stats
+            //      + Cooldowns
+            //      + MovementsHistory
+            //      + Look (?)
+            // - buffs
+            // - Marks
+
+            return new AIFightCopy(this);
+        }
+        #endregion
     }
 }

@@ -1,4 +1,5 @@
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Handlers.Chat;
@@ -9,6 +10,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
     {
         protected NamedFighter(FightTeam team)
             : base(team)
+        {
+        }
+
+        protected NamedFighter(NamedFighter original, AIFightCopy fight):
+            base(original, fight)
         {
         }
 
