@@ -23,9 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             fighter.Dead += OnFighterDead;
             fighter.FighterLeft += OnFighterLeave;
 
-            var handler = FighterAdded;
-            if (handler != null)
-                handler(this, fighter);
+            FighterAdded?.Invoke(this, fighter);
         }
 
         void OnFighterDead(FightActor actor, FightActor killer)
@@ -42,9 +40,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         protected virtual void OnTeamOptionsChanged(FightOptionsEnum option)
         {
-            var handler = TeamOptionsChanged;
-            if (handler != null)
-                handler(this, option);
+            TeamOptionsChanged?.Invoke(this, option);
         }
 
         public event Action<FightTeam, FightActor> FighterRemoved;
@@ -54,9 +50,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             fighter.Dead -= OnFighterDead;
             fighter.FighterLeft -= OnFighterLeave;
 
-            var handler = FighterRemoved;
-            if (handler != null)
-                handler(this, fighter);
+            FighterRemoved?.Invoke(this, fighter);
         }
 
         #endregion
@@ -398,8 +392,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                                                   false,
                                                   character.Party != null && m_fighters.OfType<CharacterFighter>().Any(x => character.Parties.Any(y => x.Character.Parties.Contains(y))),
                                                   false,
-                                                  (sbyte)m_fighters.Count(x => !(x is SummonedFighter) && !(x is SummonedBomb)),
-                                                  (int)m_fighters.Average(x => x.Level));
+                                                  (sbyte)m_fighters.Count(x => !x.IsSummoned()),
+                                                  (int)m_fighters.Where(x => !x.IsSummoned()).Average(x => x.Level));
 
     }
 }

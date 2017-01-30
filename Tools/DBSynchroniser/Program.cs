@@ -40,6 +40,7 @@ using LangText = DBSynchroniser.Records.Langs.LangText;
 using LangTextUi = DBSynchroniser.Records.Langs.LangTextUi;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.DofusProtocol.D2oClasses.Tools.Ma3;
+using Stump.Server.WorldServer.Game.Actors.Look;
 
 namespace DBSynchroniser
 {
@@ -617,11 +618,17 @@ namespace DBSynchroniser
                 if (table.TableName == "monsters_grades") // handled by monsters_templates
                     continue;
 
-                Console.WriteLine("Build table '{0}' ...", table.TableName);
+                if (table.TableName == "monsters_templates" && monsterGradeTable != null)
+                {
+                    worldDatabase.Database.Execute($"DELETE FROM {monsterGradeTable.TableName}");
+                    worldDatabase.Database.Execute($"ALTER TABLE {monsterGradeTable.TableName} AUTO_INCREMENT=1");
+                }
+
+                Console.WriteLine($"Build table '{table.TableName}' ...");
 
                 if (!m_tables.ContainsKey(table.ClassName))
                 {
-                    Console.WriteLine("{0} does not contain a table bound to class {1}", DatabaseConfiguration.DbName, table.ClassName);
+                    Console.WriteLine($"{DatabaseConfiguration.DbName} does not contain a table bound to class {table.ClassName}");
                     continue;
                 }
 
@@ -638,8 +645,7 @@ namespace DBSynchroniser
                         var obj = row.CreateObject();
 
                         // monster grades are in an other table
-                        var monster = obj as Monster;
-                        if (monster != null && monsterGradeTable != null)
+                        if (obj is Monster monster && monsterGradeTable != null)
                         {
                             foreach (var monsterGrade in monster.grades)
                             {
@@ -998,7 +1004,7 @@ namespace DBSynchroniser
 
             var reader = new Ma3Reader("Items.ma3");
             var items = reader.ReadFile();
-            var test = items.Where(x => x.Look != string.Empty);
+            reader.Dispose();
 
             InitializeCounter();
 
@@ -1016,7 +1022,7 @@ namespace DBSynchroniser
                     try
                     {
                         worldDatabase.Database.Execute($"UPDATE `items_pets` SET `LookString` = '{item.Look}' WHERE `Id` = '{item.Id}'");
-                        appearanceId = 0;
+                        appearanceId = ActorLook.Parse(item.Look).BonesID;
                     }
                     catch (Exception ex)
                     {

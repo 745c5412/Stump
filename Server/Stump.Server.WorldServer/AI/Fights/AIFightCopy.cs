@@ -10,11 +10,10 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Challenges;
-using Stump.Server.WorldServer.Game.Fights.Sequences;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
+using Stump.Server.WorldServer.Game.Idols;
 using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.AI.Fights
 {
@@ -34,7 +33,6 @@ namespace Stump.Server.WorldServer.AI.Fights
             Original = original;
             DefendersTeam.Fight = this;
             ChallengersTeam.Fight = this;
-            
 
             DefendersTeam.FighterAdded += OnFighterAdded;
             DefendersTeam.FighterRemoved += OnFighterRemoved;
@@ -315,6 +313,16 @@ namespace Stump.Server.WorldServer.AI.Fights
             throw new NotImplementedException();
         }
 
+        public int GetIdolsXPBonus()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetIdolsDropBonus()
+        {
+            throw new NotImplementedException();
+        }
+
         public override FightTypeEnum FightType => Original.FightType;
 
         public DateTime CreationTime
@@ -398,6 +406,11 @@ namespace Stump.Server.WorldServer.AI.Fights
         }
 
         public WorldClientCollection SpectatorClients
+        {
+            get;
+        }
+
+        public List<PlayerIdol> ActiveIdols
         {
             get;
         }

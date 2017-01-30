@@ -2,9 +2,9 @@
 using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Instances;using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells.Casts;
-using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
@@ -27,10 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 }
                 else
                 {
-                    actor.Stats.Health.DamageTaken = int.MaxValue;
-                    actor.CheckDead(Caster);
-
-                    ContextHandler.SendGameActionFightKillMessage(Fight.Clients, Caster, actor);
+                    actor.Die(Caster);
                 }
             }
 
@@ -39,10 +36,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         void KillTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
-            buff.Target.Stats.Health.DamageTaken = int.MaxValue;
-            buff.Target.CheckDead(buff.Caster);
-
-            ContextHandler.SendGameActionFightKillMessage(Fight.Clients, buff.Caster, buff.Target);
+            buff.Target.Die(buff.Caster);
         }
     }
 }

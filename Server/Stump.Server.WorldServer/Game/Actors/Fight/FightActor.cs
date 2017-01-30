@@ -56,6 +56,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual void OnGetAlive()
         {
+            foreach (var idol in Fight.ActiveIdols)
+            {
+                if (GetType().Name != idol.Template.TargetString)
+                    continue;
+
+                CastAutoSpell(new Spell(idol.Template.IdolSpellId.Value, idol.Template.IdolSpellLevel), Cell);
+            }
+
             GetAlive?.Invoke(this);
         }
 
@@ -827,6 +835,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnDead(this);
         }
 
+        public void Die(FightActor killedBy)
+        {
+            DamageTaken += LifePoints;
+            OnDead(killedBy);
+        }
+
         public int InflictDirectDamage(int damage, FightActor from)
             => InflictDamage(new Damage(damage)
             {
@@ -844,6 +858,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 TriggerBuffs(damage.Source, BuffTriggerType.OnDamaged, damage);
 
             TriggerBuffs(damage.Source, damage.Source.IsEnnemyWith(this) ? BuffTriggerType.OnDamagedByEnemy : BuffTriggerType.OnDamagedByAlly, damage);
+
+            if (damage.Source.IsSummoned())
+                TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedBySummon, damage);
 
             switch (damage.School)
             {
@@ -863,8 +880,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedFire, damage);
                     break;
                 case EffectSchoolEnum.Pushback:
-                    TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedByPush, damage);
-                    break;
+                    {
+                        TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedByPush, damage);
+
+                        if (damage.Source.IsEnnemyWith(this))
+                        {
+                            TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedByEnemyPush, damage);
+
+                            if (this is ICreature)
+                                damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.OnDamageEnemyByPush, damage);
+                        }
+                        break;
+                    }
             }
 
             TriggerBuffs(damage.Source, damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1 ? BuffTriggerType.OnDamagedInCloseRange : BuffTriggerType.OnDamagedInLongRange, damage);
@@ -890,18 +917,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             damage.GenerateDamages();
 
-            if (damage.Source != null && damage.Source.HasState((int) SpellStatesEnum.PACIFISTE_218))
+            if (damage.Source != null && !damage.Source.CanDealDamage())
             {
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
                 TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
                 return 0;
             }
 
-            if (HasState((int) SpellStatesEnum.INVULNERABLE_56) ||
-                HasState((int) SpellStatesEnum.INVULNERABLE_269) ||
-                HasState((int) SpellStatesEnum.INVULNERABLE_365) ||
-                (isCloseRangeAttack && HasState((int) SpellStatesEnum.INVULNERABILITE_EN_MELEE_376)) ||
-                (!isCloseRangeAttack && HasState((int) SpellStatesEnum.INVULNERABILITE_A_DISTANCE_375)))
+            if (IsInvulnerable(isCloseRangeAttack))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
                 TriggerDamageBuffs(damage);
@@ -1027,7 +1050,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.OnHeal, damage);
             }
 
-            if (HasState((int) SpellStatesEnum.INSOIGNABLE_76))
+            if (!CanBeHeal())
             {
                 OnLifePointsChanged(0, 0, 0, damage.Source, EffectSchoolEnum.Unknown);
                 return 0;
@@ -1957,16 +1980,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightActor GetCarryingActor() => Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
 
-        public void CarryActor(FightActor target, EffectBase effect, Spell spell, SpellCastHandler castHandler)
+        public bool CarryActor(FightActor target, EffectBase effect, Spell spell, SpellCastHandler castHandler)
         {
             var stateCarried = SpellManager.Instance.GetSpellState((uint) SpellStatesEnum.PORTE_8);
             var stateCarrying = SpellManager.Instance.GetSpellState((uint) SpellStatesEnum.PORTEUR_3);
 
             if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
-                return;
+                return false;
 
-            if (!target.CanBePushed())
-                return;
+            if (target.HasState((int)SpellStatesEnum.LOURD_63))
+                return false;
+
+            if (target.GetStates().Where(x => !x.IsDisabled).Any(x => x.State.CantBeMoved))
+                return false;
 
             var actorBuffId = PopNextBuffId();
             var targetBuffId = target.PopNextBuffId();
@@ -1995,6 +2021,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             m_carriedActor.Dead += OnCarryingActorDead;
             Dead += OnCarryingActorDead;
+
+            return true;
         }
 
         public void ThrowActor(Cell cell, bool drop = false)
@@ -2166,14 +2194,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override bool CanMove() => IsFighterTurn() && IsAlive() && MP > 0;
 
         public virtual bool CanTackle(FightActor fighter)
-            => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && GetStates().All(x => !x.State.CantBeMoved)
-               && fighter.GetStates().All(x => !x.State.CantBeMoved) && fighter.Position.Cell != Position.Cell;
+            => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && CanBePushed() && fighter.CanBePushed() && fighter.Position.Cell != Position.Cell;
 
-        public virtual bool CanBePushed() => GetStates().All(x => !x.State.CantBeMoved && !x.State.CantBePushed);
+        public virtual bool CanBePushed() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.CantBeMoved && !x.State.CantBePushed);
 
-        public virtual bool CanSwitchPos() => GetStates().All(x => !x.State.CantBeMoved && !x.State.CantSwitchPosition);
+        public virtual bool CanSwitchPos() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.CantBeMoved && !x.State.CantSwitchPosition);
 
-        public virtual bool CanPlay() => GetStates().All(x => !x.State.PreventsFight);
+        public virtual bool CanBeHeal() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.Incurable);
+
+        public virtual bool CanDealDamage() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.CantDealDamage);
+
+        public virtual bool CanPlay() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.PreventsFight);
+
+        public virtual bool IsInvulnerable(bool closeRange) => GetStates().Where(x => !x.IsDisabled).Any(x => x.State.Invulnerable || (closeRange && x.State.InvulnerableMelee) || (!closeRange && x.State.InvulnerableRange));
 
         public virtual bool HasLeft() => false;
 

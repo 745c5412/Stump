@@ -7,6 +7,8 @@ using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Monster = Stump.DofusProtocol.D2oClasses.Monster;
+using Stump.Core.IO;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
@@ -24,6 +26,9 @@ namespace Stump.Server.WorldServer.Database.Monsters
         private List<MonsterGrade> m_grades;
         private string m_lookAsString;
         private string m_name;
+        private MonsterRace m_monsterRace;
+        private List<uint> m_incompatibleChallenges = new List<uint>();
+        private string m_incompatibleChallengesCSV;
 
         [PrimaryKey("Id", false)]
         public int Id
@@ -49,7 +54,12 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        public int Race
+        public MonsterRace Race
+        {
+            get { return m_monsterRace ?? (m_monsterRace = MonsterManager.Instance.GetMonsterRace(RaceId)); }
+        }
+
+        public int RaceId
         {
             get;
             set;
@@ -163,6 +173,40 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
+        public Boolean AllIdolsDisabled
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public List<uint> IncompatibleChallenges
+        {
+            get
+            {
+                return m_incompatibleChallenges;
+            }
+            set
+            {
+                m_incompatibleChallenges = value;
+                m_incompatibleChallengesCSV = m_incompatibleChallengesCSV.ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string IncompatibleChallengesCSV
+        {
+            get
+            {
+                return m_incompatibleChallengesCSV;
+            }
+            set
+            {
+                m_incompatibleChallengesCSV = value;
+                m_incompatibleChallenges = !string.IsNullOrEmpty(m_incompatibleChallengesCSV) ? m_incompatibleChallengesCSV.FromCSV<uint>(",").ToList() : new List<uint>();
+            }
+        }
+
         #region IAssignedByD2O Members
 
         public void AssignFields(object d2oObject)
@@ -171,7 +215,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             Id = monster.id;
             NameId = monster.nameId;
             GfxId = monster.gfxId;
-            Race = monster.race;
+            RaceId = monster.race;
             LookAsString = monster.look;
             UseSummonSlot = monster.useSummonSlot;
             UseBombSlot = monster.useBombSlot;
@@ -180,9 +224,16 @@ namespace Stump.Server.WorldServer.Database.Monsters
             CanSwitchPos = monster.canSwitchPos;
             CanBePushed = monster.canBePushed;
             IsBoss = monster.isBoss;
+            AllIdolsDisabled = monster.allIdolsDisabled;
+
             IsActive = true;
         }
 
         #endregion
+
+        public void BeforeSave(bool insert)
+        {
+            m_incompatibleChallengesCSV = m_incompatibleChallenges.Select(x => x).ToCSV(",");
+        }
     }
 }

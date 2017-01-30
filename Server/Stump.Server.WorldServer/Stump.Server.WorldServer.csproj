@@ -176,6 +176,10 @@
     <Compile Include="AI\Fights\AITeamCopy.cs" />
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\GivrefouxBrains.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\ObsidiantreBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\ProfesseurXaBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\KolossoBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\KorriandreBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\GlourselesteBrain.cs" />
@@ -262,6 +266,7 @@
     <Compile Include="Database\Guilds\GuildRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorFirstnamesRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorNamesRecord.cs" />
+    <Compile Include="Database\Idols\IdolTemplate.cs" />
     <Compile Include="Database\Interactives\ISkillRecord.cs" />
     <Compile Include="Database\Items\BidHouse\BidHouseItemRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
@@ -669,6 +674,9 @@
     <Compile Include="Game\Guilds\GuildInvitationRequest.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
+    <Compile Include="Game\Idols\PlayerIdol.cs" />
+    <Compile Include="Game\Idols\IdolInventory.cs" />
+    <Compile Include="Game\Idols\IdolManager.cs" />
     <Compile Include="Game\Interactives\Skills\CustomSkill.cs" />
     <Compile Include="Game\Interactives\Skills\ISkillWithAgeBonus.cs" />
     <Compile Include="Game\Interactives\Skills\SkillAnimate.cs" />
@@ -763,7 +771,6 @@
     <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Eniripsa\FriendshipWordCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\MansomonCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\NaughtyChildCastHandler.cs" />

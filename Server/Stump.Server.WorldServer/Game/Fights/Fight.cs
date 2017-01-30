@@ -1,8 +1,6 @@
 ﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
-using Stump.Core.Mathematics;
-using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
@@ -37,7 +35,8 @@ using System.Linq;
 using ServiceStack.Text;
 using Stump.Server.WorldServer.AI.Fights;
 using Stump.Server.WorldServer.Game.Fights.Sequences;
-using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
+using Stump.Server.WorldServer.Game.Idols;
+using Stump.Server.WorldServer.Handlers.Idols;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -208,6 +207,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        List<PlayerIdol> ActiveIdols
+        {
+            get;
+        }
         /// <summary>
         /// Do not modify, just read
         /// </summary>
@@ -339,6 +342,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         void SetChallenge(DefaultChallenge challenge);
 
         int GetChallengeBonus();
+
+        int GetIdolsXPBonus();
+
+        int GetIdolsDropBonus();
 
         IEnumerable<Character> GetAllCharacters();
 
@@ -475,6 +482,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             m_leavers = new List<FightActor>();
             m_spectators = new List<FightSpectator>();
+	    ActiveIdols = new List<PlayerIdol>();
             DefendersTeam.Fight = this;
             ChallengersTeam.Fight = this;
         }
@@ -587,6 +595,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return true; }
         }
 
+        public List<PlayerIdol> ActiveIdols
+        {
+            get;
+            protected set;
+        }
+
         public bool AIDebugMode
         {
             get;
@@ -641,7 +655,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             TimeLine.OrderLine();
 
             ContextHandler.SendGameEntitiesDispositionMessage(Clients, GetAllFighters());
-            ContextHandler.SendGameFightStartMessage(Clients);
+            ContextHandler.SendGameFightStartMessage(Clients, ActiveIdols.Select(x => x.GetNetworkIdol()));
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             OnFightStarted();
@@ -1162,6 +1176,15 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State == FightState.Placement || State == FightState.NotStarted)
             {
                 ContextHandler.SendGameFightPlacementPossiblePositionsMessage(character.Client, this, (sbyte)fighter.Team.Id);
+
+                if (fighter.Team.Leader is CharacterFighter leader)
+                {
+                    var idols = leader.Character.IdolInventory.GetIdols();
+                    if (leader.Character.IsPartyLeader())
+                        idols = leader.Character.Party.IdolInventory.GetIdols();
+
+                    IdolHandler.SendIdolFightPreparationUpdate(character.Client, idols.Select(x => x.GetNetworkIdol()));
+                }
             }
 
             foreach (var fightMember in GetAllFighters())
@@ -1921,10 +1944,24 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (Challenge == null)
                 return 0;
 
-            return Challenge.Status == ChallengeStatusEnum.SUCCESS ? Challenge.Bonus : 1;
+            return Challenge.Status == ChallengeStatusEnum.SUCCESS ? Challenge.Bonus : 0;
         }
 
         #endregion Challenges
+
+        #region Idols
+
+        public int GetIdolsXPBonus()
+        {
+            return (int)Math.Round(ActiveIdols.Sum(x => x.ExperienceBonus * x.GetSynergy(ActiveIdols)));
+        }
+
+        public int GetIdolsDropBonus()
+        {
+            return (int)Math.Round(ActiveIdols.Sum(x => x.DropBonus * x.GetSynergy(ActiveIdols)));
+        }
+
+        #endregion Idols
 
         #region Triggers
         protected override void OnTriggerAdded(MarkTrigger trigger)
