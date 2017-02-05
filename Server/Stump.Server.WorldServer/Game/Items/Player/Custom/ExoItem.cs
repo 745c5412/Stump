@@ -20,6 +20,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             return true;
         }
 
+        public override bool CanEquip()
+        {
+            return false;
+        }
+
         public override bool Drop(BasePlayerItem dropOnItem)
         {
             var allowedItemType = new[] {
