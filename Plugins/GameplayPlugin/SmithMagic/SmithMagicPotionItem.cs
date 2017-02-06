@@ -54,8 +54,7 @@ namespace GameplayPlugin.SmithMagic
             var effect = weapon.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_DamageNeutral);
             weapon.Effects.Remove(effect);
 
-            var effectDice = effect as EffectDice;
-            if (effectDice != null)
+            if (effect is EffectDice effectDice)
             {
                 var newEffect = new EffectDice(effectDice) { EffectId = tuple.Item1 };
                 newEffect.DiceFace = (short)(newEffect.DiceFace * boost);
@@ -85,6 +84,7 @@ namespace GameplayPlugin.SmithMagic
                 }
             }
 
+            weapon.Invalidate();
             Owner.Inventory.RefreshItem(weapon);
             weapon.OnObjectModified();
 
