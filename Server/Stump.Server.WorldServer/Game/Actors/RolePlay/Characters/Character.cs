@@ -70,6 +70,7 @@ using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 using Stump.Core.Extensions;
 using Stump.Core.Collections;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
+using Stump.DofusProtocol.Enums.Custom;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -2824,8 +2825,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Fighter.Fight.RejoinFightFromDisconnection(Fighter);
             OnCharacterContextChanged(true);
 
-            foreach(var challenge in Fight.Challenges)
+            foreach (var challenge in Fight.Challenges)
+            {
                 ContextHandler.SendChallengeInfoMessage(Client, challenge);
+
+                if (challenge.Status != ChallengeStatusEnum.RUNNING)
+                    ContextHandler.SendChallengeResultMessage(Client, challenge);
+            }
 
             return Fighter;
         }

@@ -1,22 +1,4 @@
-﻿#region License GNU GPL
-
-// Trader.cs
-//
-// Copyright (C) 2013 - BehaviorIsManaged
-//
-// This program is free software; you can redistribute it and/or modify it
-// under the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with this program;
-// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
-#endregion License GNU GPL
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -34,27 +16,21 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
 
         protected virtual void OnItemMoved(TradeItem item, bool modified, int difference)
         {
-            var handler = ItemMoved;
-            if (handler != null)
-                handler(this, item, modified, difference);
+            ItemMoved?.Invoke(this, item, modified, difference);
         }
 
         public event KamasChangedHandler KamasChanged;
 
         protected virtual void OnKamasChanged(uint kamasAmount)
         {
-            var handler = KamasChanged;
-            if (handler != null)
-                handler(this, kamasAmount);
+            KamasChanged?.Invoke(this, kamasAmount);
         }
 
         public event ReadyStatusChangedHandler ReadyStatusChanged;
 
         protected virtual void OnReadyStatusChanged(bool isready)
         {
-            var handler = ReadyStatusChanged;
-            if (handler != null)
-                handler(this, isready);
+            ReadyStatusChanged?.Invoke(this, isready);
         }
 
         private readonly List<TradeItem> m_items = new List<TradeItem>();
@@ -68,18 +44,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
         public ITrade Trade
         {
             get;
-            private set;
         }
 
-        public ReadOnlyCollection<TradeItem> Items
-        {
-            get { return m_items.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<TradeItem> Items => m_items.AsReadOnly();
 
-        public string ItemsString
-        {
-            get { return string.Join("|", m_items.Select(item => item.Template.Id + "_" + item.Stack)); }
-        }
+        public string ItemsString => string.Join("|", m_items.Select(item => item.Template.Id + "_" + item.Stack));
 
         public abstract int Id
         {
@@ -103,10 +72,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
             m_items.Add(item);
         }
 
-        protected bool RemoveItem(TradeItem item)
-        {
-            return m_items.Remove(item);
-        }
+        protected bool RemoveItem(TradeItem item) => m_items.Remove(item);
 
         public void ToggleReady()
         {

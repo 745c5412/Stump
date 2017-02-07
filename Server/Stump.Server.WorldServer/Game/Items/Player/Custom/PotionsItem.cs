@@ -202,28 +202,4 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             return 0;
         }
     }
-
-    [ItemId(20838)]
-    public class ChameleonBehaviorPotion : BasePlayerItem
-    {
-        public ChameleonBehaviorPotion(Character owner, PlayerItemRecord record)
-            : base(owner, record)
-        {
-        }
-
-        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
-        {
-            if (!Owner.HasEquippedMount())
-                return 0;
-
-            if (Owner.EquippedMount.Behaviors.Contains((int)MountBehaviorEnum.Caméléone))
-                return 0;
-
-            Owner.EquippedMount.AddBehavior(MountBehaviorEnum.Caméléone);
-
-            MountHandler.SendMountSetMessage(Owner.Client, Owner.EquippedMount.GetMountClientData());
-
-            return 1;
-        }
-    }
 }

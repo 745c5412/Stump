@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using Stump.Core.Timers;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Handlers.Inventory;
@@ -27,6 +28,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
             get;
         }
 
+        private TimedTimerEntry Timer
+        {
+            get;
+            set;
+        }
+
         public ExchangeTypeEnum ExchangeType => ExchangeTypeEnum.TAXCOLLECTOR;
 
         public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
@@ -43,19 +50,26 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 
             //Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
             Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 139, 2);
+            Timer = Character.Area.CallDelayed((5 * 60 * 1000), Close);
         }
 
         public void Close()
         {
-            InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
+            Character.Area.UnregisterTimer(Timer);
+
             Character.CloseDialog(this);
             TaxCollector.OnDialogClosed(this);
 
-            TaxCollector.Guild.AddXP(TaxCollector.GatheredExperience);
+            if (TaxCollector.IsDisposed)
+                return;
+
             //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
             TaxCollectorHandler.SendGetExchangeGuildTaxCollectorMessage(TaxCollector.Guild.Clients, TaxCollector);
             TaxCollectorHandler.SendTaxCollectorMovementMessage(TaxCollector.Guild.Clients, false, TaxCollector, Character.Name);
 
+            InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
+
+            TaxCollector.Guild.AddXP(TaxCollector.GatheredExperience);
             TaxCollector.Delete();
         }
 

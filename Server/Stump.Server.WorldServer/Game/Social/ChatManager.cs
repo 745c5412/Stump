@@ -407,13 +407,16 @@ namespace Stump.Server.WorldServer.Game.Social
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK))
                 return;
 
+            if (objectItems != null)
+            {
+                //Impossible d'afficher des objets dans ce canal.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
+                return;
+            }
+
             World.Instance.ForEachCharacter(entry =>
             {
-                if (objectItems != null)
-                    //Impossible d'afficher des objets dans ce canal.
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
-                else
-                    SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK, msg);
+                SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK, msg);
             });
         }
 
@@ -422,12 +425,16 @@ namespace Stump.Server.WorldServer.Game.Social
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_SALES))
                 return;
 
+            if (objectItems != null)
+            {
+                //Impossible d'afficher des objets dans ce canal.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
+                return;
+            }
+
             World.Instance.ForEachCharacter(entry =>
             {
-                if (objectItems != null)
-                    SendChatServerWithObjectMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg, objectItems);
-                else
-                    SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg);
+                SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg);
             });
         }
 

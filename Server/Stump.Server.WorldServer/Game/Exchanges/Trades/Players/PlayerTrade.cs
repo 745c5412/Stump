@@ -17,13 +17,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             SecondTrader = new PlayerTrader(second, this);
         }
 
-        public override ExchangeTypeEnum ExchangeType
-        {
-            get
-            {
-                return ExchangeTypeEnum.PLAYER_TRADE;
-            }
-        }
+        public override ExchangeTypeEnum ExchangeType => ExchangeTypeEnum.PLAYER_TRADE;
 
         public override void Open()
         {

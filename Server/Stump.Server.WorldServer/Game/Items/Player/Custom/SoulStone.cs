@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
             Owner.ContextChanged += OnContextChanged;
         }
-        
+
         private void UnsubscribeEvents()
         {
             Owner.ContextChanged -= OnContextChanged;
@@ -47,8 +47,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private void OnGeneratingResults(IFight obj)
         {
-            var fightPvM = Owner.Fighter.Fight as FightPvM;
-            if (fightPvM == obj && fightPvM != null && !fightPvM.IsPvMArenaFight && Owner.Fighter.HasWin() && Owner.Fighter.HasState((int) SpellStatesEnum.Soul_Seeker))
+            if (Owner.Fighter.Fight is FightPvM fightPvM && fightPvM == obj && !fightPvM.IsPvMArenaFight && Owner.Fighter.HasWin() && Owner.Fighter.HasState((int)SpellStatesEnum.Soul_Seeker))
             {
                 if (Owner.Fighter.Team.Fighters.Any(x => x.Loot.Items.Any(y => y.Key == (int)ItemIdEnum.FullSoulStone)))
                     return;
@@ -61,9 +60,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
                     if (rand.NextDouble() * 100 <= Probability)
                     {
-                        Owner.Inventory.RemoveItem(this);
+                        if (Owner.Inventory.RemoveItem(this, 1) <= 0)
+                            return;
 
-                        var fullStone = ItemManager.Instance.CreatePlayerItem(Owner, (int) ItemIdEnum.FullSoulStone, 1) as SoulStoneFilled;
+                        var fullStone = ItemManager.Instance.CreatePlayerItem(Owner, (int)ItemIdEnum.FullSoulStone, 1) as SoulStoneFilled;
 
                         if (fullStone == null)
                             return;
@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
                         Owner.Inventory.AddItem(fullStone, false);
                         // display purpose
-                        Owner.Fighter.Loot.AddItem(new DroppedItem(fullStone.Template.Id, 1) {IgnoreGeneration = true});
+                        Owner.Fighter.Loot.AddItem(new DroppedItem(fullStone.Template.Id, 1) { IgnoreGeneration = true });
                     }
                 }
             }

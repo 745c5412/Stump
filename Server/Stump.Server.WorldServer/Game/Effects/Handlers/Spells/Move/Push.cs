@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (integerEffect == null)
                 return false;
 
-            foreach (var actor in GetAffectedActors().OrderByDescending(entry => entry.Position.Point.ManhattanDistanceTo(TargetedPoint)))
+            foreach (var actor in GetAffectedActors().OrderBy(entry => entry.Position.Point.ManhattanDistanceTo(TargetedPoint)))
             {
                 if (actor.HasState((int)SpellStatesEnum.Unmovable) || actor.HasState((int)SpellStatesEnum.Rooted))
                     continue;
@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 var endCell = lastCell;
 
-                if (actor.IsCarrying())
+                if (actor.IsCarrying() && startCell != endCell)
                     actor.ThrowActor(Map.Cells[startCell.CellId], true);
 
                 foreach (var character in Fight.GetCharactersAndSpectators().Where(actor.IsVisibleFor))

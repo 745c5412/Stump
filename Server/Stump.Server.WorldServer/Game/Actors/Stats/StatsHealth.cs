@@ -163,7 +163,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             var clone = new StatsHealth(owner, Base, DamageTaken)
             {
                 Equiped = Equiped,
-                Given = Given
+                Given = Given,
+                Context = Context
             };
 
             return clone;

@@ -291,6 +291,9 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
             }
 
+            if (!character.FriendsBook.IsFriend(Owner.Account.Id))
+                return;
+
             FriendHandler.SendFriendUpdateMessage(Owner.Client, friend);
         }
 
@@ -303,6 +306,9 @@ namespace Stump.Server.WorldServer.Game.Social
                 logger.Error("Sad, friend bound with character {0} is not found :(", character);
                 return;
             }
+
+            if (!character.FriendsBook.IsFriend(Owner.Account.Id))
+                return;
 
             FriendHandler.SendFriendUpdateMessage(Owner.Client, friend);
 

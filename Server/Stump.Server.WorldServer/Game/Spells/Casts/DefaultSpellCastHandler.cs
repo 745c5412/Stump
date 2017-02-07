@@ -35,39 +35,68 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         {
             var random = new AsyncRandom();
 
-            var effects = Critical ? SpellLevel.CriticalEffects : SpellLevel.Effects;
+            var effects = Critical && SpellLevel.CriticalEffects.Any() ? SpellLevel.CriticalEffects : SpellLevel.Effects;
             var handlers = new List<SpellEffectHandler>();
 
-            var rand = random.NextDouble();
-            double randSum = effects.Sum(entry => entry.Random);
-            var stopRand = false;
-            foreach (var effect in effects)
+            var groups = effects.GroupBy(x => x.Group);
+            double totalRandSum = effects.Sum(entry => entry.Random);
+            var randGroup = random.NextDouble();
+            var stopRandGroup = false;
+
+            foreach (var groupEffects in groups)
             {
-                if (effect.Random > 0)
+                double randSum = groupEffects.Sum(entry => entry.Random);
+
+                if (randSum > 0)
                 {
-                    if (stopRand)
+                    if (stopRandGroup)
                         continue;
 
-                    if (rand > effect.Random / randSum)
+                    if (randGroup > randSum / totalRandSum)
                     {
-                        // effect ignored
-                        rand -= effect.Random / randSum;
+                        // group ignored
+                        randGroup -= randSum / totalRandSum;
                         continue;
                     }
 
-                    // random effect found, there can be only one
-                    stopRand = true;
+                    // random group found, there can be only one
+                    stopRandGroup = true;
                 }
 
-                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell, TargetedCell, Critical);
+                var randEffect = random.NextDouble();
+                var stopRandEffect = false;
 
-                if (MarkTrigger != null)
-                    handler.MarkTrigger = MarkTrigger;
+                foreach (var effect in groupEffects)
+                {
+                    if (groups.Count() <= 1)
+                    {
+                        if (effect.Random > 0)
+                        {
+                            if (stopRandEffect)
+                                continue;
 
-                if (!handler.CanApply())
-                    return false;
+                            if (randEffect > effect.Random / randSum)
+                            {
+                                // effect ignored
+                                randEffect -= effect.Random / randSum;
+                                continue;
+                            }
 
-                handlers.Add(handler);
+                            // random effect found, there can be only one
+                            stopRandEffect = true;
+                        }
+                    }
+
+                    var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell, TargetedCell, Critical);
+
+                    if (MarkTrigger != null)
+                        handler.MarkTrigger = MarkTrigger;
+
+                    if (!handler.CanApply())
+                        return false;
+
+                    handlers.Add(handler);
+                }
             }
 
             Handlers = handlers.ToArray();

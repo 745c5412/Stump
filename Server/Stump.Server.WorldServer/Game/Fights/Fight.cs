@@ -150,7 +150,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        ReadOnlyCollection<DefaultChallenge> Challenges
+        List<DefaultChallenge> Challenges
         {
             get;
         }
@@ -337,7 +337,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         void AddChallenge(DefaultChallenge challenge);
 
-        int GetChallengeBonus();
+        int GetChallengesBonus();
 
         IEnumerable<Character> GetAllCharacters();
 
@@ -471,6 +471,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_leavers = new List<FightActor>();
             m_spectators = new List<FightSpectator>();
 
+            Challenges = new List<DefaultChallenge>();
+
             DefendersTeam.FighterAdded += OnFighterAdded;
             DefendersTeam.FighterRemoved += OnFighterRemoved;
             ChallengersTeam.FighterAdded += OnFighterAdded;
@@ -596,9 +598,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor FighterPlaying => TimeLine.Current;
 
-        private List<DefaultChallenge> m_challenges = new List<DefaultChallenge>();
-
-        public ReadOnlyCollection<DefaultChallenge> Challenges => m_challenges.AsReadOnly();
+        public List<DefaultChallenge> Challenges
+        {
+            get;
+            private set;
+        }
 
         public DateTime TurnStartTime
         {
@@ -1414,8 +1418,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             CharacterHandler.SendCharacterStatsListMessage(spectator.Client);
 
-            foreach(var challenge in Challenges)
+
+            foreach (var challenge in Challenges)
+            {
                 ContextHandler.SendChallengeInfoMessage(spectator.Client, challenge);
+                if (challenge.Status != ChallengeStatusEnum.RUNNING)
+                    ContextHandler.SendChallengeResultMessage(spectator.Client, challenge);
+            }
 
             if (!spectator.Character.Invisible)
             {
@@ -2280,14 +2289,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void AddChallenge(DefaultChallenge challenge)
         {
-            m_challenges.Add(challenge);
+            Challenges.Add(challenge);
             ContextHandler.SendChallengeInfoMessage(Clients, challenge);
         }
 
-        public int GetChallengeBonus()
-        {
-            return m_challenges.Where(x => x.Status == ChallengeStatusEnum.SUCCESS).Aggregate(1, (x,challenge) => challenge.Bonus);
-        }
+        public int GetChallengesBonus() => Challenges.Sum(x => x.Status == ChallengeStatusEnum.SUCCESS ? x.Bonus : 0);
 
         #endregion Challenges
 

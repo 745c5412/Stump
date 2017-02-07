@@ -119,6 +119,7 @@
     <Compile Include="Daily\DailyQuestManager.cs" />
     <Compile Include="Daily\NpcDailyQuest.cs" />
     <Compile Include="AnnouncePopup\AnnouncePopup.cs" />
+    <Compile Include="Items\ChameleonBehaviorPotion.cs" />
     <Compile Include="Npcs\NpcAlignement.cs" />
     <Compile Include="Npcs\NpcClassChange.cs" />
     <Compile Include="Npcs\NpcDofus.cs" />

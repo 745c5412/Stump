@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
             var baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
             var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
-            var challengeBonus = fighter.Fight.GetChallengeBonus();
+            var challengeBonus = fighter.Fight.GetChallengesBonus();
 
             var xp = (int)Math.Truncate(Math.Truncate(baseXp * (100 + fighter.Wisdom) / 100d) * multiplicator * Rates.XpRate);
             xp += (int)Math.Truncate(xp * (challengeBonus / 100d));
@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
         public static int AdjustDroppedKamas(IFightResult looter, int teamPP, long baseKamas, bool kamasRate = true)
         {
-            var challengeBonus = looter.Fight.GetChallengeBonus();
+            var challengeBonus = looter.Fight.GetChallengesBonus();
             var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
 
             var multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + (looter.Fight.AgeBonus / 5) / 100d;
@@ -98,7 +98,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
         public static double AdjustDropChance(IFightResult looter, DroppableItem item, Monster dropper, int monsterAgeBonus)
         {
-            var challengeBonus = looter.Fight.GetChallengeBonus();
+            var challengeBonus = looter.Fight.GetChallengesBonus();
             var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
 
             var rate = item.GetDropRate((int)dropper.Grade.GradeId) * (looterPP / 100d) * ((monsterAgeBonus / 100d) + 1) * Rates.DropsRate;

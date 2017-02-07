@@ -331,6 +331,11 @@ namespace Stump.Server.WorldServer.Game.Items
                     .CreateDelegate<PlayerItemConstructor>());
         }
 
+        public void AddItemIdConstructor(Type type, ItemIdEnum itemId)
+        {
+            m_itemCtorById.Add(itemId, type.GetConstructor(new[] { typeof(Character), typeof(PlayerItemRecord) }).CreateDelegate<PlayerItemConstructor>());
+        }
+
         #endregion Loading
 
         #region Getters
