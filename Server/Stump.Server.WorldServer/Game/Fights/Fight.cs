@@ -789,7 +789,20 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnFightEnded()
         {
-            ReadyChecker = null;
+            if (m_turnTimer != null)
+                m_turnTimer.Dispose();
+
+            if (ReadyChecker != null)
+            {
+                ReadyChecker.Cancel();
+                ReadyChecker = null;
+            }
+
+            foreach (var disconnectedFighter in Fighters.OfType<CharacterFighter>().Where(x => x.IsDisconnected).ToArray())
+            {
+                disconnectedFighter.Team.RemoveFighter(disconnectedFighter);
+            }
+
             DeterminsWinners();
             GenerateResults();
 

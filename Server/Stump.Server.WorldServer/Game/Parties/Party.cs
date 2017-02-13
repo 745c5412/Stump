@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 using System;
@@ -452,15 +453,23 @@ namespace Stump.Server.WorldServer.Game.Parties
             if (!infight)
                 return;
 
-            /*if (character.Fight is FightAgression)
+            // send it after fight has been fully created
+            character.Area.AddMessage(() =>
             {
-                PartyHandler.SendPartyMemberInFightMessage(Clients, this, character,
-                    character.Fighter.Team == character.Fight.ChallengersTeam
-                    ? PartyFightReasonEnum.ATTACK_PLAYER
-                    : PartyFightReasonEnum.PLAYER_ATTACK, character.Fight);
-            }
-            else if (character.Fight is FightPvM)
-                PartyHandler.SendPartyMemberInFightMessage(Clients, this, character, PartyFightReasonEnum.MONSTER_ATTACK, character.Fight);*/
+                if (!character.Fighter.IsTeamLeader())
+                    return;
+
+                var clients = Members.Where(x => x.Fight != character.Fight).ToClients();
+                if (character.Fight is FightAgression)
+                {
+                    PartyHandler.SendPartyMemberInFightMessage(clients, this, character,
+                        character.Fighter.Team == character.Fight.ChallengersTeam
+                            ? PartyFightReasonEnum.ATTACK_PLAYER
+                            : PartyFightReasonEnum.PLAYER_ATTACK, character.Fight);
+                }
+                else if (character.Fight is FightPvM)
+                    PartyHandler.SendPartyMemberInFightMessage(clients, this, character, PartyFightReasonEnum.MONSTER_ATTACK, character.Fight);
+            });
         }
 
         private void BindEvents(Character member)

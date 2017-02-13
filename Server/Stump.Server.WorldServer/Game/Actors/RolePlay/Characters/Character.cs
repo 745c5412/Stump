@@ -71,6 +71,7 @@ using Stump.Core.Extensions;
 using Stump.Core.Collections;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.DofusProtocol.Enums.Custom;
+using Stump.Server.WorldServer.Game.Exchanges.Paddock;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -1408,12 +1409,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return (petSkin?.Item1 != null && !petSkin.Item2) ? petSkin.Item1.Value : -1;
         }
 
-        public bool HasEquippedMount() => EquippedMount != null;
+        public bool HasEquippedMount()
+        {
+            return EquippedMount != null;
+        }
 
         public bool EquipMount(Mount mount)
         {
             if (mount.Owner != this)
-                SetOwnedMount(mount);
+                return false;
 
             EquippedMount = mount;
 
@@ -1424,14 +1428,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void UnEquipMount()
         {
-            if (EquippedMount != null)
-            {
-                Dismount();
-                EquippedMount = null;
+            if (EquippedMount == null)
+                return;
 
-                MountHandler.SendMountUnSetMessage(Client);
-                //MountHandler.SendMountReleaseMessage(Client, EquippedMount.Id);
-            }
+            ForceDismount();
+
+            EquippedMount = null;
+            MountHandler.SendMountUnSetMessage(Client);
         }
 
         public bool ReleaseMount()
@@ -1447,7 +1450,27 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return true;
         }
 
-        public bool Dismount() => IsRiding && ToggleRiding();
+        public bool RideMount()
+        {
+            return !IsRiding && ToggleRiding();
+        }
+
+        public bool Dismount()
+        {
+            return IsRiding && ToggleRiding();
+        }
+
+        public void ForceDismount()
+        {
+            IsRiding = false;
+
+            EquippedMount.UnApplyMountEffects();
+            UpdateLook();
+
+            //Vous descendez de votre monture.
+            BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+            MountHandler.SendMountRidingMessage(Client, IsRiding);
+        }
 
         public bool ToggleRiding()
         {
@@ -1467,19 +1490,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            /*if (!IsRiding && !Map.Outdoor && !Map.SpawningPools.Any(x => x is DungeonSpawningPool))
-            {
-                //Impossible d'être sur une monture à l'intérieur d'une maison.
-                BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 117);
-
-                return false;
-            }*/
-
             IsRiding = !IsRiding;
-
-            RefreshActor();
-
-            MountHandler.SendMountRidingMessage(Client, IsRiding);
 
             if (IsRiding)
             {
@@ -1496,6 +1507,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 EquippedMount.UnApplyMountEffects();
             }
+
+            UpdateLook();
+
+            MountHandler.SendMountRidingMessage(Client, IsRiding);
 
             return true;
         }
