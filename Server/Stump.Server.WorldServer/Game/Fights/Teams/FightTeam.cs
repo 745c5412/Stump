@@ -385,6 +385,20 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             return m_deadFighters.LastOrDefault(x => x.IsDead());
         }
 
+        public virtual FightOutcomeEnum GetOutcome()
+        {
+            var teamDead = AreAllDead();
+            var opposedTeamDead = OpposedTeam.AreAllDead();
+
+            if (!teamDead && opposedTeamDead)
+                return FightOutcomeEnum.RESULT_VICTORY;
+
+            if (teamDead && !opposedTeamDead)
+                return FightOutcomeEnum.RESULT_LOST;
+
+            return FightOutcomeEnum.RESULT_DRAW;
+        }
+
         public FightTeamInformations GetFightTeamInformations()
         {
             return new FightTeamInformations((sbyte)Id,

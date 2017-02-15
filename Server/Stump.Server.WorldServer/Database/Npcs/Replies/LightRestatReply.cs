@@ -7,7 +7,8 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
     [Discriminator("LightRestats", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class LightRestatReply : NpcReply
     {
-        public LightRestatReply(NpcReplyRecord record) : base(record)
+        public LightRestatReply(NpcReplyRecord record)
+            : base(record)
         {
         }
 

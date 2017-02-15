@@ -37,11 +37,6 @@ namespace Stump.Tools.SpellsExplorer
 
         public static void Main()
         {
-            Console.BufferWidth = 90;
-            Console.BufferHeight = 1024;
-            Console.WindowWidth = 90;
-            Console.WindowHeight = 45;
-
             Console.WriteLine("Load {0}...", ConfigFile);
             m_config = new XmlConfig(ConfigFile);
             m_config.AddAssembly(Assembly.GetExecutingAssembly());

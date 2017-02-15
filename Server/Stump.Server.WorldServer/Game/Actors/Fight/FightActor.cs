@@ -804,8 +804,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var permanentDamages = CalculateErosionDamage(damage.Amount);
 
             //Fraction
-            var fractionBuff = GetBuffs(x => x is FractionBuff).FirstOrDefault() as FractionBuff;
-            if (fractionBuff != null && !(damage is FractionDamage))
+            if (GetBuffs(x => x is FractionBuff).FirstOrDefault() is FractionBuff fractionBuff && !(damage is FractionDamage))
                 return fractionBuff.DispatchDamages(damage);
 
             if (!damage.IgnoreDamageReduction)
@@ -861,8 +860,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             //Heal Or Multiply
-            var healOrMultiplyBuff = GetBuffs(x => x is HealOrMultiplyBuff).FirstOrDefault() as HealOrMultiplyBuff;
-            if (healOrMultiplyBuff != null)
+            if (GetBuffs(x => x is HealOrMultiplyBuff).FirstOrDefault() is HealOrMultiplyBuff healOrMultiplyBuff)
             {
                 var newDamage = healOrMultiplyBuff.GetDamages(damage.Amount);
 
@@ -876,6 +874,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                 permanentDamages = 0;
             }
+
+            if (damage.IgnoreDamageReduction)
+                permanentDamages = CalculateErosionDamage(damage.Amount);
 
             if (damage.Amount <= 0)
                 damage.Amount = 0;
@@ -1098,13 +1099,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int CalculateErosionDamage(int damages)
         {
+            if (damages <= 0)
+                return 0;
+
             var erosion = Stats[PlayerFields.Erosion].TotalSafe;
 
             if (erosion > 50)
                 erosion = 50;
-
-            if (GetBuffs(x => x.Spell.Id == (int)SpellIdEnum.TRÊVE).Any())
-                erosion -= 10;
 
             return (int)(damages * (erosion / 100d));
         }
@@ -1936,22 +1937,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool HasResult => true;
 
-        public FightOutcomeEnum GetFighterOutcome()
-        {
-            /*if (HasLeft())
-                return FightOutcomeEnum.RESULT_LOST;*/
-
-            var teamDead = Team.AreAllDead();
-            var opposedTeamDead = OpposedTeam.AreAllDead();
-
-            if (!teamDead && opposedTeamDead)
-                return FightOutcomeEnum.RESULT_VICTORY;
-
-            if (teamDead && !opposedTeamDead)
-                return FightOutcomeEnum.RESULT_LOST;
-
-            return FightOutcomeEnum.RESULT_VICTORY;
-        }
+        public FightOutcomeEnum GetFighterOutcome() => Team.GetOutcome();
 
         #endregion End Fight
 

@@ -798,9 +798,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ReadyChecker = null;
             }
 
-            foreach (var disconnectedFighter in Fighters.OfType<CharacterFighter>().Where(x => x.IsDisconnected).ToArray())
+            foreach (var fighter in Fighters.OfType<CharacterFighter>().Where(x => x.IsDisconnected).ToArray())
             {
-                disconnectedFighter.Team.RemoveFighter(disconnectedFighter);
+                if (Winners == fighter.Team)
+                    fighter.Team.RemoveLeaver(fighter);
+                else
+                    fighter.Team.RemoveFighter(fighter);
             }
 
             DeterminsWinners();
