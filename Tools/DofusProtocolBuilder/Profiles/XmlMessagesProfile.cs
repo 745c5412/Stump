@@ -55,7 +55,9 @@ namespace DofusProtocolBuilder.Profiles
                         // add a cast and preffix Enums before each enum
                         {@"\b(\w+)Enum\.", "(byte)Enums.$1Enum."},
                         // another manual fix (for RawDataMessage.as 2.3.5)
-                        {@"arg1\.ReadBytes\(content\)", "content = arg1.ReadBytes()"}
+                        {@"arg1\.ReadBytes\(content\)", "content = arg1.ReadBytes()"},
+
+                        {@"uint\((.+)\)", "$1" } // annoying cast
                     };
             IgnoredLines =
                 new[]

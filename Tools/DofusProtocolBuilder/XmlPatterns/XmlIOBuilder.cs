@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Xml;
 using DofusProtocolBuilder.Parsing;
 using DofusProtocolBuilder.Parsing.Elements;
 
@@ -11,7 +9,8 @@ namespace DofusProtocolBuilder.XmlPatterns
     {
         private const string RegexNewObject = @"new ([\w\d]+\.)*([\w\d]+)";
 
-        protected XmlIOBuilder(Parser parser) : base(parser)
+        protected XmlIOBuilder(Parser parser)
+            : base(parser)
         {
         }
 
@@ -20,233 +19,134 @@ namespace DofusProtocolBuilder.XmlPatterns
             var xmlFields = new List<XmlField>();
             var localFields = new Dictionary<string, string>();
 
-            MethodInfo deserializeAsMethod = Parser.Methods.Find(entry => entry.Name.Contains("deserializeAs"));
-            string type = null;
-            int limit = 0;
+            var serializeMethod = Parser.Methods.Find(entry => entry.Name.Contains("serializeAs"));
+            var controlsStatements = new Stack<ControlStatement>();
+            var ifStatements = new Stack<ControlStatement>();
+            var ignoredFields = new List<string>();
 
-            for (int i = 0; i < deserializeAsMethod.Statements.Count; i++)
+            for (var i = 0; i < serializeMethod.Statements.Count; i++)
             {
-                if (deserializeAsMethod.Statements[i] is AssignationStatement &&
-                    ( (AssignationStatement)deserializeAsMethod.Statements[i] ).Value.Contains("Read"))
+                string GetFieldCondition() => ifStatements.Count > 0 ? ifStatements.Pop().Content : null;
+
+                bool IsArray(out string lengthOrType)
                 {
-                    var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
-                    type = Regex.Match(statement.Value, @"Read([\w\d_]+)\(").Groups[1].Value.ToLower();
-                    var name = statement.Name;
-
-                    if (type == "bytes")
-                        type = "byte[]";
-
-                    Match arrayMatch = Regex.Match(name, @"^([\w\d]+)\[.+\]$");
-                    if (arrayMatch.Success)
+                    string GetArrayType(string comparand)
                     {
-                        IEnumerable<string> limitLinq = from entry in Parser.Constructors[0].Statements
-                                                        where
-                                                            entry is AssignationStatement &&
-                                                            ( (AssignationStatement)entry ).Name == arrayMatch.Groups[1].Value
-                                                        let entryMatch =
-                                                            Regex.Match(( (AssignationStatement)entry ).Value,
-                                                                        @"new List<[\d\w\._]+>\(([\d]+)")
-                                                        where entryMatch.Success
-                                                        select entryMatch.Groups[1].Value;
-
-                        if (limitLinq.Count() == 1)
-                            limit = int.Parse(limitLinq.Single());
-
-                        type += "[]";
-                        name = name.Split('[')[0];
+                        var invoke = serializeMethod.Statements.OfType<InvokeExpression>().FirstOrDefault(x => x.Args.Length > 0 && x.Args[0].Contains(comparand));
+                        return invoke.Name.Substring("Write".Length).ToLower();
                     }
-                    FieldInfo field = Parser.Fields.Find(entry => entry.Name == name);
+
+                    var whileStmt = controlsStatements.FirstOrDefault(x => x.ControlType == ControlType.While);
+                    if (whileStmt != null)
+                    {
+                        var comparand = whileStmt.Content.Split('<')[1].Trim();
+
+                        lengthOrType = int.TryParse(comparand, out int length) ? length.ToString() : GetArrayType(comparand);
+                        return true;
+                    }
+
+                    var forStmt = controlsStatements.OfType<ForStatement>().FirstOrDefault();
+                    if (forStmt != null)
+                    {
+                        lengthOrType = int.TryParse(forStmt.Iterated, out int length) ? length.ToString() : GetArrayType(forStmt.Iterated);
+                        return true;
+                    }
+
+                    lengthOrType = null;
+                    return false;
+                }
+
+                void AddField(string fieldName, string fieldType)
+                {
+                    if (fieldName.Contains(" as "))
+                        fieldName = fieldName.Substring(0, fieldName.IndexOf(" as ")).TrimStart('(');
+
+                    if (fieldName.Contains("[")) // array, discard the part inside brackets
+                        fieldName = fieldName.Substring(0, fieldName.IndexOf("["));
+                 
+                    if (ignoredFields.Contains(fieldName))
+                        return;
+
+                    string arrayLength;
+                    if (IsArray(out arrayLength))
+                        fieldType += "[]";
+
+                    var field = Parser.Fields.Find(entry => entry.Name == fieldName);
 
                     if (field != null)
-                    {
-                        string condition = null;
-
-                        if (i + 1 < deserializeAsMethod.Statements.Count &&
-                            deserializeAsMethod.Statements[i + 1] is ControlStatement &&
-                            ((ControlStatement) deserializeAsMethod.Statements[i + 1]).ControlType == ControlType.If)
-                            condition = ((ControlStatement) deserializeAsMethod.Statements[i + 1]).Condition;
-
                         xmlFields.Add(new XmlField
                         {
                             Name = field.Name,
-                            Type = type,
-                            ArrayLength = limit > 0 ? limit.ToString() : null,
-                            Condition = condition,
+                            Type = fieldType,
+                            ArrayLength = arrayLength,
+                            Condition = GetFieldCondition()
                         });
-
-                        limit = 0;
-                        type = null;
-                    }
-                    else
-                        localFields.Add(name, type);
                 }
 
-                if (deserializeAsMethod.Statements[i] is InvokeExpression &&
-                    ( (InvokeExpression)deserializeAsMethod.Statements[i] ).Name == "deserialize")
+                switch (serializeMethod.Statements[i])
                 {
-                    var statement = ( (InvokeExpression)deserializeAsMethod.Statements[i] );
-                    FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Target);
+                    case ControlStatement statement:
+                        controlsStatements.Push(statement);
+                        if (statement.ControlType == ControlType.If)
+                            ifStatements.Push(statement);
+                        break;
 
-                    if (field != null && xmlFields.Count(entry => entry.Name == field.Name) <= 0)
+                    case ControlStatementEnd statement:
+                        controlsStatements.Pop();
+                        break;
+
+                    case InvokeExpression statement when statement.Name.StartsWith("Write"):
                     {
-                        type = "Types." + field.Type.Name;
+                        var type = statement.Name.Substring("Write".Length).ToLower();
+                        var name = statement.Args[0];
 
-                        string condition = null;
+                        if (name.Contains(".Count") || name.Contains("getTypeId()")) // ignore this field
+                            continue;
 
-                        if (i + 1 < deserializeAsMethod.Statements.Count &&
-                            deserializeAsMethod.Statements[i + 1] is ControlStatement &&
-                            ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).ControlType == ControlType.If)
-                            condition = ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).Condition;
+                        if (type == "bytes")
+                            type = "byte[]";
 
-                        xmlFields.Add(new XmlField
-                        {
-                            Name = field.Name,
-                            Type = type,
-                            ArrayLength = limit > 0 ? limit.ToString() : null,
-                            Condition = condition,
-                        });
-
-                        limit = 0;
-                        type = null;
+                        AddField(name, type);
                     }
-                    else if (i > 0 &&
-                             deserializeAsMethod.Statements[i - 1] is AssignationStatement)
+                        break;
+                    case InvokeExpression statement when statement.Name.StartsWith("serializeAs_"): // serialize with known type
                     {
-                        
-                        var substatement = ( (AssignationStatement)deserializeAsMethod.Statements[i - 1] );
-                        var name = substatement.Name;
-                        Match match = Regex.Match(substatement.Value, RegexNewObject);
+                        var type = statement.Name.Substring("serializeAs_".Length);
+                        var name = statement.Target;
 
-                        if (match.Success)
-                        {
-                            type = "Types." + match.Groups[2].Value;
-
-                            Match arrayMatch = Regex.Match(name, @"^([\w\d]+)\[.+\]$");
-                            if (arrayMatch.Success)
-                            {
-                                IEnumerable<string> limitLinq = from entry in Parser.Constructors[0].Statements
-                                                                where
-                                                                    entry is AssignationStatement &&
-                                                                    ( (AssignationStatement)entry ).Name == arrayMatch.Groups[1].Value
-                                                                let entryMatch =
-                                                                    Regex.Match(( (AssignationStatement)entry ).Value,
-                                                                                @"new List<[\d\w\._]+>\(([\d]+)")
-                                                                where entryMatch.Success
-                                                                select entryMatch.Groups[1].Value;
-
-                                if (limitLinq.Count() == 1)
-                                    limit = int.Parse(limitLinq.Single());
-
-                                type += "[]";
-                                name = name.Split('[')[0];
-
-                            }
-                        }
-
-                        field = Parser.Fields.Find(entry => entry.Name == name);
-
-                        if (field != null && xmlFields.Count(entry => entry.Name == field.Name) <= 0)
-                        {
-                            string condition = null;
-
-                            if (i + 1 < deserializeAsMethod.Statements.Count &&
-                                deserializeAsMethod.Statements[i + 1] is ControlStatement &&
-                                ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).ControlType == ControlType.If)
-                                condition = ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).Condition;
-
-                            xmlFields.Add(new XmlField
-                            {
-                                Name = field.Name,
-                                Type = type,
-                                ArrayLength = limit > 0 ? limit.ToString() : null,
-                                Condition = condition,
-                            });
-
-                            limit = 0;
-                            type = null;
-                        }
+                        AddField(name, "Types." + type);
                     }
-                }
+                        break;
 
-                if (deserializeAsMethod.Statements[i] is AssignationStatement &&
-                    ( (AssignationStatement)deserializeAsMethod.Statements[i] ).Value.Contains("getFlag"))
-                {
-                    var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
-                    FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Name);
-
-                    var match = Regex.Match(statement.Value, @"getFlag\([_\w\d]+,\s?(\d+)\)");
-
-                    if (match.Success)
+                    case InvokeExpression statement when statement.Name == "serialize" && statement.Target.Contains(" as "): // serialize with unknown type
                     {
-                        type = "flag(" + match.Groups[1].Value + ")";
+                        // (this.actors[_i4] as GameRolePlayActorInformations).serialize(output);
+                        var type = statement.Target.Substring(statement.Target.IndexOf(" as ") + " as ".Length).TrimEnd(')'); // 
+                        var name = statement.Target.Substring(0, statement.Target.IndexOf(" as ")).TrimStart('(');
 
-                        if (field != null)
-                        {
-                            xmlFields.Add(new XmlField
-                            {
-                                Name = field.Name,
-                                Type = type,
-                            });
-
-                            type = null;
-                        }
+                        AddField(name, "instance of " + type);
                     }
-                }
-
-                if (deserializeAsMethod.Statements[i] is AssignationStatement &&
-                    ( (AssignationStatement)deserializeAsMethod.Statements[i] ).Value.Contains("getInstance"))
-                {
-                    var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
-                    FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Name);
-
-                    type = "instance of Types." + Regex.Match(statement.Value, @"getInstance\((?:[\w\d\._]+\.)?([\w\d_]+),").Groups[1].Value;
-
-                    if (field != null)
+                        break;
+                    case InvokeExpression statement when statement.Name == "serialize" && !statement.Target.Contains(" as "): // serialize with unknown type
                     {
-                        xmlFields.Add(new XmlField
-                        {
-                            Name = field.Name,
-                            Type = type,
-                        });
+                        // effect.serialize(output);
+                        var name = statement.Target;
+                        var type = Parser.Fields.First(x => x.Name == name).Type.Name;
 
-                        type = null;
+                        AddField(name, "instance of " + type);
                     }
-                    else
-                        localFields.Add(statement.Name, type);
-                }
-
-                if (deserializeAsMethod.Statements[i] is InvokeExpression &&
-                    ( (InvokeExpression)deserializeAsMethod.Statements[i] ).Name == "Add" &&
-                    type != null)
-                {
-                    var statement = ( (InvokeExpression)deserializeAsMethod.Statements[i] );
-
-                    FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Target);
-
-                    string condition = null;
-
-                    if (i + 1 < deserializeAsMethod.Statements.Count &&
-                        deserializeAsMethod.Statements[i + 1] is ControlStatement &&
-                        ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).ControlType == ControlType.If)
-                        condition = ( (ControlStatement)deserializeAsMethod.Statements[i + 1] ).Condition;
-
-                    var whileStatement = (ControlStatement)deserializeAsMethod.Statements.Take(i).
-                        Last(x => x is ControlStatement && (x as ControlStatement).ControlType == ControlType.While);
-
-                    // loc2 < loc3
-                    var indexName = whileStatement.Condition.Split('<')[1].Trim();
-                    var indexType = localFields[indexName];
-
-                    xmlFields.Add(new XmlField
+                        break;
+                    case AssignationStatement statement when statement.Value.Contains("setFlag("):
                     {
-                        Name = field.Name,
-                        Type = type + "[]",
-                        ArrayLength = indexType,
-                        Condition = condition,
-                    });
+                        var invokeExpression = InvokeExpression.Parse(statement.Value + ";");
 
-                    limit = 0;
-                    type = null;
+                        var type = $"flag({invokeExpression.Args[1]})";
+                        var name = invokeExpression.Args[2];
+
+                        ignoredFields.Add(invokeExpression.Args[0]);
+                        AddField(name, type);
+                    }
+                        break;
                 }
             }
 

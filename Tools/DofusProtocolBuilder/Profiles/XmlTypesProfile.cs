@@ -56,6 +56,8 @@ namespace DofusProtocolBuilder.Profiles
 
                         // add a cast and preffix Enums before each enum
                         {@"\b(\w+)Enum\.", "(byte)Enums.$1Enum."},
+
+                        {@"uint\((.+)\)", "$1" } // annoying cast
                     };
         }
 
