@@ -116,11 +116,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 message.foodQuantity = (short) food.Stack;
 
             var i = 0;
-            for (; i < message.foodQuantity; i++)
-            {
-                if (!item.Feed(food))
-                    break;
-            }
+            while (i < message.foodQuantity && item.Feed(food))
+                i++;
 
             client.Character.Inventory.RemoveItem(food, i);
         }
@@ -270,12 +267,16 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (apparenceWrapper == null)
                 return;
 
-            var wrapperItem = ItemManager.Instance.TryGetTemplate(apparenceWrapper.Value);
+            var wrapperItemTemplate = ItemManager.Instance.TryGetTemplate(apparenceWrapper.Value);
 
             host.Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_Apparence_Wrapper);
-            host.Invalidate();
 
+            host.Invalidate();
             client.Character.Inventory.RefreshItem(host);
+            host.OnObjectModified();
+
+            var wrapperItem = ItemManager.Instance.CreatePlayerItem(client.Character, wrapperItemTemplate, 1);
+
             client.Character.Inventory.AddItem(wrapperItem);
             client.Character.UpdateLook();
 

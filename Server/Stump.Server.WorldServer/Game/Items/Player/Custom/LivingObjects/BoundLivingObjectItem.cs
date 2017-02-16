@@ -7,7 +7,6 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Actors.Look;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 {
@@ -15,7 +14,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
     public sealed class BoundLivingObjectItem : CommonLivingObject
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
 
         private readonly ItemTemplate m_livingObjectTemplate;
 
@@ -33,6 +31,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
         }
 
         public override bool CanFeed(BasePlayerItem item) => false;
+
+        public override bool IsLinkedToAccount() => true;
 
         public override bool Feed(BasePlayerItem food)
         {
@@ -65,28 +65,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                 effectsLiving.Add(LastMealEffect);
             }
 
-            if (!Template.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
-                effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
-
-            if (!Template.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981))
-                effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_981, 0));
-
             Effects.RemoveAll(effects.Contains);
             Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_LivingObjectId);
+
             var newInstance = Owner.Inventory.RefreshItemInstance(this);
 
-            if (m_livingObjectTemplate.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
-                effectsLiving.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
-
-            if (m_livingObjectTemplate.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981))
-                effectsLiving.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_981, 0));
-
-            var livingObject = ItemManager.Instance.CreatePlayerItem(Owner, m_livingObjectTemplate, 1, effectsLiving);
-
-            Owner.Inventory.AddItem(livingObject);
+            newInstance.Invalidate();
+            newInstance.OnObjectModified();
 
             Owner.UpdateLook();
-            newInstance.OnObjectModified();
+
+            var livingObject = ItemManager.Instance.CreatePlayerItem(Owner, m_livingObjectTemplate, 1, effectsLiving);
+            Owner.Inventory.AddItem(livingObject);
         }
     }
 }

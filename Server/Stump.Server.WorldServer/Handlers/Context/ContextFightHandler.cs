@@ -162,13 +162,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 }
                 else
                 {
+                    
+                    foreach(var character in target.Map.GetAllCharacters().Where(x => x != target && x != client.Character))
+                        ContextRoleplayHandler.SendGameRolePlayAggressionMessage(character.Client, client.Character, target);
                     //<b>%1</b> agresse <b>%2</b>
-                    foreach (var mapClient in target.Map.Clients.Where(mapClient => mapClient != client && mapClient != target.Client))
-                    {
-                        ContextRoleplayHandler.SendGameRolePlayAggressionMessage(mapClient, client.Character, target);
-                    }
 
-                    var fight = Singleton<FightManager>.Instance.CreateAgressionFight(target.Map,
+                    var fight = FightManager.Instance.CreateAgressionFight(target.Map,
                         client.Character.AlignmentSide, target.AlignmentSide);
 
                     fight.ChallengersTeam.AddFighter(client.Character.CreateFighter(fight.ChallengersTeam));
@@ -323,9 +322,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Character.Fight.KickFighter(client.Character.Fighter, target);
         }
 
-        public static void SendGameFightStartMessage(IPacketReceiver client)
+        public static void SendGameFightStartMessage(IPacketReceiver client, IEnumerable<Idol> idols)
         {
-            client.Send(new GameFightStartMessage(new Idol[0]));
+            client.Send(new GameFightStartMessage(idols));
         }
 
         public static void SendGameFightStartingMessage(IPacketReceiver client, FightTypeEnum fightTypeEnum, int attackerId, int defenderId)
@@ -371,7 +370,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightSpectateMessage(
                 fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
                 fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
-                fight.TimeLine.RoundNumber, !fight.IsStarted ? 0 : fight.StartTime.GetUnixTimeStamp(), new Idol[0]));
+                fight.TimeLine.RoundNumber, !fight.IsStarted ? 0 : fight.StartTime.GetUnixTimeStamp(), fight.ActiveIdols.Select(x => x.GetNetworkIdol())));
         }
 
         public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor fighterPlaying)
@@ -562,7 +561,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                     fighter.Fight.GetTriggers().Select(entry => entry.GetGameActionMark(fighter)),
                     fighter.Fight.TimeLine.RoundNumber,
                     !fighter.Fight.IsStarted ? 0 : fighter.Fight.StartTime.GetUnixTimeStamp(),
-                    new Idol[0],
+                    fighter.Fight.ActiveIdols.Select(x => x.GetNetworkIdol()),
                     fighter.SpellHistory.GetCooldowns(),
                     (sbyte)fighter.SummonedCount,
                     (sbyte)fighter.BombsCount,
@@ -575,7 +574,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                     fighter.Fight.GetTriggers().Select(entry => entry.GetGameActionMark(fighter)),
                     fighter.Fight.TimeLine.RoundNumber,
                     !fighter.Fight.IsStarted ? 0 : fighter.Fight.StartTime.GetUnixTimeStamp(),
-                    new Idol[0],
+                    fighter.Fight.ActiveIdols.Select(x => x.GetNetworkIdol()),
                     fighter.SpellHistory.GetCooldowns(),
                     (sbyte)fighter.SummonedCount,
                     (sbyte)fighter.BombsCount));

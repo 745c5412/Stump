@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public const int TAX_COLLECTOR_MAX_WISDOM = 400;
 
         [Variable(true)]
-        public static int MaxMembersNumber = 50;
+        public static int BaseMaxMembers = 30;
 
         [Variable(true)]
         public static int MaxGuildXP = 300000;
@@ -133,6 +133,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
         }
 
         public GuildMember Boss => Members.FirstOrDefault(x => x.RankId == 1);
+
+        public int MaxMembers
+        {
+            get { return BaseMaxMembers + (Level / 4); }
+        }
 
         public long Experience
         {
@@ -553,12 +558,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 taxCollector.Map.Refresh(taxCollector);
             }
 
-            foreach (var client in Clients)
+            foreach (var member in Members)
             {
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 383);
-                GuildHandler.SendGuildMembershipMessage(client, client.Character.GuildMember);
+                member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 383);
+                GuildHandler.SendGuildMembershipMessage(member.Character.Client, member.Character.GuildMember);
 
-                client.Character.RefreshActor();
+                member.Character.RefreshActor();
             }
 
             return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK;
@@ -583,12 +588,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 taxCollector.Map.Refresh(taxCollector);
             }
 
-            foreach (var client in Clients)
+            foreach (var member in Members.Where(x => x.IsConnected))
             {
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 382);
-                GuildHandler.SendGuildMembershipMessage(client, client.Character.GuildMember);
+                member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 382);
+                GuildHandler.SendGuildMembershipMessage(member.Character.Client, member.Character.GuildMember);
 
-                client.Character.RefreshActor();
+                member.Character.RefreshActor();
             }
 
             return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK;
@@ -715,7 +720,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             GuildHandler.SendGuildInformationsMemberUpdateMessage(m_clients, member);
         }
 
-        public bool CanAddMember() => m_members.Count < MaxMembersNumber;
+        public bool CanAddMember() => m_members.Count < MaxMembers;
 
         public GuildMember TryGetMember(int id) => m_members.FirstOrDefault(x => x.Id == id);
 

@@ -86,6 +86,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             get
             {
+                //Note: To find rate choose how many bonus per hour and then divise 60(1 hour) by bonus and multiply result by 60(seconds).
+                //Note: Exemple for 20 bonus per hour. 60/20 = 3 * 60 = 180.
                 var bonus = ( DateTime.Now - CreationDate ).TotalSeconds / (StarsBonusRate);
 
                 if (bonus > StarsBonusLimit)
@@ -266,7 +268,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                                                             false,
                                                             false,
                                                             GetGroupMonsterStaticInformations(character),
-                                                            (CreationDate.GetUnixTimeStampLong() + (TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalSeconds * 1000)),
+                                                            CreationDate.GetUnixTimeStampLong(),
                                                             (StarsBonusRate * 1000),
                                                             0,
                                                             0);

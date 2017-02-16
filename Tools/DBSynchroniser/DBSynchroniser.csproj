@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DBSynchroniser</RootNamespace>
     <AssemblyName>DBSynchroniser</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <PublishUrl>publier\</PublishUrl>
@@ -29,7 +29,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -134,7 +134,9 @@
   <ItemGroup>
     <Compile Include="BinaryFieldAttribute.cs" />
     <Compile Include="D2OTable.cs" />
+    <Compile Include="Http\MountsExplorer.cs" />
     <Compile Include="Http\PetsExplorer.cs" />
+    <Compile Include="Http\MountWebInfo.cs" />
     <Compile Include="Http\PetWebInfo.cs" />
     <Compile Include="Interactives\IdentifiableElement.cs" />
     <Compile Include="Interactives\InteractiveSpawnLoader.cs" />
@@ -338,6 +340,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Patchs\livingobjects.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Patchs\monsters_grades.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Patchs\monsters_kamas.sql">

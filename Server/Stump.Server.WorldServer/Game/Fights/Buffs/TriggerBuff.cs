@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Fights.Sequences;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
@@ -25,6 +26,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             {"DN", BuffTriggerType.OnDamagedNeutral},
             {"DBA", BuffTriggerType.OnDamagedByAlly},
             {"DBE", BuffTriggerType.OnDamagedByEnemy},
+            {"DI", BuffTriggerType.OnDamagedBySummon},
             {"DC", BuffTriggerType.OnDamagedByWeapon},
             {"DS", BuffTriggerType.OnDamagedBySpell},
             {"DG", BuffTriggerType.OnDamagedByGlyph},
@@ -32,12 +34,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             {"DM", BuffTriggerType.OnDamagedInCloseRange},
             {"DR", BuffTriggerType.OnDamagedInLongRange},
             {"MD", BuffTriggerType.OnDamagedByPush},
-            {"DI", BuffTriggerType.OnDamagedUnknown_1},
+            {"MDP", BuffTriggerType.OnDamagedByEnemyPush},
+            {"MDM", BuffTriggerType.OnDamageEnemyByPush},
             {"Dr", BuffTriggerType.OnDamagedUnknown_2},
             {"DTB", BuffTriggerType.OnDamagedUnknown_3},
             {"DTE", BuffTriggerType.OnDamagedUnknown_4},
-            {"MDM", BuffTriggerType.OnDamagedUnknown_5},
-            {"MDP", BuffTriggerType.OnDamagedUnknown_6},
             {"TB", BuffTriggerType.OnTurnBegin},
             {"TE", BuffTriggerType.OnTurnEnd},
             {"m", BuffTriggerType.OnMPLost},
@@ -46,18 +47,21 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             {"EO", BuffTriggerType.OnStateAdded},
             {"Eo", BuffTriggerType.OnStateRemoved},
             {"CC", BuffTriggerType.OnCriticalHit},
-            {"d", BuffTriggerType.Unknown_1},
+            {"d", BuffTriggerType.OnDispelled},
             {"M", BuffTriggerType.OnMoved},
             {"mA", BuffTriggerType.Unknown_3},
             {"ML", BuffTriggerType.Unknown_4},
             {"MP", BuffTriggerType.OnPushed},
             {"MS", BuffTriggerType.Unknown_6},
             {"P", BuffTriggerType.Unknown_7},
-            {"R", BuffTriggerType.Unknown_8},
+            {"R", BuffTriggerType.OnRangeLost},
             {"tF", BuffTriggerType.OnTackled},
             {"tS", BuffTriggerType.OnTackle},
             {"X", BuffTriggerType.OnDeath},
         };
+
+        private FightSequence m_lastTriggeredSequence;
+        private Damage m_lastDamageTrigger;
         
         public TriggerBuff(int id, FightActor target, FightActor caster, SpellEffectHandler effect, Spell spell, Spell parentSpell, bool critical, FightDispellableEnum dispelable, int priority,
             TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger = null)
@@ -67,8 +71,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             ApplyTrigger = applyTrigger;
             RemoveTrigger = removeTrigger;
 
-            var triggerStr = Effect.Triggers.Split('|');
-            Triggers = triggerStr.Select(GetTriggerFromString).ToList();
+            Triggers = Effect.Triggers.Split('|').Select(GetTriggerFromString).ToList();
         }
 
         public object Token
@@ -82,7 +85,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             get;
         }
 
-
         public TriggerBuffApplyHandler ApplyTrigger
         {
             get;
@@ -92,7 +94,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         {
             get;
         }
-
 
         public List<BuffTrigger> Triggers
         {
@@ -110,24 +111,27 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override void Apply()
         {
-            base.Apply();
             if (ShouldTrigger(BuffTriggerType.Instant))
                 Apply(Caster, BuffTriggerType.Instant);
         }
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger, object token)
         {
+            // to avoid recursion cannot be triggered twice in the same sequence (spell cast, move, turn end/begin...)
+
+            if (m_lastTriggeredSequence != null && m_lastTriggeredSequence.IsChild(fighterTrigger.Fight.CurrentSequence))
+                return;
+
+            m_lastTriggeredSequence = fighterTrigger.Fight.CurrentSequence; 
             base.Apply();
             ApplyTrigger?.Invoke(this, fighterTrigger, trigger, token);
         }
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger)
         {
-            base.Apply();
-            ApplyTrigger?.Invoke(this, fighterTrigger, trigger, Token);
+            Apply(fighterTrigger, trigger, Token);
         }
         
-
         public override void Dispell()
         {
             base.Dispell();

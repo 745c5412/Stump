@@ -212,6 +212,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.Character.LoadRecord();
 
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
+            BasicHandler.SendBasicTimeMessage(client);
 
             SendCharacterSelectedSuccessMessage(client);
 
@@ -276,6 +277,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             //Loading complete
             SendCharacterLoadingCompleteMessage(client);
+
+            BasicHandler.SendServerExperienceModificatorMessage(client);
 
             // Update LastConnection and Last Ip
             client.WorldAccount.LastConnection = DateTime.Now;
@@ -356,7 +359,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 characterBaseInformations.Add(new CharacterBaseInformations((short)characterRecord.Id,
                                                                             characterRecord.Name,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
-                                                                            characterRecord.LastLook.GetEntityLook(),
+                                                                            characterRecord.LastLook?.GetEntityLook() ?? characterRecord.DefaultLook.GetEntityLook(),
                                                                             (sbyte)characterRecord.Breed,
                                                                             characterRecord.Sex == SexTypeEnum.SEX_MALE));
 

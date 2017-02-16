@@ -54,6 +54,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         private bool m_running;
         private int m_updateDelay;
         private TimedTimerEntry m_checkDCtimer;
+        private Task m_currentTask;
 
         public Area(AreaRecord record)
         {
@@ -103,6 +104,16 @@ namespace Stump.Server.WorldServer.Game.Maps
         public int TimersCount
         {
             get { return m_timers.Count; }
+        }
+
+        public List<IMessage> MessageQueue
+        {
+            get { return m_messageQueue.ToList(); }
+        }
+
+        public int MsgQueueCount
+        {
+            get { return m_messageQueue.Count; }
         }
 
         /// <summary>
@@ -280,7 +291,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 m_running = false;
 
                 if (wait && m_currentThreadId != 0)
-                    m_stoppedAsync.WaitOne();
+                    m_stoppedAsync.WaitOne(TimeSpan.FromSeconds(5));
 
                 logger.Info("Area '{0}' stopped", this);
             }
@@ -335,6 +346,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if ((IsDisposed || !IsRunning) ||
                 (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) != 0))
             {
+                logger.Info($"Area {this} exit callback since it's disposed");
                 return;
             }
 
@@ -355,7 +367,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                     {
                         msg.Execute();
                         swMsg.Stop();
-                        if (BenchmarkManager.Enable)
+                        if (BenchmarkManager.Enable && swMsg.Elapsed.TotalMilliseconds > 50)
                             processedMessages.Add(BenchmarkEntry.Create(msg.ToString(), swMsg.Elapsed, "area", Id));
                     }
                     catch (Exception ex)
@@ -391,7 +403,12 @@ namespace Stump.Server.WorldServer.Game.Maps
                     {
                         try
                         {
+                            var swMsg = Stopwatch.StartNew();
                             timer.Trigger();
+                            swMsg.Stop();
+                            
+                            if (BenchmarkManager.Enable && swMsg.Elapsed.TotalMilliseconds > 20)
+                                processedMessages.Add(BenchmarkEntry.Create(timer.ToString(), swMsg.Elapsed, "area", Id));
 
                             if (timer.Enabled)
                                 m_timers.Push(timer);
@@ -437,13 +454,13 @@ namespace Stump.Server.WorldServer.Game.Maps
                             logger.Debug(msg);
                         }
 
-                        BenchmarkManager.Instance.AddRange(processedMessages);
+                        BenchmarkManager.Instance.AddRange(processedMessages.OrderByDescending(x => x.Timestamp).Take(15));
                     }
 
-                    if (!IsRunning)
+                    if (!m_running)
                         m_stoppedAsync.Set();
-
-                    Task.Factory.StartNewDelayed(callbackTimeout, UpdateCallback, this);
+                    else
+                        m_currentTask = Task.Factory.StartNewDelayed(callbackTimeout, UpdateCallback, this);
                 }
                 catch (Exception ex)
                 {
@@ -535,7 +552,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 m_mapsByPoint[map.Position].Add(map);
             }
-
             subArea.Area = this;
         }
 
@@ -616,7 +632,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return;
 
             Stop();
-            throw new InvalidOperationException(string.Format("Context prohibitted in Area '{0}'", this));
+            throw new InvalidOperationException($"Context prohibitted in Area '{this}'");
         }
 
         public void EnsureNotUpdating()
@@ -625,7 +641,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return;
 
             Stop();
-            throw new InvalidOperationException(string.Format("Area '{0}' is updating", this));
+            throw new InvalidOperationException($"Area '{this}' is updating");
         }
 
         public override string ToString()

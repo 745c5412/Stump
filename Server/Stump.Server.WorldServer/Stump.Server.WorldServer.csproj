@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stump.Server.WorldServer</RootNamespace>
     <AssemblyName>Stump.Server.WorldServer</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -104,21 +104,14 @@
       <HintPath>..\..\packages\Microsoft.Owin.Hosting.3.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MongoDB.Bson.2.3.0\lib\net45\MongoDB.Bson.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MongoDB.Bson, Version=2.4.2.27, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MongoDB.Bson.2.4.2\lib\net45\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MongoDB.Driver.2.3.0\lib\net45\MongoDB.Driver.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MongoDB.Driver, Version=2.4.2.27, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MongoDB.Driver.2.4.2\lib\net45\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver.Core, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MongoDB.Driver.Core.2.3.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MongoDB.Driver.Legacy, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\mongocsharpdriver.2.3.0\lib\net45\MongoDB.Driver.Legacy.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MongoDB.Driver.Core, Version=2.4.2.27, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MongoDB.Driver.Core.2.4.2\lib\net45\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -147,6 +140,9 @@
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -174,19 +170,13 @@
     <Compile Include="AI\Fights\Actions\StayInRange.cs" />
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\GlourselesteBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\BarrelBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\BlockBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\CadranBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\LapinoBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\LivingBagBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\SacrifiedBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Summons\SynchroBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\OsaSummonsBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Summons\TreeBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
+    <Compile Include="AI\Fights\Brain\InitBrain.cs" />
+    <Compile Include="AI\Fights\Spells\AISpellEffectAttribute.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
     <Compile Include="AI\Fights\Spells\SpellCastImpact.cs" />
     <Compile Include="AI\Fights\Spells\SpellCategory.cs" />
@@ -249,6 +239,7 @@
     <Compile Include="Core\Network\WorldPacketHandler.cs" />
     <Compile Include="Database\Accounts\AccountRelation.cs" />
     <Compile Include="Database\Accounts\UserGroup.cs" />
+    <Compile Include="Database\AI\InitBrainRecord.cs" />
     <Compile Include="Database\Arena\ArenaRecord.cs" />
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
@@ -258,6 +249,7 @@
     <Compile Include="Database\Guilds\GuildRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorFirstnamesRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorNamesRecord.cs" />
+    <Compile Include="Database\Idols\IdolTemplate.cs" />
     <Compile Include="Database\Interactives\ISkillRecord.cs" />
     <Compile Include="Database\Items\BidHouse\BidHouseItemRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
@@ -386,7 +378,7 @@
     <Compile Include="Game\Conditions\Criterions\GuildLevelCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildValidCriterion.cs" />
-    <Compile Include="Game\Conditions\Criterions\HasOrnament.cs" />
+    <Compile Include="Game\Conditions\Criterions\HasOrnamentCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\HasTitleCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\InteractiveStateCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\MapCriterion.cs" />
@@ -423,6 +415,7 @@
     <Compile Include="Game\Conditions\Criterions\SubAreaCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SubscribeCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SubscribeZoneCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\SubscriptionTimeCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\UnknownCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\UnusableCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\WeightCriterion.cs" />
@@ -447,6 +440,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Targets\BreedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\JustSummonedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\GiveOgrines.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GuildPotion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnFatalBlow.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnSmileyPack.cs" />
@@ -663,6 +657,9 @@
     <Compile Include="Game\Guilds\GuildInvitationRequest.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
+    <Compile Include="Game\Idols\PlayerIdol.cs" />
+    <Compile Include="Game\Idols\IdolInventory.cs" />
+    <Compile Include="Game\Idols\IdolManager.cs" />
     <Compile Include="Game\Interactives\Skills\CustomSkill.cs" />
     <Compile Include="Game\Interactives\Skills\ISkillWithAgeBonus.cs" />
     <Compile Include="Game\Interactives\Skills\SkillAnimate.cs" />
@@ -698,6 +695,7 @@
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotion.cs" />
     <Compile Include="Game\Items\Player\Custom\Potions\TeleportPotionManager.cs" />
     <Compile Include="Game\Items\Player\Custom\RikikiWandItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\TokenScroll.cs" />
     <Compile Include="Game\Items\Player\Custom\Watches.cs" />
     <Compile Include="Game\Items\Player\Custom\WrapperObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\Pets\PetItem.cs" />
@@ -754,9 +752,7 @@
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Eniripsa\FriendshipWordCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\MansomonCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\NaughtyChildCastHandler.cs" />
@@ -766,7 +762,6 @@
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
-    <Compile Include="Game\Spells\Casts\Ecaflip\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\RoublabotCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\FeuillageCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\SacrificeSpellCastHandler.cs" />

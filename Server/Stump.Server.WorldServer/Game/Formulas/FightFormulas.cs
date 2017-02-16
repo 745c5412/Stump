@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -49,7 +47,6 @@ namespace Stump.Server.WorldServer.Game.Formulas
             4.7
         };
 
-
         public static int CalculateWinExp(IFightResult fighter, IEnumerable<FightActor> alliesResults, IEnumerable<FightActor> droppersResults)
         {
             var droppers = droppersResults as MonsterFighter[] ?? droppersResults.ToArray();
@@ -61,6 +58,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
             var sumPlayersLevel = allies.Sum(entry => entry.Level);
             var maxPlayerLevel = allies.Max(entry => entry.Level);
             var sumMonstersLevel = droppers.Sum(entry => entry.Level);
+            var sumMonstersHiddenLevel = droppers.OfType<MonsterFighter>().Sum(entry => entry.HiddenLevel == 0 ? entry.Level : entry.HiddenLevel);
             var maxMonsterLevel = droppers.Max(entry => entry.Level);
             var sumMonsterXp = droppers.Sum(entry => entry.GetGivenExperience());
 
@@ -79,18 +77,24 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
             var baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
             var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
-            var challengeBonus = fighter.Fight.GetChallengeBonus();
+            var challengeBonus = fighter.Fight.GetChallengesBonus();
 
-            var xp = (int)Math.Truncate(Math.Truncate(baseXp * (100 + fighter.Wisdom)/ 100d) * multiplicator * Rates.XpRate);
-            xp += (int)Math.Truncate(xp*(challengeBonus/100d));
-  
+            var idolsBonus = fighter.Fight.GetIdolsXPBonus();
+            var idolsMalus = Math.Pow(Math.Min(4, ((double)sumMonstersHiddenLevel / droppers.Count() / maxPlayerLevel)), 2);
+            var idolsWisdomBonus = Math.Truncate((100 + fighter.Level * 2.5d) * Math.Truncate(idolsBonus * idolsMalus) / 100d);
+
+            var xp = (int)Math.Truncate(Math.Truncate(baseXp * (100 + Math.Max(fighter.Wisdom + idolsWisdomBonus, 0)) / 100d) * multiplicator * Rates.XpRate);
+            xp += (int)Math.Truncate(xp * (challengeBonus / 100d));
+
             return InvokeWinXpModifier(fighter, xp);
         }
 
         public static int AdjustDroppedKamas(IFightResult looter, int teamPP, long baseKamas, bool kamasRate = true)
         {
-            var challengeBonus = looter.Fight.GetChallengeBonus();
-            var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
+            var challengeBonus = looter.Fight.GetChallengesBonus();
+            var idolsBonus = looter.Fight.GetIdolsDropBonus();
+
+            var looterPP = looter.Prospecting + ((looter.Prospecting * (challengeBonus + idolsBonus)) / 100d);
 
             var multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + (looter.Fight.AgeBonus / 5) / 100d;
             var kamas = (int)( baseKamas * (looterPP / teamPP) * multiplicator * (kamasRate ? Rates.KamasRate : 1));
@@ -100,8 +104,10 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
         public static double AdjustDropChance(IFightResult looter, DroppableItem item, Monster dropper, int monsterAgeBonus)
         {
-            var challengeBonus = looter.Fight.GetChallengeBonus();
-            var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
+            var challengeBonus = looter.Fight.GetChallengesBonus();
+            var idolsBonus = looter.Fight.GetIdolsDropBonus();
+
+            var looterPP = looter.Prospecting + ((looter.Prospecting * (challengeBonus + idolsBonus)) / 100d);
 
             var rate = item.GetDropRate((int)dropper.Grade.GradeId) * (looterPP / 100d) * ((monsterAgeBonus / 100d) + 1) * Rates.DropsRate;
 

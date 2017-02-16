@@ -26,39 +26,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion COMMON
 
-            #region ECAFLIP
-
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 5, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 5, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 6, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 6, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 7, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 7, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 8, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 8, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 9, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 9, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 10, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 10, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 11, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 11, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 12, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 12, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 13, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 13, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 14, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 14, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 15, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 15, (level, effect, critical) => effect.Random = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 16, (level, effect, critical) => effect.Delay = 0);
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 16, (level, effect, critical) => effect.Random = 0);
-
-            #endregion ECAFLIP
-
             #region SADIDA
 
             // Fix 5667 'Arbre' subVitality All -> new tree only
-            FixEffectOnAllLevels((int) SpellIdEnum.ARBRE_5667, EffectsEnum.Effect_SubVitalityPercent, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P);
+            FixEffectOnAllLevels((int)SpellIdEnum.ARBRE_5667, EffectsEnum.Effect_SubVitalityPercent, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P);
 
             #endregion
 
@@ -79,6 +50,14 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels((int)SpellIdEnum.TRAVERSÉE, 4, (level, effect, critical) => effect.ZoneSize = 4);
 
             #endregion HUPPERMAGE
+
+            #region ECAFLIP
+
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP, (x) => x.Delay == 0, false);
+
+            RemoveEffectOnAllLevels((int)SpellIdEnum.REKOP_DU_DOPEUL, (x) => x.Delay == 0, false);
+
+            #endregion ECAFLIP
         }
 
         #region Methods
@@ -177,6 +156,25 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             fixer(spell, spell.Effects[effectIndex], false);
             if (critical && spell.CriticalEffects.Count > effectIndex)
                 fixer(spell, spell.CriticalEffects[effectIndex], true);
+        }
+
+        public static void RemoveEffectOnAllLevels(int spellId, Predicate<EffectDice> predicate, bool critical = true)
+        {
+            var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+            {
+                logger.Error($"Cannot apply fix on spell {spellId} : spell do not exists");
+                return;
+            }
+
+            foreach (var level in spellLevels)
+            {
+                level.Effects.RemoveAll(predicate);
+                if (critical)
+                    level.CriticalEffects.RemoveAll(predicate);
+
+            }
         }
 
         public static void RemoveEffectOnAllLevels(int spellId, int effectIndex, bool critical = true)

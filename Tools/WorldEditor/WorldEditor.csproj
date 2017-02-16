@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WorldEditor</RootNamespace>
     <AssemblyName>WorldEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -77,9 +77,8 @@
       <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="log4net, Version=2.0.7.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Effects, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -386,7 +385,7 @@
       <Name>NLog.netfx40</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
-      <Project>{72E591D6-8F83-4D8C-8F67-9C325E623234}</Project>
+      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
       <Name>Xceed.Wpf.Toolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\ZoomAndPan\ZoomAndPan.csproj">

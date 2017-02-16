@@ -105,11 +105,27 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
+        public void RemoveIPBan(IpBan ban)
+        {
+            lock (m_ipBans)
+            {
+                m_ipBans.Remove(ban);
+            }
+        }
+
         public void AddHardwareIdBan(HardwareIdBan ban)
         {
             lock (m_hardwareIdBans)
             {
                 m_hardwareIdBans.Add(ban);
+            }
+        }
+
+        public void RemoveHardwareIdBan(HardwareIdBan ban)
+        {
+            lock (m_hardwareIdBans)
+            {
+                m_hardwareIdBans.Remove(ban);
             }
         }
 
@@ -139,29 +155,20 @@ namespace Stump.Server.AuthServer.Managers
 
         public IpBan FindIpBan(string ip)
         {
-            lock (m_ipBans)
-            {
-                return m_ipBans.FirstOrDefault(x => x.IPAsString == ip);
-            }
+            return m_ipBans.FirstOrDefault(x => x.IPAsString == ip);
         }
 
         public HardwareIdBan FindHardwareIdBan(string hardwareId)
         {
-            lock (m_hardwareIdBans)
-            {
-                return m_hardwareIdBans.FirstOrDefault(x => x.HardwareId == hardwareId);
-            }
+            return m_hardwareIdBans.FirstOrDefault(x => x.HardwareId == hardwareId);
         }
 
         public IpBan FindMatchingIpBan(string ipStr)
         {
-            lock (m_ipBans)
-            {
-                var ip = IPAddress.Parse(ipStr);
-                var bans = m_ipBans.Where(entry => entry.Match(ip));
+            var ip = IPAddress.Parse(ipStr);
+            var bans = m_ipBans.Where(entry => entry.Match(ip));
 
-                return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
-            }
+            return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
         }
 
         public UserGroupRecord FindUserGroup(int id)
@@ -243,46 +250,8 @@ namespace Stump.Server.AuthServer.Managers
             return character;
         }
 
-        public bool DeleteAccountCharacter(Account account, WorldServer world, int characterId)
-        {
-            var success = Database.Execute(string.Format("DELETE FROM worlds_characters WHERE AccountId={0} AND CharacterId={1} AND WorldId={2}", account.Id, characterId, world.Id)) > 0;
-
-            if (!success)
-                return false;
-
-            CreateDeletedCharacter(account, world, characterId);
-            account.WorldCharacters.RemoveAll(x => x.CharacterId == characterId && x.WorldId == world.Id);
-
-            return true;
-        }
-
         public bool AddAccountCharacter(Account account, WorldServer world, int characterId)
             => CreateAccountCharacter(account, world, characterId) != null;
-
-        public WorldCharacterDeleted CreateDeletedCharacter(Account account, WorldServer world, int characterId)
-        {
-            var character = new WorldCharacterDeleted
-                                {
-                                    AccountId = account.Id,
-                                    WorldId = world.Id,
-                                    CharacterId = characterId,
-                                    DeletionDate = DateTime.Now
-                                };
-
-            Database.Insert(character);
-
-            return character;
-        }
-
-        public bool DeleteDeletedCharacter(WorldCharacterDeleted deletedCharacter)
-        {
-            if (deletedCharacter == null)
-                return false;
-
-            Database.Delete(deletedCharacter);
-
-            return true;
-        }
 
         public void DisconnectClientsUsingAccount(Account account, AuthClient except = null)
         {

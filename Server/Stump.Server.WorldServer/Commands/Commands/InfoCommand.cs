@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Commands;
@@ -12,7 +14,8 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
-using Stump.DofusProtocol.Messages;
+using System.IO;
+using Stump.Core.Reflection;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -20,7 +23,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public InfoMapCommand()
         {
-            Aliases = new [] { "map" };
+            Aliases = new[] { "map" };
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a map";
             ParentCommandType = typeof(InfoCommand);
@@ -36,7 +39,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                map = ( trigger as GameTrigger ).Character.Map;
+                map = (trigger as GameTrigger).Character.Map;
             }
 
             if (map == null)
@@ -85,7 +88,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else if (trigger is GameTrigger)
             {
-                area = ( trigger as GameTrigger ).Character.Area;
+                area = (trigger as GameTrigger).Character.Area;
             }
 
             if (area == null)
@@ -98,6 +101,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             trigger.ReplyBold("Enabled : {0}", area.IsRunning);
             trigger.ReplyBold("Objects : {0}", area.ObjectCount);
             trigger.ReplyBold("Timers : {0}", area.TimersCount);
+            trigger.ReplyBold("MsgQueue : {0}", area.MsgQueueCount);
             trigger.ReplyBold("Update interval : {0}ms", area.UpdateDelay);
             trigger.ReplyBold("AvgUpdateTime : {0}ms", area.AverageUpdateTime);
             trigger.ReplyBold("LastUpdate : {0}", area.LastUpdateTime);
@@ -175,7 +179,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a fight";
             ParentCommandType = typeof(InfoCommand);
-            AddParameter("fight", "f", "Gives informations about the given fight", converter:ParametersConverter.FightConverter);
+            AddParameter("fight", "f", "Gives informations about the given fight", converter: ParametersConverter.FightConverter);
         }
 
 

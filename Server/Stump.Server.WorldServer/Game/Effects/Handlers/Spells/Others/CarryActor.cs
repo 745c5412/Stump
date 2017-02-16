@@ -1,7 +1,8 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Instances;using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
@@ -17,7 +18,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             foreach (var affectedActor in GetAffectedActors())
             {
-                Caster.CarryActor(affectedActor, Effect, Spell);
+                if (!Caster.CarryActor(affectedActor, Effect, Spell, CastHandler))
+                    return false;
             }
 
             return true;

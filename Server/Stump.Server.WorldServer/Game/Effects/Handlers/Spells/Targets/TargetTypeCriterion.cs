@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             if (TargetType.HasFlag(SpellTargetType.SELF_ONLY) && actor != handler.Caster)
                 return false;
 
-            if (handler.Caster.IsFriendlyWith(actor) && handler.Caster != actor)
+            if (handler.Caster.IsFriendlyWith(actor) && (handler.Caster != actor || Caster))
             {
                 if (TargetType == SpellTargetType.ALLY_ALL_EXCEPT_SELF || TargetType == SpellTargetType.ALLY_ALL)
                     return true;

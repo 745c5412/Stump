@@ -18,7 +18,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
@@ -54,8 +53,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor> GetAlive;
 
-        protected virtual void OnGetAlive()
+        public virtual void OnGetAlive()
         {
+            foreach (var idol in Fight.ActiveIdols)
+            {
+                if (GetType().Name != idol.Template.TargetString)
+                    continue;
+
+                CastAutoSpell(new Spell(idol.Template.IdolSpellId.Value, idol.Template.IdolSpellLevel), Cell);
+            }
+
             GetAlive?.Invoke(this);
         }
 
@@ -63,18 +70,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnReadyStateChanged(bool isReady)
         {
-            var handler = ReadyStateChanged;
-            if (handler != null)
-                handler(this, isReady);
+            ReadyStateChanged?.Invoke(this, isReady);
         }
 
         public event Action<FightActor, Cell, bool> CellShown;
 
         protected virtual void OnCellShown(Cell cell, bool team)
         {
-            var handler = CellShown;
-            if (handler != null)
-                handler(this, cell, team);
+            CellShown?.Invoke(this, cell, team);
         }
 
         public event Action<FightActor, int, int, int, FightActor, EffectSchoolEnum> LifePointsChanged;
@@ -83,45 +86,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnLeft()
         {
-            var evnt = FighterLeft;
-            if (evnt != null)
-                evnt(this);
+            FighterLeft?.Invoke(this);
         }
 
         protected virtual void OnLifePointsChanged(int delta, int shieldDamages, int permanentDamages, FightActor from, EffectSchoolEnum school)
         {
-            var handler = LifePointsChanged;
-
-            if (handler != null)
-                handler(this, delta, shieldDamages, permanentDamages, from, school);
+            LifePointsChanged?.Invoke(this, delta, shieldDamages, permanentDamages, from, school);
         }
 
         public event Action<FightActor, Damage> BeforeDamageInflicted;
 
         protected virtual void OnBeforeDamageInflicted(Damage damage)
         {
-            var handler = BeforeDamageInflicted;
-
-            if (handler != null)
-                handler(this, damage);
+            BeforeDamageInflicted?.Invoke(this, damage);
         }
 
         public event Action<FightActor, Damage> DamageInflicted;
 
         protected virtual void OnDamageInflicted(Damage damage)
         {
-            var handler = DamageInflicted;
-
-            if (handler != null)
-                handler(this, damage);
+            DamageInflicted?.Invoke(this, damage);
         }
 
         public event Action<FightActor, FightActor, int> DamageReducted;
 
         protected virtual void OnDamageReducted(FightActor source, int reduction)
         {
-            var handler = DamageReducted;
-            handler?.Invoke(this, source, reduction);
+            DamageReducted?.Invoke(this, source, reduction);
         }
 
         public event Action<FightActor, FightActor> DamageReflected;
@@ -129,8 +120,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected internal virtual void OnDamageReflected(FightActor target)
         {
             ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target);
-            var handler = DamageReflected;
-            handler?.Invoke(this, target);
+            DamageReflected?.Invoke(this, target);
         }
 
 
@@ -138,24 +128,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnPrePlacementChanged(ObjectPosition position)
         {
-            var handler = PrePlacementChanged;
-            handler?.Invoke(this, position);
+            PrePlacementChanged?.Invoke(this, position);
         }
 
         public event Action<FightActor, FightActor> PrePlacementSwapped;
 
         protected virtual void OnPrePlacementSwapped(FightActor actor)
         {
-            var handler = PrePlacementSwapped;
-            handler?.Invoke(this, actor);
+            PrePlacementSwapped?.Invoke(this, actor);
         }
 
         public event Action<FightActor> TurnPassed;
 
         protected virtual void OnTurnPassed()
         {
-            var handler = TurnPassed;
-            handler?.Invoke(this);
+            TurnPassed?.Invoke(this);
         }
 
         public delegate void SpellCastingHandler(FightActor caster, SpellCastHandler castHandler);
@@ -164,14 +151,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnSpellCasting(SpellCastHandler castHandler)
         {
-            var handler = SpellCasting;
-            if (handler != null)
-                handler(this, castHandler);
+            SpellCasting?.Invoke(this, castHandler);
+            SpellHistory.RegisterCastedSpell(castHandler.SpellLevel, Fight.GetOneFighter(castHandler.TargetedCell));
         }
 
         public event SpellCastingHandler SpellCasted;
 
-        protected virtual void OnSpellCasted(SpellCastHandler castHandler, bool history = true)
+        protected virtual void OnSpellCasted(SpellCastHandler castHandler)
         {
             if (castHandler.SpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) && VisibleState == VisibleStateEnum.INVISIBLE)
             {
@@ -185,9 +171,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     Fight.ForEach(x => ActionsHandler.SendGameActionFightInvisibleDetectedMessage(x.Client, this, this), true);
                 }
             }
-
-            if (history)
-                SpellHistory.RegisterCastedSpell(castHandler.SpellLevel, Fight.GetOneFighter(castHandler.TargetedCell));
 
             SpellCasted?.Invoke(this, castHandler);
         }
@@ -758,7 +741,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return CastSpell(new SpellCastInformations(this, spell, cell));
         }
 
-
         public virtual bool CastSpell(SpellCastInformations cast)
         {
             if (!cast.Force && (!IsFighterTurn() || IsDead()))
@@ -774,9 +756,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             using (Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL))
             {
-                var critical = RollCriticalDice(spellLevel);
+                cast.Critical = RollCriticalDice(spellLevel);
 
-                if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+                if (cast.Critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 {
                     OnSpellCasting(new DefaultSpellCastHandler(cast));
 
@@ -823,6 +805,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnDead(this);
         }
 
+        public void Die(FightActor killedBy)
+        {
+            DamageTaken += LifePoints;
+            OnDead(killedBy);
+        }
+
         public int InflictDirectDamage(int damage, FightActor from)
             => InflictDamage(new Damage(damage)
             {
@@ -836,8 +824,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void TriggerDamageBuffs(Damage damage)
         {
-            TriggerBuffs(damage.Source, BuffTriggerType.OnDamaged, damage);
+            if (damage.School != EffectSchoolEnum.Pushback && !damage.ReflectedDamages && !IsIndirectSpellCast(damage.Spell))
+                TriggerBuffs(damage.Source, BuffTriggerType.OnDamaged, damage);
+
             TriggerBuffs(damage.Source, damage.Source.IsEnnemyWith(this) ? BuffTriggerType.OnDamagedByEnemy : BuffTriggerType.OnDamagedByAlly, damage);
+
+            if (damage.Source.IsSummoned())
+                TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedBySummon, damage);
 
             switch (damage.School)
             {
@@ -857,8 +850,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedFire, damage);
                     break;
                 case EffectSchoolEnum.Pushback:
-                    TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedByPush, damage);
-                    break;
+                    {
+                        TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedByPush, damage);
+
+                        if (damage.Source.IsEnnemyWith(this))
+                        {
+                            TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedByEnemyPush, damage);
+
+                            if (this is ICreature)
+                                damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.OnDamageEnemyByPush, damage);
+                        }
+                        break;
+                    }
             }
 
             TriggerBuffs(damage.Source, damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1 ? BuffTriggerType.OnDamagedInCloseRange : BuffTriggerType.OnDamagedInLongRange, damage);
@@ -884,18 +887,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             damage.GenerateDamages();
 
-            if (damage.Source != null && damage.Source.HasState((int) SpellStatesEnum.PACIFISTE_218))
+            if (damage.Source != null && !damage.Source.CanDealDamage())
             {
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
                 TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
                 return 0;
             }
 
-            if (HasState((int) SpellStatesEnum.INVULNERABLE_56) ||
-                HasState((int) SpellStatesEnum.INVULNERABLE_269) ||
-                HasState((int) SpellStatesEnum.INVULNERABLE_365) ||
-                (isCloseRangeAttack && HasState((int) SpellStatesEnum.INVULNERABILITE_EN_MELEE_376)) ||
-                (!isCloseRangeAttack && HasState((int) SpellStatesEnum.INVULNERABILITE_A_DISTANCE_375)))
+            if (IsInvulnerable(isCloseRangeAttack))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
                 TriggerDamageBuffs(damage);
@@ -906,6 +905,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (damage.Source != null && !damage.IgnoreDamageBoost)
             {
+                if (damage.Spell != null)
+                    damage.Amount += damage.Source.GetSpellBoost(damage.Spell);
+
                 damage.Source.CalculateDamageBonuses(damage);
             }
 
@@ -1029,7 +1031,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.OnHeal, damage);
             }
 
-            if (HasState((int) SpellStatesEnum.INSOIGNABLE_76))
+            if (!CanBeHeal())
             {
                 OnLifePointsChanged(0, 0, 0, damage.Source, EffectSchoolEnum.Unknown);
                 return 0;
@@ -1147,9 +1149,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (damage.MarkTrigger is Trap)
                 bonusPercent += Stats[PlayerFields.TrapBonusPercent].TotalSafe;
-
-            if (damage.Spell != null)
-                bonus += damage.Source.GetSpellBoost(damage.Spell);
 
             damage.Amount = (int) Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + spellBonus) / 100d
                                                + (bonus + criticalBonus + phyMgkBonus + eltBonus)) * ((100 + mult) / 100.0));
@@ -1572,6 +1571,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 RemoveBuff(buff);
             }
+
+            TriggerBuffs(this, BuffTriggerType.OnDispelled);
         }
 
         public void RemoveAndDispellAllBuffs(FightActor caster, FightDispellableEnum dispellable = FightDispellableEnum.REALLY_NOT_DISPELLABLE)
@@ -1699,6 +1700,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (rescaleBuff != null)
                 Look.Rescale(rescaleBuff.RescaleFactor);
+            else
+                Look.ResetScales();
 
             ActionsHandler.SendGameActionFightChangeLookMessage(Fight.Clients, source ?? this, this, Look);
         }
@@ -1817,6 +1820,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsIndirectSpellCast(Spell spell)
         {
+            if (spell == null)
+                return false;
+
             return spell.Template.Id == (int) SpellIdEnum.EXPLOSION_SOURNOISE
                    || spell.Template.Id == (int) SpellIdEnum.EXPLOSION_DE_MASSE
                    || spell.Template.Id == (int) SpellIdEnum.PIÈGE_MORTEL_SRAM
@@ -1933,28 +1939,31 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightActor GetCarryingActor() => Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
 
-        public void CarryActor(FightActor target, EffectBase effect, Spell spell)
+        public bool CarryActor(FightActor target, EffectBase effect, Spell spell, SpellCastHandler castHandler)
         {
             var stateCarried = SpellManager.Instance.GetSpellState((uint) SpellStatesEnum.PORTE_8);
             var stateCarrying = SpellManager.Instance.GetSpellState((uint) SpellStatesEnum.PORTEUR_3);
 
             if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
-                return;
+                return false;
 
-            if (!target.CanBePushed())
-                return;
+            if (target.HasState((int)SpellStatesEnum.LOURD_63))
+                return false;
+
+            if (target.GetStates().Where(x => !x.IsDisabled).Any(x => x.State.CantBeMoved))
+                return false;
 
             var actorBuffId = PopNextBuffId();
             var targetBuffId = target.PopNextBuffId();
 
-            var addStateHandler = new AddState(new EffectDice((short) EffectsEnum.Effect_AddState, (short) stateCarrying.Id, 0, 0, new EffectBase()), this, null, Cell, false);
+            var addStateHandler = new AddState(new EffectDice((short) EffectsEnum.Effect_AddState, (short) stateCarrying.Id, 0, 0, new EffectBase()), this, castHandler, Cell, false);
             var actorBuff = new StateBuff(actorBuffId, this, this, addStateHandler,
                 spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarrying)
             {
                 Duration = -1000
             };
 
-            addStateHandler = new AddState(new EffectDice((short) EffectsEnum.Effect_AddState, (short) stateCarrying.Id, 0, 0, new EffectBase()), target, null, target.Cell, false);
+            addStateHandler = new AddState(new EffectDice((short) EffectsEnum.Effect_AddState, (short) stateCarrying.Id, 0, 0, new EffectBase()), target, castHandler, target.Cell, false);
             var targetBuff = new StateBuff(targetBuffId, target, this, addStateHandler,
                 spell, FightDispellableEnum.DISPELLABLE_BY_DEATH, stateCarried)
             {
@@ -1971,12 +1980,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             m_carriedActor.Dead += OnCarryingActorDead;
             Dead += OnCarryingActorDead;
+
+            return true;
         }
 
         public void ThrowActor(Cell cell, bool drop = false)
         {
             var actor = Fight.GetOneFighter(cell);
             if (actor != null && !drop)
+                return;
+
+            if (m_carriedActor == null)
                 return;
 
             var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int) SpellStatesEnum.PORTEUR_3).FirstOrDefault();
@@ -2071,7 +2085,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             ExchangePositions(target);
 
-            TriggerBuffs(this, BuffTriggerType.OnMoved);
+            //TriggerBuffs(this, BuffTriggerType.OnMoved);
             target.TriggerBuffs(this, BuffTriggerType.OnMoved);
 
             return true;
@@ -2142,14 +2156,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override bool CanMove() => IsFighterTurn() && IsAlive() && MP > 0;
 
         public virtual bool CanTackle(FightActor fighter)
-            => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && GetStates().All(x => !x.State.CantBeMoved)
-               && fighter.GetStates().All(x => !x.State.CantBeMoved) && fighter.Position.Cell != Position.Cell;
+            => IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && CanBePushed() && fighter.CanBePushed() && fighter.Position.Cell != Position.Cell;
 
-        public virtual bool CanBePushed() => GetStates().All(x => !x.State.CantBeMoved && !x.State.CantBePushed);
+        public virtual bool CanBePushed() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.CantBeMoved && !x.State.CantBePushed);
 
-        public virtual bool CanSwitchPos() => GetStates().All(x => !x.State.CantBeMoved && !x.State.CantSwitchPosition);
+        public virtual bool CanSwitchPos() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.CantBeMoved && !x.State.CantSwitchPosition);
 
-        public virtual bool CanPlay() => GetStates().All(x => !x.State.PreventsFight);
+        public virtual bool CanBeHeal() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.Incurable);
+
+        public virtual bool CanDealDamage() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.CantDealDamage);
+
+        public virtual bool CanPlay() => GetStates().Where(x => !x.IsDisabled).All(x => !x.State.PreventsFight);
+
+        public virtual bool IsInvulnerable(bool closeRange) => GetStates().Where(x => !x.IsDisabled).Any(x => x.State.Invulnerable || (closeRange && x.State.InvulnerableMelee) || (!closeRange && x.State.InvulnerableRange));
 
         public virtual bool HasLeft() => false;
 

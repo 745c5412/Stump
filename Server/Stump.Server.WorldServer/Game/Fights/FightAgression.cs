@@ -1,4 +1,6 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using MongoDB.Bson;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Results;
@@ -7,6 +9,7 @@ using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights
@@ -67,6 +70,24 @@ namespace Stump.Server.WorldServer.Game.Fights
                     CalculateEarnedDishonor(playerResult.Fighter));
 
                 CalculateEarnedPevetons(playerResult);
+
+                var document = new BsonDocument
+                    {
+                        { "FightId", UniqueId.ToString() },
+                        { "FightType", Enum.GetName(typeof(FightTypeEnum), FightType) },
+                        { "Duration", GetFightDuration().TotalMilliseconds },
+                        { "Team", Enum.GetName(typeof(TeamEnum), playerResult.Fighter.Team.Id) },
+                        { "Win", Winners.Id == playerResult.Fighter.Team.Id },
+                        { "AcctId", playerResult.Character.Account.Id },
+                        { "AcctName", playerResult.Character.Account.Login },
+                        { "CharacterId", playerResult.Character.Id },
+                        { "CharacterName", playerResult.Character.Name },
+                        { "IPAddress", playerResult.Character.Client.IP },
+                        { "ClientKey", playerResult.Character.Account.LastHardwareId },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+                MongoLogger.Instance.Insert("fights_results", document);
             }
 
             return results;
@@ -95,9 +116,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (pvpSeek != null && ChallengersTeam.Fighters.Contains(result.Fighter))
             {
-                var seekEffect = pvpSeek.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek) as EffectString;
-
-                if (seekEffect != null)
+                if (pvpSeek.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Seek) is EffectString seekEffect)
                 {
                     var target = result.Fighter.OpposedTeam.GetAllFightersWithLeavers<CharacterFighter>().FirstOrDefault(x => x.Name == seekEffect.Text);
 
@@ -132,8 +151,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var winnersLevel = (double)Winners.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
             var losersLevel = (double)Losers.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
+            var maxLosersLevel = winnersLevel + 15;
 
-            var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * (losersLevel / winnersLevel));
+            var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * ((losersLevel > maxLosersLevel ? maxLosersLevel : losersLevel) / winnersLevel));
 
             if (Losers == character.Team)
                 delta = -delta;

@@ -1,5 +1,4 @@
-﻿using Stump.Core.Attributes;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -77,6 +76,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             Owner.Record.MandatoryChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
             Owner.Record.PossibleChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
+            Owner.Record.PossibleChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS;
 
             Owner.SendSystemMessage(58, false);
 
@@ -105,6 +105,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             Owner.Record.MandatoryChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER;
             Owner.Record.PossibleChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER;
             Owner.Record.PossibleChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
+            Owner.Record.PossibleChanges |= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS;
 
             Owner.SendSystemMessage(44, false);
 

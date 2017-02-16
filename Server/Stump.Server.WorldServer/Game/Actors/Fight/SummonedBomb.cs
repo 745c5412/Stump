@@ -19,7 +19,7 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
+using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -128,6 +128,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public Spell WallSpell
         {
             get;
+        }
+
+        public bool Exploded
+        {
+            get;
+            private set;
         }
 
         public int DamageBonusPercent => Stats[PlayerFields.ComboBonus].TotalSafe;
@@ -246,6 +252,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void Explode(int currentBonus)
         {
+            if (Exploded)
+                return;
+
+            Exploded = true;
             CastSpell(new SpellCastInformations(this, ExplodSpell, Cell)
             {
                 Force = true,
@@ -256,8 +266,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (currentBonus <= 0)
                 return;
 
-            foreach (var client in Fight.Clients)
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, currentBonus);
+
+            BasicHandler.SendTextInformationMessage(Fight.Clients, TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, currentBonus);
         }
 
         public static void ExplodeInReaction(ICollection<SummonedBomb> bombs)

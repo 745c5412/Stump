@@ -6,7 +6,6 @@ using Stump.Core.Collections;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Spells;
 using System.Linq;
 using Stump.DofusProtocol.Types;
 
@@ -24,10 +23,12 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         public SpellHistory(FightActor owner)
         {
             Owner = owner;
+            InitialRound = CurrentRound;
         }
         public SpellHistory(FightActor owner, IEnumerable<SpellHistoryEntry> entries)
         {
             Owner = owner;
+            InitialRound = CurrentRound;
             m_underlyingStack = new LimitedStack<SpellHistoryEntry>(HistoryEntriesLimit, entries);
         }
 
@@ -35,6 +36,12 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         {
             get;
             private set;
+        }
+
+        private int InitialRound
+        {
+            get;
+            set;
         }
 
         private int CurrentRound
@@ -86,14 +93,14 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         public bool CanCastSpell(SpellLevelTemplate spell)
         {
             if (spell.GlobalCooldown != 0 &&
-                Owner.Team.Fighters.Any(x => x.SpellHistory.GetMostRecentEntry(spell) != null &&
+                Owner.Team.Fighters.OfType<CharacterFighter>().Any(x => x.SpellHistory.GetMostRecentEntry(spell) != null &&
                                             x.SpellHistory.GetMostRecentEntry(spell).IsGlobalCooldownActive(CurrentRound)))
                 return false;
 
             var mostRecentEntry = GetMostRecentEntry(spell);
 
             //check initial cooldown
-            if (mostRecentEntry == null && CurrentRound < spell.InitialCooldown)
+            if (mostRecentEntry == null && (CurrentRound - InitialRound) < spell.InitialCooldown)
                 return false;
 
             if (mostRecentEntry == null)

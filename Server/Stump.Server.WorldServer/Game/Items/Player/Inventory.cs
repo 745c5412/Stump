@@ -395,7 +395,21 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return item;
         }
 
-        public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool sendMessage = true) => item.OnRemoveItem() && base.RemoveItem(item, delete, sendMessage);
+        public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool sendMessage = true)
+        {
+            if (item.IsEquiped())
+                item = (MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, true) ?? item);
+
+            return item.OnRemoveItem() && base.RemoveItem(item, delete, sendMessage);
+        }
+
+        public override int RemoveItem(BasePlayerItem item, int amount, bool delete = true, bool sendMessage = true)
+        {
+            if (item.IsEquiped())
+                item = (MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, true) ?? item);
+
+            return base.RemoveItem(item, amount, delete, sendMessage);
+        }
 
         public void CreateTokenItem(int amount)
         {
@@ -616,6 +630,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (Owner.IsInFight() && Owner.Fight.State != FightState.Placement)
                 return false;
 
+            if (Owner.IsInExchange())
+                return false;
+
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 return true;
 
@@ -645,29 +662,33 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (send)
                     BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 78);
 
-                return false;
+                MoveItem(weapon, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                return true;
             }
 
             var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
-            if (!(item.Template is WeaponTemplate) || !item.Template.TwoHanded || shield == null)
+            if (shield != null && (item.Template is WeaponTemplate && item.Template.TwoHanded))
+            {
+                //Vous avez dû lâcher votre bouclier pour équiper une arme à deux mains.
+                if (send)
+                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
+
+                MoveItem(shield, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
                 return true;
+            }
 
-            //Vous avez dû lâcher votre bouclier pour équiper une arme à deux mains.
-            if (send)
-                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
-
-            return false;
+            return true;
         }
 
         public CharacterInventoryPositionEnum[] GetItemPossiblePositions(BasePlayerItem item) => !m_itemsPositioningRules.ContainsKey(item.Template.Type.SuperType) ? new[] { CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED } : m_itemsPositioningRules[item.Template.Type.SuperType];
 
-        public void MoveItem(BasePlayerItem item, CharacterInventoryPositionEnum position)
+        public BasePlayerItem MoveItem(BasePlayerItem item, CharacterInventoryPositionEnum position, bool forceCanEquip = false)
         {
             if (!HasItem(item))
-                return;
+                return null;
 
             if (position == item.Position)
-                return;
+                return null;
 
             var oldPosition = item.Position;
 
@@ -679,13 +700,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (item.CanDrop(equipedItem) && item.Drop(equipedItem))
                 {
                     UnStackItem(item, 1);
-                    return;
+                    return item;
                 }
 
                 if (equipedItem.CanFeed(item) && equipedItem.Feed(item))
                 {
                     UnStackItem(item, 1);
-                    return;
+                    return item;
                 }
 
                 // if there is one we move it to the inventory
@@ -693,12 +714,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
 
-            if (!CanEquip(item, position))
-                return;
+            if (!CanEquip(item, position) && !forceCanEquip)
+                return null;
 
             // second check
             if (!HasItem(item))
-                return;
+                return null;
 
             if (position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 UnEquipedDouble(item);
@@ -749,11 +770,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 NotifyItemMoved(item, oldPosition);
                 StackItem(stacktoitem, (int)item.Stack); // in all cases Stack = 1 else there is an error
                 RemoveItem(item, true);
+
+                item = stacktoitem;
             }
             else // else we just move the item
             {
                 NotifyItemMoved(item, oldPosition);
             }
+
+            return item;
         }
 
         void UnEquipedDouble(IItem itemToEquip)
@@ -836,12 +861,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 return false;
             }
 
-            if (item.Template.Level <= Owner.Level)
-                return true;
-
-            if (send)
-                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 3);
-            return false;
+            return true;
         }
 
         public void UseItem(BasePlayerItem item, int amount = 1)
@@ -905,14 +925,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 if (force != null)
                     handler.Operation = force.Value;
-
-                if ((item.EffectApplied && handler.Operation == ItemEffectHandler.HandlerOperation.APPLY) ||
-                    (!item.EffectApplied && handler.Operation == ItemEffectHandler.HandlerOperation.UNAPPLY))
-                {
-
-                    continue;
-                }
-
+                
                 handler.Efficiency = efficiency ?? 1+item.CurrentSubAreaBonus/100d;
 
                 handler.Apply();
@@ -1073,7 +1086,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void RefreshItem(BasePlayerItem item)
         {
-            InventoryHandler.SendObjectModifiedMessage(Owner.Client, item);
+            if (!item.IsDeleted)
+                InventoryHandler.SendObjectModifiedMessage(Owner.Client, item);
         }
 
         public override bool IsStackable(BasePlayerItem item, out BasePlayerItem stackableWith)
@@ -1160,6 +1174,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         private void InitializeEvents()
         {
         }
+
         private void TeardownEvents()
         {
         }

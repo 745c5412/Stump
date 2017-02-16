@@ -99,6 +99,10 @@ namespace Stump.Server.WorldServer
             logger.Info("Initializing Database...");
             DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
             DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
+
+            foreach (var plugin in PluginManager.Instance.GetPlugins())
+                DBAccessor.RegisterMappingAssembly(plugin.PluginAssembly);
+
             InitializationManager.Initialize(InitializationPass.Database);
             DBAccessor.Initialize();
 
@@ -156,10 +160,6 @@ namespace Stump.Server.WorldServer
             ClientManager.Start(Host, Port);
 
             IOTaskPool.Start();
-#if DEBUG
-            Console.Beep(544, 200);
-#endif
-
             StartTime = DateTime.Now;
         }
 

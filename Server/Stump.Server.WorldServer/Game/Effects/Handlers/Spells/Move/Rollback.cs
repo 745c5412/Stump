@@ -5,7 +5,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_ReturnToOriginalPos)]
@@ -21,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
             foreach (var actor in GetAffectedActors())
             {
-                var newCell = Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos ? actor.MovementHistory.PopWhile(x=> x.Cell == actor.Cell, 2)?.Cell : actor.FightStartPosition.Cell;
+                var newCell = Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos ? actor.MovementHistory.PopWhile(x=> x.Cell == actor.Cell, 2)?.Cell : actor.FightStartPosition?.Cell;
 
                 if (newCell == null)
                     continue;

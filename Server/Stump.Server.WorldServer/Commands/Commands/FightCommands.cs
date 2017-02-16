@@ -137,8 +137,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            Cell cell;
-            if (!fight.FindRandomFreeCell(fighter, out cell))
+            if (!fight.FindRandomFreeCell(fighter, out var cell))
                 foreach (var ally in team.Fighters)
                 {
                     foreach (var point in ally.Position.Point.GetAdjacentCells(x => fight.IsCellFree(fight.Map.Cells[x])))
@@ -281,7 +280,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var challenge = ChallengeManager.Instance.GetChallenge(challengeId, fight);
             challenge.Initialize();
 
-            fight.SetChallenge(challenge);
+            fight.AddChallenge(challenge);
 
             trigger.Reply("Force challengeId {0} for current Fight", challenge.Id);
         }

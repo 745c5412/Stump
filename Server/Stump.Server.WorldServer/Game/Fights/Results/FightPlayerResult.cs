@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Characters;
+using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -66,14 +67,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                     for (var i = 0; i < drop.Amount; i++)
                     {
                         var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, 1);
-                        Character.Inventory.AddItem(item);
+                        Character.Inventory.AddItem(item, false);
                     }
                 else
                 {
                     var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, (int)drop.Amount);
-                    Character.Inventory.AddItem(item);
+                    Character.Inventory.AddItem(item, false);
                 }
             }
+
             if (ExperienceData != null)
                 ExperienceData.Apply();
 
@@ -81,6 +83,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 PvpData.Apply();
 
             CharacterHandler.SendCharacterStatsListMessage(Character.Client);
+            InventoryHandler.SendInventoryContentMessage(Character.Client);
         }
 
         public void AddEarnedExperience(int experience)
@@ -96,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 var xp = (int)(experience * (Character.EquippedMount.GivenExperience * 0.01));
                 var mountXp = (int)Character.EquippedMount.AdjustGivenExperience(Character, xp);
 
-                experience -= mountXp;
+                experience -= xp;
 
                 if (mountXp > 0)
                 {
@@ -110,8 +113,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 var xp = (int)(experience*(Character.GuildMember.GivenPercent*0.01));
                 var guildXp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
 
-                guildXp = guildXp > Guild.MaxGuildXP ? Guild.MaxGuildXP : guildXp;
                 experience -= xp;
+                guildXp = guildXp > Guild.MaxGuildXP ? Guild.MaxGuildXP : guildXp;
 
                 if (guildXp > 0)
                 {

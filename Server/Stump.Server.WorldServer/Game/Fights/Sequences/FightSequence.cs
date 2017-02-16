@@ -44,6 +44,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
             private set;
         }
 
+        public FightSequence BranchRoot
+        {
+            get
+            {
+                var current = this;
+                while (current.Parent != null)
+                    current = current.Parent;
+
+                return current;
+            }
+        }
+
         public bool Ended
         {
             get;
@@ -78,6 +90,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
         {
             sequence.Parent = this;
             m_children.Add(sequence);
+        }
+        
+        public bool IsChild(FightSequence sequence, bool recursive = true)
+        {
+            return m_children.Any(x => x == sequence) || (!recursive || m_children.Any(x => x.IsChild(sequence)));
         }
 
         public IEnumerable<FightSequence> EnumerateSequences()
@@ -125,6 +142,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
                 child.EndSequence();
 
             Ended = true;
+            Fight.OnSequenceEnded(this);
 
             if (Parent == null)
                 ActionsHandler.SendSequenceEndMessage(Fight.Clients, this);
@@ -133,6 +151,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Sequences
         public void Dispose()
         {
             EndSequence();
+        }
+
+        public override string ToString()
+        {
+            return Type.ToString();
         }
     }
 }

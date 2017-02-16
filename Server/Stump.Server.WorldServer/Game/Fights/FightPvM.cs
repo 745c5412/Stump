@@ -31,6 +31,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         public override void StartFighting()
         {
             m_placementTimer.Dispose();
+            if (PlayerTeam.Leader.Character.IsPartyLeader())
+                ActiveIdols = PlayerTeam.Leader.Character.Party.IdolInventory.ComputeIdols(this).ToList();
+            else
+                ActiveIdols = PlayerTeam.Leader.Character.IdolInventory.ComputeIdols(this).ToList();
 
             base.StartFighting();
         }
@@ -42,10 +46,22 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!Map.AllowFightChallenges)
                 return;
 
-            var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
-            challenge.Initialize();
+            initChallenge();
 
-            SetChallenge(challenge);
+            if (Map.IsDungeon() || IsPvMArenaFight)
+                initChallenge();
+
+            void initChallenge()
+            {
+                var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+
+                // no challenge found
+                if (challenge == null)
+                    return;
+
+                challenge.Initialize();
+                AddChallenge(challenge);
+            }
         }
 
         protected override void OnFighterAdded(FightTeam team, FightActor actor)
@@ -55,12 +71,15 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!(team is FightMonsterTeam) || m_ageBonusDefined)
                 return;
 
-            var monsterFighter = team.Leader as MonsterFighter;
-            if (monsterFighter != null)
+            if (team.Leader is MonsterFighter monsterFighter)
                 AgeBonus = monsterFighter.Monster.Group.AgeBonus;
 
             m_ageBonusDefined = true;
         }
+
+        public FightPlayerTeam PlayerTeam => Teams.FirstOrDefault(x => x.TeamType == TeamTypeEnum.TEAM_TYPE_PLAYER) as FightPlayerTeam;
+
+        public FightMonsterTeam MonsterTeam => Teams.FirstOrDefault(x => x.TeamType == TeamTypeEnum.TEAM_TYPE_MONSTER) as FightMonsterTeam;
 
         public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_PvM;
 
@@ -102,7 +121,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                     if (looter is IExperienceResult)
                     {
-                        (looter as IExperienceResult).AddEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters<CharacterFighter>(), droppers));
+                        var winXP = FightFormulas.CalculateWinExp(looter, team.GetAllFighters<CharacterFighter>(), droppers);
+
+                        (looter as IExperienceResult).AddEarnedExperience(team == Winners ? winXP : (int)Math.Round(winXP * 0.10));
                     }
                 }
             }
