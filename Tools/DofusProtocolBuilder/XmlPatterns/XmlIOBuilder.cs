@@ -7,7 +7,6 @@ namespace DofusProtocolBuilder.XmlPatterns
 {
     public abstract class XmlIOBuilder : XmlPatternBuilder
     {
-        private const string RegexNewObject = @"new ([\w\d]+\.)*([\w\d]+)";
 
         protected XmlIOBuilder(Parser parser)
             : base(parser)
@@ -17,7 +16,6 @@ namespace DofusProtocolBuilder.XmlPatterns
         public List<XmlField> GetXmlFields()
         {
             var xmlFields = new List<XmlField>();
-            var localFields = new Dictionary<string, string>();
 
             var serializeMethod = Parser.Methods.Find(entry => entry.Name.Contains("serializeAs"));
             var controlsStatements = new Stack<ControlStatement>();

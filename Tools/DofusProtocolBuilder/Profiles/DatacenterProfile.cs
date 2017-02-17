@@ -15,6 +15,7 @@ namespace DofusProtocolBuilder.Profiles
             IgnoredLines = new string[]
                 {
                     "^switch.*",
+                    "^return.*",
                 };
 
             BeforeParsingReplacementRules =

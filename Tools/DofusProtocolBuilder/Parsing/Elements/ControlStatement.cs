@@ -42,7 +42,6 @@ namespace DofusProtocolBuilder.Parsing.Elements
                 var type = (match.Groups["type"].Success ? match.Groups["type"].Value : match.Groups["type2"].Value).Replace(" ", "");
                 var condition = match.Groups["condition"].Value.Trim();
 
-                condition = new Regex(@"\[([^\}]+)\]").Replace(condition, "_[i]");
 
                 if (type == "for")
                     result = new ForStatement();
