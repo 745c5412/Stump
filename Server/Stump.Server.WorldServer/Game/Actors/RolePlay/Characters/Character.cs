@@ -1306,8 +1306,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (currentLevel > 1)
             {
                 if (difference > 0)
-                    CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
-                CharacterHandler.SendCharacterLevelUpInformationMessage(Map.Clients, this, currentLevel);
+                    CharacterHandler.SendCharacterLevelUpMessage(Client, (sbyte)currentLevel);
+                CharacterHandler.SendCharacterLevelUpInformationMessage(Map.Clients, this, (sbyte)currentLevel);
             }
 
             LevelChanged?.Invoke(this, currentLevel, difference);
@@ -2379,7 +2379,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             OpenPopup(message, "Server", 0);
         }
 
-        public void OpenPopup(string message, string sender, byte lockDuration)
+        public void OpenPopup(string message, string sender, sbyte lockDuration)
         {
             ModerationHandler.SendPopupWarningMessage(Client, message, sender, lockDuration);
         }
@@ -3120,7 +3120,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             RegenStartTime = DateTime.Now;
             RegenSpeed = timePerHp;
 
-            CharacterHandler.SendLifePointsRegenBeginMessage(Client, RegenSpeed);
+            CharacterHandler.SendLifePointsRegenBeginMessage(Client, (sbyte)RegenSpeed);
         }
 
         public void StopRegen()
@@ -3260,7 +3260,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
 
             Record.Emotes.Add(emote);
-            ContextRoleplayHandler.SendEmoteAddMessage(Client, (byte)emote);
+            ContextRoleplayHandler.SendEmoteAddMessage(Client, (sbyte)emote);
         }
 
         public bool RemoveEmote(EmotesEnum emote)
@@ -3268,7 +3268,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var result = Record.Emotes.Remove(emote);
 
             if (result)
-                ContextRoleplayHandler.SendEmoteRemoveMessage(Client, (byte)emote);
+                ContextRoleplayHandler.SendEmoteRemoveMessage(Client, (sbyte)emote);
 
             return result;
         }
@@ -3279,13 +3279,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (emote == null)
             {
-                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (byte)emoteId);
+                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (sbyte)emoteId);
                 return;
             }
 
             if (!HasEmote(emoteId) && !force)
             {
-                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (byte)emoteId);
+                ContextRoleplayHandler.SendEmotePlayErrorMessage(Client, (sbyte)emoteId);
                 return;
             }
 
@@ -3904,7 +3904,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             => new CharacterBaseInformations(
                 Id,
                 Name,
-                Level,
+                (sbyte)Level,
                 Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
@@ -3913,7 +3913,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             => new CharacterMinimalPlusLookInformations(
                 Id,
                 Name,
-                Level,
+                (sbyte)Level,
                 Look.GetEntityLook());
 
         public CharacterCharacteristicsInformations GetCharacterCharacteristicsInformations()
@@ -4013,7 +4013,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             => new PartyInvitationMemberInformations(
                 Id,
                 Name,
-                Level,
+                (sbyte)Level,
                 Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
@@ -4027,14 +4027,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             => new PartyMemberInformations(
                 Id,
                 Name,
-                Level,
+                (sbyte)Level,
                 Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
                 LifePoints,
                 MaxLifePoints,
                 (short)Stats[PlayerFields.Prospecting].Total,
-                RegenSpeed,
+                (sbyte)RegenSpeed,
                 (short)Stats[PlayerFields.Initiative].Total,
                 (sbyte)AlignmentSide,
                 (short)Map.Position.X,
@@ -4066,14 +4066,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             => new PartyMemberArenaInformations(
                 Id,
                 Name,
-                Level,
+                (sbyte)Level,
                 Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
                 LifePoints,
                 MaxLifePoints,
                 (short)Stats[PlayerFields.Prospecting].Total,
-                RegenSpeed,
+                (sbyte)RegenSpeed,
                 (short)Stats[PlayerFields.Initiative].Total,
                 (sbyte)AlignmentSide,
                 (short)Map.Position.X,
@@ -4131,7 +4131,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 options.Add(new HumanOptionOrnament(SelectedOrnament.Value));
 
             if (LastEmoteUsed != null)
-                options.Add(new HumanOptionEmote((byte)LastEmoteUsed.First.Id, LastEmoteUsed.Second.GetUnixTimeStampLong()));
+                options.Add(new HumanOptionEmote((sbyte)LastEmoteUsed.First.Id, LastEmoteUsed.Second.GetUnixTimeStampLong()));
 
             if (LastSkillUsed != null)
                 options.Add(new HumanOptionSkillUse(LastSkillUsed.InteractiveObject.Id, (short)LastSkillUsed.SkillTemplate.Id, LastSkillUsed.SkillEndTime.GetUnixTimeStampLong()));

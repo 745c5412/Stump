@@ -5,7 +5,7 @@ namespace Stump.Server.WorldServer.Handlers.Moderation
 {
     public class ModerationHandler : WorldHandlerContainer
     {
-        public static void SendPopupWarningMessage(IPacketReceiver client, string content, string author, byte lockDuration)
+        public static void SendPopupWarningMessage(IPacketReceiver client, string content, string author, sbyte lockDuration)
         {
             client.Send(new PopupWarningMessage(lockDuration, author, content));
         }

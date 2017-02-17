@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:56
+// Generated on 02/17/2017 01:58:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,8 +51,6 @@ namespace Stump.DofusProtocol.Messages
             activate = BooleanByteWrapper.GetFlag(flag1, 0);
             party = BooleanByteWrapper.GetFlag(flag1, 1);
             reason = reader.ReadSByte();
-            if (reason < 0)
-                throw new Exception("Forbidden value on reason = " + reason + ", it doesn't respect the following condition : reason < 0");
             idolId = reader.ReadVarShort();
             if (idolId < 0)
                 throw new Exception("Forbidden value on idolId = " + idolId + ", it doesn't respect the following condition : idolId < 0");

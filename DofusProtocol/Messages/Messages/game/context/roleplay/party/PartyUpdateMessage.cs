@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:50
+// Generated on 02/17/2017 01:58:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.PartyMemberInformations memberInformations;
+        public PartyMemberInformations memberInformations;
         
         public PartyUpdateMessage()
         {
         }
         
-        public PartyUpdateMessage(int partyId, Types.PartyMemberInformations memberInformations)
+        public PartyUpdateMessage(int partyId, PartyMemberInformations memberInformations)
          : base(partyId)
         {
             this.memberInformations = memberInformations;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            memberInformations = Types.ProtocolTypeManager.GetInstance<Types.PartyMemberInformations>(reader.ReadShort());
+            memberInformations = Types.ProtocolTypeManager.GetInstance<PartyMemberInformations>(reader.ReadShort());
             memberInformations.Deserialize(reader);
         }
         

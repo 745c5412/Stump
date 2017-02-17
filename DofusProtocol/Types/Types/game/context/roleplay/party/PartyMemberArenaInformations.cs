@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public PartyMemberArenaInformations(long id, string name, byte level, Types.EntityLook entityLook, sbyte breed, bool sex, int lifePoints, int maxLifePoints, short prospecting, byte regenRate, short initiative, sbyte alignmentSide, short worldX, short worldY, int mapId, short subAreaId, Types.PlayerStatus status, IEnumerable<Types.PartyCompanionMemberInformations> companions, short rank)
+        public PartyMemberArenaInformations(long id, string name, sbyte level, Types.EntityLook entityLook, sbyte breed, bool sex, int lifePoints, int maxLifePoints, short prospecting, sbyte regenRate, short initiative, sbyte alignmentSide, short worldX, short worldY, int mapId, short subAreaId, PlayerStatus status, IEnumerable<Types.PartyCompanionMemberInformations> companions, short rank)
          : base(id, name, level, entityLook, breed, sex, lifePoints, maxLifePoints, prospecting, regenRate, initiative, alignmentSide, worldX, worldY, mapId, subAreaId, status, companions)
         {
             this.rank = rank;

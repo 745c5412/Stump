@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:45
+// Generated on 02/17/2017 01:57:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +19,8 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int houseId;
+        public uint instanceId;
+        public bool secondHand;
         public Types.GuildInformations guildInfo;
         public int rights;
         
@@ -26,9 +28,11 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public HouseGuildRightsMessage(int houseId, Types.GuildInformations guildInfo, int rights)
+        public HouseGuildRightsMessage(int houseId, uint instanceId, bool secondHand, Types.GuildInformations guildInfo, int rights)
         {
             this.houseId = houseId;
+            this.instanceId = instanceId;
+            this.secondHand = secondHand;
             this.guildInfo = guildInfo;
             this.rights = rights;
         }
@@ -36,6 +40,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarInt(houseId);
+            writer.WriteUInt(instanceId);
+            writer.WriteBoolean(secondHand);
             guildInfo.Serialize(writer);
             writer.WriteVarInt(rights);
         }
@@ -45,6 +51,10 @@ namespace Stump.DofusProtocol.Messages
             houseId = reader.ReadVarInt();
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
+            instanceId = reader.ReadUInt();
+            if (instanceId < 0 || instanceId > 4294967295)
+                throw new Exception("Forbidden value on instanceId = " + instanceId + ", it doesn't respect the following condition : instanceId < 0 || instanceId > 4294967295");
+            secondHand = reader.ReadBoolean();
             guildInfo = new Types.GuildInformations();
             guildInfo.Deserialize(reader);
             rights = reader.ReadVarInt();

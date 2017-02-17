@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Types
         
         public short firstNameId;
         public short lastNameId;
-        public byte level;
+        public sbyte level;
         
         public GameFightTaxCollectorInformations()
         {
         }
         
-        public GameFightTaxCollectorInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions, short firstNameId, short lastNameId, byte level)
+        public GameFightTaxCollectorInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, GameFightMinimalStats stats, IEnumerable<short> previousPositions, short firstNameId, short lastNameId, sbyte level)
          : base(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions)
         {
             this.firstNameId = firstNameId;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteVarShort(firstNameId);
             writer.WriteVarShort(lastNameId);
-            writer.WriteByte(level);
+            writer.WriteSByte(level);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -50,7 +50,7 @@ namespace Stump.DofusProtocol.Types
             lastNameId = reader.ReadVarShort();
             if (lastNameId < 0)
                 throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
-            level = reader.ReadByte();
+            level = reader.ReadSByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
         }

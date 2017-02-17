@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:52
+// Generated on 02/17/2017 01:58:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.IgnoredInformations ignoreAdded;
+        public IgnoredInformations ignoreAdded;
         public bool session;
         
         public IgnoredAddedMessage()
         {
         }
         
-        public IgnoredAddedMessage(Types.IgnoredInformations ignoreAdded, bool session)
+        public IgnoredAddedMessage(IgnoredInformations ignoreAdded, bool session)
         {
             this.ignoreAdded = ignoreAdded;
             this.session = session;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            ignoreAdded = Types.ProtocolTypeManager.GetInstance<Types.IgnoredInformations>(reader.ReadShort());
+            ignoreAdded = Types.ProtocolTypeManager.GetInstance<IgnoredInformations>(reader.ReadShort());
             ignoreAdded.Deserialize(reader);
             session = reader.ReadBoolean();
         }

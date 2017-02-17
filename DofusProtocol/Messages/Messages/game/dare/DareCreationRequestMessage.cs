@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:51
+// Generated on 02/17/2017 01:58:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +22,9 @@ namespace Stump.DofusProtocol.Messages
         public bool isForGuild;
         public bool isForAlliance;
         public bool needNotifications;
-        public int subscriptionFee;
-        public int jackpot;
-        public ushort maxCountWinners;
+        public long subscriptionFee;
+        public long jackpot;
+        public short maxCountWinners;
         public uint delayBeforeStart;
         public uint duration;
         public IEnumerable<Types.DareCriteria> criterions;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public DareCreationRequestMessage(bool isPrivate, bool isForGuild, bool isForAlliance, bool needNotifications, int subscriptionFee, int jackpot, ushort maxCountWinners, uint delayBeforeStart, uint duration, IEnumerable<Types.DareCriteria> criterions)
+        public DareCreationRequestMessage(bool isPrivate, bool isForGuild, bool isForAlliance, bool needNotifications, long subscriptionFee, long jackpot, short maxCountWinners, uint delayBeforeStart, uint duration, IEnumerable<Types.DareCriteria> criterions)
         {
             this.isPrivate = isPrivate;
             this.isForGuild = isForGuild;
@@ -55,14 +55,14 @@ namespace Stump.DofusProtocol.Messages
             flag1 = BooleanByteWrapper.SetFlag(flag1, 2, isForAlliance);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 3, needNotifications);
             writer.WriteByte(flag1);
-            writer.WriteInt(subscriptionFee);
-            writer.WriteInt(jackpot);
-            writer.WriteUShort(maxCountWinners);
+            writer.WriteVarLong(subscriptionFee);
+            writer.WriteVarLong(jackpot);
+            writer.WriteShort(maxCountWinners);
             writer.WriteUInt(delayBeforeStart);
             writer.WriteUInt(duration);
             var criterions_before = writer.Position;
             var criterions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in criterions)
             {
                  entry.Serialize(writer);
@@ -70,7 +70,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var criterions_after = writer.Position;
             writer.Seek((int)criterions_before);
-            writer.WriteUShort((ushort)criterions_count);
+            writer.WriteShort((short)criterions_count);
             writer.Seek((int)criterions_after);
 
         }
@@ -82,13 +82,13 @@ namespace Stump.DofusProtocol.Messages
             isForGuild = BooleanByteWrapper.GetFlag(flag1, 1);
             isForAlliance = BooleanByteWrapper.GetFlag(flag1, 2);
             needNotifications = BooleanByteWrapper.GetFlag(flag1, 3);
-            subscriptionFee = reader.ReadInt();
-            if (subscriptionFee < 0)
-                throw new Exception("Forbidden value on subscriptionFee = " + subscriptionFee + ", it doesn't respect the following condition : subscriptionFee < 0");
-            jackpot = reader.ReadInt();
-            if (jackpot < 0)
-                throw new Exception("Forbidden value on jackpot = " + jackpot + ", it doesn't respect the following condition : jackpot < 0");
-            maxCountWinners = reader.ReadUShort();
+            subscriptionFee = reader.ReadVarLong();
+            if (subscriptionFee < 0 || subscriptionFee > 9007199254740990)
+                throw new Exception("Forbidden value on subscriptionFee = " + subscriptionFee + ", it doesn't respect the following condition : subscriptionFee < 0 || subscriptionFee > 9007199254740990");
+            jackpot = reader.ReadVarLong();
+            if (jackpot < 0 || jackpot > 9007199254740990)
+                throw new Exception("Forbidden value on jackpot = " + jackpot + ", it doesn't respect the following condition : jackpot < 0 || jackpot > 9007199254740990");
+            maxCountWinners = reader.ReadShort();
             if (maxCountWinners < 0 || maxCountWinners > 65535)
                 throw new Exception("Forbidden value on maxCountWinners = " + maxCountWinners + ", it doesn't respect the following condition : maxCountWinners < 0 || maxCountWinners > 65535");
             delayBeforeStart = reader.ReadUInt();
@@ -97,7 +97,7 @@ namespace Stump.DofusProtocol.Messages
             duration = reader.ReadUInt();
             if (duration < 0 || duration > 4294967295)
                 throw new Exception("Forbidden value on duration = " + duration + ", it doesn't respect the following condition : duration < 0 || duration > 4294967295");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var criterions_ = new Types.DareCriteria[limit];
             for (int i = 0; i < limit; i++)
             {

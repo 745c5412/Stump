@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,8 +42,6 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             outcome = reader.ReadVarShort();
-            if (outcome < 0)
-                throw new Exception("Forbidden value on outcome = " + outcome + ", it doesn't respect the following condition : outcome < 0");
             wave = reader.ReadSByte();
             if (wave < 0)
                 throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0");

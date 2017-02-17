@@ -126,12 +126,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameMapMovementMessage(IPacketReceiver client, IEnumerable<short> movementsKey, ContextActor actor)
         {
-            client.Send(new GameMapMovementMessage(movementsKey, actor.Id));
+            client.Send(new GameMapMovementMessage(movementsKey, 0, actor.Id));
         }
 
         public static void SendGameCautiousMapMovementMessage(IPacketReceiver client, IEnumerable<short> movementsKey, ContextActor actor)
         {
-            client.Send(new GameCautiousMapMovementMessage(movementsKey, actor.Id));
+            client.Send(new GameCautiousMapMovementMessage(movementsKey, 0, actor.Id));
         }
 
         public static void SendGameEntitiesDispositionMessage(IPacketReceiver client, IEnumerable<ContextActor> actors)

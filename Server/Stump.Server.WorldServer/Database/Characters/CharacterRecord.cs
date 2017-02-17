@@ -670,7 +670,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [DefaultSetting(true)]
+        [DefaultSetting(1)]
         public bool UseHarnessColor
         {
             get;

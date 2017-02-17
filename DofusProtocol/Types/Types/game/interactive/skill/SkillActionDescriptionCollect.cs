@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:15
+// Generated on 02/17/2017 01:53:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public SkillActionDescriptionCollect(short skillId, byte time, short min, short max)
+        public SkillActionDescriptionCollect(short skillId, sbyte time, short min, short max)
          : base(skillId, time)
         {
             this.min = min;

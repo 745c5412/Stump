@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:56
+// Generated on 02/17/2017 01:58:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +40,6 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             teleporterType = reader.ReadSByte();
-            if (teleporterType < 0)
-                throw new Exception("Forbidden value on teleporterType = " + teleporterType + ", it doesn't respect the following condition : teleporterType < 0");
             mapId = reader.ReadInt();
             if (mapId < 0)
                 throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");

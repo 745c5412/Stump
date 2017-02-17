@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightAllianceTeamInformations(sbyte teamId, double leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves, IEnumerable<Types.FightTeamMemberInformations> teamMembers, sbyte relation)
+        public FightAllianceTeamInformations(sbyte teamId, double leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves, IEnumerable<FightTeamMemberInformations> teamMembers, sbyte relation)
          : base(teamId, leaderId, teamSide, teamTypeId, nbWaves, teamMembers)
         {
             this.relation = relation;
@@ -39,8 +39,6 @@ namespace Stump.DofusProtocol.Types
         {
             base.Deserialize(reader);
             relation = reader.ReadSByte();
-            if (relation < 0)
-                throw new Exception("Forbidden value on relation = " + relation + ", it doesn't respect the following condition : relation < 0");
         }
         
         

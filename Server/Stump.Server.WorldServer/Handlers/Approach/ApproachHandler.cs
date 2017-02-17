@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                         if (DateTime.Now - worldClient.InQueueUntil <= TimeSpan.FromSeconds(3))
                             continue;
 
-                        SendQueueStatusMessage(worldClient, (ushort)count, (ushort)ConnectionQueue.Count);
+                        SendQueueStatusMessage(worldClient, (short)count, (short)ConnectionQueue.Count);
                         worldClient.QueueShowed = true;
                     }
 
@@ -218,7 +218,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                     commandsInfos.Select(x => x.Item3)));
         }
 
-        public static void SendQueueStatusMessage(IPacketReceiver client, ushort position, ushort total)
+        public static void SendQueueStatusMessage(IPacketReceiver client, short position, short total)
         {
             client.Send(new QueueStatusMessage(position, total));
         }

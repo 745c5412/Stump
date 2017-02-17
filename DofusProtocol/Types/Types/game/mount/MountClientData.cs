@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,7 +107,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarInt(model);
             var ancestor_before = writer.Position;
             var ancestor_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in ancestor)
             {
                  writer.WriteInt(entry);
@@ -115,12 +115,12 @@ namespace Stump.DofusProtocol.Types
             }
             var ancestor_after = writer.Position;
             writer.Seek((int)ancestor_before);
-            writer.WriteUShort((ushort)ancestor_count);
+            writer.WriteShort((short)ancestor_count);
             writer.Seek((int)ancestor_after);
 
             var behaviors_before = writer.Position;
             var behaviors_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in behaviors)
             {
                  writer.WriteInt(entry);
@@ -128,7 +128,7 @@ namespace Stump.DofusProtocol.Types
             }
             var behaviors_after = writer.Position;
             writer.Seek((int)behaviors_before);
-            writer.WriteUShort((ushort)behaviors_count);
+            writer.WriteShort((short)behaviors_count);
             writer.Seek((int)behaviors_after);
 
             writer.WriteUTF(name);
@@ -157,7 +157,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(harnessGID);
             var effectList_before = writer.Position;
             var effectList_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in effectList)
             {
                  entry.Serialize(writer);
@@ -165,7 +165,7 @@ namespace Stump.DofusProtocol.Types
             }
             var effectList_after = writer.Position;
             writer.Seek((int)effectList_before);
-            writer.WriteUShort((ushort)effectList_count);
+            writer.WriteShort((short)effectList_count);
             writer.Seek((int)effectList_after);
 
         }
@@ -184,18 +184,22 @@ namespace Stump.DofusProtocol.Types
             model = reader.ReadVarInt();
             if (model < 0)
                 throw new Exception("Forbidden value on model = " + model + ", it doesn't respect the following condition : model < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var ancestor_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  ancestor_[i] = reader.ReadInt();
+                 if (ancestor_[i] < 0)
+                     throw new Exception("Forbidden value on ancestor_[i] = " + ancestor_[i] + ", it doesn't respect the following condition : ancestor_[i] < 0");
             }
             ancestor = ancestor_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var behaviors_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  behaviors_[i] = reader.ReadInt();
+                 if (behaviors_[i] < 0)
+                     throw new Exception("Forbidden value on behaviors_[i] = " + behaviors_[i] + ", it doesn't respect the following condition : behaviors_[i] < 0");
             }
             behaviors = behaviors_;
             name = reader.ReadUTF();
@@ -260,7 +264,7 @@ namespace Stump.DofusProtocol.Types
             harnessGID = reader.ReadVarShort();
             if (harnessGID < 0)
                 throw new Exception("Forbidden value on harnessGID = " + harnessGID + ", it doesn't respect the following condition : harnessGID < 0");
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var effectList_ = new Types.ObjectEffectInteger[limit];
             for (int i = 0; i < limit; i++)
             {

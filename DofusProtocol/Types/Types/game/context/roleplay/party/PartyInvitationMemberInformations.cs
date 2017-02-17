@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public PartyInvitationMemberInformations(long id, string name, byte level, Types.EntityLook entityLook, sbyte breed, bool sex, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<Types.PartyCompanionBaseInformations> companions)
+        public PartyInvitationMemberInformations(long id, string name, sbyte level, Types.EntityLook entityLook, sbyte breed, bool sex, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<Types.PartyCompanionBaseInformations> companions)
          : base(id, name, level, entityLook, breed, sex)
         {
             this.worldX = worldX;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(subAreaId);
             var companions_before = writer.Position;
             var companions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in companions)
             {
                  entry.Serialize(writer);
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Types
             }
             var companions_after = writer.Position;
             writer.Seek((int)companions_before);
-            writer.WriteUShort((ushort)companions_count);
+            writer.WriteShort((short)companions_count);
             writer.Seek((int)companions_after);
 
         }
@@ -72,7 +72,7 @@ namespace Stump.DofusProtocol.Types
             subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var companions_ = new Types.PartyCompanionBaseInformations[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -555,6 +555,7 @@
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayShowChallengeMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\GameRolePlayShowActorMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\GameRolePlayShowActorWithEventMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\GameRolePlayShowMultipleActorsMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\ChangeHavenBagRoomRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\ChangeThemeRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\CloseHavenBagFurnitureSequenceRequestMessage.cs" />
@@ -569,6 +570,8 @@
     <Compile Include="Messages\game\context\roleplay\havenbag\HavenBagFurnituresRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\HavenBagPackListMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\KickHavenBagRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\meeting\HavenBagPermissionsUpdateMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\meeting\HavenBagPermissionsUpdateRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\meeting\InviteInHavenBagClosedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\meeting\InviteInHavenBagMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\meeting\InviteInHavenBagOfferMessage.cs" />
@@ -621,6 +624,7 @@
     <Compile Include="Messages\game\context\roleplay\MapComplementaryInformationsDataMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\MapComplementaryInformationsWithCoordsMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\MapFightCountMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\MapFightStartPositionsUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\MapInformationsRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\MapObstacleUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\MapRunningFightDetailsExtendedMessage.cs" />
@@ -705,6 +709,7 @@
     <Compile Include="Messages\game\context\roleplay\party\PartyUpdateLightMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\purchasable\PurchasableDialogMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\quest\FollowedQuestsMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\quest\GuidedModeQuitRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\quest\GuidedModeReturnRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\quest\QuestListMessage.cs" />
@@ -895,6 +900,7 @@
     <Compile Include="Messages\game\interactive\meeting\TeleportToBuddyAnswerMessage.cs" />
     <Compile Include="Messages\game\interactive\meeting\TeleportToBuddyCloseMessage.cs" />
     <Compile Include="Messages\game\interactive\meeting\TeleportToBuddyOfferMessage.cs" />
+    <Compile Include="Messages\game\interactive\skill\InteractiveUseWithParamRequestMessage.cs" />
     <Compile Include="Messages\game\interactive\StatedElementUpdatedMessage.cs" />
     <Compile Include="Messages\game\interactive\StatedMapUpdateMessage.cs" />
     <Compile Include="Messages\game\interactive\zaap\TeleportDestinationsListMessage.cs" />
@@ -1046,7 +1052,6 @@
     <Compile Include="Messages\game\inventory\items\ObjectDropMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectErrorMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectFeedMessage.cs" />
-    <Compile Include="Messages\game\inventory\items\ObjectFoundWhileRecoltingMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectJobAddedMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectModifiedMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectMovementMessage.cs" />
@@ -1230,6 +1235,7 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

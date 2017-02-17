@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:05
+// Generated on 02/17/2017 01:58:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public StorageInventoryContentMessage(IEnumerable<Types.ObjectItem> objects, int kamas)
+        public StorageInventoryContentMessage(IEnumerable<Types.ObjectItem> objects, long kamas)
          : base(objects, kamas)
         {
         }

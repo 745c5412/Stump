@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:54
+// Generated on 02/17/2017 01:58:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,19 +19,22 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int houseId;
+        public int houseInstanceId;
         
         public GuildHouseTeleportRequestMessage()
         {
         }
         
-        public GuildHouseTeleportRequestMessage(int houseId)
+        public GuildHouseTeleportRequestMessage(int houseId, int houseInstanceId)
         {
             this.houseId = houseId;
+            this.houseInstanceId = houseInstanceId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarInt(houseId);
+            writer.WriteInt(houseInstanceId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -39,6 +42,7 @@ namespace Stump.DofusProtocol.Messages
             houseId = reader.ReadVarInt();
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
+            houseInstanceId = reader.ReadInt();
         }
         
     }

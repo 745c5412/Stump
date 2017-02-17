@@ -255,7 +255,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         {
             if (client.Character.GuildMember == null)
             {
-                SendGuildMotdSetErrorMessage(client, GuildMotdErrorEnum.GUILD_MOTD_UNKNOWN_ERROR);
+                SendGuildMotdSetErrorMessage(client);
                 return;
             }
 
@@ -331,7 +331,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildInformationsGeneralMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildInformationsGeneralMessage(false, guild.Level, guild.ExperienceLevelFloor, guild.Experience,
+            client.Send(new GuildInformationsGeneralMessage(false, (sbyte)guild.Level, guild.ExperienceLevelFloor, guild.Experience,
                 guild.ExperienceNextLevelFloor, guild.CreationDate.GetUnixTimeStamp(), (short)guild.Members.Count(), (short)guild.Members.Count(x => x.IsConnected))); 
         }
 
@@ -392,9 +392,9 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Send(new GuildBulletinMessage(guild.BulletinContent, guild.BulletinDate.GetUnixTimeStamp(), guild.BulletinMember?.Id ?? 0, guild.BulletinMember?.Name ?? "Unknown", guild.LastNotifiedDate.GetUnixTimeStamp()));
         }
 
-        public static void SendGuildMotdSetErrorMessage(IPacketReceiver client, GuildMotdErrorEnum error)
+        public static void SendGuildMotdSetErrorMessage(IPacketReceiver client)
         {
-            client.Send(new GuildMotdSetErrorMessage((sbyte)error));
+            client.Send(new GuildMotdSetErrorMessage(0));
         }
 
         public static void SendGuildBulletinSetErrorMessage(IPacketReceiver client, SocialNoticeErrorEnum error)

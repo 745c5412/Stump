@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:06
+// Generated on 02/17/2017 01:58:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PrismsListUpdateMessage(IEnumerable<Types.PrismSubareaEmptyInfo> prisms)
+        public PrismsListUpdateMessage(IEnumerable<PrismSubareaEmptyInfo> prisms)
          : base(prisms)
         {
         }

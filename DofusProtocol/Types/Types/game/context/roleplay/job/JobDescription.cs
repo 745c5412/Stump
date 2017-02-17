@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte jobId;
-        public IEnumerable<Types.SkillActionDescription> skills;
+        public IEnumerable<SkillActionDescription> skills;
         
         public JobDescription()
         {
         }
         
-        public JobDescription(sbyte jobId, IEnumerable<Types.SkillActionDescription> skills)
+        public JobDescription(sbyte jobId, IEnumerable<SkillActionDescription> skills)
         {
             this.jobId = jobId;
             this.skills = skills;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(jobId);
             var skills_before = writer.Position;
             var skills_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in skills)
             {
                  writer.WriteShort(entry.TypeId);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
             }
             var skills_after = writer.Position;
             writer.Seek((int)skills_before);
-            writer.WriteUShort((ushort)skills_count);
+            writer.WriteShort((short)skills_count);
             writer.Seek((int)skills_after);
 
         }
@@ -54,11 +54,11 @@ namespace Stump.DofusProtocol.Types
             jobId = reader.ReadSByte();
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            var limit = reader.ReadUShort();
-            var skills_ = new Types.SkillActionDescription[limit];
+            var limit = reader.ReadShort();
+            var skills_ = new SkillActionDescription[limit];
             for (int i = 0; i < limit; i++)
             {
-                 skills_[i] = Types.ProtocolTypeManager.GetInstance<Types.SkillActionDescription>(reader.ReadShort());
+                 skills_[i] = Types.ProtocolTypeManager.GetInstance<SkillActionDescription>(reader.ReadShort());
                  skills_[i].Deserialize(reader);
             }
             skills = skills_;

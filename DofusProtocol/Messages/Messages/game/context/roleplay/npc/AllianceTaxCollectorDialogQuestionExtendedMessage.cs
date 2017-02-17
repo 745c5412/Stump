@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:46
+// Generated on 02/17/2017 01:57:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public AllianceTaxCollectorDialogQuestionExtendedMessage(Types.BasicGuildInformations guildInfo, short maxPods, short prospecting, short wisdom, sbyte taxCollectorsCount, int taxCollectorAttack, int kamas, long experience, int pods, int itemsValue, Types.BasicNamedAllianceInformations alliance)
+        public AllianceTaxCollectorDialogQuestionExtendedMessage(Types.BasicGuildInformations guildInfo, short maxPods, short prospecting, short wisdom, sbyte taxCollectorsCount, int taxCollectorAttack, long kamas, long experience, int pods, long itemsValue, Types.BasicNamedAllianceInformations alliance)
          : base(guildInfo, maxPods, prospecting, wisdom, taxCollectorsCount, taxCollectorAttack, kamas, experience, pods, itemsValue)
         {
             this.alliance = alliance;

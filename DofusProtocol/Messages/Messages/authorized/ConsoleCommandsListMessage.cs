@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:29
+// Generated on 02/17/2017 01:57:31
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var aliases_before = writer.Position;
             var aliases_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in aliases)
             {
                  writer.WriteUTF(entry);
@@ -45,12 +45,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var aliases_after = writer.Position;
             writer.Seek((int)aliases_before);
-            writer.WriteUShort((ushort)aliases_count);
+            writer.WriteShort((short)aliases_count);
             writer.Seek((int)aliases_after);
 
             var args_before = writer.Position;
             var args_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in args)
             {
                  writer.WriteUTF(entry);
@@ -58,12 +58,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var args_after = writer.Position;
             writer.Seek((int)args_before);
-            writer.WriteUShort((ushort)args_count);
+            writer.WriteShort((short)args_count);
             writer.Seek((int)args_after);
 
             var descriptions_before = writer.Position;
             var descriptions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in descriptions)
             {
                  writer.WriteUTF(entry);
@@ -71,28 +71,28 @@ namespace Stump.DofusProtocol.Messages
             }
             var descriptions_after = writer.Position;
             writer.Seek((int)descriptions_before);
-            writer.WriteUShort((ushort)descriptions_count);
+            writer.WriteShort((short)descriptions_count);
             writer.Seek((int)descriptions_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var aliases_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {
                  aliases_[i] = reader.ReadUTF();
             }
             aliases = aliases_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var args_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {
                  args_[i] = reader.ReadUTF();
             }
             args = args_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var descriptions_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {

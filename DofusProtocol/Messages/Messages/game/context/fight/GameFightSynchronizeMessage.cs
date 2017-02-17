@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:40
+// Generated on 02/17/2017 01:57:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<Types.GameFightFighterInformations> fighters;
+        public IEnumerable<GameFightFighterInformations> fighters;
         
         public GameFightSynchronizeMessage()
         {
         }
         
-        public GameFightSynchronizeMessage(IEnumerable<Types.GameFightFighterInformations> fighters)
+        public GameFightSynchronizeMessage(IEnumerable<GameFightFighterInformations> fighters)
         {
             this.fighters = fighters;
         }
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var fighters_before = writer.Position;
             var fighters_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in fighters)
             {
                  writer.WriteShort(entry.TypeId);
@@ -42,18 +42,18 @@ namespace Stump.DofusProtocol.Messages
             }
             var fighters_after = writer.Position;
             writer.Seek((int)fighters_before);
-            writer.WriteUShort((ushort)fighters_count);
+            writer.WriteShort((short)fighters_count);
             writer.Seek((int)fighters_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
-            var fighters_ = new Types.GameFightFighterInformations[limit];
+            var limit = reader.ReadShort();
+            var fighters_ = new GameFightFighterInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 fighters_[i] = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterInformations>(reader.ReadShort());
+                 fighters_[i] = Types.ProtocolTypeManager.GetInstance<GameFightFighterInformations>(reader.ReadShort());
                  fighters_[i].Deserialize(reader);
             }
             fighters = fighters_;

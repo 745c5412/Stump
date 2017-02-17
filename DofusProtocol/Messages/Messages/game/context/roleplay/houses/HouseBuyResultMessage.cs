@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:45
+// Generated on 02/17/2017 01:57:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,37 +18,50 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int houseId;
+        public bool secondHand;
         public bool bought;
-        public int realPrice;
+        public int houseId;
+        public uint instanceId;
+        public long realPrice;
         
         public HouseBuyResultMessage()
         {
         }
         
-        public HouseBuyResultMessage(int houseId, bool bought, int realPrice)
+        public HouseBuyResultMessage(bool secondHand, bool bought, int houseId, uint instanceId, long realPrice)
         {
-            this.houseId = houseId;
+            this.secondHand = secondHand;
             this.bought = bought;
+            this.houseId = houseId;
+            this.instanceId = instanceId;
             this.realPrice = realPrice;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, secondHand);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, bought);
+            writer.WriteByte(flag1);
             writer.WriteVarInt(houseId);
-            writer.WriteBoolean(bought);
-            writer.WriteVarInt(realPrice);
+            writer.WriteUInt(instanceId);
+            writer.WriteVarLong(realPrice);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            byte flag1 = reader.ReadByte();
+            secondHand = BooleanByteWrapper.GetFlag(flag1, 0);
+            bought = BooleanByteWrapper.GetFlag(flag1, 1);
             houseId = reader.ReadVarInt();
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
-            bought = reader.ReadBoolean();
-            realPrice = reader.ReadVarInt();
-            if (realPrice < 0)
-                throw new Exception("Forbidden value on realPrice = " + realPrice + ", it doesn't respect the following condition : realPrice < 0");
+            instanceId = reader.ReadUInt();
+            if (instanceId < 0 || instanceId > 4294967295)
+                throw new Exception("Forbidden value on instanceId = " + instanceId + ", it doesn't respect the following condition : instanceId < 0 || instanceId > 4294967295");
+            realPrice = reader.ReadVarLong();
+            if (realPrice < 0 || realPrice > 9007199254740990)
+                throw new Exception("Forbidden value on realPrice = " + realPrice + ", it doesn't respect the following condition : realPrice < 0 || realPrice > 9007199254740990");
         }
         
     }

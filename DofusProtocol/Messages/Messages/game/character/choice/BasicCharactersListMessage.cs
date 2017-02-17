@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:36
+// Generated on 02/17/2017 01:57:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<Types.CharacterBaseInformations> characters;
+        public IEnumerable<CharacterBaseInformations> characters;
         
         public BasicCharactersListMessage()
         {
         }
         
-        public BasicCharactersListMessage(IEnumerable<Types.CharacterBaseInformations> characters)
+        public BasicCharactersListMessage(IEnumerable<CharacterBaseInformations> characters)
         {
             this.characters = characters;
         }
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var characters_before = writer.Position;
             var characters_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in characters)
             {
                  writer.WriteShort(entry.TypeId);
@@ -42,18 +42,18 @@ namespace Stump.DofusProtocol.Messages
             }
             var characters_after = writer.Position;
             writer.Seek((int)characters_before);
-            writer.WriteUShort((ushort)characters_count);
+            writer.WriteShort((short)characters_count);
             writer.Seek((int)characters_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
-            var characters_ = new Types.CharacterBaseInformations[limit];
+            var limit = reader.ReadShort();
+            var characters_ = new CharacterBaseInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 characters_[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterBaseInformations>(reader.ReadShort());
+                 characters_[i] = Types.ProtocolTypeManager.GetInstance<CharacterBaseInformations>(reader.ReadShort());
                  characters_[i].Deserialize(reader);
             }
             characters = characters_;

@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 TaxCollectorNpc.LastNameId);
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberTaxCollectorInformations(Id, TaxCollectorNpc.FirstNameId,
-                TaxCollectorNpc.LastNameId, TaxCollectorNpc.Level, TaxCollectorNpc.Guild.Id,
+                TaxCollectorNpc.LastNameId, (sbyte)TaxCollectorNpc.Level, TaxCollectorNpc.Guild.Id,
                 TaxCollectorNpc.GlobalId);
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null) => new GameFightTaxCollectorInformations(
@@ -101,6 +101,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 new short[0],
                 TaxCollectorNpc.FirstNameId,
                 TaxCollectorNpc.LastNameId,
-                TaxCollectorNpc.Level);
+                (sbyte)TaxCollectorNpc.Level);
     }
 }

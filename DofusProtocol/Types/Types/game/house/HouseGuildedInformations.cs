@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +9,9 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
-    public class PaddockPrivateInformations : PaddockAbandonnedInformations
+    public class HouseGuildedInformations : HouseInstanceInformations
     {
-        public const short Id = 131;
+        public const short Id = 512;
         public override short TypeId
         {
             get { return Id; }
@@ -19,12 +19,12 @@ namespace Stump.DofusProtocol.Types
         
         public Types.GuildInformations guildInfo;
         
-        public PaddockPrivateInformations()
+        public HouseGuildedInformations()
         {
         }
         
-        public PaddockPrivateInformations(short maxOutdoorMount, short maxItems, int price, bool locked, int guildId, Types.GuildInformations guildInfo)
-         : base(maxOutdoorMount, maxItems, price, locked, guildId)
+        public HouseGuildedInformations(bool secondHand, bool isOnSale, bool isSaleLocked, uint instanceId, string ownerName, Types.GuildInformations guildInfo)
+         : base(secondHand, isOnSale, isSaleLocked, instanceId, ownerName)
         {
             this.guildInfo = guildInfo;
         }

@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 {
     public partial class CharacterHandler
     {
-        public static void SendLifePointsRegenBeginMessage(IPacketReceiver client, byte regenRate)
+        public static void SendLifePointsRegenBeginMessage(IPacketReceiver client, sbyte regenRate)
         {
             client.Send(new LifePointsRegenBeginMessage(regenRate));
         }
@@ -33,12 +33,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.Send(new CharacterStatsListMessage(client.Character.GetCharacterCharacteristicsInformations()));
         }
 
-        public static void SendCharacterLevelUpMessage(IPacketReceiver client, byte level)
+        public static void SendCharacterLevelUpMessage(IPacketReceiver client, sbyte level)
         {
             client.Send(new CharacterLevelUpMessage(level));
         }
 
-        public static void SendCharacterLevelUpInformationMessage(IPacketReceiver client, Character character, byte level)
+        public static void SendCharacterLevelUpInformationMessage(IPacketReceiver client, Character character, sbyte level)
         {
             client.Send(new CharacterLevelUpInformationMessage(level, character.Name, character.Id));
         }

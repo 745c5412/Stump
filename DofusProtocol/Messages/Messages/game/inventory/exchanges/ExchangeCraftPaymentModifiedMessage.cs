@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:58
+// Generated on 02/17/2017 01:58:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,27 +18,27 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int goldSum;
+        public long goldSum;
         
         public ExchangeCraftPaymentModifiedMessage()
         {
         }
         
-        public ExchangeCraftPaymentModifiedMessage(int goldSum)
+        public ExchangeCraftPaymentModifiedMessage(long goldSum)
         {
             this.goldSum = goldSum;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(goldSum);
+            writer.WriteVarLong(goldSum);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            goldSum = reader.ReadVarInt();
-            if (goldSum < 0)
-                throw new Exception("Forbidden value on goldSum = " + goldSum + ", it doesn't respect the following condition : goldSum < 0");
+            goldSum = reader.ReadVarLong();
+            if (goldSum < 0 || goldSum > 9007199254740990)
+                throw new Exception("Forbidden value on goldSum = " + goldSum + ", it doesn't respect the following condition : goldSum < 0 || goldSum > 9007199254740990");
         }
         
     }

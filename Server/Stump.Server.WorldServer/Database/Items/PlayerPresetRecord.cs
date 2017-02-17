@@ -145,7 +145,7 @@ namespace Stump.Server.WorldServer.Database.Items
                 var objGid = reader.ReadInt16();
                 var position = reader.ReadByte();
 
-                presetObjects.Add(new PresetItem(position, objGid, objUid));
+                presetObjects.Add(new PresetItem((sbyte)position, objGid, objUid));
             }
 
             return presetObjects.ToList();

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:10
+// Generated on 02/17/2017 01:52:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public CharacterMinimalAllianceInformations(long id, string name, byte level, Types.EntityLook entityLook, Types.BasicGuildInformations guild, Types.BasicAllianceInformations alliance)
+        public CharacterMinimalAllianceInformations(long id, string name, sbyte level, Types.EntityLook entityLook, Types.BasicGuildInformations guild, Types.BasicAllianceInformations alliance)
          : base(id, name, level, entityLook, guild)
         {
             this.alliance = alliance;

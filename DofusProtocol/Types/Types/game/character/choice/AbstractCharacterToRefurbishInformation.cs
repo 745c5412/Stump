@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:10
+// Generated on 02/17/2017 01:52:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             var colors_before = writer.Position;
             var colors_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in colors)
             {
                  writer.WriteInt(entry);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
             }
             var colors_after = writer.Position;
             writer.Seek((int)colors_before);
-            writer.WriteUShort((ushort)colors_count);
+            writer.WriteShort((short)colors_count);
             writer.Seek((int)colors_after);
 
             writer.WriteVarInt(cosmeticId);
@@ -53,7 +53,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var colors_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

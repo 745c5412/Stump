@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:47
+// Generated on 02/17/2017 01:57:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +21,13 @@ namespace Stump.DofusProtocol.Messages
         public int areaId;
         public sbyte atLeastNbMount;
         public sbyte atLeastNbMachine;
-        public int maxPrice;
+        public long maxPrice;
         
         public PaddockToSellFilterMessage()
         {
         }
         
-        public PaddockToSellFilterMessage(int areaId, sbyte atLeastNbMount, sbyte atLeastNbMachine, int maxPrice)
+        public PaddockToSellFilterMessage(int areaId, sbyte atLeastNbMount, sbyte atLeastNbMachine, long maxPrice)
         {
             this.areaId = areaId;
             this.atLeastNbMount = atLeastNbMount;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(areaId);
             writer.WriteSByte(atLeastNbMount);
             writer.WriteSByte(atLeastNbMachine);
-            writer.WriteVarInt(maxPrice);
+            writer.WriteVarLong(maxPrice);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -48,9 +48,9 @@ namespace Stump.DofusProtocol.Messages
             areaId = reader.ReadInt();
             atLeastNbMount = reader.ReadSByte();
             atLeastNbMachine = reader.ReadSByte();
-            maxPrice = reader.ReadVarInt();
-            if (maxPrice < 0)
-                throw new Exception("Forbidden value on maxPrice = " + maxPrice + ", it doesn't respect the following condition : maxPrice < 0");
+            maxPrice = reader.ReadVarLong();
+            if (maxPrice < 0 || maxPrice > 9007199254740990)
+                throw new Exception("Forbidden value on maxPrice = " + maxPrice + ", it doesn't respect the following condition : maxPrice < 0 || maxPrice > 9007199254740990");
         }
         
     }

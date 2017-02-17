@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:59
+// Generated on 02/17/2017 01:58:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var bidHouseItems_before = writer.Position;
             var bidHouseItems_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in bidHouseItems)
             {
                  entry.Serialize(writer);
@@ -43,12 +43,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var bidHouseItems_after = writer.Position;
             writer.Seek((int)bidHouseItems_before);
-            writer.WriteUShort((ushort)bidHouseItems_count);
+            writer.WriteShort((short)bidHouseItems_count);
             writer.Seek((int)bidHouseItems_after);
 
             var merchantItems_before = writer.Position;
             var merchantItems_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in merchantItems)
             {
                  entry.Serialize(writer);
@@ -56,14 +56,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var merchantItems_after = writer.Position;
             writer.Seek((int)merchantItems_before);
-            writer.WriteUShort((ushort)merchantItems_count);
+            writer.WriteShort((short)merchantItems_count);
             writer.Seek((int)merchantItems_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var bidHouseItems_ = new Types.ObjectItemGenericQuantityPrice[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -71,7 +71,7 @@ namespace Stump.DofusProtocol.Messages
                  bidHouseItems_[i].Deserialize(reader);
             }
             bidHouseItems = bidHouseItems_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var merchantItems_ = new Types.ObjectItemGenericQuantityPrice[limit];
             for (int i = 0; i < limit; i++)
             {

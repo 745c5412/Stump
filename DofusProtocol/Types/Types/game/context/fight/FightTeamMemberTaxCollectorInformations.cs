@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Types
         
         public short firstNameId;
         public short lastNameId;
-        public byte level;
+        public sbyte level;
         public int guildId;
         public int uid;
         
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightTeamMemberTaxCollectorInformations(double id, short firstNameId, short lastNameId, byte level, int guildId, int uid)
+        public FightTeamMemberTaxCollectorInformations(double id, short firstNameId, short lastNameId, sbyte level, int guildId, int uid)
          : base(id)
         {
             this.firstNameId = firstNameId;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteVarShort(firstNameId);
             writer.WriteVarShort(lastNameId);
-            writer.WriteByte(level);
+            writer.WriteSByte(level);
             writer.WriteVarInt(guildId);
             writer.WriteVarInt(uid);
         }
@@ -56,7 +56,7 @@ namespace Stump.DofusProtocol.Types
             lastNameId = reader.ReadVarShort();
             if (lastNameId < 0)
                 throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
-            level = reader.ReadByte();
+            level = reader.ReadSByte();
             if (level < 1 || level > 200)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 200");
             guildId = reader.ReadVarInt();

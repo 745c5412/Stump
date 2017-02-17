@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:40
+// Generated on 02/17/2017 01:57:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var namedPartyTeams_before = writer.Position;
             var namedPartyTeams_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in namedPartyTeams)
             {
                  entry.Serialize(writer);
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var namedPartyTeams_after = writer.Position;
             writer.Seek((int)namedPartyTeams_before);
-            writer.WriteUShort((ushort)namedPartyTeams_count);
+            writer.WriteShort((short)namedPartyTeams_count);
             writer.Seek((int)namedPartyTeams_after);
 
         }
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var namedPartyTeams_ = new Types.NamedPartyTeam[limit];
             for (int i = 0; i < limit; i++)
             {

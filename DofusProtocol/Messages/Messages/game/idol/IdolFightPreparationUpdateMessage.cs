@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:55
+// Generated on 02/17/2017 01:58:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte idolSource;
-        public IEnumerable<Types.Idol> idols;
+        public IEnumerable<Idol> idols;
         
         public IdolFightPreparationUpdateMessage()
         {
         }
         
-        public IdolFightPreparationUpdateMessage(sbyte idolSource, IEnumerable<Types.Idol> idols)
+        public IdolFightPreparationUpdateMessage(sbyte idolSource, IEnumerable<Idol> idols)
         {
             this.idolSource = idolSource;
             this.idols = idols;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(idolSource);
             var idols_before = writer.Position;
             var idols_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in idols)
             {
                  writer.WriteShort(entry.TypeId);
@@ -45,7 +45,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var idols_after = writer.Position;
             writer.Seek((int)idols_before);
-            writer.WriteUShort((ushort)idols_count);
+            writer.WriteShort((short)idols_count);
             writer.Seek((int)idols_after);
 
         }
@@ -53,13 +53,11 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             idolSource = reader.ReadSByte();
-            if (idolSource < 0)
-                throw new Exception("Forbidden value on idolSource = " + idolSource + ", it doesn't respect the following condition : idolSource < 0");
-            var limit = reader.ReadUShort();
-            var idols_ = new Types.Idol[limit];
+            var limit = reader.ReadShort();
+            var idols_ = new Idol[limit];
             for (int i = 0; i < limit; i++)
             {
-                 idols_[i] = Types.ProtocolTypeManager.GetInstance<Types.Idol>(reader.ReadShort());
+                 idols_[i] = Types.ProtocolTypeManager.GetInstance<Idol>(reader.ReadShort());
                  idols_[i].Deserialize(reader);
             }
             idols = idols_;

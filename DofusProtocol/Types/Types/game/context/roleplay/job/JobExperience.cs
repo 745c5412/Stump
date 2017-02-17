@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte jobId;
-        public byte jobLevel;
+        public sbyte jobLevel;
         public long jobXP;
         public long jobXpLevelFloor;
         public long jobXpNextLevelFloor;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public JobExperience(sbyte jobId, byte jobLevel, long jobXP, long jobXpLevelFloor, long jobXpNextLevelFloor)
+        public JobExperience(sbyte jobId, sbyte jobLevel, long jobXP, long jobXpLevelFloor, long jobXpNextLevelFloor)
         {
             this.jobId = jobId;
             this.jobLevel = jobLevel;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
-            writer.WriteByte(jobLevel);
+            writer.WriteSByte(jobLevel);
             writer.WriteVarLong(jobXP);
             writer.WriteVarLong(jobXpLevelFloor);
             writer.WriteVarLong(jobXpNextLevelFloor);
@@ -50,7 +50,7 @@ namespace Stump.DofusProtocol.Types
             jobId = reader.ReadSByte();
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            jobLevel = reader.ReadByte();
+            jobLevel = reader.ReadSByte();
             if (jobLevel < 0 || jobLevel > 255)
                 throw new Exception("Forbidden value on jobLevel = " + jobLevel + ", it doesn't respect the following condition : jobLevel < 0 || jobLevel > 255");
             jobXP = reader.ReadVarLong();

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:47
+// Generated on 02/17/2017 01:57:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public bool bsell;
         public int ownerId;
-        public int price;
+        public long price;
         
         public PaddockSellBuyDialogMessage()
         {
         }
         
-        public PaddockSellBuyDialogMessage(bool bsell, int ownerId, int price)
+        public PaddockSellBuyDialogMessage(bool bsell, int ownerId, long price)
         {
             this.bsell = bsell;
             this.ownerId = ownerId;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteBoolean(bsell);
             writer.WriteVarInt(ownerId);
-            writer.WriteVarInt(price);
+            writer.WriteVarLong(price);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -46,9 +46,9 @@ namespace Stump.DofusProtocol.Messages
             ownerId = reader.ReadVarInt();
             if (ownerId < 0)
                 throw new Exception("Forbidden value on ownerId = " + ownerId + ", it doesn't respect the following condition : ownerId < 0");
-            price = reader.ReadVarInt();
-            if (price < 0)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
+            price = reader.ReadVarLong();
+            if (price < 0 || price > 9007199254740990)
+                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 9007199254740990");
         }
         
     }

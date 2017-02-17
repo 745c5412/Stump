@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:47
+// Generated on 02/17/2017 01:57:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarShort(dungeonId);
             var addedPlayers_before = writer.Position;
             var addedPlayers_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in addedPlayers)
             {
                  entry.Serialize(writer);
@@ -46,12 +46,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var addedPlayers_after = writer.Position;
             writer.Seek((int)addedPlayers_before);
-            writer.WriteUShort((ushort)addedPlayers_count);
+            writer.WriteShort((short)addedPlayers_count);
             writer.Seek((int)addedPlayers_after);
 
             var removedPlayersIds_before = writer.Position;
             var removedPlayersIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in removedPlayersIds)
             {
                  writer.WriteVarLong(entry);
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var removedPlayersIds_after = writer.Position;
             writer.Seek((int)removedPlayersIds_before);
-            writer.WriteUShort((ushort)removedPlayersIds_count);
+            writer.WriteShort((short)removedPlayersIds_count);
             writer.Seek((int)removedPlayersIds_after);
 
         }
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Messages
             dungeonId = reader.ReadVarShort();
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var addedPlayers_ = new Types.DungeonPartyFinderPlayer[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -77,11 +77,13 @@ namespace Stump.DofusProtocol.Messages
                  addedPlayers_[i].Deserialize(reader);
             }
             addedPlayers = addedPlayers_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var removedPlayersIds_ = new long[limit];
             for (int i = 0; i < limit; i++)
             {
                  removedPlayersIds_[i] = reader.ReadVarLong();
+                 if (removedPlayersIds_[i] > 9007199254740990)
+                     throw new Exception("Forbidden value on removedPlayersIds_[i] = " + removedPlayersIds_[i] + ", it doesn't respect the following condition : removedPlayersIds_[i] > 9007199254740990");
             }
             removedPlayersIds = removedPlayersIds_;
         }

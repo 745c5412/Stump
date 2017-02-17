@@ -258,7 +258,6 @@
     <Compile Include="Export\GameHierarchyEnum.cs" />
     <Compile Include="Export\GuestLimitationEnum.cs" />
     <Compile Include="Export\GuildInformationsTypeEnum.cs" />
-    <Compile Include="Export\GuildMotdErrorEnum.cs" />
     <Compile Include="Export\GuildRightsBitEnum.cs" />
     <Compile Include="Export\HaapiTokenTypeEnum.cs" />
     <Compile Include="Export\HardcoreOrEpicDeathStateEnum.cs" />

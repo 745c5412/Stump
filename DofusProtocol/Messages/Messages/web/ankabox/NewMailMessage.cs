@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:08
+// Generated on 02/17/2017 01:58:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var sendersAccountId_before = writer.Position;
             var sendersAccountId_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in sendersAccountId)
             {
                  writer.WriteInt(entry);
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var sendersAccountId_after = writer.Position;
             writer.Seek((int)sendersAccountId_before);
-            writer.WriteUShort((ushort)sendersAccountId_count);
+            writer.WriteShort((short)sendersAccountId_count);
             writer.Seek((int)sendersAccountId_after);
 
         }
@@ -51,11 +51,13 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var sendersAccountId_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  sendersAccountId_[i] = reader.ReadInt();
+                 if (sendersAccountId_[i] < 0)
+                     throw new Exception("Forbidden value on sendersAccountId_[i] = " + sendersAccountId_[i] + ", it doesn't respect the following condition : sendersAccountId_[i] < 0");
             }
             sendersAccountId = sendersAccountId_;
         }

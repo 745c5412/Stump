@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:58
+// Generated on 02/17/2017 01:58:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarShort(pods);
             var objectsInfos_before = writer.Position;
             var objectsInfos_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in objectsInfos)
             {
                  entry.Serialize(writer);
@@ -71,7 +71,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var objectsInfos_after = writer.Position;
             writer.Seek((int)objectsInfos_before);
-            writer.WriteUShort((ushort)objectsInfos_count);
+            writer.WriteShort((short)objectsInfos_count);
             writer.Seek((int)objectsInfos_after);
 
         }
@@ -100,7 +100,7 @@ namespace Stump.DofusProtocol.Messages
             pods = reader.ReadVarShort();
             if (pods < 0)
                 throw new Exception("Forbidden value on pods = " + pods + ", it doesn't respect the following condition : pods < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var objectsInfos_ = new Types.ObjectItemGenericQuantity[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -279,7 +279,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             CastInDiagonal = spell.castInDiagonal;
             CastTestLos = spell.castTestLos;
             CriticalHitProbability = spell.criticalHitProbability;
-            CriticalFailureProbability = spell.criticalFailureProbability;
             NeedFreeCell = spell.needFreeCell;
             NeedTakenCell = spell.needTakenCell;
             NeedFreeTrapCell = spell.needFreeTrapCell;
@@ -291,7 +290,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             InitialCooldown = spell.initialCooldown;
             GlobalCooldown = spell.globalCooldown;
             MinPlayerLevel = spell.minPlayerLevel;
-            CriticalFailureEndsTurn = spell.criticalFailureEndsTurn;
             HideEffects = spell.hideEffects;
             Hidden = spell.hidden;
             StatesRequired = spell.statesRequired.ToArray();

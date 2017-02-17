@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:36
+// Generated on 02/17/2017 01:57:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,25 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public ushort number;
+        public short number;
         
         public SequenceNumberMessage()
         {
         }
         
-        public SequenceNumberMessage(ushort number)
+        public SequenceNumberMessage(short number)
         {
             this.number = number;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort(number);
+            writer.WriteShort(number);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            number = reader.ReadUShort();
+            number = reader.ReadShort();
             if (number < 0 || number > 65535)
                 throw new Exception("Forbidden value on number = " + number + ", it doesn't respect the following condition : number < 0 || number > 65535");
         }

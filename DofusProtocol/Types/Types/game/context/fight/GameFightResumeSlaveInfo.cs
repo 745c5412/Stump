@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteDouble(slaveId);
             var spellCooldowns_before = writer.Position;
             var spellCooldowns_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in spellCooldowns)
             {
                  entry.Serialize(writer);
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             }
             var spellCooldowns_after = writer.Position;
             writer.Seek((int)spellCooldowns_before);
-            writer.WriteUShort((ushort)spellCooldowns_count);
+            writer.WriteShort((short)spellCooldowns_count);
             writer.Seek((int)spellCooldowns_after);
 
             writer.WriteSByte(summonCount);
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Types
             slaveId = reader.ReadDouble();
             if (slaveId < -9007199254740990 || slaveId > 9007199254740990)
                 throw new Exception("Forbidden value on slaveId = " + slaveId + ", it doesn't respect the following condition : slaveId < -9007199254740990 || slaveId > 9007199254740990");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var spellCooldowns_ = new Types.GameFightSpellCooldown[limit];
             for (int i = 0; i < limit; i++)
             {

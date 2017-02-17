@@ -414,7 +414,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return new GameRolePlayTaxCollectorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(),
-                GetTaxCollectorStaticInformations(), Guild.Level, 
+                GetTaxCollectorStaticInformations(), (sbyte)Guild.Level, 
                 character == null || character.CanAttack(this) == FighterRefusedReasonEnum.FIGHTER_ACCEPTED ? 0 : 1); // 0 = can attack 1 = cannot
         }
 

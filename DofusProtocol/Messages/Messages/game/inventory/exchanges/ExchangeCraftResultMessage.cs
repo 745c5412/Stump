@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:58
+// Generated on 02/17/2017 01:58:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +37,6 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             craftResult = reader.ReadSByte();
-            if (craftResult < 0)
-                throw new Exception("Forbidden value on craftResult = " + craftResult + ", it doesn't respect the following condition : craftResult < 0");
         }
         
     }

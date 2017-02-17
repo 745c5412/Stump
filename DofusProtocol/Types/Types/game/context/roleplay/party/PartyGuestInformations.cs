@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +23,14 @@ namespace Stump.DofusProtocol.Types
         public Types.EntityLook guestLook;
         public sbyte breed;
         public bool sex;
-        public Types.PlayerStatus status;
+        public PlayerStatus status;
         public IEnumerable<Types.PartyCompanionBaseInformations> companions;
         
         public PartyGuestInformations()
         {
         }
         
-        public PartyGuestInformations(long guestId, long hostId, string name, Types.EntityLook guestLook, sbyte breed, bool sex, Types.PlayerStatus status, IEnumerable<Types.PartyCompanionBaseInformations> companions)
+        public PartyGuestInformations(long guestId, long hostId, string name, Types.EntityLook guestLook, sbyte breed, bool sex, PlayerStatus status, IEnumerable<Types.PartyCompanionBaseInformations> companions)
         {
             this.guestId = guestId;
             this.hostId = hostId;
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Types
             status.Serialize(writer);
             var companions_before = writer.Position;
             var companions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in companions)
             {
                  entry.Serialize(writer);
@@ -62,7 +62,7 @@ namespace Stump.DofusProtocol.Types
             }
             var companions_after = writer.Position;
             writer.Seek((int)companions_before);
-            writer.WriteUShort((ushort)companions_count);
+            writer.WriteShort((short)companions_count);
             writer.Seek((int)companions_after);
 
         }
@@ -80,9 +80,9 @@ namespace Stump.DofusProtocol.Types
             guestLook.Deserialize(reader);
             breed = reader.ReadSByte();
             sex = reader.ReadBoolean();
-            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
+            status = Types.ProtocolTypeManager.GetInstance<PlayerStatus>(reader.ReadShort());
             status.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var companions_ = new Types.PartyCompanionBaseInformations[limit];
             for (int i = 0; i < limit; i++)
             {

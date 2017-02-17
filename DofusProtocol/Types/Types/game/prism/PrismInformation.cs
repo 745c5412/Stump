@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,8 +51,6 @@ namespace Stump.DofusProtocol.Types
             if (typeId < 0)
                 throw new Exception("Forbidden value on typeId = " + typeId + ", it doesn't respect the following condition : typeId < 0");
             state = reader.ReadSByte();
-            if (state < 0)
-                throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
             nextVulnerabilityDate = reader.ReadInt();
             if (nextVulnerabilityDate < 0)
                 throw new Exception("Forbidden value on nextVulnerabilityDate = " + nextVulnerabilityDate + ", it doesn't respect the following condition : nextVulnerabilityDate < 0");

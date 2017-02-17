@@ -1757,6 +1757,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 GetMapObstacles(),
                 m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()),
                 false,
+                new FightStartingPositions(GetBlueFightPlacement().Select(x => x.Id), GetRedFightPlacement().Select(x => x.Id)),
                 (short)Position.X,
                 (short)Position.Y);
         }

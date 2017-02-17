@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +52,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteBoolean(abandonned);
             var mountsInformations_before = writer.Position;
             var mountsInformations_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in mountsInformations)
             {
                  entry.Serialize(writer);
@@ -60,7 +60,7 @@ namespace Stump.DofusProtocol.Types
             }
             var mountsInformations_after = writer.Position;
             writer.Seek((int)mountsInformations_before);
-            writer.WriteUShort((ushort)mountsInformations_count);
+            writer.WriteShort((short)mountsInformations_count);
             writer.Seek((int)mountsInformations_after);
 
         }
@@ -80,7 +80,7 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             abandonned = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var mountsInformations_ = new Types.MountInformationsForPaddock[limit];
             for (int i = 0; i < limit; i++)
             {

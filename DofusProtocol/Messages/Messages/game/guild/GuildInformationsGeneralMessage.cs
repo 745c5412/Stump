@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:54
+// Generated on 02/17/2017 01:58:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public bool abandonnedPaddock;
-        public byte level;
+        public sbyte level;
         public long expLevelFloor;
         public long experience;
         public long expNextLevelFloor;
@@ -31,7 +31,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GuildInformationsGeneralMessage(bool abandonnedPaddock, byte level, long expLevelFloor, long experience, long expNextLevelFloor, int creationDate, short nbTotalMembers, short nbConnectedMembers)
+        public GuildInformationsGeneralMessage(bool abandonnedPaddock, sbyte level, long expLevelFloor, long experience, long expNextLevelFloor, int creationDate, short nbTotalMembers, short nbConnectedMembers)
         {
             this.abandonnedPaddock = abandonnedPaddock;
             this.level = level;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteBoolean(abandonnedPaddock);
-            writer.WriteByte(level);
+            writer.WriteSByte(level);
             writer.WriteVarLong(expLevelFloor);
             writer.WriteVarLong(experience);
             writer.WriteVarLong(expNextLevelFloor);
@@ -58,7 +58,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             abandonnedPaddock = reader.ReadBoolean();
-            level = reader.ReadByte();
+            level = reader.ReadSByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
             expLevelFloor = reader.ReadVarLong();

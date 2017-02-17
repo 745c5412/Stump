@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Types
         
         public int fightId;
         public sbyte fightType;
-        public IEnumerable<Types.FightTeamInformations> fightTeams;
+        public IEnumerable<FightTeamInformations> fightTeams;
         public IEnumerable<short> fightTeamsPositions;
         public IEnumerable<Types.FightOptionsInformations> fightTeamsOptions;
         
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightCommonInformations(int fightId, sbyte fightType, IEnumerable<Types.FightTeamInformations> fightTeams, IEnumerable<short> fightTeamsPositions, IEnumerable<Types.FightOptionsInformations> fightTeamsOptions)
+        public FightCommonInformations(int fightId, sbyte fightType, IEnumerable<FightTeamInformations> fightTeams, IEnumerable<short> fightTeamsPositions, IEnumerable<Types.FightOptionsInformations> fightTeamsOptions)
         {
             this.fightId = fightId;
             this.fightType = fightType;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(fightType);
             var fightTeams_before = writer.Position;
             var fightTeams_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in fightTeams)
             {
                  writer.WriteShort(entry.TypeId);
@@ -51,12 +51,12 @@ namespace Stump.DofusProtocol.Types
             }
             var fightTeams_after = writer.Position;
             writer.Seek((int)fightTeams_before);
-            writer.WriteUShort((ushort)fightTeams_count);
+            writer.WriteShort((short)fightTeams_count);
             writer.Seek((int)fightTeams_after);
 
             var fightTeamsPositions_before = writer.Position;
             var fightTeamsPositions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in fightTeamsPositions)
             {
                  writer.WriteVarShort(entry);
@@ -64,12 +64,12 @@ namespace Stump.DofusProtocol.Types
             }
             var fightTeamsPositions_after = writer.Position;
             writer.Seek((int)fightTeamsPositions_before);
-            writer.WriteUShort((ushort)fightTeamsPositions_count);
+            writer.WriteShort((short)fightTeamsPositions_count);
             writer.Seek((int)fightTeamsPositions_after);
 
             var fightTeamsOptions_before = writer.Position;
             var fightTeamsOptions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in fightTeamsOptions)
             {
                  entry.Serialize(writer);
@@ -77,7 +77,7 @@ namespace Stump.DofusProtocol.Types
             }
             var fightTeamsOptions_after = writer.Position;
             writer.Seek((int)fightTeamsOptions_before);
-            writer.WriteUShort((ushort)fightTeamsOptions_count);
+            writer.WriteShort((short)fightTeamsOptions_count);
             writer.Seek((int)fightTeamsOptions_after);
 
         }
@@ -86,24 +86,24 @@ namespace Stump.DofusProtocol.Types
         {
             fightId = reader.ReadInt();
             fightType = reader.ReadSByte();
-            if (fightType < 0)
-                throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
-            var limit = reader.ReadUShort();
-            var fightTeams_ = new Types.FightTeamInformations[limit];
+            var limit = reader.ReadShort();
+            var fightTeams_ = new FightTeamInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 fightTeams_[i] = Types.ProtocolTypeManager.GetInstance<Types.FightTeamInformations>(reader.ReadShort());
+                 fightTeams_[i] = Types.ProtocolTypeManager.GetInstance<FightTeamInformations>(reader.ReadShort());
                  fightTeams_[i].Deserialize(reader);
             }
             fightTeams = fightTeams_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var fightTeamsPositions_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  fightTeamsPositions_[i] = reader.ReadVarShort();
+                 if (fightTeamsPositions_[i] > 559)
+                     throw new Exception("Forbidden value on fightTeamsPositions_[i] = " + fightTeamsPositions_[i] + ", it doesn't respect the following condition : fightTeamsPositions_[i] > 559");
             }
             fightTeamsPositions = fightTeamsPositions_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var fightTeamsOptions_ = new Types.FightOptionsInformations[limit];
             for (int i = 0; i < limit; i++)
             {

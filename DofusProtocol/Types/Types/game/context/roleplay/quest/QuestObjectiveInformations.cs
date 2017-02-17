@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteBoolean(objectiveStatus);
             var dialogParams_before = writer.Position;
             var dialogParams_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in dialogParams)
             {
                  writer.WriteUTF(entry);
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             }
             var dialogParams_after = writer.Position;
             writer.Seek((int)dialogParams_before);
-            writer.WriteUShort((ushort)dialogParams_count);
+            writer.WriteShort((short)dialogParams_count);
             writer.Seek((int)dialogParams_after);
 
         }
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Types
             if (objectiveId < 0)
                 throw new Exception("Forbidden value on objectiveId = " + objectiveId + ", it doesn't respect the following condition : objectiveId < 0");
             objectiveStatus = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var dialogParams_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {

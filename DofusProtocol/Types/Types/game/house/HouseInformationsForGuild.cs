@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:15
+// Generated on 02/17/2017 01:53:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +9,16 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
-    public class HouseInformationsForGuild
+    public class HouseInformationsForGuild : HouseInformations
     {
         public const short Id = 170;
-        public virtual short TypeId
+        public override short TypeId
         {
             get { return Id; }
         }
         
-        public int houseId;
-        public int modelId;
+        public uint instanceId;
+        public bool secondHand;
         public string ownerName;
         public short worldX;
         public short worldY;
@@ -31,10 +31,11 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public HouseInformationsForGuild(int houseId, int modelId, string ownerName, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<int> skillListIds, int guildshareParams)
+        public HouseInformationsForGuild(int houseId, short modelId, uint instanceId, bool secondHand, string ownerName, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<int> skillListIds, int guildshareParams)
+         : base(houseId, modelId)
         {
-            this.houseId = houseId;
-            this.modelId = modelId;
+            this.instanceId = instanceId;
+            this.secondHand = secondHand;
             this.ownerName = ownerName;
             this.worldX = worldX;
             this.worldY = worldY;
@@ -44,10 +45,11 @@ namespace Stump.DofusProtocol.Types
             this.guildshareParams = guildshareParams;
         }
         
-        public virtual void Serialize(IDataWriter writer)
+        public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(houseId);
-            writer.WriteVarInt(modelId);
+            base.Serialize(writer);
+            writer.WriteUInt(instanceId);
+            writer.WriteBoolean(secondHand);
             writer.WriteUTF(ownerName);
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
@@ -55,7 +57,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(subAreaId);
             var skillListIds_before = writer.Position;
             var skillListIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in skillListIds)
             {
                  writer.WriteInt(entry);
@@ -63,20 +65,19 @@ namespace Stump.DofusProtocol.Types
             }
             var skillListIds_after = writer.Position;
             writer.Seek((int)skillListIds_before);
-            writer.WriteUShort((ushort)skillListIds_count);
+            writer.WriteShort((short)skillListIds_count);
             writer.Seek((int)skillListIds_after);
 
             writer.WriteVarInt(guildshareParams);
         }
         
-        public virtual void Deserialize(IDataReader reader)
+        public override void Deserialize(IDataReader reader)
         {
-            houseId = reader.ReadVarInt();
-            if (houseId < 0)
-                throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
-            modelId = reader.ReadVarInt();
-            if (modelId < 0)
-                throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");
+            base.Deserialize(reader);
+            instanceId = reader.ReadUInt();
+            if (instanceId < 0 || instanceId > 4294967295)
+                throw new Exception("Forbidden value on instanceId = " + instanceId + ", it doesn't respect the following condition : instanceId < 0 || instanceId > 4294967295");
+            secondHand = reader.ReadBoolean();
             ownerName = reader.ReadUTF();
             worldX = reader.ReadShort();
             if (worldX < -255 || worldX > 255)
@@ -88,7 +89,7 @@ namespace Stump.DofusProtocol.Types
             subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var skillListIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

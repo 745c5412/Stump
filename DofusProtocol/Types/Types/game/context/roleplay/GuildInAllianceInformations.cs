@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public byte nbMembers;
+        public sbyte nbMembers;
         
         public GuildInAllianceInformations()
         {
         }
         
-        public GuildInAllianceInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem, byte nbMembers)
+        public GuildInAllianceInformations(int guildId, string guildName, sbyte guildLevel, Types.GuildEmblem guildEmblem, sbyte nbMembers)
          : base(guildId, guildName, guildLevel, guildEmblem)
         {
             this.nbMembers = nbMembers;
@@ -32,13 +32,13 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteByte(nbMembers);
+            writer.WriteSByte(nbMembers);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            nbMembers = reader.ReadByte();
+            nbMembers = reader.ReadSByte();
             if (nbMembers < 1 || nbMembers > 240)
                 throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 1 || nbMembers > 240");
         }

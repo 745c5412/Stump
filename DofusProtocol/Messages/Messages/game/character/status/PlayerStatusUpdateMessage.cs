@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:37
+// Generated on 02/17/2017 01:57:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public int accountId;
         public long playerId;
-        public Types.PlayerStatus status;
+        public PlayerStatus status;
         
         public PlayerStatusUpdateMessage()
         {
         }
         
-        public PlayerStatusUpdateMessage(int accountId, long playerId, Types.PlayerStatus status)
+        public PlayerStatusUpdateMessage(int accountId, long playerId, PlayerStatus status)
         {
             this.accountId = accountId;
             this.playerId = playerId;
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Messages
             playerId = reader.ReadVarLong();
             if (playerId < 0 || playerId > 9007199254740990)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9007199254740990");
-            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
+            status = Types.ProtocolTypeManager.GetInstance<PlayerStatus>(reader.ReadShort());
             status.Deserialize(reader);
         }
         

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GuildInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem)
+        public GuildInformations(int guildId, string guildName, sbyte guildLevel, Types.GuildEmblem guildEmblem)
          : base(guildId, guildName, guildLevel)
         {
             this.guildEmblem = guildEmblem;

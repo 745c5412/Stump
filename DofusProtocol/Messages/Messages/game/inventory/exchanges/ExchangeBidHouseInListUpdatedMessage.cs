@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:57
+// Generated on 02/17/2017 01:58:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ExchangeBidHouseInListUpdatedMessage(int itemUID, int objGenericId, IEnumerable<Types.ObjectEffect> effects, IEnumerable<int> prices)
+        public ExchangeBidHouseInListUpdatedMessage(int itemUID, int objGenericId, IEnumerable<ObjectEffect> effects, IEnumerable<long> prices)
          : base(itemUID, objGenericId, effects, prices)
         {
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:32
+// Generated on 02/17/2017 01:57:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.AbstractFightDispellableEffect effect;
+        public AbstractFightDispellableEffect effect;
         
         public GameActionFightDispellableEffectMessage()
         {
         }
         
-        public GameActionFightDispellableEffectMessage(short actionId, double sourceId, Types.AbstractFightDispellableEffect effect)
+        public GameActionFightDispellableEffectMessage(short actionId, double sourceId, AbstractFightDispellableEffect effect)
          : base(actionId, sourceId)
         {
             this.effect = effect;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            effect = Types.ProtocolTypeManager.GetInstance<Types.AbstractFightDispellableEffect>(reader.ReadShort());
+            effect = Types.ProtocolTypeManager.GetInstance<AbstractFightDispellableEffect>(reader.ReadShort());
             effect.Deserialize(reader);
         }
         

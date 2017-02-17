@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:31
+// Generated on 02/14/2017 16:38:51
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -16,6 +16,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int id;
         [I18NField]
         public uint messageId;
+        public List<String> messageParams;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -31,6 +32,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.messageId; }
             set { this.messageId = value; }
+        }
+        [D2OIgnore]
+        public List<String> MessageParams
+        {
+            get { return this.messageParams; }
+            set { this.messageParams = value; }
         }
     }
 }

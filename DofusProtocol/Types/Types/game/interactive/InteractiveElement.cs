@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:15
+// Generated on 02/17/2017 01:53:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +19,15 @@ namespace Stump.DofusProtocol.Types
         
         public int elementId;
         public int elementTypeId;
-        public IEnumerable<Types.InteractiveElementSkill> enabledSkills;
-        public IEnumerable<Types.InteractiveElementSkill> disabledSkills;
+        public IEnumerable<InteractiveElementSkill> enabledSkills;
+        public IEnumerable<InteractiveElementSkill> disabledSkills;
         public bool onCurrentMap;
         
         public InteractiveElement()
         {
         }
         
-        public InteractiveElement(int elementId, int elementTypeId, IEnumerable<Types.InteractiveElementSkill> enabledSkills, IEnumerable<Types.InteractiveElementSkill> disabledSkills, bool onCurrentMap)
+        public InteractiveElement(int elementId, int elementTypeId, IEnumerable<InteractiveElementSkill> enabledSkills, IEnumerable<InteractiveElementSkill> disabledSkills, bool onCurrentMap)
         {
             this.elementId = elementId;
             this.elementTypeId = elementTypeId;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(elementTypeId);
             var enabledSkills_before = writer.Position;
             var enabledSkills_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in enabledSkills)
             {
                  writer.WriteShort(entry.TypeId);
@@ -51,12 +51,12 @@ namespace Stump.DofusProtocol.Types
             }
             var enabledSkills_after = writer.Position;
             writer.Seek((int)enabledSkills_before);
-            writer.WriteUShort((ushort)enabledSkills_count);
+            writer.WriteShort((short)enabledSkills_count);
             writer.Seek((int)enabledSkills_after);
 
             var disabledSkills_before = writer.Position;
             var disabledSkills_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in disabledSkills)
             {
                  writer.WriteShort(entry.TypeId);
@@ -65,7 +65,7 @@ namespace Stump.DofusProtocol.Types
             }
             var disabledSkills_after = writer.Position;
             writer.Seek((int)disabledSkills_before);
-            writer.WriteUShort((ushort)disabledSkills_count);
+            writer.WriteShort((short)disabledSkills_count);
             writer.Seek((int)disabledSkills_after);
 
             writer.WriteBoolean(onCurrentMap);
@@ -77,19 +77,19 @@ namespace Stump.DofusProtocol.Types
             if (elementId < 0)
                 throw new Exception("Forbidden value on elementId = " + elementId + ", it doesn't respect the following condition : elementId < 0");
             elementTypeId = reader.ReadInt();
-            var limit = reader.ReadUShort();
-            var enabledSkills_ = new Types.InteractiveElementSkill[limit];
+            var limit = reader.ReadShort();
+            var enabledSkills_ = new InteractiveElementSkill[limit];
             for (int i = 0; i < limit; i++)
             {
-                 enabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
+                 enabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<InteractiveElementSkill>(reader.ReadShort());
                  enabledSkills_[i].Deserialize(reader);
             }
             enabledSkills = enabledSkills_;
-            limit = reader.ReadUShort();
-            var disabledSkills_ = new Types.InteractiveElementSkill[limit];
+            limit = reader.ReadShort();
+            var disabledSkills_ = new InteractiveElementSkill[limit];
             for (int i = 0; i < limit; i++)
             {
-                 disabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
+                 disabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<InteractiveElementSkill>(reader.ReadShort());
                  disabledSkills_[i].Deserialize(reader);
             }
             disabledSkills = disabledSkills_;

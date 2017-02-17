@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:04
+// Generated on 02/17/2017 01:58:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public sbyte presetId;
         public sbyte code;
-        public IEnumerable<byte> unlinkedPosition;
+        public IEnumerable<sbyte> unlinkedPosition;
         
         public InventoryPresetUseResultMessage()
         {
         }
         
-        public InventoryPresetUseResultMessage(sbyte presetId, sbyte code, IEnumerable<byte> unlinkedPosition)
+        public InventoryPresetUseResultMessage(sbyte presetId, sbyte code, IEnumerable<sbyte> unlinkedPosition)
         {
             this.presetId = presetId;
             this.code = code;
@@ -39,15 +39,15 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(code);
             var unlinkedPosition_before = writer.Position;
             var unlinkedPosition_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in unlinkedPosition)
             {
-                 writer.WriteByte(entry);
+                 writer.WriteSByte(entry);
                  unlinkedPosition_count++;
             }
             var unlinkedPosition_after = writer.Position;
             writer.Seek((int)unlinkedPosition_before);
-            writer.WriteUShort((ushort)unlinkedPosition_count);
+            writer.WriteShort((short)unlinkedPosition_count);
             writer.Seek((int)unlinkedPosition_after);
 
         }
@@ -58,13 +58,11 @@ namespace Stump.DofusProtocol.Messages
             if (presetId < 0)
                 throw new Exception("Forbidden value on presetId = " + presetId + ", it doesn't respect the following condition : presetId < 0");
             code = reader.ReadSByte();
-            if (code < 0)
-                throw new Exception("Forbidden value on code = " + code + ", it doesn't respect the following condition : code < 0");
-            var limit = reader.ReadUShort();
-            var unlinkedPosition_ = new byte[limit];
+            var limit = reader.ReadShort();
+            var unlinkedPosition_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 unlinkedPosition_[i] = reader.ReadByte();
+                 unlinkedPosition_[i] = reader.ReadSByte();
             }
             unlinkedPosition = unlinkedPosition_;
         }

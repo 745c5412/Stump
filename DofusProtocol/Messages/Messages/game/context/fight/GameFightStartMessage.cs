@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:40
+// Generated on 02/17/2017 01:57:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var idols_before = writer.Position;
             var idols_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in idols)
             {
                  entry.Serialize(writer);
@@ -41,14 +41,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var idols_after = writer.Position;
             writer.Seek((int)idols_before);
-            writer.WriteUShort((ushort)idols_count);
+            writer.WriteShort((short)idols_count);
             writer.Seek((int)idols_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var idols_ = new Types.Idol[limit];
             for (int i = 0; i < limit; i++)
             {

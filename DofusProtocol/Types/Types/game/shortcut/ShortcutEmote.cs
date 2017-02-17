@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public byte emoteId;
+        public sbyte emoteId;
         
         public ShortcutEmote()
         {
         }
         
-        public ShortcutEmote(sbyte slot, byte emoteId)
+        public ShortcutEmote(sbyte slot, sbyte emoteId)
          : base(slot)
         {
             this.emoteId = emoteId;
@@ -32,13 +32,13 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteByte(emoteId);
+            writer.WriteSByte(emoteId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            emoteId = reader.ReadByte();
+            emoteId = reader.ReadSByte();
             if (emoteId < 0 || emoteId > 255)
                 throw new Exception("Forbidden value on emoteId = " + emoteId + ", it doesn't respect the following condition : emoteId < 0 || emoteId > 255");
         }

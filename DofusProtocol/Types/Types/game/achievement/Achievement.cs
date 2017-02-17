@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:09
+// Generated on 02/17/2017 01:52:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(id);
             var finishedObjective_before = writer.Position;
             var finishedObjective_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in finishedObjective)
             {
                  entry.Serialize(writer);
@@ -45,12 +45,12 @@ namespace Stump.DofusProtocol.Types
             }
             var finishedObjective_after = writer.Position;
             writer.Seek((int)finishedObjective_before);
-            writer.WriteUShort((ushort)finishedObjective_count);
+            writer.WriteShort((short)finishedObjective_count);
             writer.Seek((int)finishedObjective_after);
 
             var startedObjectives_before = writer.Position;
             var startedObjectives_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in startedObjectives)
             {
                  entry.Serialize(writer);
@@ -58,7 +58,7 @@ namespace Stump.DofusProtocol.Types
             }
             var startedObjectives_after = writer.Position;
             writer.Seek((int)startedObjectives_before);
-            writer.WriteUShort((ushort)startedObjectives_count);
+            writer.WriteShort((short)startedObjectives_count);
             writer.Seek((int)startedObjectives_after);
 
         }
@@ -68,7 +68,7 @@ namespace Stump.DofusProtocol.Types
             id = reader.ReadVarShort();
             if (id < 0)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var finishedObjective_ = new Types.AchievementObjective[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -76,7 +76,7 @@ namespace Stump.DofusProtocol.Types
                  finishedObjective_[i].Deserialize(reader);
             }
             finishedObjective = finishedObjective_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var startedObjectives_ = new Types.AchievementStartedObjective[limit];
             for (int i = 0; i < limit; i++)
             {

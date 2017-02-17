@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:14
+// Generated on 02/17/2017 01:53:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int sum;
+        public long sum;
         
         public GoldItem()
         {
         }
         
-        public GoldItem(int sum)
+        public GoldItem(long sum)
         {
             this.sum = sum;
         }
@@ -31,15 +31,15 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(sum);
+            writer.WriteVarLong(sum);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            sum = reader.ReadVarInt();
-            if (sum < 0)
-                throw new Exception("Forbidden value on sum = " + sum + ", it doesn't respect the following condition : sum < 0");
+            sum = reader.ReadVarLong();
+            if (sum < 0 || sum > 9007199254740990)
+                throw new Exception("Forbidden value on sum = " + sum + ", it doesn't respect the following condition : sum < 0 || sum > 9007199254740990");
         }
         
         

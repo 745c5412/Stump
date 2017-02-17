@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:14
+// Generated on 02/17/2017 01:53:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace Stump.DofusProtocol.Types
         public IEnumerable<int> types;
         public float taxPercentage;
         public float taxModificationPercentage;
-        public byte maxItemLevel;
+        public sbyte maxItemLevel;
         public int maxItemPerAccount;
         public int npcContextualId;
         public short unsoldDelay;
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public SellerBuyerDescriptor(IEnumerable<int> quantities, IEnumerable<int> types, float taxPercentage, float taxModificationPercentage, byte maxItemLevel, int maxItemPerAccount, int npcContextualId, short unsoldDelay)
+        public SellerBuyerDescriptor(IEnumerable<int> quantities, IEnumerable<int> types, float taxPercentage, float taxModificationPercentage, sbyte maxItemLevel, int maxItemPerAccount, int npcContextualId, short unsoldDelay)
         {
             this.quantities = quantities;
             this.types = types;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
         {
             var quantities_before = writer.Position;
             var quantities_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in quantities)
             {
                  writer.WriteVarInt(entry);
@@ -54,12 +54,12 @@ namespace Stump.DofusProtocol.Types
             }
             var quantities_after = writer.Position;
             writer.Seek((int)quantities_before);
-            writer.WriteUShort((ushort)quantities_count);
+            writer.WriteShort((short)quantities_count);
             writer.Seek((int)quantities_after);
 
             var types_before = writer.Position;
             var types_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in types)
             {
                  writer.WriteVarInt(entry);
@@ -67,12 +67,12 @@ namespace Stump.DofusProtocol.Types
             }
             var types_after = writer.Position;
             writer.Seek((int)types_before);
-            writer.WriteUShort((ushort)types_count);
+            writer.WriteShort((short)types_count);
             writer.Seek((int)types_after);
 
             writer.WriteFloat(taxPercentage);
             writer.WriteFloat(taxModificationPercentage);
-            writer.WriteByte(maxItemLevel);
+            writer.WriteSByte(maxItemLevel);
             writer.WriteVarInt(maxItemPerAccount);
             writer.WriteInt(npcContextualId);
             writer.WriteVarShort(unsoldDelay);
@@ -80,23 +80,27 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var quantities_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  quantities_[i] = reader.ReadVarInt();
+                 if (quantities_[i] < 0)
+                     throw new Exception("Forbidden value on quantities_[i] = " + quantities_[i] + ", it doesn't respect the following condition : quantities_[i] < 0");
             }
             quantities = quantities_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var types_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  types_[i] = reader.ReadVarInt();
+                 if (types_[i] < 0)
+                     throw new Exception("Forbidden value on types_[i] = " + types_[i] + ", it doesn't respect the following condition : types_[i] < 0");
             }
             types = types_;
             taxPercentage = reader.ReadFloat();
             taxModificationPercentage = reader.ReadFloat();
-            maxItemLevel = reader.ReadByte();
+            maxItemLevel = reader.ReadSByte();
             if (maxItemLevel < 0 || maxItemLevel > 255)
                 throw new Exception("Forbidden value on maxItemLevel = " + maxItemLevel + ", it doesn't respect the following condition : maxItemLevel < 0 || maxItemLevel > 255");
             maxItemPerAccount = reader.ReadVarInt();

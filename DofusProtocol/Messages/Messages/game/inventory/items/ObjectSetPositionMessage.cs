@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:03
+// Generated on 02/17/2017 01:58:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int objectUID;
-        public byte position;
+        public sbyte position;
         public int quantity;
         
         public ObjectSetPositionMessage()
         {
         }
         
-        public ObjectSetPositionMessage(int objectUID, byte position, int quantity)
+        public ObjectSetPositionMessage(int objectUID, sbyte position, int quantity)
         {
             this.objectUID = objectUID;
             this.position = position;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarInt(objectUID);
-            writer.WriteByte(position);
+            writer.WriteSByte(position);
             writer.WriteVarInt(quantity);
         }
         
@@ -45,9 +45,7 @@ namespace Stump.DofusProtocol.Messages
             objectUID = reader.ReadVarInt();
             if (objectUID < 0)
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
-            position = reader.ReadByte();
-            if (position < 0 || position > 255)
-                throw new Exception("Forbidden value on position = " + position + ", it doesn't respect the following condition : position < 0 || position > 255");
+            position = reader.ReadSByte();
             quantity = reader.ReadVarInt();
             if (quantity < 0)
                 throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0");

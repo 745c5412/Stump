@@ -157,7 +157,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
         #region Network
 
         public SellerBuyerDescriptor GetBuyerDescriptor()
-            => new SellerBuyerDescriptor(BidHouseManager.Quantities, Types, BidHouseManager.TaxPercent, BidHouseManager.TaxModificationPercent, (byte)MaxItemLevel, Character.Level, Npc.Id, (short)BidHouseManager.UnsoldDelay);
+            => new SellerBuyerDescriptor(BidHouseManager.Quantities, Types, BidHouseManager.TaxPercent, BidHouseManager.TaxModificationPercent, (sbyte)MaxItemLevel, Character.Level, Npc.Id, (short)BidHouseManager.UnsoldDelay);
 
         #endregion
     }

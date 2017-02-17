@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:55
+// Generated on 02/17/2017 01:58:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var movements_before = writer.Position;
             var movements_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in movements)
             {
                  entry.Serialize(writer);
@@ -41,14 +41,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var movements_after = writer.Position;
             writer.Seek((int)movements_before);
-            writer.WriteUShort((ushort)movements_count);
+            writer.WriteShort((short)movements_count);
             writer.Seek((int)movements_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var movements_ = new Types.TaxCollectorMovement[limit];
             for (int i = 0; i < limit; i++)
             {

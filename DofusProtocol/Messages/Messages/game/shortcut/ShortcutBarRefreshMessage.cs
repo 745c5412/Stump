@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:06
+// Generated on 02/17/2017 01:58:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte barType;
-        public Types.Shortcut shortcut;
+        public Shortcut shortcut;
         
         public ShortcutBarRefreshMessage()
         {
         }
         
-        public ShortcutBarRefreshMessage(sbyte barType, Types.Shortcut shortcut)
+        public ShortcutBarRefreshMessage(sbyte barType, Shortcut shortcut)
         {
             this.barType = barType;
             this.shortcut = shortcut;
@@ -41,9 +41,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             barType = reader.ReadSByte();
-            if (barType < 0)
-                throw new Exception("Forbidden value on barType = " + barType + ", it doesn't respect the following condition : barType < 0");
-            shortcut = Types.ProtocolTypeManager.GetInstance<Types.Shortcut>(reader.ReadShort());
+            shortcut = Types.ProtocolTypeManager.GetInstance<Shortcut>(reader.ReadShort());
             shortcut.Deserialize(reader);
         }
         

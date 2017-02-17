@@ -1,7 +1,7 @@
  
 
 
-// Generated on 09/26/2016 01:50:49
+// Generated on 02/14/2017 17:01:41
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,7 +29,6 @@ namespace DBSynchroniser.Records
         public Boolean castInDiagonal;
         public Boolean castTestLos;
         public uint criticalHitProbability;
-        public uint criticalFailureProbability;
         public Boolean needFreeCell;
         public Boolean needTakenCell;
         public Boolean needFreeTrapCell;
@@ -41,7 +40,6 @@ namespace DBSynchroniser.Records
         public uint initialCooldown;
         public int globalCooldown;
         public uint minPlayerLevel;
-        public Boolean criticalFailureEndsTurn;
         public Boolean hideEffects;
         public Boolean hidden;
         public Boolean playAnimation;
@@ -135,13 +133,6 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public uint CriticalFailureProbability
-        {
-            get { return criticalFailureProbability; }
-            set { criticalFailureProbability = value; }
-        }
-
-        [D2OIgnore]
         public Boolean NeedFreeCell
         {
             get { return needFreeCell; }
@@ -216,13 +207,6 @@ namespace DBSynchroniser.Records
         {
             get { return minPlayerLevel; }
             set { minPlayerLevel = value; }
-        }
-
-        [D2OIgnore]
-        public Boolean CriticalFailureEndsTurn
-        {
-            get { return criticalFailureEndsTurn; }
-            set { criticalFailureEndsTurn = value; }
         }
 
         [D2OIgnore]
@@ -365,7 +349,6 @@ namespace DBSynchroniser.Records
             CastInDiagonal = castedObj.castInDiagonal;
             CastTestLos = castedObj.castTestLos;
             CriticalHitProbability = castedObj.criticalHitProbability;
-            CriticalFailureProbability = castedObj.criticalFailureProbability;
             NeedFreeCell = castedObj.needFreeCell;
             NeedTakenCell = castedObj.needTakenCell;
             NeedFreeTrapCell = castedObj.needFreeTrapCell;
@@ -377,7 +360,6 @@ namespace DBSynchroniser.Records
             InitialCooldown = castedObj.initialCooldown;
             GlobalCooldown = castedObj.globalCooldown;
             MinPlayerLevel = castedObj.minPlayerLevel;
-            CriticalFailureEndsTurn = castedObj.criticalFailureEndsTurn;
             HideEffects = castedObj.hideEffects;
             Hidden = castedObj.hidden;
             PlayAnimation = castedObj.playAnimation;
@@ -401,7 +383,6 @@ namespace DBSynchroniser.Records
             obj.castInDiagonal = CastInDiagonal;
             obj.castTestLos = CastTestLos;
             obj.criticalHitProbability = CriticalHitProbability;
-            obj.criticalFailureProbability = CriticalFailureProbability;
             obj.needFreeCell = NeedFreeCell;
             obj.needTakenCell = NeedTakenCell;
             obj.needFreeTrapCell = NeedFreeTrapCell;
@@ -413,7 +394,6 @@ namespace DBSynchroniser.Records
             obj.initialCooldown = InitialCooldown;
             obj.globalCooldown = GlobalCooldown;
             obj.minPlayerLevel = MinPlayerLevel;
-            obj.criticalFailureEndsTurn = CriticalFailureEndsTurn;
             obj.hideEffects = HideEffects;
             obj.hidden = Hidden;
             obj.playAnimation = PlayAnimation;

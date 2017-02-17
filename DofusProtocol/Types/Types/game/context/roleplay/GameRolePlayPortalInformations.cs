@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public Types.PortalInformation portal;
+        public PortalInformation portal;
         
         public GameRolePlayPortalInformations()
         {
         }
         
-        public GameRolePlayPortalInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, Types.PortalInformation portal)
+        public GameRolePlayPortalInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, PortalInformation portal)
          : base(contextualId, look, disposition)
         {
             this.portal = portal;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            portal = Types.ProtocolTypeManager.GetInstance<Types.PortalInformation>(reader.ReadShort());
+            portal = Types.ProtocolTypeManager.GetInstance<PortalInformation>(reader.ReadShort());
             portal.Deserialize(reader);
         }
         

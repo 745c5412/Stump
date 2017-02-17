@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:06
+// Generated on 02/17/2017 01:58:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<Types.PrismSubareaEmptyInfo> prisms;
+        public IEnumerable<PrismSubareaEmptyInfo> prisms;
         
         public PrismsListMessage()
         {
         }
         
-        public PrismsListMessage(IEnumerable<Types.PrismSubareaEmptyInfo> prisms)
+        public PrismsListMessage(IEnumerable<PrismSubareaEmptyInfo> prisms)
         {
             this.prisms = prisms;
         }
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var prisms_before = writer.Position;
             var prisms_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in prisms)
             {
                  writer.WriteShort(entry.TypeId);
@@ -42,18 +42,18 @@ namespace Stump.DofusProtocol.Messages
             }
             var prisms_after = writer.Position;
             writer.Seek((int)prisms_before);
-            writer.WriteUShort((ushort)prisms_count);
+            writer.WriteShort((short)prisms_count);
             writer.Seek((int)prisms_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
-            var prisms_ = new Types.PrismSubareaEmptyInfo[limit];
+            var limit = reader.ReadShort();
+            var prisms_ = new PrismSubareaEmptyInfo[limit];
             for (int i = 0; i < limit; i++)
             {
-                 prisms_[i] = Types.ProtocolTypeManager.GetInstance<Types.PrismSubareaEmptyInfo>(reader.ReadShort());
+                 prisms_[i] = Types.ProtocolTypeManager.GetInstance<PrismSubareaEmptyInfo>(reader.ReadShort());
                  prisms_[i].Deserialize(reader);
             }
             prisms = prisms_;

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:44
+// Generated on 02/17/2017 01:57:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,25 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public byte nbRoom;
+        public sbyte nbRoom;
         
         public RoomAvailableUpdateMessage()
         {
         }
         
-        public RoomAvailableUpdateMessage(byte nbRoom)
+        public RoomAvailableUpdateMessage(sbyte nbRoom)
         {
             this.nbRoom = nbRoom;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteByte(nbRoom);
+            writer.WriteSByte(nbRoom);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            nbRoom = reader.ReadByte();
+            nbRoom = reader.ReadSByte();
             if (nbRoom < 0 || nbRoom > 255)
                 throw new Exception("Forbidden value on nbRoom = " + nbRoom + ", it doesn't respect the following condition : nbRoom < 0 || nbRoom > 255");
         }

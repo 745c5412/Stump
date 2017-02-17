@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:30
+// Generated on 02/17/2017 01:57:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,11 +46,7 @@ namespace Stump.DofusProtocol.Messages
             if (serverId < 0)
                 throw new Exception("Forbidden value on serverId = " + serverId + ", it doesn't respect the following condition : serverId < 0");
             error = reader.ReadSByte();
-            if (error < 0)
-                throw new Exception("Forbidden value on error = " + error + ", it doesn't respect the following condition : error < 0");
             serverStatus = reader.ReadSByte();
-            if (serverStatus < 0)
-                throw new Exception("Forbidden value on serverStatus = " + serverStatus + ", it doesn't respect the following condition : serverStatus < 0");
         }
         
     }

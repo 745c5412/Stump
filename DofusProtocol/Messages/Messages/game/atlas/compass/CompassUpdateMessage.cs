@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:35
+// Generated on 02/17/2017 01:57:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte type;
-        public Types.MapCoordinates coords;
+        public MapCoordinates coords;
         
         public CompassUpdateMessage()
         {
         }
         
-        public CompassUpdateMessage(sbyte type, Types.MapCoordinates coords)
+        public CompassUpdateMessage(sbyte type, MapCoordinates coords)
         {
             this.type = type;
             this.coords = coords;
@@ -41,9 +41,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             type = reader.ReadSByte();
-            if (type < 0)
-                throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
-            coords = Types.ProtocolTypeManager.GetInstance<Types.MapCoordinates>(reader.ReadShort());
+            coords = Types.ProtocolTypeManager.GetInstance<MapCoordinates>(reader.ReadShort());
             coords.Deserialize(reader);
         }
         

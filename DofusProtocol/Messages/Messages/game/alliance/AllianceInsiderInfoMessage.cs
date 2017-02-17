@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:34
+// Generated on 02/17/2017 01:57:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public Types.AllianceFactSheetInformations allianceInfos;
         public IEnumerable<Types.GuildInsiderFactSheetInformations> guilds;
-        public IEnumerable<Types.PrismSubareaEmptyInfo> prisms;
+        public IEnumerable<PrismSubareaEmptyInfo> prisms;
         
         public AllianceInsiderInfoMessage()
         {
         }
         
-        public AllianceInsiderInfoMessage(Types.AllianceFactSheetInformations allianceInfos, IEnumerable<Types.GuildInsiderFactSheetInformations> guilds, IEnumerable<Types.PrismSubareaEmptyInfo> prisms)
+        public AllianceInsiderInfoMessage(Types.AllianceFactSheetInformations allianceInfos, IEnumerable<Types.GuildInsiderFactSheetInformations> guilds, IEnumerable<PrismSubareaEmptyInfo> prisms)
         {
             this.allianceInfos = allianceInfos;
             this.guilds = guilds;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             allianceInfos.Serialize(writer);
             var guilds_before = writer.Position;
             var guilds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in guilds)
             {
                  entry.Serialize(writer);
@@ -46,12 +46,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var guilds_after = writer.Position;
             writer.Seek((int)guilds_before);
-            writer.WriteUShort((ushort)guilds_count);
+            writer.WriteShort((short)guilds_count);
             writer.Seek((int)guilds_after);
 
             var prisms_before = writer.Position;
             var prisms_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in prisms)
             {
                  writer.WriteShort(entry.TypeId);
@@ -60,7 +60,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var prisms_after = writer.Position;
             writer.Seek((int)prisms_before);
-            writer.WriteUShort((ushort)prisms_count);
+            writer.WriteShort((short)prisms_count);
             writer.Seek((int)prisms_after);
 
         }
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Messages
         {
             allianceInfos = new Types.AllianceFactSheetInformations();
             allianceInfos.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var guilds_ = new Types.GuildInsiderFactSheetInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -77,11 +77,11 @@ namespace Stump.DofusProtocol.Messages
                  guilds_[i].Deserialize(reader);
             }
             guilds = guilds_;
-            limit = reader.ReadUShort();
-            var prisms_ = new Types.PrismSubareaEmptyInfo[limit];
+            limit = reader.ReadShort();
+            var prisms_ = new PrismSubareaEmptyInfo[limit];
             for (int i = 0; i < limit; i++)
             {
-                 prisms_[i] = Types.ProtocolTypeManager.GetInstance<Types.PrismSubareaEmptyInfo>(reader.ReadShort());
+                 prisms_[i] = Types.ProtocolTypeManager.GetInstance<PrismSubareaEmptyInfo>(reader.ReadShort());
                  prisms_[i].Deserialize(reader);
             }
             prisms = prisms_;

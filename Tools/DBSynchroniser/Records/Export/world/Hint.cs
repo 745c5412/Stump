@@ -1,7 +1,7 @@
  
 
 
-// Generated on 09/26/2016 01:50:49
+// Generated on 02/14/2017 17:01:41
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -118,13 +118,14 @@ namespace DBSynchroniser.Records
             get { return level; }
             set { level = value; }
         }
-        
+
         [D2OIgnore]
         public uint CategoryId
         {
             get { return categoryId; }
             set { categoryId = value; }
         }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Hint)obj;

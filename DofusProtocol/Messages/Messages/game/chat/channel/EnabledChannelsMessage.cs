@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:38
+// Generated on 02/17/2017 01:57:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var channels_before = writer.Position;
             var channels_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in channels)
             {
                  writer.WriteSByte(entry);
@@ -43,12 +43,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var channels_after = writer.Position;
             writer.Seek((int)channels_before);
-            writer.WriteUShort((ushort)channels_count);
+            writer.WriteShort((short)channels_count);
             writer.Seek((int)channels_after);
 
             var disallowed_before = writer.Position;
             var disallowed_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in disallowed)
             {
                  writer.WriteSByte(entry);
@@ -56,21 +56,21 @@ namespace Stump.DofusProtocol.Messages
             }
             var disallowed_after = writer.Position;
             writer.Seek((int)disallowed_before);
-            writer.WriteUShort((ushort)disallowed_count);
+            writer.WriteShort((short)disallowed_count);
             writer.Seek((int)disallowed_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var channels_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
                  channels_[i] = reader.ReadSByte();
             }
             channels = channels_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var disallowed_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {

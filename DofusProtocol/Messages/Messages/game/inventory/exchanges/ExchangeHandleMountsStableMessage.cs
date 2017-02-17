@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:58
+// Generated on 02/17/2017 01:58:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(actionType);
             var ridesId_before = writer.Position;
             var ridesId_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in ridesId)
             {
                  writer.WriteVarInt(entry);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var ridesId_after = writer.Position;
             writer.Seek((int)ridesId_before);
-            writer.WriteUShort((ushort)ridesId_count);
+            writer.WriteShort((short)ridesId_count);
             writer.Seek((int)ridesId_after);
 
         }
@@ -52,11 +52,13 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             actionType = reader.ReadSByte();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var ridesId_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  ridesId_[i] = reader.ReadVarInt();
+                 if (ridesId_[i] < 0)
+                     throw new Exception("Forbidden value on ridesId_[i] = " + ridesId_[i] + ", it doesn't respect the following condition : ridesId_[i] < 0");
             }
             ridesId = ridesId_;
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:43
+// Generated on 02/17/2017 01:57:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public EmotePlayMassiveMessage(byte emoteId, double emoteStartTime, IEnumerable<double> actorIds)
+        public EmotePlayMassiveMessage(sbyte emoteId, double emoteStartTime, IEnumerable<double> actorIds)
          : base(emoteId, emoteStartTime)
         {
             this.actorIds = actorIds;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var actorIds_before = writer.Position;
             var actorIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in actorIds)
             {
                  writer.WriteDouble(entry);
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var actorIds_after = writer.Position;
             writer.Seek((int)actorIds_before);
-            writer.WriteUShort((ushort)actorIds_count);
+            writer.WriteShort((short)actorIds_count);
             writer.Seek((int)actorIds_after);
 
         }
@@ -51,11 +51,13 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var actorIds_ = new double[limit];
             for (int i = 0; i < limit; i++)
             {
                  actorIds_[i] = reader.ReadDouble();
+                 if (actorIds_[i] > 9007199254740990)
+                     throw new Exception("Forbidden value on actorIds_[i] = " + actorIds_[i] + ", it doesn't respect the following condition : actorIds_[i] > 9007199254740990");
             }
             actorIds = actorIds_;
         }

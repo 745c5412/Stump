@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +18,15 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte jobId;
-        public byte jobLevel;
+        public sbyte jobLevel;
         public bool free;
-        public byte minLevel;
+        public sbyte minLevel;
         
         public JobCrafterDirectoryEntryJobInfo()
         {
         }
         
-        public JobCrafterDirectoryEntryJobInfo(sbyte jobId, byte jobLevel, bool free, byte minLevel)
+        public JobCrafterDirectoryEntryJobInfo(sbyte jobId, sbyte jobLevel, bool free, sbyte minLevel)
         {
             this.jobId = jobId;
             this.jobLevel = jobLevel;
@@ -37,9 +37,9 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
-            writer.WriteByte(jobLevel);
+            writer.WriteSByte(jobLevel);
             writer.WriteBoolean(free);
-            writer.WriteByte(minLevel);
+            writer.WriteSByte(minLevel);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -47,11 +47,11 @@ namespace Stump.DofusProtocol.Types
             jobId = reader.ReadSByte();
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            jobLevel = reader.ReadByte();
+            jobLevel = reader.ReadSByte();
             if (jobLevel < 1 || jobLevel > 200)
                 throw new Exception("Forbidden value on jobLevel = " + jobLevel + ", it doesn't respect the following condition : jobLevel < 1 || jobLevel > 200");
             free = reader.ReadBoolean();
-            minLevel = reader.ReadByte();
+            minLevel = reader.ReadSByte();
             if (minLevel < 0 || minLevel > 255)
                 throw new Exception("Forbidden value on minLevel = " + minLevel + ", it doesn't respect the following condition : minLevel < 0 || minLevel > 255");
         }

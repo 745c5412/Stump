@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:01
+// Generated on 02/17/2017 01:58:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var paddockedMountsDescription_before = writer.Position;
             var paddockedMountsDescription_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in paddockedMountsDescription)
             {
                  entry.Serialize(writer);
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var paddockedMountsDescription_after = writer.Position;
             writer.Seek((int)paddockedMountsDescription_before);
-            writer.WriteUShort((ushort)paddockedMountsDescription_count);
+            writer.WriteShort((short)paddockedMountsDescription_count);
             writer.Seek((int)paddockedMountsDescription_after);
 
         }
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var paddockedMountsDescription_ = new Types.MountClientData[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:10
+// Generated on 02/17/2017 01:52:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(id);
             var steps_before = writer.Position;
             var steps_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in steps)
             {
                  writer.WriteSByte(entry);
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             }
             var steps_after = writer.Position;
             writer.Seek((int)steps_before);
-            writer.WriteUShort((ushort)steps_count);
+            writer.WriteShort((short)steps_count);
             writer.Seek((int)steps_after);
 
         }
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             id = reader.ReadInt();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var steps_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {

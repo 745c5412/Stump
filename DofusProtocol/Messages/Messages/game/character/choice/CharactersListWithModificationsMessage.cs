@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:36
+// Generated on 02/17/2017 01:57:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public CharactersListWithModificationsMessage(IEnumerable<Types.CharacterBaseInformations> characters, bool hasStartupActions, IEnumerable<Types.CharacterToRecolorInformation> charactersToRecolor, IEnumerable<int> charactersToRename, IEnumerable<int> unusableCharacters, IEnumerable<Types.CharacterToRelookInformation> charactersToRelook)
+        public CharactersListWithModificationsMessage(IEnumerable<CharacterBaseInformations> characters, bool hasStartupActions, IEnumerable<Types.CharacterToRecolorInformation> charactersToRecolor, IEnumerable<int> charactersToRename, IEnumerable<int> unusableCharacters, IEnumerable<Types.CharacterToRelookInformation> charactersToRelook)
          : base(characters, hasStartupActions)
         {
             this.charactersToRecolor = charactersToRecolor;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var charactersToRecolor_before = writer.Position;
             var charactersToRecolor_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in charactersToRecolor)
             {
                  entry.Serialize(writer);
@@ -49,12 +49,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var charactersToRecolor_after = writer.Position;
             writer.Seek((int)charactersToRecolor_before);
-            writer.WriteUShort((ushort)charactersToRecolor_count);
+            writer.WriteShort((short)charactersToRecolor_count);
             writer.Seek((int)charactersToRecolor_after);
 
             var charactersToRename_before = writer.Position;
             var charactersToRename_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in charactersToRename)
             {
                  writer.WriteInt(entry);
@@ -62,12 +62,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var charactersToRename_after = writer.Position;
             writer.Seek((int)charactersToRename_before);
-            writer.WriteUShort((ushort)charactersToRename_count);
+            writer.WriteShort((short)charactersToRename_count);
             writer.Seek((int)charactersToRename_after);
 
             var unusableCharacters_before = writer.Position;
             var unusableCharacters_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in unusableCharacters)
             {
                  writer.WriteInt(entry);
@@ -75,12 +75,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var unusableCharacters_after = writer.Position;
             writer.Seek((int)unusableCharacters_before);
-            writer.WriteUShort((ushort)unusableCharacters_count);
+            writer.WriteShort((short)unusableCharacters_count);
             writer.Seek((int)unusableCharacters_after);
 
             var charactersToRelook_before = writer.Position;
             var charactersToRelook_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in charactersToRelook)
             {
                  entry.Serialize(writer);
@@ -88,7 +88,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var charactersToRelook_after = writer.Position;
             writer.Seek((int)charactersToRelook_before);
-            writer.WriteUShort((ushort)charactersToRelook_count);
+            writer.WriteShort((short)charactersToRelook_count);
             writer.Seek((int)charactersToRelook_after);
 
         }
@@ -96,7 +96,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var charactersToRecolor_ = new Types.CharacterToRecolorInformation[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -104,21 +104,21 @@ namespace Stump.DofusProtocol.Messages
                  charactersToRecolor_[i].Deserialize(reader);
             }
             charactersToRecolor = charactersToRecolor_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var charactersToRename_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  charactersToRename_[i] = reader.ReadInt();
             }
             charactersToRename = charactersToRename_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var unusableCharacters_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  unusableCharacters_[i] = reader.ReadInt();
             }
             unusableCharacters = unusableCharacters_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var charactersToRelook_ = new Types.CharacterToRelookInformation[limit];
             for (int i = 0; i < limit; i++)
             {

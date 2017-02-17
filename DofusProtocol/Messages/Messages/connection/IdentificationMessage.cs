@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:30
+// Generated on 02/17/2017 01:57:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarLong(sessionOptionalSalt);
             var failedAttempts_before = writer.Position;
             var failedAttempts_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in failedAttempts)
             {
                  writer.WriteVarShort(entry);
@@ -71,7 +71,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var failedAttempts_after = writer.Position;
             writer.Seek((int)failedAttempts_before);
-            writer.WriteUShort((ushort)failedAttempts_count);
+            writer.WriteShort((short)failedAttempts_count);
             writer.Seek((int)failedAttempts_after);
 
         }
@@ -96,11 +96,13 @@ namespace Stump.DofusProtocol.Messages
             sessionOptionalSalt = reader.ReadVarLong();
             if (sessionOptionalSalt < -9007199254740990 || sessionOptionalSalt > 9007199254740990)
                 throw new Exception("Forbidden value on sessionOptionalSalt = " + sessionOptionalSalt + ", it doesn't respect the following condition : sessionOptionalSalt < -9007199254740990 || sessionOptionalSalt > 9007199254740990");
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var failedAttempts_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  failedAttempts_[i] = reader.ReadVarShort();
+                 if (failedAttempts_[i] < 0)
+                     throw new Exception("Forbidden value on failedAttempts_[i] = " + failedAttempts_[i] + ", it doesn't respect the following condition : failedAttempts_[i] < 0");
             }
             failedAttempts = failedAttempts_;
         }

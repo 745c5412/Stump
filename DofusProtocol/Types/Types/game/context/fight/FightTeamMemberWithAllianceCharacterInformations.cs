@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightTeamMemberWithAllianceCharacterInformations(double id, string name, byte level, Types.BasicAllianceInformations allianceInfos)
+        public FightTeamMemberWithAllianceCharacterInformations(double id, string name, sbyte level, Types.BasicAllianceInformations allianceInfos)
          : base(id, name, level)
         {
             this.allianceInfos = allianceInfos;

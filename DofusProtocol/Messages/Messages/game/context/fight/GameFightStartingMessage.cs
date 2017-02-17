@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:40
+// Generated on 02/17/2017 01:57:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +43,6 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             fightType = reader.ReadSByte();
-            if (fightType < 0)
-                throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
             attackerId = reader.ReadDouble();
             if (attackerId < -9007199254740990 || attackerId > 9007199254740990)
                 throw new Exception("Forbidden value on attackerId = " + attackerId + ", it doesn't respect the following condition : attackerId < -9007199254740990 || attackerId > 9007199254740990");

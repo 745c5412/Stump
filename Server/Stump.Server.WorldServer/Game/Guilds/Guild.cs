@@ -840,7 +840,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 208,
                 Level);
 
-            m_clients.Send(new GuildLevelUpMessage(Level));
+            m_clients.Send(new GuildLevelUpMessage((sbyte)Level));
         }
 
         void OnMemberConnected(GuildMember member)
@@ -879,13 +879,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
             member.Disconnected -= OnMemberDisconnected;
         }
 
-        public GuildInformations GetGuildInformations() => new GuildInformations(Id, Name, Level, Emblem.GetNetworkGuildEmblem());
+        public GuildInformations GetGuildInformations() => new GuildInformations(Id, Name, (sbyte)Level, Emblem.GetNetworkGuildEmblem());
 
-        public GuildVersatileInformations GetGuildVersatileInformations() => new GuildVersatileInformations(Id, Boss.Id, Level, (byte)Members.Count);
+        public GuildVersatileInformations GetGuildVersatileInformations() => new GuildVersatileInformations(Id, Boss.Id, (sbyte)Level, (sbyte)Members.Count);
 
-        public BasicGuildInformations GetBasicGuildInformations() => new BasicGuildInformations(Id, Name, Level);
+        public BasicGuildInformations GetBasicGuildInformations() => new BasicGuildInformations(Id, Name, (sbyte)Level);
 
-        public GuildFactSheetInformations GetGuildFactSheetInformations() => new GuildFactSheetInformations(Id, Name, Level, Emblem.GetNetworkGuildEmblem(), Boss.Id, (short)Members.Count);
+        public GuildFactSheetInformations GetGuildFactSheetInformations() => new GuildFactSheetInformations(Id, Name, (sbyte)Level, Emblem.GetNetworkGuildEmblem(), Boss.Id, (short)Members.Count);
     }
 }
 

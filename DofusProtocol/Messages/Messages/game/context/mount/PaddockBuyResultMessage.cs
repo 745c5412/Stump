@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:42
+// Generated on 02/17/2017 01:57:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public int paddockId;
         public bool bought;
-        public int realPrice;
+        public long realPrice;
         
         public PaddockBuyResultMessage()
         {
         }
         
-        public PaddockBuyResultMessage(int paddockId, bool bought, int realPrice)
+        public PaddockBuyResultMessage(int paddockId, bool bought, long realPrice)
         {
             this.paddockId = paddockId;
             this.bought = bought;
@@ -37,16 +37,16 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteInt(paddockId);
             writer.WriteBoolean(bought);
-            writer.WriteVarInt(realPrice);
+            writer.WriteVarLong(realPrice);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             paddockId = reader.ReadInt();
             bought = reader.ReadBoolean();
-            realPrice = reader.ReadVarInt();
-            if (realPrice < 0)
-                throw new Exception("Forbidden value on realPrice = " + realPrice + ", it doesn't respect the following condition : realPrice < 0");
+            realPrice = reader.ReadVarLong();
+            if (realPrice < 0 || realPrice > 9007199254740990)
+                throw new Exception("Forbidden value on realPrice = " + realPrice + ", it doesn't respect the following condition : realPrice < 0 || realPrice > 9007199254740990");
         }
         
     }

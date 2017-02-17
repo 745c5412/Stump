@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:09
+// Generated on 02/17/2017 01:52:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Types
         
         public short actionId;
         public double sourceId;
-        public Types.AbstractFightDispellableEffect effect;
+        public AbstractFightDispellableEffect effect;
         
         public FightDispellableEffectExtendedInformations()
         {
         }
         
-        public FightDispellableEffectExtendedInformations(short actionId, double sourceId, Types.AbstractFightDispellableEffect effect)
+        public FightDispellableEffectExtendedInformations(short actionId, double sourceId, AbstractFightDispellableEffect effect)
         {
             this.actionId = actionId;
             this.sourceId = sourceId;
@@ -48,7 +48,7 @@ namespace Stump.DofusProtocol.Types
             sourceId = reader.ReadDouble();
             if (sourceId < -9007199254740990 || sourceId > 9007199254740990)
                 throw new Exception("Forbidden value on sourceId = " + sourceId + ", it doesn't respect the following condition : sourceId < -9007199254740990 || sourceId > 9007199254740990");
-            effect = Types.ProtocolTypeManager.GetInstance<Types.AbstractFightDispellableEffect>(reader.ReadShort());
+            effect = Types.ProtocolTypeManager.GetInstance<AbstractFightDispellableEffect>(reader.ReadShort());
             effect.Deserialize(reader);
         }
         

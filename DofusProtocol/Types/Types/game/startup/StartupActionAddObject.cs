@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:17
+// Generated on 02/17/2017 01:53:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUTF(pictureUrl);
             var items_before = writer.Position;
             var items_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in items)
             {
                  entry.Serialize(writer);
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Types
             }
             var items_after = writer.Position;
             writer.Seek((int)items_before);
-            writer.WriteUShort((ushort)items_count);
+            writer.WriteShort((short)items_count);
             writer.Seek((int)items_after);
 
         }
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Types
             text = reader.ReadUTF();
             descUrl = reader.ReadUTF();
             pictureUrl = reader.ReadUTF();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var items_ = new Types.ObjectItemInformationWithQuantity[limit];
             for (int i = 0; i < limit; i++)
             {

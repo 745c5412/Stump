@@ -73,14 +73,14 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return items;
         }
 
-        public IEnumerable<int> GetPrices()
+        public IEnumerable<long> GetPrices()
         {
-            var prices = new List<int>();
+            var prices = new List<long>();
 
             foreach (var item in BidHouseManager.Quantities.Select(quantity => Items.Where(x => x.Stack == quantity && !x.Sold)
                 .OrderBy(x => x.Price).FirstOrDefault()))
             {
-                prices.Add(item != null ? (int)item.Price : 0);
+                prices.Add(item != null ? item.Price : 0);
             }
 
             return prices;

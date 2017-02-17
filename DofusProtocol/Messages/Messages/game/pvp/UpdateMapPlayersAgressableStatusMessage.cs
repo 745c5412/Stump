@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:06
+// Generated on 02/17/2017 01:58:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var playerIds_before = writer.Position;
             var playerIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in playerIds)
             {
                  writer.WriteVarLong(entry);
@@ -43,12 +43,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var playerIds_after = writer.Position;
             writer.Seek((int)playerIds_before);
-            writer.WriteUShort((ushort)playerIds_count);
+            writer.WriteShort((short)playerIds_count);
             writer.Seek((int)playerIds_after);
 
             var enable_before = writer.Position;
             var enable_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in enable)
             {
                  writer.WriteSByte(entry);
@@ -56,21 +56,23 @@ namespace Stump.DofusProtocol.Messages
             }
             var enable_after = writer.Position;
             writer.Seek((int)enable_before);
-            writer.WriteUShort((ushort)enable_count);
+            writer.WriteShort((short)enable_count);
             writer.Seek((int)enable_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var playerIds_ = new long[limit];
             for (int i = 0; i < limit; i++)
             {
                  playerIds_[i] = reader.ReadVarLong();
+                 if (playerIds_[i] > 9007199254740990)
+                     throw new Exception("Forbidden value on playerIds_[i] = " + playerIds_[i] + ", it doesn't respect the following condition : playerIds_[i] > 9007199254740990");
             }
             playerIds = playerIds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var enable_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {

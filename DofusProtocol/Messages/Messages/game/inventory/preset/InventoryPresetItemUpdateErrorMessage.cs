@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:04
+// Generated on 02/17/2017 01:58:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +37,6 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             code = reader.ReadSByte();
-            if (code < 0)
-                throw new Exception("Forbidden value on code = " + code + ", it doesn't respect the following condition : code < 0");
         }
         
     }

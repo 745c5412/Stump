@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:15
+// Generated on 02/17/2017 01:53:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,13 +26,13 @@ namespace Stump.DofusProtocol.Types
         public short subAreaId;
         public sbyte state;
         public Types.EntityLook look;
-        public IEnumerable<Types.TaxCollectorComplementaryInformations> complements;
+        public IEnumerable<TaxCollectorComplementaryInformations> complements;
         
         public TaxCollectorInformations()
         {
         }
         
-        public TaxCollectorInformations(int uniqueId, short firtNameId, short lastNameId, Types.AdditionalTaxCollectorInformations additionalInfos, short worldX, short worldY, short subAreaId, sbyte state, Types.EntityLook look, IEnumerable<Types.TaxCollectorComplementaryInformations> complements)
+        public TaxCollectorInformations(int uniqueId, short firtNameId, short lastNameId, Types.AdditionalTaxCollectorInformations additionalInfos, short worldX, short worldY, short subAreaId, sbyte state, Types.EntityLook look, IEnumerable<TaxCollectorComplementaryInformations> complements)
         {
             this.uniqueId = uniqueId;
             this.firtNameId = firtNameId;
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Types
             look.Serialize(writer);
             var complements_before = writer.Position;
             var complements_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in complements)
             {
                  writer.WriteShort(entry.TypeId);
@@ -68,7 +68,7 @@ namespace Stump.DofusProtocol.Types
             }
             var complements_after = writer.Position;
             writer.Seek((int)complements_before);
-            writer.WriteUShort((ushort)complements_count);
+            writer.WriteShort((short)complements_count);
             writer.Seek((int)complements_after);
 
         }
@@ -94,15 +94,13 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             state = reader.ReadSByte();
-            if (state < 0)
-                throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
             look = new Types.EntityLook();
             look.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            var complements_ = new Types.TaxCollectorComplementaryInformations[limit];
+            var limit = reader.ReadShort();
+            var complements_ = new TaxCollectorComplementaryInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 complements_[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorComplementaryInformations>(reader.ReadShort());
+                 complements_[i] = Types.ProtocolTypeManager.GetInstance<TaxCollectorComplementaryInformations>(reader.ReadShort());
                  complements_[i].Deserialize(reader);
             }
             complements = complements_;

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:06
+// Generated on 02/17/2017 01:58:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ContactLookRequestByNameMessage(byte requestId, sbyte contactType, string playerName)
+        public ContactLookRequestByNameMessage(sbyte requestId, sbyte contactType, string playerName)
          : base(requestId, contactType)
         {
             this.playerName = playerName;

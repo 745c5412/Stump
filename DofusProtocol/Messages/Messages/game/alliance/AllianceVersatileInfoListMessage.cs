@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:35
+// Generated on 02/17/2017 01:57:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var alliances_before = writer.Position;
             var alliances_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in alliances)
             {
                  entry.Serialize(writer);
@@ -41,14 +41,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var alliances_after = writer.Position;
             writer.Seek((int)alliances_before);
-            writer.WriteUShort((ushort)alliances_count);
+            writer.WriteShort((short)alliances_count);
             writer.Seek((int)alliances_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var alliances_ = new Types.AllianceVersatileInformations[limit];
             for (int i = 0; i < limit; i++)
             {

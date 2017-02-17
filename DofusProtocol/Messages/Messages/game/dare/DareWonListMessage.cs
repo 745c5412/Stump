@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:52
+// Generated on 02/17/2017 01:58:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var dareId_before = writer.Position;
             var dareId_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in dareId)
             {
                  writer.WriteDouble(entry);
@@ -41,18 +41,20 @@ namespace Stump.DofusProtocol.Messages
             }
             var dareId_after = writer.Position;
             writer.Seek((int)dareId_before);
-            writer.WriteUShort((ushort)dareId_count);
+            writer.WriteShort((short)dareId_count);
             writer.Seek((int)dareId_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var dareId_ = new double[limit];
             for (int i = 0; i < limit; i++)
             {
                  dareId_[i] = reader.ReadDouble();
+                 if (dareId_[i] > 9007199254740990)
+                     throw new Exception("Forbidden value on dareId_[i] = " + dareId_[i] + ", it doesn't respect the following condition : dareId_[i] > 9007199254740990");
             }
             dareId = dareId_;
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:50
+// Generated on 02/17/2017 01:58:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +20,14 @@ namespace Stump.DofusProtocol.Messages
         
         public IEnumerable<short> finishedQuestsIds;
         public IEnumerable<short> finishedQuestsCounts;
-        public IEnumerable<Types.QuestActiveInformations> activeQuests;
+        public IEnumerable<QuestActiveInformations> activeQuests;
         public IEnumerable<short> reinitDoneQuestsIds;
         
         public QuestListMessage()
         {
         }
         
-        public QuestListMessage(IEnumerable<short> finishedQuestsIds, IEnumerable<short> finishedQuestsCounts, IEnumerable<Types.QuestActiveInformations> activeQuests, IEnumerable<short> reinitDoneQuestsIds)
+        public QuestListMessage(IEnumerable<short> finishedQuestsIds, IEnumerable<short> finishedQuestsCounts, IEnumerable<QuestActiveInformations> activeQuests, IEnumerable<short> reinitDoneQuestsIds)
         {
             this.finishedQuestsIds = finishedQuestsIds;
             this.finishedQuestsCounts = finishedQuestsCounts;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var finishedQuestsIds_before = writer.Position;
             var finishedQuestsIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in finishedQuestsIds)
             {
                  writer.WriteVarShort(entry);
@@ -47,12 +47,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var finishedQuestsIds_after = writer.Position;
             writer.Seek((int)finishedQuestsIds_before);
-            writer.WriteUShort((ushort)finishedQuestsIds_count);
+            writer.WriteShort((short)finishedQuestsIds_count);
             writer.Seek((int)finishedQuestsIds_after);
 
             var finishedQuestsCounts_before = writer.Position;
             var finishedQuestsCounts_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in finishedQuestsCounts)
             {
                  writer.WriteVarShort(entry);
@@ -60,12 +60,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var finishedQuestsCounts_after = writer.Position;
             writer.Seek((int)finishedQuestsCounts_before);
-            writer.WriteUShort((ushort)finishedQuestsCounts_count);
+            writer.WriteShort((short)finishedQuestsCounts_count);
             writer.Seek((int)finishedQuestsCounts_after);
 
             var activeQuests_before = writer.Position;
             var activeQuests_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in activeQuests)
             {
                  writer.WriteShort(entry.TypeId);
@@ -74,12 +74,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var activeQuests_after = writer.Position;
             writer.Seek((int)activeQuests_before);
-            writer.WriteUShort((ushort)activeQuests_count);
+            writer.WriteShort((short)activeQuests_count);
             writer.Seek((int)activeQuests_after);
 
             var reinitDoneQuestsIds_before = writer.Position;
             var reinitDoneQuestsIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in reinitDoneQuestsIds)
             {
                  writer.WriteVarShort(entry);
@@ -87,40 +87,46 @@ namespace Stump.DofusProtocol.Messages
             }
             var reinitDoneQuestsIds_after = writer.Position;
             writer.Seek((int)reinitDoneQuestsIds_before);
-            writer.WriteUShort((ushort)reinitDoneQuestsIds_count);
+            writer.WriteShort((short)reinitDoneQuestsIds_count);
             writer.Seek((int)reinitDoneQuestsIds_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var finishedQuestsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  finishedQuestsIds_[i] = reader.ReadVarShort();
+                 if (finishedQuestsIds_[i] < 0)
+                     throw new Exception("Forbidden value on finishedQuestsIds_[i] = " + finishedQuestsIds_[i] + ", it doesn't respect the following condition : finishedQuestsIds_[i] < 0");
             }
             finishedQuestsIds = finishedQuestsIds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var finishedQuestsCounts_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  finishedQuestsCounts_[i] = reader.ReadVarShort();
+                 if (finishedQuestsCounts_[i] < 0)
+                     throw new Exception("Forbidden value on finishedQuestsCounts_[i] = " + finishedQuestsCounts_[i] + ", it doesn't respect the following condition : finishedQuestsCounts_[i] < 0");
             }
             finishedQuestsCounts = finishedQuestsCounts_;
-            limit = reader.ReadUShort();
-            var activeQuests_ = new Types.QuestActiveInformations[limit];
+            limit = reader.ReadShort();
+            var activeQuests_ = new QuestActiveInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 activeQuests_[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestActiveInformations>(reader.ReadShort());
+                 activeQuests_[i] = Types.ProtocolTypeManager.GetInstance<QuestActiveInformations>(reader.ReadShort());
                  activeQuests_[i].Deserialize(reader);
             }
             activeQuests = activeQuests_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var reinitDoneQuestsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  reinitDoneQuestsIds_[i] = reader.ReadVarShort();
+                 if (reinitDoneQuestsIds_[i] < 0)
+                     throw new Exception("Forbidden value on reinitDoneQuestsIds_[i] = " + reinitDoneQuestsIds_[i] + ", it doesn't respect the following condition : reinitDoneQuestsIds_[i] < 0");
             }
             reinitDoneQuestsIds = reinitDoneQuestsIds_;
         }

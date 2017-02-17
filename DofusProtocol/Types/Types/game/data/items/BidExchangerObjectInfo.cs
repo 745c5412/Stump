@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:14
+// Generated on 02/17/2017 01:53:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Types
         }
         
         public int objectUID;
-        public IEnumerable<Types.ObjectEffect> effects;
-        public IEnumerable<int> prices;
+        public IEnumerable<ObjectEffect> effects;
+        public IEnumerable<long> prices;
         
         public BidExchangerObjectInfo()
         {
         }
         
-        public BidExchangerObjectInfo(int objectUID, IEnumerable<Types.ObjectEffect> effects, IEnumerable<int> prices)
+        public BidExchangerObjectInfo(int objectUID, IEnumerable<ObjectEffect> effects, IEnumerable<long> prices)
         {
             this.objectUID = objectUID;
             this.effects = effects;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarInt(objectUID);
             var effects_before = writer.Position;
             var effects_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in effects)
             {
                  writer.WriteShort(entry.TypeId);
@@ -46,20 +46,20 @@ namespace Stump.DofusProtocol.Types
             }
             var effects_after = writer.Position;
             writer.Seek((int)effects_before);
-            writer.WriteUShort((ushort)effects_count);
+            writer.WriteShort((short)effects_count);
             writer.Seek((int)effects_after);
 
             var prices_before = writer.Position;
             var prices_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in prices)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarLong(entry);
                  prices_count++;
             }
             var prices_after = writer.Position;
             writer.Seek((int)prices_before);
-            writer.WriteUShort((ushort)prices_count);
+            writer.WriteShort((short)prices_count);
             writer.Seek((int)prices_after);
 
         }
@@ -69,19 +69,21 @@ namespace Stump.DofusProtocol.Types
             objectUID = reader.ReadVarInt();
             if (objectUID < 0)
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
-            var limit = reader.ReadUShort();
-            var effects_ = new Types.ObjectEffect[limit];
+            var limit = reader.ReadShort();
+            var effects_ = new ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {
-                 effects_[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
+                 effects_[i] = Types.ProtocolTypeManager.GetInstance<ObjectEffect>(reader.ReadShort());
                  effects_[i].Deserialize(reader);
             }
             effects = effects_;
-            limit = reader.ReadUShort();
-            var prices_ = new int[limit];
+            limit = reader.ReadShort();
+            var prices_ = new long[limit];
             for (int i = 0; i < limit; i++)
             {
-                 prices_[i] = reader.ReadInt();
+                 prices_[i] = reader.ReadVarLong();
+                 if (prices_[i] > 9007199254740990)
+                     throw new Exception("Forbidden value on prices_[i] = " + prices_[i] + ", it doesn't respect the following condition : prices_[i] > 9007199254740990");
             }
             prices = prices_;
         }

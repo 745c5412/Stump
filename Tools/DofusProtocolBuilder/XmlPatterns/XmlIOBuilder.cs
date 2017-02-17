@@ -104,7 +104,9 @@ namespace DofusProtocolBuilder.XmlPatterns
                             continue;
 
                         if (type == "bytes")
-                            type = "byte[]";
+                            type = "sbyte[]";
+						if (type == "byte")
+							type = "sbyte";
 
                         AddField(name, type);
                     }

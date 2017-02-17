@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:39
+// Generated on 02/17/2017 01:57:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var orientations_before = writer.Position;
             var orientations_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in orientations)
             {
                  entry.Serialize(writer);
@@ -41,14 +41,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var orientations_after = writer.Position;
             writer.Seek((int)orientations_before);
-            writer.WriteUShort((ushort)orientations_count);
+            writer.WriteShort((short)orientations_count);
             writer.Seek((int)orientations_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var orientations_ = new Types.ActorOrientation[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public byte level;
+        public sbyte level;
         public Types.BasicGuildInformations guildInfo;
         public int experienceForGuild;
         
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightResultTaxCollectorListEntry(short outcome, sbyte wave, Types.FightLoot rewards, double id, bool alive, byte level, Types.BasicGuildInformations guildInfo, int experienceForGuild)
+        public FightResultTaxCollectorListEntry(short outcome, sbyte wave, Types.FightLoot rewards, double id, bool alive, sbyte level, Types.BasicGuildInformations guildInfo, int experienceForGuild)
          : base(outcome, wave, rewards, id, alive)
         {
             this.level = level;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteByte(level);
+            writer.WriteSByte(level);
             guildInfo.Serialize(writer);
             writer.WriteInt(experienceForGuild);
         }
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            level = reader.ReadByte();
+            level = reader.ReadSByte();
             if (level < 1 || level > 200)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 200");
             guildInfo = new Types.BasicGuildInformations();

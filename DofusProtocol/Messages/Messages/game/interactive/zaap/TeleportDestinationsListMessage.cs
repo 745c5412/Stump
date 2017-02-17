@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:56
+// Generated on 02/17/2017 01:58:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(teleporterType);
             var mapIds_before = writer.Position;
             var mapIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in mapIds)
             {
                  writer.WriteInt(entry);
@@ -50,12 +50,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var mapIds_after = writer.Position;
             writer.Seek((int)mapIds_before);
-            writer.WriteUShort((ushort)mapIds_count);
+            writer.WriteShort((short)mapIds_count);
             writer.Seek((int)mapIds_after);
 
             var subAreaIds_before = writer.Position;
             var subAreaIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in subAreaIds)
             {
                  writer.WriteVarShort(entry);
@@ -63,12 +63,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var subAreaIds_after = writer.Position;
             writer.Seek((int)subAreaIds_before);
-            writer.WriteUShort((ushort)subAreaIds_count);
+            writer.WriteShort((short)subAreaIds_count);
             writer.Seek((int)subAreaIds_after);
 
             var costs_before = writer.Position;
             var costs_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in costs)
             {
                  writer.WriteVarShort(entry);
@@ -76,12 +76,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var costs_after = writer.Position;
             writer.Seek((int)costs_before);
-            writer.WriteUShort((ushort)costs_count);
+            writer.WriteShort((short)costs_count);
             writer.Seek((int)costs_after);
 
             var destTeleporterType_before = writer.Position;
             var destTeleporterType_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in destTeleporterType)
             {
                  writer.WriteSByte(entry);
@@ -89,7 +89,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var destTeleporterType_after = writer.Position;
             writer.Seek((int)destTeleporterType_before);
-            writer.WriteUShort((ushort)destTeleporterType_count);
+            writer.WriteShort((short)destTeleporterType_count);
             writer.Seek((int)destTeleporterType_after);
 
         }
@@ -97,30 +97,34 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             teleporterType = reader.ReadSByte();
-            if (teleporterType < 0)
-                throw new Exception("Forbidden value on teleporterType = " + teleporterType + ", it doesn't respect the following condition : teleporterType < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var mapIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  mapIds_[i] = reader.ReadInt();
+                 if (mapIds_[i] < 0)
+                     throw new Exception("Forbidden value on mapIds_[i] = " + mapIds_[i] + ", it doesn't respect the following condition : mapIds_[i] < 0");
             }
             mapIds = mapIds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var subAreaIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  subAreaIds_[i] = reader.ReadVarShort();
+                 if (subAreaIds_[i] < 0)
+                     throw new Exception("Forbidden value on subAreaIds_[i] = " + subAreaIds_[i] + ", it doesn't respect the following condition : subAreaIds_[i] < 0");
             }
             subAreaIds = subAreaIds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var costs_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  costs_[i] = reader.ReadVarShort();
+                 if (costs_[i] < 0)
+                     throw new Exception("Forbidden value on costs_[i] = " + costs_[i] + ", it doesn't respect the following condition : costs_[i] < 0");
             }
             costs = costs_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var destTeleporterType_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {

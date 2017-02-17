@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         public FightOutcomeEnum Outcome => FightOutcomeEnum.RESULT_TAX;
 
         public FightResultListEntry GetFightResultListEntry() => new FightResultTaxCollectorListEntry((short)Outcome, 0, Loot.GetFightLoot(), Id, Alive,
-                                    TaxCollector.Guild.Level, TaxCollector.Guild.GetBasicGuildInformations(), Experience);
+                                    (sbyte)TaxCollector.Guild.Level, TaxCollector.Guild.GetBasicGuildInformations(), Experience);
 
         public void Apply()
         {

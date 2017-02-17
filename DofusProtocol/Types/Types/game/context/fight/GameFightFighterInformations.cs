@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +20,14 @@ namespace Stump.DofusProtocol.Types
         public sbyte teamId;
         public sbyte wave;
         public bool alive;
-        public Types.GameFightMinimalStats stats;
+        public GameFightMinimalStats stats;
         public IEnumerable<short> previousPositions;
         
         public GameFightFighterInformations()
         {
         }
         
-        public GameFightFighterInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions)
+        public GameFightFighterInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, GameFightMinimalStats stats, IEnumerable<short> previousPositions)
          : base(contextualId, look, disposition)
         {
             this.teamId = teamId;
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             stats.Serialize(writer);
             var previousPositions_before = writer.Position;
             var previousPositions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in previousPositions)
             {
                  writer.WriteVarShort(entry);
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Types
             }
             var previousPositions_after = writer.Position;
             writer.Seek((int)previousPositions_before);
-            writer.WriteUShort((ushort)previousPositions_count);
+            writer.WriteShort((short)previousPositions_count);
             writer.Seek((int)previousPositions_after);
 
         }
@@ -64,19 +64,19 @@ namespace Stump.DofusProtocol.Types
         {
             base.Deserialize(reader);
             teamId = reader.ReadSByte();
-            if (teamId < 0)
-                throw new Exception("Forbidden value on teamId = " + teamId + ", it doesn't respect the following condition : teamId < 0");
             wave = reader.ReadSByte();
             if (wave < 0)
                 throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0");
             alive = reader.ReadBoolean();
-            stats = Types.ProtocolTypeManager.GetInstance<Types.GameFightMinimalStats>(reader.ReadShort());
+            stats = Types.ProtocolTypeManager.GetInstance<GameFightMinimalStats>(reader.ReadShort());
             stats.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var previousPositions_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  previousPositions_[i] = reader.ReadVarShort();
+                 if (previousPositions_[i] > 559)
+                     throw new Exception("Forbidden value on previousPositions_[i] = " + previousPositions_[i] + ", it doesn't respect the following condition : previousPositions_[i] > 559");
             }
             previousPositions = previousPositions_;
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:51
+// Generated on 02/17/2017 01:58:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var daresFixedInfos_before = writer.Position;
             var daresFixedInfos_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in daresFixedInfos)
             {
                  entry.Serialize(writer);
@@ -43,12 +43,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var daresFixedInfos_after = writer.Position;
             writer.Seek((int)daresFixedInfos_before);
-            writer.WriteUShort((ushort)daresFixedInfos_count);
+            writer.WriteShort((short)daresFixedInfos_count);
             writer.Seek((int)daresFixedInfos_after);
 
             var daresVersatilesInfos_before = writer.Position;
             var daresVersatilesInfos_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in daresVersatilesInfos)
             {
                  entry.Serialize(writer);
@@ -56,14 +56,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var daresVersatilesInfos_after = writer.Position;
             writer.Seek((int)daresVersatilesInfos_before);
-            writer.WriteUShort((ushort)daresVersatilesInfos_count);
+            writer.WriteShort((short)daresVersatilesInfos_count);
             writer.Seek((int)daresVersatilesInfos_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var daresFixedInfos_ = new Types.DareInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -71,7 +71,7 @@ namespace Stump.DofusProtocol.Messages
                  daresFixedInfos_[i].Deserialize(reader);
             }
             daresFixedInfos = daresFixedInfos_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var daresVersatilesInfos_ = new Types.DareVersatileInformations[limit];
             for (int i = 0; i < limit; i++)
             {

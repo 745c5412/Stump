@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:10
+// Generated on 02/17/2017 01:52:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,8 +42,6 @@ namespace Stump.DofusProtocol.Types
             if (id < -9007199254740990 || id > 9007199254740990)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9007199254740990 || id > 9007199254740990");
             direction = reader.ReadSByte();
-            if (direction < 0)
-                throw new Exception("Forbidden value on direction = " + direction + ", it doesn't respect the following condition : direction < 0");
         }
         
         

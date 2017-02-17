@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,8 +58,6 @@ namespace Stump.DofusProtocol.Types
         {
             fightId = reader.ReadInt();
             fightType = reader.ReadSByte();
-            if (fightType < 0)
-                throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
             fightStart = reader.ReadInt();
             if (fightStart < 0)
                 throw new Exception("Forbidden value on fightStart = " + fightStart + ", it doesn't respect the following condition : fightStart < 0");

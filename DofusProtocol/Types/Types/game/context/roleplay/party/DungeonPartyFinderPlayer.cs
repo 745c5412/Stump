@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +21,13 @@ namespace Stump.DofusProtocol.Types
         public string playerName;
         public sbyte breed;
         public bool sex;
-        public byte level;
+        public sbyte level;
         
         public DungeonPartyFinderPlayer()
         {
         }
         
-        public DungeonPartyFinderPlayer(long playerId, string playerName, sbyte breed, bool sex, byte level)
+        public DungeonPartyFinderPlayer(long playerId, string playerName, sbyte breed, bool sex, sbyte level)
         {
             this.playerId = playerId;
             this.playerName = playerName;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUTF(playerName);
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
-            writer.WriteByte(level);
+            writer.WriteSByte(level);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -52,10 +52,8 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9007199254740990");
             playerName = reader.ReadUTF();
             breed = reader.ReadSByte();
-            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage)
-                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage");
             sex = reader.ReadBoolean();
-            level = reader.ReadByte();
+            level = reader.ReadSByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public Types.PrismInformation prism;
+        public PrismInformation prism;
         
         public GameRolePlayPrismInformations()
         {
         }
         
-        public GameRolePlayPrismInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, Types.PrismInformation prism)
+        public GameRolePlayPrismInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, PrismInformation prism)
          : base(contextualId, look, disposition)
         {
             this.prism = prism;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            prism = Types.ProtocolTypeManager.GetInstance<Types.PrismInformation>(reader.ReadShort());
+            prism = Types.ProtocolTypeManager.GetInstance<PrismInformation>(reader.ReadShort());
             prism.Deserialize(reader);
         }
         

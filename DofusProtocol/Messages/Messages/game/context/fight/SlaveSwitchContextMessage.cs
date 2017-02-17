@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:41
+// Generated on 02/17/2017 01:57:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +22,13 @@ namespace Stump.DofusProtocol.Messages
         public double slaveId;
         public IEnumerable<Types.SpellItem> slaveSpells;
         public Types.CharacterCharacteristicsInformations slaveStats;
-        public IEnumerable<Types.Shortcut> shortcuts;
+        public IEnumerable<Shortcut> shortcuts;
         
         public SlaveSwitchContextMessage()
         {
         }
         
-        public SlaveSwitchContextMessage(double masterId, double slaveId, IEnumerable<Types.SpellItem> slaveSpells, Types.CharacterCharacteristicsInformations slaveStats, IEnumerable<Types.Shortcut> shortcuts)
+        public SlaveSwitchContextMessage(double masterId, double slaveId, IEnumerable<Types.SpellItem> slaveSpells, Types.CharacterCharacteristicsInformations slaveStats, IEnumerable<Shortcut> shortcuts)
         {
             this.masterId = masterId;
             this.slaveId = slaveId;
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteDouble(slaveId);
             var slaveSpells_before = writer.Position;
             var slaveSpells_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in slaveSpells)
             {
                  entry.Serialize(writer);
@@ -51,13 +51,13 @@ namespace Stump.DofusProtocol.Messages
             }
             var slaveSpells_after = writer.Position;
             writer.Seek((int)slaveSpells_before);
-            writer.WriteUShort((ushort)slaveSpells_count);
+            writer.WriteShort((short)slaveSpells_count);
             writer.Seek((int)slaveSpells_after);
 
             slaveStats.Serialize(writer);
             var shortcuts_before = writer.Position;
             var shortcuts_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in shortcuts)
             {
                  writer.WriteShort(entry.TypeId);
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var shortcuts_after = writer.Position;
             writer.Seek((int)shortcuts_before);
-            writer.WriteUShort((ushort)shortcuts_count);
+            writer.WriteShort((short)shortcuts_count);
             writer.Seek((int)shortcuts_after);
 
         }
@@ -79,7 +79,7 @@ namespace Stump.DofusProtocol.Messages
             slaveId = reader.ReadDouble();
             if (slaveId < -9007199254740990 || slaveId > 9007199254740990)
                 throw new Exception("Forbidden value on slaveId = " + slaveId + ", it doesn't respect the following condition : slaveId < -9007199254740990 || slaveId > 9007199254740990");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var slaveSpells_ = new Types.SpellItem[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -89,11 +89,11 @@ namespace Stump.DofusProtocol.Messages
             slaveSpells = slaveSpells_;
             slaveStats = new Types.CharacterCharacteristicsInformations();
             slaveStats.Deserialize(reader);
-            limit = reader.ReadUShort();
-            var shortcuts_ = new Types.Shortcut[limit];
+            limit = reader.ReadShort();
+            var shortcuts_ = new Shortcut[limit];
             for (int i = 0; i < limit; i++)
             {
-                 shortcuts_[i] = Types.ProtocolTypeManager.GetInstance<Types.Shortcut>(reader.ReadShort());
+                 shortcuts_[i] = Types.ProtocolTypeManager.GetInstance<Shortcut>(reader.ReadShort());
                  shortcuts_[i].Deserialize(reader);
             }
             shortcuts = shortcuts_;

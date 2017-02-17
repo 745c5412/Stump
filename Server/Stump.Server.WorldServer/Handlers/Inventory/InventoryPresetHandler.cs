@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new InventoryPresetDeleteResultMessage(presetId, (sbyte)result));
         }
 
-        public static void SendInventoryPresetUseResultMessage(WorldClient client, sbyte presetId, PresetUseResultEnum result, IEnumerable<byte> unlinkedPosition)
+        public static void SendInventoryPresetUseResultMessage(WorldClient client, sbyte presetId, PresetUseResultEnum result, IEnumerable<sbyte> unlinkedPosition)
         {
             client.Send(new InventoryPresetUseResultMessage(presetId, (sbyte)result, unlinkedPosition));
         }

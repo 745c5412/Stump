@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:01
+// Generated on 02/17/2017 01:58:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteDouble(sellerId);
             var objectsInfos_before = writer.Position;
             var objectsInfos_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in objectsInfos)
             {
                  entry.Serialize(writer);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var objectsInfos_after = writer.Position;
             writer.Seek((int)objectsInfos_before);
-            writer.WriteUShort((ushort)objectsInfos_count);
+            writer.WriteShort((short)objectsInfos_count);
             writer.Seek((int)objectsInfos_after);
 
         }
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
             sellerId = reader.ReadDouble();
             if (sellerId < -9007199254740990 || sellerId > 9007199254740990)
                 throw new Exception("Forbidden value on sellerId = " + sellerId + ", it doesn't respect the following condition : sellerId < -9007199254740990 || sellerId > 9007199254740990");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var objectsInfos_ = new Types.ObjectItemToSellInHumanVendorShop[limit];
             for (int i = 0; i < limit; i++)
             {

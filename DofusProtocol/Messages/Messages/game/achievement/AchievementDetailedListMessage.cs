@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:31
+// Generated on 02/17/2017 01:57:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var startedAchievements_before = writer.Position;
             var startedAchievements_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in startedAchievements)
             {
                  entry.Serialize(writer);
@@ -43,12 +43,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var startedAchievements_after = writer.Position;
             writer.Seek((int)startedAchievements_before);
-            writer.WriteUShort((ushort)startedAchievements_count);
+            writer.WriteShort((short)startedAchievements_count);
             writer.Seek((int)startedAchievements_after);
 
             var finishedAchievements_before = writer.Position;
             var finishedAchievements_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in finishedAchievements)
             {
                  entry.Serialize(writer);
@@ -56,14 +56,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var finishedAchievements_after = writer.Position;
             writer.Seek((int)finishedAchievements_before);
-            writer.WriteUShort((ushort)finishedAchievements_count);
+            writer.WriteShort((short)finishedAchievements_count);
             writer.Seek((int)finishedAchievements_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var startedAchievements_ = new Types.Achievement[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -71,7 +71,7 @@ namespace Stump.DofusProtocol.Messages
                  startedAchievements_[i].Deserialize(reader);
             }
             startedAchievements = startedAchievements_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var finishedAchievements_ = new Types.Achievement[limit];
             for (int i = 0; i < limit; i++)
             {

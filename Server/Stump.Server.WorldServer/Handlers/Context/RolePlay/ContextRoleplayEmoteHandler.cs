@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void SendEmotePlayMessage(IPacketReceiver client, Character character, EmotesEnum emote)
         {
             client.Send(new EmotePlayMessage(
-                            (byte) emote,
+                            (sbyte) emote,
                             DateTime.Now.GetUnixTimeStampLong(),
                             character.Id,
                             character.Account.Id
@@ -34,29 +34,29 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void SendEmotePlayMessage(IPacketReceiver client, ContextActor actor, EmotesEnum emote)
         {
             client.Send(new EmotePlayMessage(
-                            (byte) emote,
+                            (sbyte) emote,
                             DateTime.Now.GetUnixTimeStampLong(),
                             actor.Id,
                             0
                             ));
         }
 
-        public static void SendEmoteListMessage(IPacketReceiver client, IEnumerable<byte> emoteList)
+        public static void SendEmoteListMessage(IPacketReceiver client, IEnumerable<sbyte> emoteList)
         {
             client.Send(new EmoteListMessage(emoteList));
         }
 
-        public static void SendEmoteAddMessage(IPacketReceiver client, byte emote)
+        public static void SendEmoteAddMessage(IPacketReceiver client, sbyte emote)
         {
             client.Send(new EmoteAddMessage(emote));
         }
 
-        public static void SendEmoteRemoveMessage(IPacketReceiver client, byte emote)
+        public static void SendEmoteRemoveMessage(IPacketReceiver client, sbyte emote)
         {
             client.Send(new EmoteRemoveMessage(emote));
         }
 
-        public static void SendEmotePlayErrorMessage(IPacketReceiver client, byte emote)
+        public static void SendEmotePlayErrorMessage(IPacketReceiver client, sbyte emote)
         {
             client.Send(new EmotePlayErrorMessage(emote));
         }

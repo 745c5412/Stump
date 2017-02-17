@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:34
+// Generated on 02/17/2017 01:57:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,21 +20,24 @@ namespace Stump.DofusProtocol.Messages
         
         public Types.AllianceInformations allianceInfo;
         public bool enabled;
+        public int leadingGuildId;
         
         public AllianceJoinedMessage()
         {
         }
         
-        public AllianceJoinedMessage(Types.AllianceInformations allianceInfo, bool enabled)
+        public AllianceJoinedMessage(Types.AllianceInformations allianceInfo, bool enabled, int leadingGuildId)
         {
             this.allianceInfo = allianceInfo;
             this.enabled = enabled;
+            this.leadingGuildId = leadingGuildId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             allianceInfo.Serialize(writer);
             writer.WriteBoolean(enabled);
+            writer.WriteVarInt(leadingGuildId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,6 +45,9 @@ namespace Stump.DofusProtocol.Messages
             allianceInfo = new Types.AllianceInformations();
             allianceInfo.Deserialize(reader);
             enabled = reader.ReadBoolean();
+            leadingGuildId = reader.ReadVarInt();
+            if (leadingGuildId < 0)
+                throw new Exception("Forbidden value on leadingGuildId = " + leadingGuildId + ", it doesn't respect the following condition : leadingGuildId < 0");
         }
         
     }

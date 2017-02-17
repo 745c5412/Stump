@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,8 +41,6 @@ namespace Stump.DofusProtocol.Types
             team = new Types.NamedPartyTeam();
             team.Deserialize(reader);
             outcome = reader.ReadVarShort();
-            if (outcome < 0)
-                throw new Exception("Forbidden value on outcome = " + outcome + ", it doesn't respect the following condition : outcome < 0");
         }
         
         

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:04
+// Generated on 02/17/2017 01:58:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteBoolean(spellPrevisualization);
             var spells_before = writer.Position;
             var spells_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in spells)
             {
                  entry.Serialize(writer);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var spells_after = writer.Position;
             writer.Seek((int)spells_before);
-            writer.WriteUShort((ushort)spells_count);
+            writer.WriteShort((short)spells_count);
             writer.Seek((int)spells_after);
 
         }
@@ -52,7 +52,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             spellPrevisualization = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var spells_ = new Types.SpellItem[limit];
             for (int i = 0; i < limit; i++)
             {

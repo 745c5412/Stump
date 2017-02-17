@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:14
+// Generated on 02/17/2017 01:53:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +19,9 @@ namespace Stump.DofusProtocol.Types
         
         public double dareId;
         public Types.CharacterBasicMinimalInformations creator;
-        public int subscriptionFee;
-        public int jackpot;
-        public ushort maxCountWinners;
+        public long subscriptionFee;
+        public long jackpot;
+        public short maxCountWinners;
         public double endDate;
         public bool isPrivate;
         public int guildId;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public DareInformations(double dareId, Types.CharacterBasicMinimalInformations creator, int subscriptionFee, int jackpot, ushort maxCountWinners, double endDate, bool isPrivate, int guildId, int allianceId, IEnumerable<Types.DareCriteria> criterions, double startDate)
+        public DareInformations(double dareId, Types.CharacterBasicMinimalInformations creator, long subscriptionFee, long jackpot, short maxCountWinners, double endDate, bool isPrivate, int guildId, int allianceId, IEnumerable<Types.DareCriteria> criterions, double startDate)
         {
             this.dareId = dareId;
             this.creator = creator;
@@ -52,16 +52,16 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteDouble(dareId);
             creator.Serialize(writer);
-            writer.WriteInt(subscriptionFee);
-            writer.WriteInt(jackpot);
-            writer.WriteUShort(maxCountWinners);
+            writer.WriteVarLong(subscriptionFee);
+            writer.WriteVarLong(jackpot);
+            writer.WriteShort(maxCountWinners);
             writer.WriteDouble(endDate);
             writer.WriteBoolean(isPrivate);
             writer.WriteVarInt(guildId);
             writer.WriteVarInt(allianceId);
             var criterions_before = writer.Position;
             var criterions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in criterions)
             {
                  entry.Serialize(writer);
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Types
             }
             var criterions_after = writer.Position;
             writer.Seek((int)criterions_before);
-            writer.WriteUShort((ushort)criterions_count);
+            writer.WriteShort((short)criterions_count);
             writer.Seek((int)criterions_after);
 
             writer.WriteDouble(startDate);
@@ -82,13 +82,13 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on dareId = " + dareId + ", it doesn't respect the following condition : dareId < 0 || dareId > 9007199254740990");
             creator = new Types.CharacterBasicMinimalInformations();
             creator.Deserialize(reader);
-            subscriptionFee = reader.ReadInt();
-            if (subscriptionFee < 0)
-                throw new Exception("Forbidden value on subscriptionFee = " + subscriptionFee + ", it doesn't respect the following condition : subscriptionFee < 0");
-            jackpot = reader.ReadInt();
-            if (jackpot < 0)
-                throw new Exception("Forbidden value on jackpot = " + jackpot + ", it doesn't respect the following condition : jackpot < 0");
-            maxCountWinners = reader.ReadUShort();
+            subscriptionFee = reader.ReadVarLong();
+            if (subscriptionFee < 0 || subscriptionFee > 9007199254740990)
+                throw new Exception("Forbidden value on subscriptionFee = " + subscriptionFee + ", it doesn't respect the following condition : subscriptionFee < 0 || subscriptionFee > 9007199254740990");
+            jackpot = reader.ReadVarLong();
+            if (jackpot < 0 || jackpot > 9007199254740990)
+                throw new Exception("Forbidden value on jackpot = " + jackpot + ", it doesn't respect the following condition : jackpot < 0 || jackpot > 9007199254740990");
+            maxCountWinners = reader.ReadShort();
             if (maxCountWinners < 0 || maxCountWinners > 65535)
                 throw new Exception("Forbidden value on maxCountWinners = " + maxCountWinners + ", it doesn't respect the following condition : maxCountWinners < 0 || maxCountWinners > 65535");
             endDate = reader.ReadDouble();
@@ -101,7 +101,7 @@ namespace Stump.DofusProtocol.Types
             allianceId = reader.ReadVarInt();
             if (allianceId < 0)
                 throw new Exception("Forbidden value on allianceId = " + allianceId + ", it doesn't respect the following condition : allianceId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var criterions_ = new Types.DareCriteria[limit];
             for (int i = 0; i < limit; i++)
             {

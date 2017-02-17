@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:46
+// Generated on 02/17/2017 01:57:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarShort(messageId);
             var dialogParams_before = writer.Position;
             var dialogParams_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in dialogParams)
             {
                  writer.WriteUTF(entry);
@@ -46,12 +46,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var dialogParams_after = writer.Position;
             writer.Seek((int)dialogParams_before);
-            writer.WriteUShort((ushort)dialogParams_count);
+            writer.WriteShort((short)dialogParams_count);
             writer.Seek((int)dialogParams_after);
 
             var visibleReplies_before = writer.Position;
             var visibleReplies_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in visibleReplies)
             {
                  writer.WriteVarShort(entry);
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var visibleReplies_after = writer.Position;
             writer.Seek((int)visibleReplies_before);
-            writer.WriteUShort((ushort)visibleReplies_count);
+            writer.WriteShort((short)visibleReplies_count);
             writer.Seek((int)visibleReplies_after);
 
         }
@@ -69,18 +69,20 @@ namespace Stump.DofusProtocol.Messages
             messageId = reader.ReadVarShort();
             if (messageId < 0)
                 throw new Exception("Forbidden value on messageId = " + messageId + ", it doesn't respect the following condition : messageId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var dialogParams_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {
                  dialogParams_[i] = reader.ReadUTF();
             }
             dialogParams = dialogParams_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var visibleReplies_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  visibleReplies_[i] = reader.ReadVarShort();
+                 if (visibleReplies_[i] < 0)
+                     throw new Exception("Forbidden value on visibleReplies_[i] = " + visibleReplies_[i] + ", it doesn't respect the following condition : visibleReplies_[i] < 0");
             }
             visibleReplies = visibleReplies_;
         }

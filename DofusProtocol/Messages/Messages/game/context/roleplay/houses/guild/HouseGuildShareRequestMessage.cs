@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:45
+// Generated on 02/17/2017 01:57:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,8 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public int houseId;
+        public uint instanceId;
         public bool enable;
         public int rights;
         
@@ -25,20 +27,30 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public HouseGuildShareRequestMessage(bool enable, int rights)
+        public HouseGuildShareRequestMessage(int houseId, uint instanceId, bool enable, int rights)
         {
+            this.houseId = houseId;
+            this.instanceId = instanceId;
             this.enable = enable;
             this.rights = rights;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteVarInt(houseId);
+            writer.WriteUInt(instanceId);
             writer.WriteBoolean(enable);
             writer.WriteVarInt(rights);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            houseId = reader.ReadVarInt();
+            if (houseId < 0)
+                throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
+            instanceId = reader.ReadUInt();
+            if (instanceId < 0 || instanceId > 4294967295)
+                throw new Exception("Forbidden value on instanceId = " + instanceId + ", it doesn't respect the following condition : instanceId < 0 || instanceId > 4294967295");
             enable = reader.ReadBoolean();
             rights = reader.ReadVarInt();
             if (rights < 0)

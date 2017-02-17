@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:50
+// Generated on 02/17/2017 01:58:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.QuestActiveInformations infos;
+        public QuestActiveInformations infos;
         
         public QuestStepInfoMessage()
         {
         }
         
-        public QuestStepInfoMessage(Types.QuestActiveInformations infos)
+        public QuestStepInfoMessage(QuestActiveInformations infos)
         {
             this.infos = infos;
         }
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            infos = Types.ProtocolTypeManager.GetInstance<Types.QuestActiveInformations>(reader.ReadShort());
+            infos = Types.ProtocolTypeManager.GetInstance<QuestActiveInformations>(reader.ReadShort());
             infos.Deserialize(reader);
         }
         

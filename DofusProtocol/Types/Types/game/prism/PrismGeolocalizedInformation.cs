@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Types
         public short worldX;
         public short worldY;
         public int mapId;
-        public Types.PrismInformation prism;
+        public PrismInformation prism;
         
         public PrismGeolocalizedInformation()
         {
         }
         
-        public PrismGeolocalizedInformation(short subAreaId, int allianceId, short worldX, short worldY, int mapId, Types.PrismInformation prism)
+        public PrismGeolocalizedInformation(short subAreaId, int allianceId, short worldX, short worldY, int mapId, PrismInformation prism)
          : base(subAreaId, allianceId)
         {
             this.worldX = worldX;
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Types
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
             mapId = reader.ReadInt();
-            prism = Types.ProtocolTypeManager.GetInstance<Types.PrismInformation>(reader.ReadShort());
+            prism = Types.ProtocolTypeManager.GetInstance<PrismInformation>(reader.ReadShort());
             prism.Deserialize(reader);
         }
         

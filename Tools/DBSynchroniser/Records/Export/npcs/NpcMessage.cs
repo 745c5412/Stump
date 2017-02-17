@@ -1,7 +1,7 @@
  
 
 
-// Generated on 09/26/2016 01:50:46
+// Generated on 02/14/2017 17:01:38
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,6 +21,7 @@ namespace DBSynchroniser.Records
         public int id;
         [I18NField]
         public uint messageId;
+        public List<String> messageParams;
 
         int ID2ORecord.Id
         {
@@ -44,12 +45,39 @@ namespace DBSynchroniser.Records
             set { messageId = value; }
         }
 
+        [D2OIgnore]
+        [Ignore]
+        public List<String> MessageParams
+        {
+            get { return messageParams; }
+            set
+            {
+                messageParams = value;
+                m_messageParamsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_messageParamsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] MessageParamsBin
+        {
+            get { return m_messageParamsBin; }
+            set
+            {
+                m_messageParamsBin = value;
+                messageParams = value == null ? null : value.ToObject<List<String>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (NpcMessage)obj;
             
             Id = castedObj.id;
             MessageId = castedObj.messageId;
+            MessageParams = castedObj.messageParams;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -57,11 +85,13 @@ namespace DBSynchroniser.Records
             var obj = parent != null ? (NpcMessage)parent : new NpcMessage();
             obj.id = Id;
             obj.messageId = MessageId;
+            obj.messageParams = MessageParams;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
+            m_messageParamsBin = messageParams == null ? null : messageParams.ToBinary();
         
         }
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:47
+// Generated on 02/17/2017 01:57:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarShort(dungeonId);
             var players_before = writer.Position;
             var players_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in players)
             {
                  entry.Serialize(writer);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var players_after = writer.Position;
             writer.Seek((int)players_before);
-            writer.WriteUShort((ushort)players_count);
+            writer.WriteShort((short)players_count);
             writer.Seek((int)players_after);
 
         }
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
             dungeonId = reader.ReadVarShort();
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var players_ = new Types.DungeonPartyFinderPlayer[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:37
+// Generated on 02/17/2017 01:57:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,25 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public byte newLevel;
+        public sbyte newLevel;
         
         public CharacterLevelUpMessage()
         {
         }
         
-        public CharacterLevelUpMessage(byte newLevel)
+        public CharacterLevelUpMessage(sbyte newLevel)
         {
             this.newLevel = newLevel;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteByte(newLevel);
+            writer.WriteSByte(newLevel);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            newLevel = reader.ReadByte();
+            newLevel = reader.ReadSByte();
             if (newLevel < 2 || newLevel > 206)
                 throw new Exception("Forbidden value on newLevel = " + newLevel + ", it doesn't respect the following condition : newLevel < 2 || newLevel > 206");
         }

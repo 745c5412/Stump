@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:05
+// Generated on 02/17/2017 01:58:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public short subAreaId;
         public short fightId;
-        public Types.CharacterMinimalPlusLookInformations defender;
+        public CharacterMinimalPlusLookInformations defender;
         
         public PrismFightDefenderAddMessage()
         {
         }
         
-        public PrismFightDefenderAddMessage(short subAreaId, short fightId, Types.CharacterMinimalPlusLookInformations defender)
+        public PrismFightDefenderAddMessage(short subAreaId, short fightId, CharacterMinimalPlusLookInformations defender)
         {
             this.subAreaId = subAreaId;
             this.fightId = fightId;
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Messages
             fightId = reader.ReadVarShort();
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
-            defender = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
+            defender = Types.ProtocolTypeManager.GetInstance<CharacterMinimalPlusLookInformations>(reader.ReadShort());
             defender.Deserialize(reader);
         }
         

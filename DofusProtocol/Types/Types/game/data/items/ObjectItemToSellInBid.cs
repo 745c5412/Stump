@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:14
+// Generated on 02/17/2017 01:53:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public ObjectItemToSellInBid(short objectGID, IEnumerable<Types.ObjectEffect> effects, int objectUID, int quantity, int objectPrice, int unsoldDelay)
+        public ObjectItemToSellInBid(short objectGID, IEnumerable<ObjectEffect> effects, int objectUID, int quantity, long objectPrice, int unsoldDelay)
          : base(objectGID, effects, objectUID, quantity, objectPrice)
         {
             this.unsoldDelay = unsoldDelay;

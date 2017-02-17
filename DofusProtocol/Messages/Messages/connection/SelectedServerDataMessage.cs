@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:30
+// Generated on 02/17/2017 01:57:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Stump.DofusProtocol.Messages
         
         public short serverId;
         public string address;
-        public ushort port;
+        public short port;
         public bool canCreateNewCharacter;
         public IEnumerable<sbyte> ticket;
         
@@ -28,7 +28,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public SelectedServerDataMessage(short serverId, string address, ushort port, bool canCreateNewCharacter, IEnumerable<sbyte> ticket)
+        public SelectedServerDataMessage(short serverId, string address, short port, bool canCreateNewCharacter, IEnumerable<sbyte> ticket)
         {
             this.serverId = serverId;
             this.address = address;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteVarShort(serverId);
             writer.WriteUTF(address);
-            writer.WriteUShort(port);
+            writer.WriteShort(port);
             writer.WriteBoolean(canCreateNewCharacter);
             writer.WriteVarInt((int)ticket.Count());
             foreach (var entry in ticket)
@@ -56,7 +56,7 @@ namespace Stump.DofusProtocol.Messages
             if (serverId < 0)
                 throw new Exception("Forbidden value on serverId = " + serverId + ", it doesn't respect the following condition : serverId < 0");
             address = reader.ReadUTF();
-            port = reader.ReadUShort();
+            port = reader.ReadShort();
             if (port < 0 || port > 65535)
                 throw new Exception("Forbidden value on port = " + port + ", it doesn't respect the following condition : port < 0 || port > 65535");
             canCreateNewCharacter = reader.ReadBoolean();

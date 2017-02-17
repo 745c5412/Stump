@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:39
+// Generated on 02/17/2017 01:57:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var dispositions_before = writer.Position;
             var dispositions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in dispositions)
             {
                  entry.Serialize(writer);
@@ -41,14 +41,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var dispositions_after = writer.Position;
             writer.Seek((int)dispositions_before);
-            writer.WriteUShort((ushort)dispositions_count);
+            writer.WriteShort((short)dispositions_count);
             writer.Seek((int)dispositions_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var dispositions_ = new Types.IdentifiedEntityDispositionInformations[limit];
             for (int i = 0; i < limit; i++)
             {

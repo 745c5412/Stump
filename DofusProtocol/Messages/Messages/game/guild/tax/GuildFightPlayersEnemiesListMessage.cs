@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:55
+// Generated on 02/17/2017 01:58:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(fightId);
             var playerInfo_before = writer.Position;
             var playerInfo_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in playerInfo)
             {
                  entry.Serialize(writer);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var playerInfo_after = writer.Position;
             writer.Seek((int)playerInfo_before);
-            writer.WriteUShort((ushort)playerInfo_count);
+            writer.WriteShort((short)playerInfo_count);
             writer.Seek((int)playerInfo_after);
 
         }
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
             fightId = reader.ReadInt();
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var playerInfo_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {

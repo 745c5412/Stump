@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:51
+// Generated on 02/17/2017 01:58:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public byte questLevel;
+        public sbyte questLevel;
         public sbyte questType;
         
         public TreasureHuntRequestMessage()
         {
         }
         
-        public TreasureHuntRequestMessage(byte questLevel, sbyte questType)
+        public TreasureHuntRequestMessage(sbyte questLevel, sbyte questType)
         {
             this.questLevel = questLevel;
             this.questType = questType;
@@ -33,18 +33,16 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteByte(questLevel);
+            writer.WriteSByte(questLevel);
             writer.WriteSByte(questType);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            questLevel = reader.ReadByte();
+            questLevel = reader.ReadSByte();
             if (questLevel < 1 || questLevel > 206)
                 throw new Exception("Forbidden value on questLevel = " + questLevel + ", it doesn't respect the following condition : questLevel < 1 || questLevel > 206");
             questType = reader.ReadSByte();
-            if (questType < 0)
-                throw new Exception("Forbidden value on questType = " + questType + ", it doesn't respect the following condition : questType < 0");
         }
         
     }

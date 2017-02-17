@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:00
+// Generated on 02/17/2017 01:58:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int objectValue;
-        public int totalTaxValue;
+        public long objectValue;
+        public long totalTaxValue;
         
         public ExchangeReplyTaxVendorMessage()
         {
         }
         
-        public ExchangeReplyTaxVendorMessage(int objectValue, int totalTaxValue)
+        public ExchangeReplyTaxVendorMessage(long objectValue, long totalTaxValue)
         {
             this.objectValue = objectValue;
             this.totalTaxValue = totalTaxValue;
@@ -33,18 +33,18 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(objectValue);
-            writer.WriteVarInt(totalTaxValue);
+            writer.WriteVarLong(objectValue);
+            writer.WriteVarLong(totalTaxValue);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            objectValue = reader.ReadVarInt();
-            if (objectValue < 0)
-                throw new Exception("Forbidden value on objectValue = " + objectValue + ", it doesn't respect the following condition : objectValue < 0");
-            totalTaxValue = reader.ReadVarInt();
-            if (totalTaxValue < 0)
-                throw new Exception("Forbidden value on totalTaxValue = " + totalTaxValue + ", it doesn't respect the following condition : totalTaxValue < 0");
+            objectValue = reader.ReadVarLong();
+            if (objectValue < 0 || objectValue > 9007199254740990)
+                throw new Exception("Forbidden value on objectValue = " + objectValue + ", it doesn't respect the following condition : objectValue < 0 || objectValue > 9007199254740990");
+            totalTaxValue = reader.ReadVarLong();
+            if (totalTaxValue < 0 || totalTaxValue > 9007199254740990)
+                throw new Exception("Forbidden value on totalTaxValue = " + totalTaxValue + ", it doesn't respect the following condition : totalTaxValue < 0 || totalTaxValue > 9007199254740990");
         }
         
     }

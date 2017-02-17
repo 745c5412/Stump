@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:17
+// Generated on 02/17/2017 01:53:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +42,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Deserialize(reader);
             install = reader.ReadSByte();
-            if (install < 0)
-                throw new Exception("Forbidden value on install = " + install + ", it doesn't respect the following condition : install < 0");
             technology = reader.ReadSByte();
-            if (technology < 0)
-                throw new Exception("Forbidden value on technology = " + technology + ", it doesn't respect the following condition : technology < 0");
         }
         
         

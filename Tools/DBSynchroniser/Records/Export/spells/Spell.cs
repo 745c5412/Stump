@@ -1,7 +1,7 @@
  
 
 
-// Generated on 09/26/2016 01:50:49
+// Generated on 02/14/2017 17:01:41
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,8 +31,11 @@ namespace DBSynchroniser.Records
         public int scriptIdCritical;
         public int iconId;
         public List<uint> spellLevels;
+        public List<int> variants;
         public Boolean useParamCache = true;
         public Boolean verbose_cast;
+        public uint obtentionLevel;
+        public Boolean useSpellLevelScaling;
 
         int ID2ORecord.Id
         {
@@ -142,6 +145,32 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [Ignore]
+        public List<int> Variants
+        {
+            get { return variants; }
+            set
+            {
+                variants = value;
+                m_variantsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_variantsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] VariantsBin
+        {
+            get { return m_variantsBin; }
+            set
+            {
+                m_variantsBin = value;
+                variants = value == null ? null : value.ToObject<List<int>>();
+            }
+        }
+
+        [D2OIgnore]
         public Boolean UseParamCache
         {
             get { return useParamCache; }
@@ -153,6 +182,20 @@ namespace DBSynchroniser.Records
         {
             get { return verbose_cast; }
             set { verbose_cast = value; }
+        }
+
+        [D2OIgnore]
+        public uint ObtentionLevel
+        {
+            get { return obtentionLevel; }
+            set { obtentionLevel = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean UseSpellLevelScaling
+        {
+            get { return useSpellLevelScaling; }
+            set { useSpellLevelScaling = value; }
         }
 
         public virtual void AssignFields(object obj)
@@ -170,8 +213,11 @@ namespace DBSynchroniser.Records
             ScriptIdCritical = castedObj.scriptIdCritical;
             IconId = castedObj.iconId;
             SpellLevels = castedObj.spellLevels;
+            Variants = castedObj.variants;
             UseParamCache = castedObj.useParamCache;
             Verbose_cast = castedObj.verbose_cast;
+            ObtentionLevel = castedObj.obtentionLevel;
+            UseSpellLevelScaling = castedObj.useSpellLevelScaling;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -188,14 +234,18 @@ namespace DBSynchroniser.Records
             obj.scriptIdCritical = ScriptIdCritical;
             obj.iconId = IconId;
             obj.spellLevels = SpellLevels;
+            obj.variants = Variants;
             obj.useParamCache = UseParamCache;
             obj.verbose_cast = Verbose_cast;
+            obj.obtentionLevel = ObtentionLevel;
+            obj.useSpellLevelScaling = UseSpellLevelScaling;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
             m_spellLevelsBin = spellLevels == null ? null : spellLevels.ToBinary();
+            m_variantsBin = variants == null ? null : variants.ToBinary();
         
         }
     }

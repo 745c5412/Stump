@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameRolePlayMutantInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, string name, Types.HumanInformations humanoidInfo, int accountId, short monsterId, sbyte powerLevel)
+        public GameRolePlayMutantInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, string name, HumanInformations humanoidInfo, int accountId, short monsterId, sbyte powerLevel)
          : base(contextualId, look, disposition, name, humanoidInfo, accountId)
         {
             this.monsterId = monsterId;

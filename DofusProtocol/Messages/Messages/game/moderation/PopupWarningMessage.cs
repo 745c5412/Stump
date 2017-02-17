@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:05
+// Generated on 02/17/2017 01:58:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public byte lockDuration;
+        public sbyte lockDuration;
         public string author;
         public string content;
         
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PopupWarningMessage(byte lockDuration, string author, string content)
+        public PopupWarningMessage(sbyte lockDuration, string author, string content)
         {
             this.lockDuration = lockDuration;
             this.author = author;
@@ -35,14 +35,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteByte(lockDuration);
+            writer.WriteSByte(lockDuration);
             writer.WriteUTF(author);
             writer.WriteUTF(content);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            lockDuration = reader.ReadByte();
+            lockDuration = reader.ReadSByte();
             if (lockDuration < 0 || lockDuration > 255)
                 throw new Exception("Forbidden value on lockDuration = " + lockDuration + ", it doesn't respect the following condition : lockDuration < 0 || lockDuration > 255");
             author = reader.ReadUTF();

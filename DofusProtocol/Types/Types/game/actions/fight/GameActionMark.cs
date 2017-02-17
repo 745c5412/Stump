@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:09
+// Generated on 02/17/2017 01:52:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(markimpactCell);
             var cells_before = writer.Position;
             var cells_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in cells)
             {
                  entry.Serialize(writer);
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Types
             }
             var cells_after = writer.Position;
             writer.Seek((int)cells_before);
-            writer.WriteUShort((ushort)cells_count);
+            writer.WriteShort((short)cells_count);
             writer.Seek((int)cells_after);
 
             writer.WriteBoolean(active);
@@ -75,8 +75,6 @@ namespace Stump.DofusProtocol.Types
             if (markAuthorId < -9007199254740990 || markAuthorId > 9007199254740990)
                 throw new Exception("Forbidden value on markAuthorId = " + markAuthorId + ", it doesn't respect the following condition : markAuthorId < -9007199254740990 || markAuthorId > 9007199254740990");
             markTeamId = reader.ReadSByte();
-            if (markTeamId < 0)
-                throw new Exception("Forbidden value on markTeamId = " + markTeamId + ", it doesn't respect the following condition : markTeamId < 0");
             markSpellId = reader.ReadInt();
             if (markSpellId < 0)
                 throw new Exception("Forbidden value on markSpellId = " + markSpellId + ", it doesn't respect the following condition : markSpellId < 0");
@@ -88,7 +86,7 @@ namespace Stump.DofusProtocol.Types
             markimpactCell = reader.ReadShort();
             if (markimpactCell < -1 || markimpactCell > 559)
                 throw new Exception("Forbidden value on markimpactCell = " + markimpactCell + ", it doesn't respect the following condition : markimpactCell < -1 || markimpactCell > 559");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var cells_ = new Types.GameActionMarkedCell[limit];
             for (int i = 0; i < limit; i++)
             {

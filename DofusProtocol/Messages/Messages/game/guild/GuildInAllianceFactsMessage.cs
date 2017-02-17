@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:54
+// Generated on 02/17/2017 01:58:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GuildInAllianceFactsMessage(Types.GuildFactSheetInformations infos, int creationDate, short nbTaxCollectors, IEnumerable<Types.CharacterMinimalInformations> members, Types.BasicNamedAllianceInformations allianceInfos)
+        public GuildInAllianceFactsMessage(GuildFactSheetInformations infos, int creationDate, short nbTaxCollectors, IEnumerable<Types.CharacterMinimalInformations> members, Types.BasicNamedAllianceInformations allianceInfos)
          : base(infos, creationDate, nbTaxCollectors, members)
         {
             this.allianceInfos = allianceInfos;

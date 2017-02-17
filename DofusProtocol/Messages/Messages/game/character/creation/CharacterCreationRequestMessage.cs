@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:36
+// Generated on 02/17/2017 01:57:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,8 +53,6 @@ namespace Stump.DofusProtocol.Messages
         {
             name = reader.ReadUTF();
             breed = reader.ReadSByte();
-            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage)
-                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage");
             sex = reader.ReadBoolean();
             var colors_ = new int[5];
             for (int i = 0; i < 5; i++)

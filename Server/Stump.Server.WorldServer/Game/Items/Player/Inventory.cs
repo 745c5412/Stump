@@ -456,7 +456,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     continue;
 
                 var item = TryGetItem(itemUid);
-                preset.AddObject(new PresetItem((byte)item.Position, (short)item.Template.Id, item.Guid));
+                preset.AddObject(new PresetItem((sbyte)item.Position, (short)item.Template.Id, item.Guid));
             }
 
             InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
@@ -489,7 +489,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             else
             {
                 foreach (var item in GetEquipedItems())
-                    preset.AddObject(new PresetItem((byte)item.Position, (short)item.Template.Id, item.Guid));
+                    preset.AddObject(new PresetItem((sbyte)item.Position, (short)item.Template.Id, item.Guid));
 
                 Owner.Shortcuts.AddPresetShortcut(Owner.Shortcuts.GetNextFreeSlot(ShortcutBarEnum.GENERAL_SHORTCUT_BAR), presetId);
             }
@@ -543,7 +543,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void EquipPreset(int presetId)
         {
-            var unlinkedPosition = new List<byte>();
+            var unlinkedPosition = new List<sbyte>();
 
             var preset = GetPreset(presetId);
 
@@ -574,7 +574,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (preset.Objects.Exists(x => x.objUid == item.Guid))
                     continue;
 
-                unlinkedPosition.Add((byte)item.Position);
+                unlinkedPosition.Add((sbyte)item.Position);
 
                 MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:42
+// Generated on 02/17/2017 01:57:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,27 +18,27 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int proposedPrice;
+        public long proposedPrice;
         
         public PaddockBuyRequestMessage()
         {
         }
         
-        public PaddockBuyRequestMessage(int proposedPrice)
+        public PaddockBuyRequestMessage(long proposedPrice)
         {
             this.proposedPrice = proposedPrice;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(proposedPrice);
+            writer.WriteVarLong(proposedPrice);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            proposedPrice = reader.ReadVarInt();
-            if (proposedPrice < 0)
-                throw new Exception("Forbidden value on proposedPrice = " + proposedPrice + ", it doesn't respect the following condition : proposedPrice < 0");
+            proposedPrice = reader.ReadVarLong();
+            if (proposedPrice < 0 || proposedPrice > 9007199254740990)
+                throw new Exception("Forbidden value on proposedPrice = " + proposedPrice + ", it doesn't respect the following condition : proposedPrice < 0 || proposedPrice > 9007199254740990");
         }
         
     }

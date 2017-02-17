@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:55
+// Generated on 02/17/2017 01:58:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.TaxCollectorInformations informations;
+        public TaxCollectorInformations informations;
         
         public TaxCollectorMovementAddMessage()
         {
         }
         
-        public TaxCollectorMovementAddMessage(Types.TaxCollectorInformations informations)
+        public TaxCollectorMovementAddMessage(TaxCollectorInformations informations)
         {
             this.informations = informations;
         }
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            informations = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorInformations>(reader.ReadShort());
+            informations = Types.ProtocolTypeManager.GetInstance<TaxCollectorInformations>(reader.ReadShort());
             informations.Deserialize(reader);
         }
         

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:04
+// Generated on 02/17/2017 01:58:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int hostUID;
-        public byte hostPos;
+        public sbyte hostPos;
         
         public WrapperObjectDissociateRequestMessage()
         {
         }
         
-        public WrapperObjectDissociateRequestMessage(int hostUID, byte hostPos)
+        public WrapperObjectDissociateRequestMessage(int hostUID, sbyte hostPos)
         {
             this.hostUID = hostUID;
             this.hostPos = hostPos;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarInt(hostUID);
-            writer.WriteByte(hostPos);
+            writer.WriteSByte(hostPos);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Messages
             hostUID = reader.ReadVarInt();
             if (hostUID < 0)
                 throw new Exception("Forbidden value on hostUID = " + hostUID + ", it doesn't respect the following condition : hostUID < 0");
-            hostPos = reader.ReadByte();
+            hostPos = reader.ReadSByte();
             if (hostPos < 0 || hostPos > 255)
                 throw new Exception("Forbidden value on hostPos = " + hostPos + ", it doesn't respect the following condition : hostPos < 0 || hostPos > 255");
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:55
+// Generated on 02/17/2017 01:58:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +46,6 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             movementType = reader.ReadSByte();
-            if (movementType < 0)
-                throw new Exception("Forbidden value on movementType = " + movementType + ", it doesn't respect the following condition : movementType < 0");
             basicInfos = new Types.TaxCollectorBasicInformations();
             basicInfos.Deserialize(reader);
             playerId = reader.ReadVarLong();

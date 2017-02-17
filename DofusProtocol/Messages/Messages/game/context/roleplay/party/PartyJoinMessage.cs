@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:48
+// Generated on 02/17/2017 01:58:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace Stump.DofusProtocol.Messages
         public sbyte partyType;
         public long partyLeaderId;
         public sbyte maxParticipants;
-        public IEnumerable<Types.PartyMemberInformations> members;
+        public IEnumerable<PartyMemberInformations> members;
         public IEnumerable<Types.PartyGuestInformations> guests;
         public bool restricted;
         public string partyName;
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyJoinMessage(int partyId, sbyte partyType, long partyLeaderId, sbyte maxParticipants, IEnumerable<Types.PartyMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests, bool restricted, string partyName)
+        public PartyJoinMessage(int partyId, sbyte partyType, long partyLeaderId, sbyte maxParticipants, IEnumerable<PartyMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests, bool restricted, string partyName)
          : base(partyId)
         {
             this.partyType = partyType;
@@ -50,7 +50,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(maxParticipants);
             var members_before = writer.Position;
             var members_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in members)
             {
                  writer.WriteShort(entry.TypeId);
@@ -59,12 +59,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var members_after = writer.Position;
             writer.Seek((int)members_before);
-            writer.WriteUShort((ushort)members_count);
+            writer.WriteShort((short)members_count);
             writer.Seek((int)members_after);
 
             var guests_before = writer.Position;
             var guests_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in guests)
             {
                  entry.Serialize(writer);
@@ -72,7 +72,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var guests_after = writer.Position;
             writer.Seek((int)guests_before);
-            writer.WriteUShort((ushort)guests_count);
+            writer.WriteShort((short)guests_count);
             writer.Seek((int)guests_after);
 
             writer.WriteBoolean(restricted);
@@ -83,23 +83,21 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             partyType = reader.ReadSByte();
-            if (partyType < 0)
-                throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
             partyLeaderId = reader.ReadVarLong();
             if (partyLeaderId < 0 || partyLeaderId > 9007199254740990)
                 throw new Exception("Forbidden value on partyLeaderId = " + partyLeaderId + ", it doesn't respect the following condition : partyLeaderId < 0 || partyLeaderId > 9007199254740990");
             maxParticipants = reader.ReadSByte();
             if (maxParticipants < 0)
                 throw new Exception("Forbidden value on maxParticipants = " + maxParticipants + ", it doesn't respect the following condition : maxParticipants < 0");
-            var limit = reader.ReadUShort();
-            var members_ = new Types.PartyMemberInformations[limit];
+            var limit = reader.ReadShort();
+            var members_ = new PartyMemberInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 members_[i] = Types.ProtocolTypeManager.GetInstance<Types.PartyMemberInformations>(reader.ReadShort());
+                 members_[i] = Types.ProtocolTypeManager.GetInstance<PartyMemberInformations>(reader.ReadShort());
                  members_[i].Deserialize(reader);
             }
             members = members_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var guests_ = new Types.PartyGuestInformations[limit];
             for (int i = 0; i < limit; i++)
             {

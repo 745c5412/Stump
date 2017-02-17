@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:53
+// Generated on 02/17/2017 01:58:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.GuildFactSheetInformations infos;
+        public GuildFactSheetInformations infos;
         public int creationDate;
         public short nbTaxCollectors;
         public IEnumerable<Types.CharacterMinimalInformations> members;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GuildFactsMessage(Types.GuildFactSheetInformations infos, int creationDate, short nbTaxCollectors, IEnumerable<Types.CharacterMinimalInformations> members)
+        public GuildFactsMessage(GuildFactSheetInformations infos, int creationDate, short nbTaxCollectors, IEnumerable<Types.CharacterMinimalInformations> members)
         {
             this.infos = infos;
             this.creationDate = creationDate;
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarShort(nbTaxCollectors);
             var members_before = writer.Position;
             var members_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in members)
             {
                  entry.Serialize(writer);
@@ -51,14 +51,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var members_after = writer.Position;
             writer.Seek((int)members_before);
-            writer.WriteUShort((ushort)members_count);
+            writer.WriteShort((short)members_count);
             writer.Seek((int)members_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            infos = Types.ProtocolTypeManager.GetInstance<Types.GuildFactSheetInformations>(reader.ReadShort());
+            infos = Types.ProtocolTypeManager.GetInstance<GuildFactSheetInformations>(reader.ReadShort());
             infos.Deserialize(reader);
             creationDate = reader.ReadInt();
             if (creationDate < 0)
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Messages
             nbTaxCollectors = reader.ReadVarShort();
             if (nbTaxCollectors < 0)
                 throw new Exception("Forbidden value on nbTaxCollectors = " + nbTaxCollectors + ", it doesn't respect the following condition : nbTaxCollectors < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var members_ = new Types.CharacterMinimalInformations[limit];
             for (int i = 0; i < limit; i++)
             {

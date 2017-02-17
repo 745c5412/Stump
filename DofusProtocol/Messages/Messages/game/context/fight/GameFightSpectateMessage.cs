@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:40
+// Generated on 02/17/2017 01:57:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var effects_before = writer.Position;
             var effects_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in effects)
             {
                  entry.Serialize(writer);
@@ -49,12 +49,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var effects_after = writer.Position;
             writer.Seek((int)effects_before);
-            writer.WriteUShort((ushort)effects_count);
+            writer.WriteShort((short)effects_count);
             writer.Seek((int)effects_after);
 
             var marks_before = writer.Position;
             var marks_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in marks)
             {
                  entry.Serialize(writer);
@@ -62,14 +62,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var marks_after = writer.Position;
             writer.Seek((int)marks_before);
-            writer.WriteUShort((ushort)marks_count);
+            writer.WriteShort((short)marks_count);
             writer.Seek((int)marks_after);
 
             writer.WriteVarShort(gameTurn);
             writer.WriteInt(fightStart);
             var idols_before = writer.Position;
             var idols_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in idols)
             {
                  entry.Serialize(writer);
@@ -77,14 +77,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var idols_after = writer.Position;
             writer.Seek((int)idols_before);
-            writer.WriteUShort((ushort)idols_count);
+            writer.WriteShort((short)idols_count);
             writer.Seek((int)idols_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var effects_ = new Types.FightDispellableEffectExtendedInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -92,7 +92,7 @@ namespace Stump.DofusProtocol.Messages
                  effects_[i].Deserialize(reader);
             }
             effects = effects_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var marks_ = new Types.GameActionMark[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -106,7 +106,7 @@ namespace Stump.DofusProtocol.Messages
             fightStart = reader.ReadInt();
             if (fightStart < 0)
                 throw new Exception("Forbidden value on fightStart = " + fightStart + ", it doesn't respect the following condition : fightStart < 0");
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var idols_ = new Types.Idol[limit];
             for (int i = 0; i < limit; i++)
             {

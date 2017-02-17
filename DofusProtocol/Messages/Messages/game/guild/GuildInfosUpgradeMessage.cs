@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:54
+// Generated on 02/17/2017 01:58:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarShort(boostPoints);
             var spellId_before = writer.Position;
             var spellId_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in spellId)
             {
                  writer.WriteVarShort(entry);
@@ -67,12 +67,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var spellId_after = writer.Position;
             writer.Seek((int)spellId_before);
-            writer.WriteUShort((ushort)spellId_count);
+            writer.WriteShort((short)spellId_count);
             writer.Seek((int)spellId_after);
 
             var spellLevel_before = writer.Position;
             var spellLevel_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in spellLevel)
             {
                  writer.WriteShort(entry);
@@ -80,7 +80,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var spellLevel_after = writer.Position;
             writer.Seek((int)spellLevel_before);
-            writer.WriteUShort((ushort)spellLevel_count);
+            writer.WriteShort((short)spellLevel_count);
             writer.Seek((int)spellLevel_after);
 
         }
@@ -111,14 +111,16 @@ namespace Stump.DofusProtocol.Messages
             boostPoints = reader.ReadVarShort();
             if (boostPoints < 0)
                 throw new Exception("Forbidden value on boostPoints = " + boostPoints + ", it doesn't respect the following condition : boostPoints < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var spellId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  spellId_[i] = reader.ReadVarShort();
+                 if (spellId_[i] < 0)
+                     throw new Exception("Forbidden value on spellId_[i] = " + spellId_[i] + ", it doesn't respect the following condition : spellId_[i] < 0");
             }
             spellId = spellId_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var spellLevel_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {

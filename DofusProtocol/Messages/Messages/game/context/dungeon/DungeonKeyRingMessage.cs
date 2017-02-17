@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:39
+// Generated on 02/17/2017 01:57:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var availables_before = writer.Position;
             var availables_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in availables)
             {
                  writer.WriteVarShort(entry);
@@ -43,12 +43,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var availables_after = writer.Position;
             writer.Seek((int)availables_before);
-            writer.WriteUShort((ushort)availables_count);
+            writer.WriteShort((short)availables_count);
             writer.Seek((int)availables_after);
 
             var unavailables_before = writer.Position;
             var unavailables_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in unavailables)
             {
                  writer.WriteVarShort(entry);
@@ -56,25 +56,29 @@ namespace Stump.DofusProtocol.Messages
             }
             var unavailables_after = writer.Position;
             writer.Seek((int)unavailables_before);
-            writer.WriteUShort((ushort)unavailables_count);
+            writer.WriteShort((short)unavailables_count);
             writer.Seek((int)unavailables_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var availables_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  availables_[i] = reader.ReadVarShort();
+                 if (availables_[i] < 0)
+                     throw new Exception("Forbidden value on availables_[i] = " + availables_[i] + ", it doesn't respect the following condition : availables_[i] < 0");
             }
             availables = availables_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var unavailables_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  unavailables_[i] = reader.ReadVarShort();
+                 if (unavailables_[i] < 0)
+                     throw new Exception("Forbidden value on unavailables_[i] = " + unavailables_[i] + ", it doesn't respect the following condition : unavailables_[i] < 0");
             }
             unavailables = unavailables_;
         }

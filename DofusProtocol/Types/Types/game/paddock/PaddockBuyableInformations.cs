@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,41 +9,38 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
-    public class PaddockBuyableInformations : PaddockInformations
+    public class PaddockBuyableInformations
     {
         public const short Id = 130;
-        public override short TypeId
+        public virtual short TypeId
         {
             get { return Id; }
         }
         
-        public int price;
+        public long price;
         public bool locked;
         
         public PaddockBuyableInformations()
         {
         }
         
-        public PaddockBuyableInformations(short maxOutdoorMount, short maxItems, int price, bool locked)
-         : base(maxOutdoorMount, maxItems)
+        public PaddockBuyableInformations(long price, bool locked)
         {
             this.price = price;
             this.locked = locked;
         }
         
-        public override void Serialize(IDataWriter writer)
+        public virtual void Serialize(IDataWriter writer)
         {
-            base.Serialize(writer);
-            writer.WriteVarInt(price);
+            writer.WriteVarLong(price);
             writer.WriteBoolean(locked);
         }
         
-        public override void Deserialize(IDataReader reader)
+        public virtual void Deserialize(IDataReader reader)
         {
-            base.Deserialize(reader);
-            price = reader.ReadVarInt();
-            if (price < 0)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
+            price = reader.ReadVarLong();
+            if (price < 0 || price > 9007199254740990)
+                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 9007199254740990");
             locked = reader.ReadBoolean();
         }
         

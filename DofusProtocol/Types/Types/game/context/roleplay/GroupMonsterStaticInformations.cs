@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
             mainCreatureLightInfos.Serialize(writer);
             var underlings_before = writer.Position;
             var underlings_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in underlings)
             {
                  entry.Serialize(writer);
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             }
             var underlings_after = writer.Position;
             writer.Seek((int)underlings_before);
-            writer.WriteUShort((ushort)underlings_count);
+            writer.WriteShort((short)underlings_count);
             writer.Seek((int)underlings_after);
 
         }
@@ -52,7 +52,7 @@ namespace Stump.DofusProtocol.Types
         {
             mainCreatureLightInfos = new Types.MonsterInGroupLightInformations();
             mainCreatureLightInfos.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var underlings_ = new Types.MonsterInGroupInformations[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,15 +48,11 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             teamId = reader.ReadSByte();
-            if (teamId < 0)
-                throw new Exception("Forbidden value on teamId = " + teamId + ", it doesn't respect the following condition : teamId < 0");
             leaderId = reader.ReadDouble();
             if (leaderId < -9007199254740990 || leaderId > 9007199254740990)
                 throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < -9007199254740990 || leaderId > 9007199254740990");
             teamSide = reader.ReadSByte();
             teamTypeId = reader.ReadSByte();
-            if (teamTypeId < 0)
-                throw new Exception("Forbidden value on teamTypeId = " + teamTypeId + ", it doesn't respect the following condition : teamTypeId < 0");
             nbWaves = reader.ReadSByte();
             if (nbWaves < 0)
                 throw new Exception("Forbidden value on nbWaves = " + nbWaves + ", it doesn't respect the following condition : nbWaves < 0");

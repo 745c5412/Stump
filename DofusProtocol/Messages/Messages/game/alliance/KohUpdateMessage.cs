@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:35
+// Generated on 02/17/2017 01:57:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var alliances_before = writer.Position;
             var alliances_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in alliances)
             {
                  entry.Serialize(writer);
@@ -55,12 +55,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var alliances_after = writer.Position;
             writer.Seek((int)alliances_before);
-            writer.WriteUShort((ushort)alliances_count);
+            writer.WriteShort((short)alliances_count);
             writer.Seek((int)alliances_after);
 
             var allianceNbMembers_before = writer.Position;
             var allianceNbMembers_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in allianceNbMembers)
             {
                  writer.WriteVarShort(entry);
@@ -68,12 +68,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var allianceNbMembers_after = writer.Position;
             writer.Seek((int)allianceNbMembers_before);
-            writer.WriteUShort((ushort)allianceNbMembers_count);
+            writer.WriteShort((short)allianceNbMembers_count);
             writer.Seek((int)allianceNbMembers_after);
 
             var allianceRoundWeigth_before = writer.Position;
             var allianceRoundWeigth_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in allianceRoundWeigth)
             {
                  writer.WriteVarInt(entry);
@@ -81,12 +81,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var allianceRoundWeigth_after = writer.Position;
             writer.Seek((int)allianceRoundWeigth_before);
-            writer.WriteUShort((ushort)allianceRoundWeigth_count);
+            writer.WriteShort((short)allianceRoundWeigth_count);
             writer.Seek((int)allianceRoundWeigth_after);
 
             var allianceMatchScore_before = writer.Position;
             var allianceMatchScore_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in allianceMatchScore)
             {
                  writer.WriteSByte(entry);
@@ -94,7 +94,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var allianceMatchScore_after = writer.Position;
             writer.Seek((int)allianceMatchScore_before);
-            writer.WriteUShort((ushort)allianceMatchScore_count);
+            writer.WriteShort((short)allianceMatchScore_count);
             writer.Seek((int)allianceMatchScore_after);
 
             allianceMapWinner.Serialize(writer);
@@ -105,7 +105,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var alliances_ = new Types.AllianceInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -113,25 +113,31 @@ namespace Stump.DofusProtocol.Messages
                  alliances_[i].Deserialize(reader);
             }
             alliances = alliances_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var allianceNbMembers_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  allianceNbMembers_[i] = reader.ReadVarShort();
+                 if (allianceNbMembers_[i] < 0)
+                     throw new Exception("Forbidden value on allianceNbMembers_[i] = " + allianceNbMembers_[i] + ", it doesn't respect the following condition : allianceNbMembers_[i] < 0");
             }
             allianceNbMembers = allianceNbMembers_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var allianceRoundWeigth_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  allianceRoundWeigth_[i] = reader.ReadVarInt();
+                 if (allianceRoundWeigth_[i] < 0)
+                     throw new Exception("Forbidden value on allianceRoundWeigth_[i] = " + allianceRoundWeigth_[i] + ", it doesn't respect the following condition : allianceRoundWeigth_[i] < 0");
             }
             allianceRoundWeigth = allianceRoundWeigth_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var allianceMatchScore_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
                  allianceMatchScore_[i] = reader.ReadSByte();
+                 if (allianceMatchScore_[i] < 0)
+                     throw new Exception("Forbidden value on allianceMatchScore_[i] = " + allianceMatchScore_[i] + ", it doesn't respect the following condition : allianceMatchScore_[i] < 0");
             }
             allianceMatchScore = allianceMatchScore_;
             allianceMapWinner = new Types.BasicAllianceInformations();

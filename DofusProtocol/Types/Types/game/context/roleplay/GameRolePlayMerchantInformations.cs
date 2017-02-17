@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte sellType;
-        public IEnumerable<Types.HumanOption> options;
+        public IEnumerable<HumanOption> options;
         
         public GameRolePlayMerchantInformations()
         {
         }
         
-        public GameRolePlayMerchantInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, string name, sbyte sellType, IEnumerable<Types.HumanOption> options)
+        public GameRolePlayMerchantInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, string name, sbyte sellType, IEnumerable<HumanOption> options)
          : base(contextualId, look, disposition, name)
         {
             this.sellType = sellType;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(sellType);
             var options_before = writer.Position;
             var options_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in options)
             {
                  writer.WriteShort(entry.TypeId);
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             }
             var options_after = writer.Position;
             writer.Seek((int)options_before);
-            writer.WriteUShort((ushort)options_count);
+            writer.WriteShort((short)options_count);
             writer.Seek((int)options_after);
 
         }
@@ -57,11 +57,11 @@ namespace Stump.DofusProtocol.Types
             sellType = reader.ReadSByte();
             if (sellType < 0)
                 throw new Exception("Forbidden value on sellType = " + sellType + ", it doesn't respect the following condition : sellType < 0");
-            var limit = reader.ReadUShort();
-            var options_ = new Types.HumanOption[limit];
+            var limit = reader.ReadShort();
+            var options_ = new HumanOption[limit];
             for (int i = 0; i < limit; i++)
             {
-                 options_[i] = Types.ProtocolTypeManager.GetInstance<Types.HumanOption>(reader.ReadShort());
+                 options_[i] = Types.ProtocolTypeManager.GetInstance<HumanOption>(reader.ReadShort());
                  options_[i].Deserialize(reader);
             }
             options = options_;

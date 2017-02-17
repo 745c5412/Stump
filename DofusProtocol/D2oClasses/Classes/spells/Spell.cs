@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:33
+// Generated on 02/14/2017 16:38:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -26,8 +26,11 @@ namespace Stump.DofusProtocol.D2oClasses
         public int scriptIdCritical;
         public int iconId;
         public List<uint> spellLevels;
+        public List<int> variants;
         public Boolean useParamCache = true;
         public Boolean verbose_cast;
+        public uint obtentionLevel;
+        public Boolean useSpellLevelScaling;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -99,6 +102,12 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.spellLevels = value; }
         }
         [D2OIgnore]
+        public List<int> Variants
+        {
+            get { return this.variants; }
+            set { this.variants = value; }
+        }
+        [D2OIgnore]
         public Boolean UseParamCache
         {
             get { return this.useParamCache; }
@@ -109,6 +118,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.verbose_cast; }
             set { this.verbose_cast = value; }
+        }
+        [D2OIgnore]
+        public uint ObtentionLevel
+        {
+            get { return this.obtentionLevel; }
+            set { this.obtentionLevel = value; }
+        }
+        [D2OIgnore]
+        public Boolean UseSpellLevelScaling
+        {
+            get { return this.useSpellLevelScaling; }
+            set { this.useSpellLevelScaling = value; }
         }
     }
 }

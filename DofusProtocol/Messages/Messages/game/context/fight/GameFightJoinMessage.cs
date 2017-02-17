@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:39
+// Generated on 02/17/2017 01:57:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,8 +62,6 @@ namespace Stump.DofusProtocol.Messages
             if (timeMaxBeforeFightStart < 0)
                 throw new Exception("Forbidden value on timeMaxBeforeFightStart = " + timeMaxBeforeFightStart + ", it doesn't respect the following condition : timeMaxBeforeFightStart < 0");
             fightType = reader.ReadSByte();
-            if (fightType < 0)
-                throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
         }
         
     }

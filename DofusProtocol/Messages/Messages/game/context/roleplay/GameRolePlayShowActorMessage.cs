@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:42
+// Generated on 02/17/2017 01:57:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.GameRolePlayActorInformations informations;
+        public GameRolePlayActorInformations informations;
         
         public GameRolePlayShowActorMessage()
         {
         }
         
-        public GameRolePlayShowActorMessage(Types.GameRolePlayActorInformations informations)
+        public GameRolePlayShowActorMessage(GameRolePlayActorInformations informations)
         {
             this.informations = informations;
         }
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            informations = Types.ProtocolTypeManager.GetInstance<Types.GameRolePlayActorInformations>(reader.ReadShort());
+            informations = Types.ProtocolTypeManager.GetInstance<GameRolePlayActorInformations>(reader.ReadShort());
             informations.Deserialize(reader);
         }
         

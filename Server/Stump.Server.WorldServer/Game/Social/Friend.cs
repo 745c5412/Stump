@@ -60,12 +60,13 @@ namespace Stump.Server.WorldServer.Game.Social
                     (sbyte)(Character.FriendsBook.IsFriend(asker.Account.Id) ? (Character.IsFighting() ? PlayerStateEnum.GAME_TYPE_FIGHT : PlayerStateEnum.GAME_TYPE_ROLEPLAY) : PlayerStateEnum.UNKNOWN_STATE ),
                     (short)Account.LastConnectionTimeStamp,
                     0, // todo achievement
+                    Character.Sex == SexTypeEnum.SEX_FEMALE,
+                    false,
                     Character.Id,
                     Character.Name,
-                    Character.FriendsBook.IsFriend(asker.Account.Id) ? Character.Level : (byte)0,
+                    Character.FriendsBook.IsFriend(asker.Account.Id) ? (sbyte)Character.Level : (sbyte)0,
                     Character.FriendsBook.IsFriend(asker.Account.Id) ? (sbyte)Character.AlignmentSide : (sbyte)AlignmentSideEnum.ALIGNMENT_UNKNOWN,
                     (sbyte)Character.Breed.Id,
-                    Character.Sex == SexTypeEnum.SEX_FEMALE,
                     Character.GuildMember == null ? new GuildInformations(0, "", 0, new GuildEmblem(0,0,0,0)) : Character.GuildMember.Guild.GetGuildInformations(),
                     (short)Character.SmileyMoodId,
                     Character.Status);

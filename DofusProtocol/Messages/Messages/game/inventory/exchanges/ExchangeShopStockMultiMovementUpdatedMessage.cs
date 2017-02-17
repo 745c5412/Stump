@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:00
+// Generated on 02/17/2017 01:58:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var objectInfoList_before = writer.Position;
             var objectInfoList_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in objectInfoList)
             {
                  entry.Serialize(writer);
@@ -41,14 +41,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var objectInfoList_after = writer.Position;
             writer.Seek((int)objectInfoList_before);
-            writer.WriteUShort((ushort)objectInfoList_count);
+            writer.WriteShort((short)objectInfoList_count);
             writer.Seek((int)objectInfoList_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var objectInfoList_ = new Types.ObjectItemToSell[limit];
             for (int i = 0; i < limit; i++)
             {

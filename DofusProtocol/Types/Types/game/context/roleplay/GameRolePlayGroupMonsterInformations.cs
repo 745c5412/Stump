@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Stump.DofusProtocol.Types
         public bool keyRingBonus;
         public bool hasHardcoreDrop;
         public bool hasAVARewardToken;
-        public Types.GroupMonsterStaticInformations staticInfos;
+        public GroupMonsterStaticInformations staticInfos;
         public double creationTime;
         public int ageBonusRate;
         public sbyte lootShare;
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameRolePlayGroupMonsterInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, bool keyRingBonus, bool hasHardcoreDrop, bool hasAVARewardToken, Types.GroupMonsterStaticInformations staticInfos, double creationTime, int ageBonusRate, sbyte lootShare, sbyte alignmentSide)
+        public GameRolePlayGroupMonsterInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, bool keyRingBonus, bool hasHardcoreDrop, bool hasAVARewardToken, GroupMonsterStaticInformations staticInfos, double creationTime, int ageBonusRate, sbyte lootShare, sbyte alignmentSide)
          : base(contextualId, look, disposition)
         {
             this.keyRingBonus = keyRingBonus;
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Types
             keyRingBonus = BooleanByteWrapper.GetFlag(flag1, 0);
             hasHardcoreDrop = BooleanByteWrapper.GetFlag(flag1, 1);
             hasAVARewardToken = BooleanByteWrapper.GetFlag(flag1, 2);
-            staticInfos = Types.ProtocolTypeManager.GetInstance<Types.GroupMonsterStaticInformations>(reader.ReadShort());
+            staticInfos = Types.ProtocolTypeManager.GetInstance<GroupMonsterStaticInformations>(reader.ReadShort());
             staticInfos.Deserialize(reader);
             creationTime = reader.ReadDouble();
             if (creationTime < 0 || creationTime > 9007199254740990)

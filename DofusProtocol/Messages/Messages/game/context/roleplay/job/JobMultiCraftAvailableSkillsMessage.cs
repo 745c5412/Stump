@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:46
+// Generated on 02/17/2017 01:57:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarLong(playerId);
             var skills_before = writer.Position;
             var skills_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in skills)
             {
                  writer.WriteVarShort(entry);
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var skills_after = writer.Position;
             writer.Seek((int)skills_before);
-            writer.WriteUShort((ushort)skills_count);
+            writer.WriteShort((short)skills_count);
             writer.Seek((int)skills_after);
 
         }
@@ -57,11 +57,13 @@ namespace Stump.DofusProtocol.Messages
             playerId = reader.ReadVarLong();
             if (playerId < 0 || playerId > 9007199254740990)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9007199254740990");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var skills_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  skills_[i] = reader.ReadVarShort();
+                 if (skills_[i] < 0)
+                     throw new Exception("Forbidden value on skills_[i] = " + skills_[i] + ", it doesn't respect the following condition : skills_[i] < 0");
             }
             skills = skills_;
         }

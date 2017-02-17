@@ -263,6 +263,7 @@
     <Compile Include="Records\Export\sounds\SoundUi.cs" />
     <Compile Include="Records\Export\sounds\SoundUiElement.cs" />
     <Compile Include="Records\Export\sounds\SoundUiHook.cs" />
+    <Compile Include="Records\Export\spells\FinishMove.cs" />
     <Compile Include="Records\Export\spells\Spell.cs" />
     <Compile Include="Records\Export\spells\SpellBomb.cs" />
     <Compile Include="Records\Export\spells\SpellLevel.cs" />

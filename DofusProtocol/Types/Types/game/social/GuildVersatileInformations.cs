@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:17
+// Generated on 02/17/2017 01:53:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Types
         
         public int guildId;
         public long leaderId;
-        public byte guildLevel;
-        public byte nbMembers;
+        public sbyte guildLevel;
+        public sbyte nbMembers;
         
         public GuildVersatileInformations()
         {
         }
         
-        public GuildVersatileInformations(int guildId, long leaderId, byte guildLevel, byte nbMembers)
+        public GuildVersatileInformations(int guildId, long leaderId, sbyte guildLevel, sbyte nbMembers)
         {
             this.guildId = guildId;
             this.leaderId = leaderId;
@@ -38,8 +38,8 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteVarInt(guildId);
             writer.WriteVarLong(leaderId);
-            writer.WriteByte(guildLevel);
-            writer.WriteByte(nbMembers);
+            writer.WriteSByte(guildLevel);
+            writer.WriteSByte(nbMembers);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -50,10 +50,10 @@ namespace Stump.DofusProtocol.Types
             leaderId = reader.ReadVarLong();
             if (leaderId < 0 || leaderId > 9007199254740990)
                 throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0 || leaderId > 9007199254740990");
-            guildLevel = reader.ReadByte();
+            guildLevel = reader.ReadSByte();
             if (guildLevel < 1 || guildLevel > 200)
                 throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 1 || guildLevel > 200");
-            nbMembers = reader.ReadByte();
+            nbMembers = reader.ReadSByte();
             if (nbMembers < 1 || nbMembers > 240)
                 throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 1 || nbMembers > 240");
         }

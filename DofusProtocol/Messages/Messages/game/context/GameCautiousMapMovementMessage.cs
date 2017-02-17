@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:38
+// Generated on 02/17/2017 01:57:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameCautiousMapMovementMessage(IEnumerable<short> keyMovements, double actorId)
-         : base(keyMovements, actorId)
+        public GameCautiousMapMovementMessage(IEnumerable<short> keyMovements, short forcedDirection, double actorId)
+         : base(keyMovements, forcedDirection, actorId)
         {
         }
         

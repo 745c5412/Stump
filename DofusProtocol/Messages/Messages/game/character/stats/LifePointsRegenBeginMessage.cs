@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:37
+// Generated on 02/17/2017 01:57:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,25 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public byte regenRate;
+        public sbyte regenRate;
         
         public LifePointsRegenBeginMessage()
         {
         }
         
-        public LifePointsRegenBeginMessage(byte regenRate)
+        public LifePointsRegenBeginMessage(sbyte regenRate)
         {
             this.regenRate = regenRate;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteByte(regenRate);
+            writer.WriteSByte(regenRate);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            regenRate = reader.ReadByte();
+            regenRate = reader.ReadSByte();
             if (regenRate < 0 || regenRate > 255)
                 throw new Exception("Forbidden value on regenRate = " + regenRate + ", it doesn't respect the following condition : regenRate < 0 || regenRate > 255");
         }

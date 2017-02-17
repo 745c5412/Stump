@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:02
+// Generated on 02/17/2017 01:58:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int quantity;
+        public long quantity;
         
         public ExchangeKamaModifiedMessage()
         {
         }
         
-        public ExchangeKamaModifiedMessage(bool remote, int quantity)
+        public ExchangeKamaModifiedMessage(bool remote, long quantity)
          : base(remote)
         {
             this.quantity = quantity;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(quantity);
+            writer.WriteVarLong(quantity);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            quantity = reader.ReadVarInt();
-            if (quantity < 0)
-                throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0");
+            quantity = reader.ReadVarLong();
+            if (quantity < 0 || quantity > 9007199254740990)
+                throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0 || quantity > 9007199254740990");
         }
         
     }

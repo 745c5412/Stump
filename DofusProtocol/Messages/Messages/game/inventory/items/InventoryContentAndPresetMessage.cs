@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:02
+// Generated on 02/17/2017 01:58:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public InventoryContentAndPresetMessage(IEnumerable<Types.ObjectItem> objects, int kamas, IEnumerable<Types.Preset> presets, IEnumerable<Types.IdolsPreset> idolsPresets)
+        public InventoryContentAndPresetMessage(IEnumerable<Types.ObjectItem> objects, long kamas, IEnumerable<Types.Preset> presets, IEnumerable<Types.IdolsPreset> idolsPresets)
          : base(objects, kamas)
         {
             this.presets = presets;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var presets_before = writer.Position;
             var presets_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in presets)
             {
                  entry.Serialize(writer);
@@ -45,12 +45,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var presets_after = writer.Position;
             writer.Seek((int)presets_before);
-            writer.WriteUShort((ushort)presets_count);
+            writer.WriteShort((short)presets_count);
             writer.Seek((int)presets_after);
 
             var idolsPresets_before = writer.Position;
             var idolsPresets_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in idolsPresets)
             {
                  entry.Serialize(writer);
@@ -58,7 +58,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var idolsPresets_after = writer.Position;
             writer.Seek((int)idolsPresets_before);
-            writer.WriteUShort((ushort)idolsPresets_count);
+            writer.WriteShort((short)idolsPresets_count);
             writer.Seek((int)idolsPresets_after);
 
         }
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var presets_ = new Types.Preset[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -74,7 +74,7 @@ namespace Stump.DofusProtocol.Messages
                  presets_[i].Deserialize(reader);
             }
             presets = presets_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var idolsPresets_ = new Types.IdolsPreset[limit];
             for (int i = 0; i < limit; i++)
             {

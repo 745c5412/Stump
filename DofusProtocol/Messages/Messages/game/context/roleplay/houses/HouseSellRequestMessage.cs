@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:45
+// Generated on 02/17/2017 01:57:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,30 +18,36 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int amount;
+        public uint instanceId;
+        public long amount;
         public bool forSale;
         
         public HouseSellRequestMessage()
         {
         }
         
-        public HouseSellRequestMessage(int amount, bool forSale)
+        public HouseSellRequestMessage(uint instanceId, long amount, bool forSale)
         {
+            this.instanceId = instanceId;
             this.amount = amount;
             this.forSale = forSale;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(amount);
+            writer.WriteUInt(instanceId);
+            writer.WriteVarLong(amount);
             writer.WriteBoolean(forSale);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            amount = reader.ReadVarInt();
-            if (amount < 0)
-                throw new Exception("Forbidden value on amount = " + amount + ", it doesn't respect the following condition : amount < 0");
+            instanceId = reader.ReadUInt();
+            if (instanceId < 0 || instanceId > 4294967295)
+                throw new Exception("Forbidden value on instanceId = " + instanceId + ", it doesn't respect the following condition : instanceId < 0 || instanceId > 4294967295");
+            amount = reader.ReadVarLong();
+            if (amount < 0 || amount > 9007199254740990)
+                throw new Exception("Forbidden value on amount = " + amount + ", it doesn't respect the following condition : amount < 0 || amount > 9007199254740990");
             forSale = reader.ReadBoolean();
         }
         

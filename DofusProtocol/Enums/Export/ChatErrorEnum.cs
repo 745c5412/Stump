@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:35
+// Generated on 02/16/2017 20:46:29
 using System;
 using System.Collections.Generic;
 
@@ -17,5 +17,6 @@ namespace Stump.DofusProtocol.Enums
         CHAT_ERROR_INVALID_MAP = 6,
         CHAT_ERROR_NO_PARTY_ARENA = 7,
         CHAT_ERROR_NO_TEAM = 8,
+        CHAT_ERROR_MALFORMED_CONTENT = 9,
     }
 }

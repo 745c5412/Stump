@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:39
+// Generated on 02/17/2017 01:57:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,14 +21,14 @@ namespace Stump.DofusProtocol.Messages
         public int duration;
         public short ageBonus;
         public short lootShareLimitMalus;
-        public IEnumerable<Types.FightResultListEntry> results;
+        public IEnumerable<FightResultListEntry> results;
         public IEnumerable<Types.NamedPartyTeamWithOutcome> namedPartyTeamsOutcomes;
         
         public GameFightEndMessage()
         {
         }
         
-        public GameFightEndMessage(int duration, short ageBonus, short lootShareLimitMalus, IEnumerable<Types.FightResultListEntry> results, IEnumerable<Types.NamedPartyTeamWithOutcome> namedPartyTeamsOutcomes)
+        public GameFightEndMessage(int duration, short ageBonus, short lootShareLimitMalus, IEnumerable<FightResultListEntry> results, IEnumerable<Types.NamedPartyTeamWithOutcome> namedPartyTeamsOutcomes)
         {
             this.duration = duration;
             this.ageBonus = ageBonus;
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteShort(lootShareLimitMalus);
             var results_before = writer.Position;
             var results_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in results)
             {
                  writer.WriteShort(entry.TypeId);
@@ -53,12 +53,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var results_after = writer.Position;
             writer.Seek((int)results_before);
-            writer.WriteUShort((ushort)results_count);
+            writer.WriteShort((short)results_count);
             writer.Seek((int)results_after);
 
             var namedPartyTeamsOutcomes_before = writer.Position;
             var namedPartyTeamsOutcomes_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in namedPartyTeamsOutcomes)
             {
                  entry.Serialize(writer);
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var namedPartyTeamsOutcomes_after = writer.Position;
             writer.Seek((int)namedPartyTeamsOutcomes_before);
-            writer.WriteUShort((ushort)namedPartyTeamsOutcomes_count);
+            writer.WriteShort((short)namedPartyTeamsOutcomes_count);
             writer.Seek((int)namedPartyTeamsOutcomes_after);
 
         }
@@ -78,15 +78,15 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on duration = " + duration + ", it doesn't respect the following condition : duration < 0");
             ageBonus = reader.ReadShort();
             lootShareLimitMalus = reader.ReadShort();
-            var limit = reader.ReadUShort();
-            var results_ = new Types.FightResultListEntry[limit];
+            var limit = reader.ReadShort();
+            var results_ = new FightResultListEntry[limit];
             for (int i = 0; i < limit; i++)
             {
-                 results_[i] = Types.ProtocolTypeManager.GetInstance<Types.FightResultListEntry>(reader.ReadShort());
+                 results_[i] = Types.ProtocolTypeManager.GetInstance<FightResultListEntry>(reader.ReadShort());
                  results_[i].Deserialize(reader);
             }
             results = results_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var namedPartyTeamsOutcomes_ = new Types.NamedPartyTeamWithOutcome[limit];
             for (int i = 0; i < limit; i++)
             {

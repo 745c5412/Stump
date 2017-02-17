@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:35
+// Generated on 02/17/2017 01:57:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public CompassUpdatePvpSeekMessage(sbyte type, Types.MapCoordinates coords, long memberId, string memberName)
+        public CompassUpdatePvpSeekMessage(sbyte type, MapCoordinates coords, long memberId, string memberName)
          : base(type, coords)
         {
             this.memberId = memberId;

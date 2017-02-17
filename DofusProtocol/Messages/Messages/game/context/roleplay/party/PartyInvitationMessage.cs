@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:48
+// Generated on 02/17/2017 01:58:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,8 +55,6 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             partyType = reader.ReadSByte();
-            if (partyType < 0)
-                throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
             partyName = reader.ReadUTF();
             maxParticipants = reader.ReadSByte();
             if (maxParticipants < 0)

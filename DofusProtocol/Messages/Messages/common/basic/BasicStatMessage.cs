@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:30
+// Generated on 02/17/2017 01:57:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +43,6 @@ namespace Stump.DofusProtocol.Messages
             if (timeSpent < 0 || timeSpent > 9007199254740990)
                 throw new Exception("Forbidden value on timeSpent = " + timeSpent + ", it doesn't respect the following condition : timeSpent < 0 || timeSpent > 9007199254740990");
             statId = reader.ReadVarShort();
-            if (statId < 0)
-                throw new Exception("Forbidden value on statId = " + statId + ", it doesn't respect the following condition : statId < 0");
         }
         
     }

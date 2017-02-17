@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:33
+// Generated on 02/17/2017 01:57:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteShort(spellLevel);
             var portalsIds_before = writer.Position;
             var portalsIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in portalsIds)
             {
                  writer.WriteShort(entry);
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var portalsIds_after = writer.Position;
             writer.Seek((int)portalsIds_before);
-            writer.WriteUShort((ushort)portalsIds_count);
+            writer.WriteShort((short)portalsIds_count);
             writer.Seek((int)portalsIds_after);
 
         }
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Messages
             spellLevel = reader.ReadShort();
             if (spellLevel < 1 || spellLevel > 200)
                 throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 200");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var portalsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +21,13 @@ namespace Stump.DofusProtocol.Types
         public int lifePoints;
         public int maxLifePoints;
         public short prospecting;
-        public byte regenRate;
+        public sbyte regenRate;
         
         public PartyCompanionMemberInformations()
         {
         }
         
-        public PartyCompanionMemberInformations(sbyte indexId, sbyte companionGenericId, Types.EntityLook entityLook, short initiative, int lifePoints, int maxLifePoints, short prospecting, byte regenRate)
+        public PartyCompanionMemberInformations(sbyte indexId, sbyte companionGenericId, Types.EntityLook entityLook, short initiative, int lifePoints, int maxLifePoints, short prospecting, sbyte regenRate)
          : base(indexId, companionGenericId, entityLook)
         {
             this.initiative = initiative;
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarInt(lifePoints);
             writer.WriteVarInt(maxLifePoints);
             writer.WriteVarShort(prospecting);
-            writer.WriteByte(regenRate);
+            writer.WriteSByte(regenRate);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -62,7 +62,7 @@ namespace Stump.DofusProtocol.Types
             prospecting = reader.ReadVarShort();
             if (prospecting < 0)
                 throw new Exception("Forbidden value on prospecting = " + prospecting + ", it doesn't respect the following condition : prospecting < 0");
-            regenRate = reader.ReadByte();
+            regenRate = reader.ReadSByte();
             if (regenRate < 0 || regenRate > 255)
                 throw new Exception("Forbidden value on regenRate = " + regenRate + ", it doesn't respect the following condition : regenRate < 0 || regenRate > 255");
         }

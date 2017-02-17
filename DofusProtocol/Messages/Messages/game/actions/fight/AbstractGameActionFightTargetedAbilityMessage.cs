@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:31
+// Generated on 02/17/2017 01:57:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,8 +63,6 @@ namespace Stump.DofusProtocol.Messages
             if (destinationCellId < -1 || destinationCellId > 559)
                 throw new Exception("Forbidden value on destinationCellId = " + destinationCellId + ", it doesn't respect the following condition : destinationCellId < -1 || destinationCellId > 559");
             critical = reader.ReadSByte();
-            if (critical < 0)
-                throw new Exception("Forbidden value on critical = " + critical + ", it doesn't respect the following condition : critical < 0");
         }
         
     }

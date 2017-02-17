@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         protected override ObjectItem BuildObjectItem()
         {
             return new ObjectItem(
-                (byte)Position,
+                (sbyte)Position,
                 (short)Template.Id,
                 Effects.Where(entry => !entry.Hidden).Select(entry => entry.GetObjectEffect()),
                 Guid,

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:02
+// Generated on 02/17/2017 01:58:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int livingUID;
-        public byte livingPosition;
+        public sbyte livingPosition;
         public int skinId;
         
         public LivingObjectChangeSkinRequestMessage()
         {
         }
         
-        public LivingObjectChangeSkinRequestMessage(int livingUID, byte livingPosition, int skinId)
+        public LivingObjectChangeSkinRequestMessage(int livingUID, sbyte livingPosition, int skinId)
         {
             this.livingUID = livingUID;
             this.livingPosition = livingPosition;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarInt(livingUID);
-            writer.WriteByte(livingPosition);
+            writer.WriteSByte(livingPosition);
             writer.WriteVarInt(skinId);
         }
         
@@ -45,7 +45,7 @@ namespace Stump.DofusProtocol.Messages
             livingUID = reader.ReadVarInt();
             if (livingUID < 0)
                 throw new Exception("Forbidden value on livingUID = " + livingUID + ", it doesn't respect the following condition : livingUID < 0");
-            livingPosition = reader.ReadByte();
+            livingPosition = reader.ReadSByte();
             if (livingPosition < 0 || livingPosition > 255)
                 throw new Exception("Forbidden value on livingPosition = " + livingPosition + ", it doesn't respect the following condition : livingPosition < 0 || livingPosition > 255");
             skinId = reader.ReadVarInt();

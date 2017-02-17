@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:39
+// Generated on 02/17/2017 01:57:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,8 +45,6 @@ namespace Stump.DofusProtocol.Messages
             rideId = reader.ReadInt();
             value = reader.ReadInt();
             type = reader.ReadSByte();
-            if (type < 0)
-                throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
         }
         
     }

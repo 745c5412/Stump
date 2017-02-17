@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:39
+// Generated on 02/17/2017 01:57:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var monsterBoosts_before = writer.Position;
             var monsterBoosts_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in monsterBoosts)
             {
                  entry.Serialize(writer);
@@ -43,12 +43,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var monsterBoosts_after = writer.Position;
             writer.Seek((int)monsterBoosts_before);
-            writer.WriteUShort((ushort)monsterBoosts_count);
+            writer.WriteShort((short)monsterBoosts_count);
             writer.Seek((int)monsterBoosts_after);
 
             var familyBoosts_before = writer.Position;
             var familyBoosts_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in familyBoosts)
             {
                  entry.Serialize(writer);
@@ -56,14 +56,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var familyBoosts_after = writer.Position;
             writer.Seek((int)familyBoosts_before);
-            writer.WriteUShort((ushort)familyBoosts_count);
+            writer.WriteShort((short)familyBoosts_count);
             writer.Seek((int)familyBoosts_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var monsterBoosts_ = new Types.MonsterBoosts[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -71,7 +71,7 @@ namespace Stump.DofusProtocol.Messages
                  monsterBoosts_[i].Deserialize(reader);
             }
             monsterBoosts = monsterBoosts_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var familyBoosts_ = new Types.MonsterBoosts[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:41
+// Generated on 02/17/2017 01:57:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.GameFightFighterInformations informations;
+        public GameFightFighterInformations informations;
         
         public GameFightShowFighterMessage()
         {
         }
         
-        public GameFightShowFighterMessage(Types.GameFightFighterInformations informations)
+        public GameFightShowFighterMessage(GameFightFighterInformations informations)
         {
             this.informations = informations;
         }
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            informations = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterInformations>(reader.ReadShort());
+            informations = Types.ProtocolTypeManager.GetInstance<GameFightFighterInformations>(reader.ReadShort());
             informations.Deserialize(reader);
         }
         

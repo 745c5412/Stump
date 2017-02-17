@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:40
+// Generated on 02/17/2017 01:57:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +46,6 @@ namespace Stump.DofusProtocol.Messages
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             teamId = reader.ReadSByte();
-            if (teamId < 0)
-                throw new Exception("Forbidden value on teamId = " + teamId + ", it doesn't respect the following condition : teamId < 0");
             charId = reader.ReadDouble();
             if (charId < -9007199254740990 || charId > 9007199254740990)
                 throw new Exception("Forbidden value on charId = " + charId + ", it doesn't respect the following condition : charId < -9007199254740990 || charId > 9007199254740990");

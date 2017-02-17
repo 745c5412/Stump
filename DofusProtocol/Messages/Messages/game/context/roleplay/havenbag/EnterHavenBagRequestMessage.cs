@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:44
+// Generated on 02/17/2017 01:57:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,18 +18,27 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public long havenBagOwner;
         
         public EnterHavenBagRequestMessage()
         {
         }
         
+        public EnterHavenBagRequestMessage(long havenBagOwner)
+        {
+            this.havenBagOwner = havenBagOwner;
+        }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteVarLong(havenBagOwner);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            havenBagOwner = reader.ReadVarLong();
+            if (havenBagOwner < 0 || havenBagOwner > 9007199254740990)
+                throw new Exception("Forbidden value on havenBagOwner = " + havenBagOwner + ", it doesn't respect the following condition : havenBagOwner < 0 || havenBagOwner > 9007199254740990");
         }
         
     }

@@ -279,6 +279,10 @@
     <Compile Include="Classes\items\criterion\AllianceItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\AllianceRightsItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\AreaItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\ArenaMaxSoloRankCriterion.cs" />
+    <Compile Include="Classes\items\criterion\ArenaMaxTeamRankCriterion.cs" />
+    <Compile Include="Classes\items\criterion\ArenaSoloRankCriterion.cs" />
+    <Compile Include="Classes\items\criterion\ArenaTeamRankCriterion.cs" />
     <Compile Include="Classes\items\criterion\BonesItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\BonusSetItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\BreedItemCriterion.cs" />
@@ -299,15 +303,14 @@
     <Compile Include="Classes\items\criterion\LevelItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\MapCharactersItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\MariedItemCriterion.cs" />
-    <Compile Include="Classes\items\criterion\MaxRankCriterion.cs" />
     <Compile Include="Classes\items\criterion\MonthItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\MountFamilyItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\NameItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\ObjectItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\PremiumAccountItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\PrestigeLevelItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\PVPRankItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\QuestItemCriterion.cs" />
-    <Compile Include="Classes\items\criterion\RankCriterion.cs" />
     <Compile Include="Classes\items\criterion\RideItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\ServerItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SexItemCriterion.cs" />
@@ -400,6 +403,7 @@
     <Compile Include="Classes\sounds\SoundUi.cs" />
     <Compile Include="Classes\sounds\SoundUiElement.cs" />
     <Compile Include="Classes\sounds\SoundUiHook.cs" />
+    <Compile Include="Classes\spells\FinishMove.cs" />
     <Compile Include="Classes\spells\Spell.cs" />
     <Compile Include="Classes\spells\SpellBomb.cs" />
     <Compile Include="Classes\spells\SpellLevel.cs" />

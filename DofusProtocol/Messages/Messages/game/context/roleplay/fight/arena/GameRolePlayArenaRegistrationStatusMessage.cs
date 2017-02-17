@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:44
+// Generated on 02/17/2017 01:57:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +44,7 @@ namespace Stump.DofusProtocol.Messages
         {
             registered = reader.ReadBoolean();
             step = reader.ReadSByte();
-            if (step < 0)
-                throw new Exception("Forbidden value on step = " + step + ", it doesn't respect the following condition : step < 0");
             battleMode = reader.ReadInt();
-            if (battleMode < 0)
-                throw new Exception("Forbidden value on battleMode = " + battleMode + ", it doesn't respect the following condition : battleMode < 0");
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:52
+// Generated on 02/17/2017 01:58:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<Types.FriendInformations> friendsList;
+        public IEnumerable<FriendInformations> friendsList;
         
         public FriendsListMessage()
         {
         }
         
-        public FriendsListMessage(IEnumerable<Types.FriendInformations> friendsList)
+        public FriendsListMessage(IEnumerable<FriendInformations> friendsList)
         {
             this.friendsList = friendsList;
         }
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var friendsList_before = writer.Position;
             var friendsList_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in friendsList)
             {
                  writer.WriteShort(entry.TypeId);
@@ -42,18 +42,18 @@ namespace Stump.DofusProtocol.Messages
             }
             var friendsList_after = writer.Position;
             writer.Seek((int)friendsList_before);
-            writer.WriteUShort((ushort)friendsList_count);
+            writer.WriteShort((short)friendsList_count);
             writer.Seek((int)friendsList_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
-            var friendsList_ = new Types.FriendInformations[limit];
+            var limit = reader.ReadShort();
+            var friendsList_ = new FriendInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 friendsList_[i] = Types.ProtocolTypeManager.GetInstance<Types.FriendInformations>(reader.ReadShort());
+                 friendsList_[i] = Types.ProtocolTypeManager.GetInstance<FriendInformations>(reader.ReadShort());
                  friendsList_[i].Deserialize(reader);
             }
             friendsList = friendsList_;

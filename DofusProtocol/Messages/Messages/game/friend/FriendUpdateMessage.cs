@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:52
+// Generated on 02/17/2017 01:58:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.FriendInformations friendUpdated;
+        public FriendInformations friendUpdated;
         
         public FriendUpdateMessage()
         {
         }
         
-        public FriendUpdateMessage(Types.FriendInformations friendUpdated)
+        public FriendUpdateMessage(FriendInformations friendUpdated)
         {
             this.friendUpdated = friendUpdated;
         }
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            friendUpdated = Types.ProtocolTypeManager.GetInstance<Types.FriendInformations>(reader.ReadShort());
+            friendUpdated = Types.ProtocolTypeManager.GetInstance<FriendInformations>(reader.ReadShort());
             friendUpdated.Deserialize(reader);
         }
         

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:43
+// Generated on 02/17/2017 01:57:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +40,6 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             state = reader.ReadSByte();
-            if (state < 0)
-                throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
             phenixMapId = reader.ReadInt();
             if (phenixMapId < 0)
                 throw new Exception("Forbidden value on phenixMapId = " + phenixMapId + ", it doesn't respect the following condition : phenixMapId < 0");

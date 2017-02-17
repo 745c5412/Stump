@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:14
+// Generated on 02/17/2017 01:53:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int price;
+        public long price;
         
         public ObjectItemGenericQuantityPrice()
         {
         }
         
-        public ObjectItemGenericQuantityPrice(short objectGID, int quantity, int price)
+        public ObjectItemGenericQuantityPrice(short objectGID, int quantity, long price)
          : base(objectGID, quantity)
         {
             this.price = price;
@@ -32,15 +32,15 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(price);
+            writer.WriteVarLong(price);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            price = reader.ReadVarInt();
-            if (price < 0)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
+            price = reader.ReadVarLong();
+            if (price < 0 || price > 9007199254740990)
+                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 9007199254740990");
         }
         
         

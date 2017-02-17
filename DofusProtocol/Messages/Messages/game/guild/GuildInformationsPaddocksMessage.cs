@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:54
+// Generated on 02/17/2017 01:58:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(nbPaddockMax);
             var paddocksInformations_before = writer.Position;
             var paddocksInformations_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in paddocksInformations)
             {
                  entry.Serialize(writer);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var paddocksInformations_after = writer.Position;
             writer.Seek((int)paddocksInformations_before);
-            writer.WriteUShort((ushort)paddocksInformations_count);
+            writer.WriteShort((short)paddocksInformations_count);
             writer.Seek((int)paddocksInformations_after);
 
         }
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
             nbPaddockMax = reader.ReadSByte();
             if (nbPaddockMax < 0)
                 throw new Exception("Forbidden value on nbPaddockMax = " + nbPaddockMax + ", it doesn't respect the following condition : nbPaddockMax < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var paddocksInformations_ = new Types.PaddockContentInformations[limit];
             for (int i = 0; i < limit; i++)
             {

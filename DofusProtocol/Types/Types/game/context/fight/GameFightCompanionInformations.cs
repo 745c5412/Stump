@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte companionGenericId;
-        public byte level;
+        public sbyte level;
         public double masterId;
         
         public GameFightCompanionInformations()
         {
         }
         
-        public GameFightCompanionInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions, sbyte companionGenericId, byte level, double masterId)
+        public GameFightCompanionInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, GameFightMinimalStats stats, IEnumerable<short> previousPositions, sbyte companionGenericId, sbyte level, double masterId)
          : base(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions)
         {
             this.companionGenericId = companionGenericId;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteSByte(companionGenericId);
-            writer.WriteByte(level);
+            writer.WriteSByte(level);
             writer.WriteDouble(masterId);
         }
         
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             companionGenericId = reader.ReadSByte();
             if (companionGenericId < 0)
                 throw new Exception("Forbidden value on companionGenericId = " + companionGenericId + ", it doesn't respect the following condition : companionGenericId < 0");
-            level = reader.ReadByte();
+            level = reader.ReadSByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
             masterId = reader.ReadDouble();

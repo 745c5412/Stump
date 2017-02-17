@@ -391,7 +391,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override IFightResult GetFightResult(FightOutcomeEnum outcome) => new FightPlayerResult(this, outcome, Loot);
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
-            => new FightTeamMemberCharacterInformations(Id, Name, Character.Level);
+            => new FightTeamMemberCharacterInformations(Id, Name, (sbyte)Character.Level);
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
@@ -405,7 +405,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                                       new short[0],
                                                       Name,
                                                       Character.Status,
-                                                      Character.Level,
+                                                      (sbyte)Character.Level,
                                                       Character.GetActorAlignmentInformations(),
                                                       (sbyte) Character.Breed.Id,
                                                       Character.Sex != SexTypeEnum.SEX_MALE);

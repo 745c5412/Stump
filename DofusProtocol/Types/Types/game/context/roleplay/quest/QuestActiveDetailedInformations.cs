@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short stepId;
-        public IEnumerable<Types.QuestObjectiveInformations> objectives;
+        public IEnumerable<QuestObjectiveInformations> objectives;
         
         public QuestActiveDetailedInformations()
         {
         }
         
-        public QuestActiveDetailedInformations(short questId, short stepId, IEnumerable<Types.QuestObjectiveInformations> objectives)
+        public QuestActiveDetailedInformations(short questId, short stepId, IEnumerable<QuestObjectiveInformations> objectives)
          : base(questId)
         {
             this.stepId = stepId;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(stepId);
             var objectives_before = writer.Position;
             var objectives_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in objectives)
             {
                  writer.WriteShort(entry.TypeId);
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             }
             var objectives_after = writer.Position;
             writer.Seek((int)objectives_before);
-            writer.WriteUShort((ushort)objectives_count);
+            writer.WriteShort((short)objectives_count);
             writer.Seek((int)objectives_after);
 
         }
@@ -57,11 +57,11 @@ namespace Stump.DofusProtocol.Types
             stepId = reader.ReadVarShort();
             if (stepId < 0)
                 throw new Exception("Forbidden value on stepId = " + stepId + ", it doesn't respect the following condition : stepId < 0");
-            var limit = reader.ReadUShort();
-            var objectives_ = new Types.QuestObjectiveInformations[limit];
+            var limit = reader.ReadShort();
+            var objectives_ = new QuestObjectiveInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 objectives_[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestObjectiveInformations>(reader.ReadShort());
+                 objectives_[i] = Types.ProtocolTypeManager.GetInstance<QuestObjectiveInformations>(reader.ReadShort());
                  objectives_[i].Deserialize(reader);
             }
             objectives = objectives_;

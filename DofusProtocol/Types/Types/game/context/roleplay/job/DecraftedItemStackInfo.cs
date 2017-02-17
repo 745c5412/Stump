@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteFloat(bonusMax);
             var runesId_before = writer.Position;
             var runesId_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in runesId)
             {
                  writer.WriteVarShort(entry);
@@ -51,12 +51,12 @@ namespace Stump.DofusProtocol.Types
             }
             var runesId_after = writer.Position;
             writer.Seek((int)runesId_before);
-            writer.WriteUShort((ushort)runesId_count);
+            writer.WriteShort((short)runesId_count);
             writer.Seek((int)runesId_after);
 
             var runesQty_before = writer.Position;
             var runesQty_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in runesQty)
             {
                  writer.WriteVarInt(entry);
@@ -64,7 +64,7 @@ namespace Stump.DofusProtocol.Types
             }
             var runesQty_after = writer.Position;
             writer.Seek((int)runesQty_before);
-            writer.WriteUShort((ushort)runesQty_count);
+            writer.WriteShort((short)runesQty_count);
             writer.Seek((int)runesQty_after);
 
         }
@@ -76,18 +76,22 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
             bonusMin = reader.ReadFloat();
             bonusMax = reader.ReadFloat();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var runesId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  runesId_[i] = reader.ReadVarShort();
+                 if (runesId_[i] < 0)
+                     throw new Exception("Forbidden value on runesId_[i] = " + runesId_[i] + ", it doesn't respect the following condition : runesId_[i] < 0");
             }
             runesId = runesId_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var runesQty_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  runesQty_[i] = reader.ReadVarInt();
+                 if (runesQty_[i] < 0)
+                     throw new Exception("Forbidden value on runesQty_[i] = " + runesQty_[i] + ", it doesn't respect the following condition : runesQty_[i] < 0");
             }
             runesQty = runesQty_;
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:09
+// Generated on 02/17/2017 01:52:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,8 +61,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9007199254740990 || targetId > 9007199254740990");
             turnDuration = reader.ReadShort();
             dispelable = reader.ReadSByte();
-            if (dispelable < 0)
-                throw new Exception("Forbidden value on dispelable = " + dispelable + ", it doesn't respect the following condition : dispelable < 0");
             spellId = reader.ReadVarShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");

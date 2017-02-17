@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:15
+// Generated on 02/17/2017 01:53:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             var ownersIds_before = writer.Position;
             var ownersIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in ownersIds)
             {
                  writer.WriteVarLong(entry);
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             }
             var ownersIds_after = writer.Position;
             writer.Seek((int)ownersIds_before);
-            writer.WriteUShort((ushort)ownersIds_count);
+            writer.WriteShort((short)ownersIds_count);
             writer.Seek((int)ownersIds_after);
 
         }
@@ -50,11 +50,13 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var ownersIds_ = new long[limit];
             for (int i = 0; i < limit; i++)
             {
                  ownersIds_[i] = reader.ReadVarLong();
+                 if (ownersIds_[i] > 9007199254740990)
+                     throw new Exception("Forbidden value on ownersIds_[i] = " + ownersIds_[i] + ", it doesn't respect the following condition : ownersIds_[i] > 9007199254740990");
             }
             ownersIds = ownersIds_;
         }

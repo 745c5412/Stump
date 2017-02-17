@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Types
         }
         
         public string ownerName;
-        public byte level;
+        public sbyte level;
         
         public GameRolePlayMountInformations()
         {
         }
         
-        public GameRolePlayMountInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, string name, string ownerName, byte level)
+        public GameRolePlayMountInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, string name, string ownerName, sbyte level)
          : base(contextualId, look, disposition, name)
         {
             this.ownerName = ownerName;
@@ -35,14 +35,14 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteUTF(ownerName);
-            writer.WriteByte(level);
+            writer.WriteSByte(level);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             ownerName = reader.ReadUTF();
-            level = reader.ReadByte();
+            level = reader.ReadSByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
         }

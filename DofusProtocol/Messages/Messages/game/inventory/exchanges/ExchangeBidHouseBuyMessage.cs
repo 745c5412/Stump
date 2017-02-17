@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:57
+// Generated on 02/17/2017 01:58:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public int uid;
         public int qty;
-        public int price;
+        public long price;
         
         public ExchangeBidHouseBuyMessage()
         {
         }
         
-        public ExchangeBidHouseBuyMessage(int uid, int qty, int price)
+        public ExchangeBidHouseBuyMessage(int uid, int qty, long price)
         {
             this.uid = uid;
             this.qty = qty;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteVarInt(uid);
             writer.WriteVarInt(qty);
-            writer.WriteVarInt(price);
+            writer.WriteVarLong(price);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -48,9 +48,9 @@ namespace Stump.DofusProtocol.Messages
             qty = reader.ReadVarInt();
             if (qty < 0)
                 throw new Exception("Forbidden value on qty = " + qty + ", it doesn't respect the following condition : qty < 0");
-            price = reader.ReadVarInt();
-            if (price < 0)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
+            price = reader.ReadVarLong();
+            if (price < 0 || price > 9007199254740990)
+                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 9007199254740990");
         }
         
     }

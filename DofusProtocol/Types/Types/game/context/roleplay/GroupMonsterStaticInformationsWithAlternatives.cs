@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             var alternatives_before = writer.Position;
             var alternatives_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in alternatives)
             {
                  entry.Serialize(writer);
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             }
             var alternatives_after = writer.Position;
             writer.Seek((int)alternatives_before);
-            writer.WriteUShort((ushort)alternatives_count);
+            writer.WriteShort((short)alternatives_count);
             writer.Seek((int)alternatives_after);
 
         }
@@ -50,7 +50,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var alternatives_ = new Types.AlternativeMonstersInGroupLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {

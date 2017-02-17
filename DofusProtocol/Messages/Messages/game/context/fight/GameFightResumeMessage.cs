@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:40
+// Generated on 02/17/2017 01:57:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var spellCooldowns_before = writer.Position;
             var spellCooldowns_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in spellCooldowns)
             {
                  entry.Serialize(writer);
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var spellCooldowns_after = writer.Position;
             writer.Seek((int)spellCooldowns_before);
-            writer.WriteUShort((ushort)spellCooldowns_count);
+            writer.WriteShort((short)spellCooldowns_count);
             writer.Seek((int)spellCooldowns_after);
 
             writer.WriteSByte(summonCount);
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var spellCooldowns_ = new Types.GameFightSpellCooldown[limit];
             for (int i = 0; i < limit; i++)
             {

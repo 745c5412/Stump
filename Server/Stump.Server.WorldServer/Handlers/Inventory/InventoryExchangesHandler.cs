@@ -176,7 +176,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!client.Character.IsInExchange())
                 return;
 
-            client.Character.Exchanger.SetKamas(message.quantity);
+            client.Character.Exchanger.SetKamas((int)message.quantity);
         }
 
         [WorldHandler(ExchangeCraftPaymentModificationRequestMessage.Id)]
@@ -185,7 +185,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!(client.Character.Dialoger is CraftCustomer))
                 return;
 
-            client.Character.Exchanger.SetKamas(message.quantity);
+            client.Character.Exchanger.SetKamas((int)message.quantity);
         }
 
         [WorldHandler(ExchangeObjectMoveMessage.Id)]
@@ -454,7 +454,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (category == null)
                 return;
 
-            var item = category.GetItem(message.qty, message.price);
+            var item = category.GetItem(message.qty, (int)message.price);
             if (item == null)
             {
                 //Cet objet n'est plus disponible à ce prix. Quelqu'un a été plus rapide...
@@ -819,7 +819,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeStartOkMulticraftCustomerMessage(IPacketReceiver client, InteractiveSkillTemplate skillTemplate, Job job)
         {
-            client.Send(new ExchangeStartOkMulticraftCustomerMessage(skillTemplate.Id, (byte)job.Level));
+            client.Send(new ExchangeStartOkMulticraftCustomerMessage(skillTemplate.Id, (sbyte)job.Level));
         }
 
         public static void SendExchangeCraftPaymentModifiedMessage(IPacketReceiver client, int kamas)

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:45
+// Generated on 02/17/2017 01:57:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +22,13 @@ namespace Stump.DofusProtocol.Messages
         public sbyte atLeastNbRoom;
         public sbyte atLeastNbChest;
         public short skillRequested;
-        public int maxPrice;
+        public long maxPrice;
         
         public HouseToSellFilterMessage()
         {
         }
         
-        public HouseToSellFilterMessage(int areaId, sbyte atLeastNbRoom, sbyte atLeastNbChest, short skillRequested, int maxPrice)
+        public HouseToSellFilterMessage(int areaId, sbyte atLeastNbRoom, sbyte atLeastNbChest, short skillRequested, long maxPrice)
         {
             this.areaId = areaId;
             this.atLeastNbRoom = atLeastNbRoom;
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(atLeastNbRoom);
             writer.WriteSByte(atLeastNbChest);
             writer.WriteVarShort(skillRequested);
-            writer.WriteVarInt(maxPrice);
+            writer.WriteVarLong(maxPrice);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -58,9 +58,9 @@ namespace Stump.DofusProtocol.Messages
             skillRequested = reader.ReadVarShort();
             if (skillRequested < 0)
                 throw new Exception("Forbidden value on skillRequested = " + skillRequested + ", it doesn't respect the following condition : skillRequested < 0");
-            maxPrice = reader.ReadVarInt();
-            if (maxPrice < 0)
-                throw new Exception("Forbidden value on maxPrice = " + maxPrice + ", it doesn't respect the following condition : maxPrice < 0");
+            maxPrice = reader.ReadVarLong();
+            if (maxPrice < 0 || maxPrice > 9007199254740990)
+                throw new Exception("Forbidden value on maxPrice = " + maxPrice + ", it doesn't respect the following condition : maxPrice < 0 || maxPrice > 9007199254740990");
         }
         
     }

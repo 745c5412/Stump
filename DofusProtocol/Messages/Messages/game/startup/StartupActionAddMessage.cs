@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:07
+// Generated on 02/17/2017 01:58:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,26 +18,18 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.StartupActionAddObject newAction;
         
         public StartupActionAddMessage()
         {
         }
         
-        public StartupActionAddMessage(Types.StartupActionAddObject newAction)
-        {
-            this.newAction = newAction;
-        }
         
         public override void Serialize(IDataWriter writer)
         {
-            newAction.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            newAction = new Types.StartupActionAddObject();
-            newAction.Deserialize(reader);
         }
         
     }

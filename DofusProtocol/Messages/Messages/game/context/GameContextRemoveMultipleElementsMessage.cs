@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:39
+// Generated on 02/17/2017 01:57:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,43 +18,45 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<double> id;
+        public IEnumerable<double> elementsIds;
         
         public GameContextRemoveMultipleElementsMessage()
         {
         }
         
-        public GameContextRemoveMultipleElementsMessage(IEnumerable<double> id)
+        public GameContextRemoveMultipleElementsMessage(IEnumerable<double> elementsIds)
         {
-            this.id = id;
+            this.elementsIds = elementsIds;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            var id_before = writer.Position;
-            var id_count = 0;
-            writer.WriteUShort(0);
-            foreach (var entry in id)
+            var elementsIds_before = writer.Position;
+            var elementsIds_count = 0;
+            writer.WriteShort(0);
+            foreach (var entry in elementsIds)
             {
                  writer.WriteDouble(entry);
-                 id_count++;
+                 elementsIds_count++;
             }
-            var id_after = writer.Position;
-            writer.Seek((int)id_before);
-            writer.WriteUShort((ushort)id_count);
-            writer.Seek((int)id_after);
+            var elementsIds_after = writer.Position;
+            writer.Seek((int)elementsIds_before);
+            writer.WriteShort((short)elementsIds_count);
+            writer.Seek((int)elementsIds_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
-            var id_ = new double[limit];
+            var limit = reader.ReadShort();
+            var elementsIds_ = new double[limit];
             for (int i = 0; i < limit; i++)
             {
-                 id_[i] = reader.ReadDouble();
+                 elementsIds_[i] = reader.ReadDouble();
+                 if (elementsIds_[i] > 9007199254740990)
+                     throw new Exception("Forbidden value on elementsIds_[i] = " + elementsIds_[i] + ", it doesn't respect the following condition : elementsIds_[i] > 9007199254740990");
             }
-            id = id_;
+            elementsIds = elementsIds_;
         }
         
     }

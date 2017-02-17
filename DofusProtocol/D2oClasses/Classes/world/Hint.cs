@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:33
+// Generated on 02/14/2017 16:38:54
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -27,7 +27,6 @@ namespace Stump.DofusProtocol.D2oClasses
         public int worldMapId;
         public uint level;
         public uint categoryId;
-
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -98,7 +97,6 @@ namespace Stump.DofusProtocol.D2oClasses
             get { return this.level; }
             set { this.level = value; }
         }
-
         [D2OIgnore]
         public uint CategoryId
         {

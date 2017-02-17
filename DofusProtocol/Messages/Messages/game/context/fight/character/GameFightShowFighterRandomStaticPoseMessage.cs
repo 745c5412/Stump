@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:41
+// Generated on 02/17/2017 01:57:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameFightShowFighterRandomStaticPoseMessage(Types.GameFightFighterInformations informations)
+        public GameFightShowFighterRandomStaticPoseMessage(GameFightFighterInformations informations)
          : base(informations)
         {
         }

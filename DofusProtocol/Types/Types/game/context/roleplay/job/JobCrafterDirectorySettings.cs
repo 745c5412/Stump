@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte jobId;
-        public byte minLevel;
+        public sbyte minLevel;
         public bool free;
         
         public JobCrafterDirectorySettings()
         {
         }
         
-        public JobCrafterDirectorySettings(sbyte jobId, byte minLevel, bool free)
+        public JobCrafterDirectorySettings(sbyte jobId, sbyte minLevel, bool free)
         {
             this.jobId = jobId;
             this.minLevel = minLevel;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
-            writer.WriteByte(minLevel);
+            writer.WriteSByte(minLevel);
             writer.WriteBoolean(free);
         }
         
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
             jobId = reader.ReadSByte();
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            minLevel = reader.ReadByte();
+            minLevel = reader.ReadSByte();
             if (minLevel < 0 || minLevel > 255)
                 throw new Exception("Forbidden value on minLevel = " + minLevel + ", it doesn't respect the following condition : minLevel < 0 || minLevel > 255");
             free = reader.ReadBoolean();

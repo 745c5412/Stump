@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:39
+// Generated on 02/17/2017 01:57:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameContextRemoveMultipleElementsWithEventsMessage(IEnumerable<double> id, IEnumerable<sbyte> elementEventIds)
-         : base(id)
+        public GameContextRemoveMultipleElementsWithEventsMessage(IEnumerable<double> elementsIds, IEnumerable<sbyte> elementEventIds)
+         : base(elementsIds)
         {
             this.elementEventIds = elementEventIds;
         }
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var elementEventIds_before = writer.Position;
             var elementEventIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in elementEventIds)
             {
                  writer.WriteSByte(entry);
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var elementEventIds_after = writer.Position;
             writer.Seek((int)elementEventIds_before);
-            writer.WriteUShort((ushort)elementEventIds_count);
+            writer.WriteShort((short)elementEventIds_count);
             writer.Seek((int)elementEventIds_after);
 
         }
@@ -51,11 +51,13 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var elementEventIds_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
                  elementEventIds_[i] = reader.ReadSByte();
+                 if (elementEventIds_[i] < 0)
+                     throw new Exception("Forbidden value on elementEventIds_[i] = " + elementEventIds_[i] + ", it doesn't respect the following condition : elementEventIds_[i] < 0");
             }
             elementEventIds = elementEventIds_;
         }

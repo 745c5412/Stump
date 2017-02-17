@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:04
+// Generated on 02/17/2017 01:58:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte presetId;
-        public byte position;
+        public sbyte position;
         public int objUid;
         
         public InventoryPresetItemUpdateRequestMessage()
         {
         }
         
-        public InventoryPresetItemUpdateRequestMessage(sbyte presetId, byte position, int objUid)
+        public InventoryPresetItemUpdateRequestMessage(sbyte presetId, sbyte position, int objUid)
         {
             this.presetId = presetId;
             this.position = position;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(presetId);
-            writer.WriteByte(position);
+            writer.WriteSByte(position);
             writer.WriteVarInt(objUid);
         }
         
@@ -45,9 +45,7 @@ namespace Stump.DofusProtocol.Messages
             presetId = reader.ReadSByte();
             if (presetId < 0)
                 throw new Exception("Forbidden value on presetId = " + presetId + ", it doesn't respect the following condition : presetId < 0");
-            position = reader.ReadByte();
-            if (position < 0 || position > 255)
-                throw new Exception("Forbidden value on position = " + position + ", it doesn't respect the following condition : position < 0 || position > 255");
+            position = reader.ReadSByte();
             objUid = reader.ReadVarInt();
             if (objUid < 0)
                 throw new Exception("Forbidden value on objUid = " + objUid + ", it doesn't respect the following condition : objUid < 0");

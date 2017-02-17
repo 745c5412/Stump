@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:00
+// Generated on 02/17/2017 01:58:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var objectIdList_before = writer.Position;
             var objectIdList_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in objectIdList)
             {
                  writer.WriteVarInt(entry);
@@ -41,18 +41,20 @@ namespace Stump.DofusProtocol.Messages
             }
             var objectIdList_after = writer.Position;
             writer.Seek((int)objectIdList_before);
-            writer.WriteUShort((ushort)objectIdList_count);
+            writer.WriteShort((short)objectIdList_count);
             writer.Seek((int)objectIdList_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var objectIdList_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  objectIdList_[i] = reader.ReadVarInt();
+                 if (objectIdList_[i] < 0)
+                     throw new Exception("Forbidden value on objectIdList_[i] = " + objectIdList_[i] + ", it doesn't respect the following condition : objectIdList_[i] < 0");
             }
             objectIdList = objectIdList_;
         }

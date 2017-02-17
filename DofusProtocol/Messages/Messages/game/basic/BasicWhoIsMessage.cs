@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:36
+// Generated on 02/17/2017 01:57:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,14 +28,14 @@ namespace Stump.DofusProtocol.Messages
         public short areaId;
         public short serverId;
         public short originServerId;
-        public IEnumerable<Types.AbstractSocialGroupInfos> socialGroups;
+        public IEnumerable<AbstractSocialGroupInfos> socialGroups;
         public sbyte playerState;
         
         public BasicWhoIsMessage()
         {
         }
         
-        public BasicWhoIsMessage(bool self, bool verbose, sbyte position, string accountNickname, int accountId, string playerName, long playerId, short areaId, short serverId, short originServerId, IEnumerable<Types.AbstractSocialGroupInfos> socialGroups, sbyte playerState)
+        public BasicWhoIsMessage(bool self, bool verbose, sbyte position, string accountNickname, int accountId, string playerName, long playerId, short areaId, short serverId, short originServerId, IEnumerable<AbstractSocialGroupInfos> socialGroups, sbyte playerState)
         {
             this.self = self;
             this.verbose = verbose;
@@ -67,7 +67,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteShort(originServerId);
             var socialGroups_before = writer.Position;
             var socialGroups_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in socialGroups)
             {
                  writer.WriteShort(entry.TypeId);
@@ -76,7 +76,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var socialGroups_after = writer.Position;
             writer.Seek((int)socialGroups_before);
-            writer.WriteUShort((ushort)socialGroups_count);
+            writer.WriteShort((short)socialGroups_count);
             writer.Seek((int)socialGroups_after);
 
             writer.WriteSByte(playerState);
@@ -99,17 +99,15 @@ namespace Stump.DofusProtocol.Messages
             areaId = reader.ReadShort();
             serverId = reader.ReadShort();
             originServerId = reader.ReadShort();
-            var limit = reader.ReadUShort();
-            var socialGroups_ = new Types.AbstractSocialGroupInfos[limit];
+            var limit = reader.ReadShort();
+            var socialGroups_ = new AbstractSocialGroupInfos[limit];
             for (int i = 0; i < limit; i++)
             {
-                 socialGroups_[i] = Types.ProtocolTypeManager.GetInstance<Types.AbstractSocialGroupInfos>(reader.ReadShort());
+                 socialGroups_[i] = Types.ProtocolTypeManager.GetInstance<AbstractSocialGroupInfos>(reader.ReadShort());
                  socialGroups_[i].Deserialize(reader);
             }
             socialGroups = socialGroups_;
             playerState = reader.ReadSByte();
-            if (playerState < 0)
-                throw new Exception("Forbidden value on playerState = " + playerState + ", it doesn't respect the following condition : playerState < 0");
         }
         
     }

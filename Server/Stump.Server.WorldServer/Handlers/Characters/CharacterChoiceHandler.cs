@@ -223,7 +223,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR);
 
-            ContextRoleplayHandler.SendEmoteListMessage(client, client.Character.Emotes.Select(x => (byte)x));
+            ContextRoleplayHandler.SendEmoteListMessage(client, client.Character.Emotes.Select(x => (sbyte)x));
 
             // Jobs
             ContextRoleplayHandler.SendJobDescriptionMessage(client, client.Character);
@@ -341,7 +341,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 new CharacterBaseInformations(
                     characterRecord.Id,
                     characterRecord.Name,
-                    ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
+                    (sbyte)ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                     characterRecord.LastLook.GetEntityLook(),
                     (sbyte)characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
@@ -358,7 +358,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             {
                 characterBaseInformations.Add(new CharacterBaseInformations((short)characterRecord.Id,
                                                                             characterRecord.Name,
-                                                                            ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
+                                                                            (sbyte)ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                                                                             characterRecord.LastLook?.GetEntityLook() ?? characterRecord.DefaultLook.GetEntityLook(),
                                                                             (sbyte)characterRecord.Breed,
                                                                             characterRecord.Sex == SexTypeEnum.SEX_MALE));

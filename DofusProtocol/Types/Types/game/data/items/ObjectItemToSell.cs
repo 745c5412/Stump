@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:14
+// Generated on 02/17/2017 01:53:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +18,16 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short objectGID;
-        public IEnumerable<Types.ObjectEffect> effects;
+        public IEnumerable<ObjectEffect> effects;
         public int objectUID;
         public int quantity;
-        public int objectPrice;
+        public long objectPrice;
         
         public ObjectItemToSell()
         {
         }
         
-        public ObjectItemToSell(short objectGID, IEnumerable<Types.ObjectEffect> effects, int objectUID, int quantity, int objectPrice)
+        public ObjectItemToSell(short objectGID, IEnumerable<ObjectEffect> effects, int objectUID, int quantity, long objectPrice)
         {
             this.objectGID = objectGID;
             this.effects = effects;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(objectGID);
             var effects_before = writer.Position;
             var effects_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in effects)
             {
                  writer.WriteShort(entry.TypeId);
@@ -51,12 +51,12 @@ namespace Stump.DofusProtocol.Types
             }
             var effects_after = writer.Position;
             writer.Seek((int)effects_before);
-            writer.WriteUShort((ushort)effects_count);
+            writer.WriteShort((short)effects_count);
             writer.Seek((int)effects_after);
 
             writer.WriteVarInt(objectUID);
             writer.WriteVarInt(quantity);
-            writer.WriteVarInt(objectPrice);
+            writer.WriteVarLong(objectPrice);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -65,11 +65,11 @@ namespace Stump.DofusProtocol.Types
             objectGID = reader.ReadVarShort();
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
-            var limit = reader.ReadUShort();
-            var effects_ = new Types.ObjectEffect[limit];
+            var limit = reader.ReadShort();
+            var effects_ = new ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {
-                 effects_[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
+                 effects_[i] = Types.ProtocolTypeManager.GetInstance<ObjectEffect>(reader.ReadShort());
                  effects_[i].Deserialize(reader);
             }
             effects = effects_;
@@ -79,9 +79,9 @@ namespace Stump.DofusProtocol.Types
             quantity = reader.ReadVarInt();
             if (quantity < 0)
                 throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0");
-            objectPrice = reader.ReadVarInt();
-            if (objectPrice < 0)
-                throw new Exception("Forbidden value on objectPrice = " + objectPrice + ", it doesn't respect the following condition : objectPrice < 0");
+            objectPrice = reader.ReadVarLong();
+            if (objectPrice < 0 || objectPrice > 9007199254740990)
+                throw new Exception("Forbidden value on objectPrice = " + objectPrice + ", it doesn't respect the following condition : objectPrice < 0 || objectPrice > 9007199254740990");
         }
         
         

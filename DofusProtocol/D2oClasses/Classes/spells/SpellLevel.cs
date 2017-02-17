@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:33
+// Generated on 02/14/2017 16:38:54
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -24,7 +24,6 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean castInDiagonal;
         public Boolean castTestLos;
         public uint criticalHitProbability;
-        public uint criticalFailureProbability;
         public Boolean needFreeCell;
         public Boolean needTakenCell;
         public Boolean needFreeTrapCell;
@@ -36,7 +35,6 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint initialCooldown;
         public int globalCooldown;
         public uint minPlayerLevel;
-        public Boolean criticalFailureEndsTurn;
         public Boolean hideEffects;
         public Boolean hidden;
         public Boolean playAnimation;
@@ -115,12 +113,6 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.criticalHitProbability = value; }
         }
         [D2OIgnore]
-        public uint CriticalFailureProbability
-        {
-            get { return this.criticalFailureProbability; }
-            set { this.criticalFailureProbability = value; }
-        }
-        [D2OIgnore]
         public Boolean NeedFreeCell
         {
             get { return this.needFreeCell; }
@@ -185,12 +177,6 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.minPlayerLevel; }
             set { this.minPlayerLevel = value; }
-        }
-        [D2OIgnore]
-        public Boolean CriticalFailureEndsTurn
-        {
-            get { return this.criticalFailureEndsTurn; }
-            set { this.criticalFailureEndsTurn = value; }
         }
         [D2OIgnore]
         public Boolean HideEffects

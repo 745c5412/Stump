@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(symbolId);
             var idolId_before = writer.Position;
             var idolId_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in idolId)
             {
                  writer.WriteVarShort(entry);
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             }
             var idolId_after = writer.Position;
             writer.Seek((int)idolId_before);
-            writer.WriteUShort((ushort)idolId_count);
+            writer.WriteShort((short)idolId_count);
             writer.Seek((int)idolId_after);
 
         }
@@ -59,11 +59,13 @@ namespace Stump.DofusProtocol.Types
             symbolId = reader.ReadSByte();
             if (symbolId < 0)
                 throw new Exception("Forbidden value on symbolId = " + symbolId + ", it doesn't respect the following condition : symbolId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var idolId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  idolId_[i] = reader.ReadVarShort();
+                 if (idolId_[i] < 0)
+                     throw new Exception("Forbidden value on idolId_[i] = " + idolId_[i] + ", it doesn't respect the following condition : idolId_[i] < 0");
             }
             idolId = idolId_;
         }

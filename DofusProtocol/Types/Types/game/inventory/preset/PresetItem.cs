@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public byte position;
+        public sbyte position;
         public short objGid;
         public int objUid;
         
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public PresetItem(byte position, short objGid, int objUid)
+        public PresetItem(sbyte position, short objGid, int objUid)
         {
             this.position = position;
             this.objGid = objGid;
@@ -34,16 +34,14 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteByte(position);
+            writer.WriteSByte(position);
             writer.WriteVarShort(objGid);
             writer.WriteVarInt(objUid);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            position = reader.ReadByte();
-            if (position < 0 || position > 255)
-                throw new Exception("Forbidden value on position = " + position + ", it doesn't respect the following condition : position < 0 || position > 255");
+            position = reader.ReadSByte();
             objGid = reader.ReadVarShort();
             if (objGid < 0)
                 throw new Exception("Forbidden value on objGid = " + objGid + ", it doesn't respect the following condition : objGid < 0");

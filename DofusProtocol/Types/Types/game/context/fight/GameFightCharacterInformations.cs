@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public byte level;
+        public sbyte level;
         public Types.ActorAlignmentInformations alignmentInfos;
         public sbyte breed;
         public bool sex;
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightCharacterInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions, string name, Types.PlayerStatus status, byte level, Types.ActorAlignmentInformations alignmentInfos, sbyte breed, bool sex)
+        public GameFightCharacterInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, GameFightMinimalStats stats, IEnumerable<short> previousPositions, string name, Types.PlayerStatus status, sbyte level, Types.ActorAlignmentInformations alignmentInfos, sbyte breed, bool sex)
          : base(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions, name, status)
         {
             this.level = level;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteByte(level);
+            writer.WriteSByte(level);
             alignmentInfos.Serialize(writer);
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            level = reader.ReadByte();
+            level = reader.ReadSByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
             alignmentInfos = new Types.ActorAlignmentInformations();

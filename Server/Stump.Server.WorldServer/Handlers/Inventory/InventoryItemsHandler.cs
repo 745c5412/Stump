@@ -363,7 +363,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendObjectMovementMessage(IPacketReceiver client, BasePlayerItem movedItem)
         {
-            client.Send(new ObjectMovementMessage(movedItem.Guid, (byte) movedItem.Position));
+            client.Send(new ObjectMovementMessage(movedItem.Guid, (sbyte) movedItem.Position));
         }
 
         public static void SendObjectQuantityMessage(IPacketReceiver client, BasePlayerItem item)

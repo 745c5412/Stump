@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:02
+// Generated on 02/17/2017 01:58:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int rideId;
-        public IEnumerable<Types.UpdateMountBoost> boostToUpdateList;
+        public IEnumerable<UpdateMountBoost> boostToUpdateList;
         
         public UpdateMountBoostMessage()
         {
         }
         
-        public UpdateMountBoostMessage(int rideId, IEnumerable<Types.UpdateMountBoost> boostToUpdateList)
+        public UpdateMountBoostMessage(int rideId, IEnumerable<UpdateMountBoost> boostToUpdateList)
         {
             this.rideId = rideId;
             this.boostToUpdateList = boostToUpdateList;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarInt(rideId);
             var boostToUpdateList_before = writer.Position;
             var boostToUpdateList_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in boostToUpdateList)
             {
                  writer.WriteShort(entry.TypeId);
@@ -45,7 +45,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var boostToUpdateList_after = writer.Position;
             writer.Seek((int)boostToUpdateList_before);
-            writer.WriteUShort((ushort)boostToUpdateList_count);
+            writer.WriteShort((short)boostToUpdateList_count);
             writer.Seek((int)boostToUpdateList_after);
 
         }
@@ -53,11 +53,11 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             rideId = reader.ReadVarInt();
-            var limit = reader.ReadUShort();
-            var boostToUpdateList_ = new Types.UpdateMountBoost[limit];
+            var limit = reader.ReadShort();
+            var boostToUpdateList_ = new UpdateMountBoost[limit];
             for (int i = 0; i < limit; i++)
             {
-                 boostToUpdateList_[i] = Types.ProtocolTypeManager.GetInstance<Types.UpdateMountBoost>(reader.ReadShort());
+                 boostToUpdateList_[i] = Types.ProtocolTypeManager.GetInstance<UpdateMountBoost>(reader.ReadShort());
                  boostToUpdateList_[i].Deserialize(reader);
             }
             boostToUpdateList = boostToUpdateList_;

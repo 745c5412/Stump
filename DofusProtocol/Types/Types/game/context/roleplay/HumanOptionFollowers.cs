@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             var followingCharactersLook_before = writer.Position;
             var followingCharactersLook_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in followingCharactersLook)
             {
                  entry.Serialize(writer);
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Types
             }
             var followingCharactersLook_after = writer.Position;
             writer.Seek((int)followingCharactersLook_before);
-            writer.WriteUShort((ushort)followingCharactersLook_count);
+            writer.WriteShort((short)followingCharactersLook_count);
             writer.Seek((int)followingCharactersLook_after);
 
         }
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var followingCharactersLook_ = new Types.IndexedEntityLook[limit];
             for (int i = 0; i < limit; i++)
             {

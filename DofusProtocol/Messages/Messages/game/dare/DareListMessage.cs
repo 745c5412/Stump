@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:51
+// Generated on 02/17/2017 01:58:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var dares_before = writer.Position;
             var dares_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in dares)
             {
                  entry.Serialize(writer);
@@ -41,14 +41,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var dares_after = writer.Position;
             writer.Seek((int)dares_before);
-            writer.WriteUShort((ushort)dares_count);
+            writer.WriteShort((short)dares_count);
             writer.Seek((int)dares_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var dares_ = new Types.DareInformations[limit];
             for (int i = 0; i < limit; i++)
             {

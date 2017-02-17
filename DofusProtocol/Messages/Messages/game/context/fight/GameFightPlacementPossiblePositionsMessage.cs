@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:40
+// Generated on 02/17/2017 01:57:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var positionsForChallengers_before = writer.Position;
             var positionsForChallengers_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in positionsForChallengers)
             {
                  writer.WriteVarShort(entry);
@@ -45,12 +45,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var positionsForChallengers_after = writer.Position;
             writer.Seek((int)positionsForChallengers_before);
-            writer.WriteUShort((ushort)positionsForChallengers_count);
+            writer.WriteShort((short)positionsForChallengers_count);
             writer.Seek((int)positionsForChallengers_after);
 
             var positionsForDefenders_before = writer.Position;
             var positionsForDefenders_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in positionsForDefenders)
             {
                  writer.WriteVarShort(entry);
@@ -58,7 +58,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var positionsForDefenders_after = writer.Position;
             writer.Seek((int)positionsForDefenders_before);
-            writer.WriteUShort((ushort)positionsForDefenders_count);
+            writer.WriteShort((short)positionsForDefenders_count);
             writer.Seek((int)positionsForDefenders_after);
 
             writer.WriteSByte(teamNumber);
@@ -66,23 +66,25 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var positionsForChallengers_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  positionsForChallengers_[i] = reader.ReadVarShort();
+                 if (positionsForChallengers_[i] > 559)
+                     throw new Exception("Forbidden value on positionsForChallengers_[i] = " + positionsForChallengers_[i] + ", it doesn't respect the following condition : positionsForChallengers_[i] > 559");
             }
             positionsForChallengers = positionsForChallengers_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var positionsForDefenders_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  positionsForDefenders_[i] = reader.ReadVarShort();
+                 if (positionsForDefenders_[i] > 559)
+                     throw new Exception("Forbidden value on positionsForDefenders_[i] = " + positionsForDefenders_[i] + ", it doesn't respect the following condition : positionsForDefenders_[i] > 559");
             }
             positionsForDefenders = positionsForDefenders_;
             teamNumber = reader.ReadSByte();
-            if (teamNumber < 0)
-                throw new Exception("Forbidden value on teamNumber = " + teamNumber + ", it doesn't respect the following condition : teamNumber < 0");
         }
         
     }

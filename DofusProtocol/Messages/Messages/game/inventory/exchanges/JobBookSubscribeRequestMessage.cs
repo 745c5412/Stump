@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:01
+// Generated on 02/17/2017 01:58:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var jobIds_before = writer.Position;
             var jobIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in jobIds)
             {
                  writer.WriteSByte(entry);
@@ -41,18 +41,20 @@ namespace Stump.DofusProtocol.Messages
             }
             var jobIds_after = writer.Position;
             writer.Seek((int)jobIds_before);
-            writer.WriteUShort((ushort)jobIds_count);
+            writer.WriteShort((short)jobIds_count);
             writer.Seek((int)jobIds_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var jobIds_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
                  jobIds_[i] = reader.ReadSByte();
+                 if (jobIds_[i] < 0)
+                     throw new Exception("Forbidden value on jobIds_[i] = " + jobIds_[i] + ", it doesn't respect the following condition : jobIds_[i] < 0");
             }
             jobIds = jobIds_;
         }

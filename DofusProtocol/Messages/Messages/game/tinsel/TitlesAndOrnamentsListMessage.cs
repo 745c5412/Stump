@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:07
+// Generated on 02/17/2017 01:58:28
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var titles_before = writer.Position;
             var titles_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in titles)
             {
                  writer.WriteVarShort(entry);
@@ -47,12 +47,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var titles_after = writer.Position;
             writer.Seek((int)titles_before);
-            writer.WriteUShort((ushort)titles_count);
+            writer.WriteShort((short)titles_count);
             writer.Seek((int)titles_after);
 
             var ornaments_before = writer.Position;
             var ornaments_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in ornaments)
             {
                  writer.WriteVarShort(entry);
@@ -60,7 +60,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var ornaments_after = writer.Position;
             writer.Seek((int)ornaments_before);
-            writer.WriteUShort((ushort)ornaments_count);
+            writer.WriteShort((short)ornaments_count);
             writer.Seek((int)ornaments_after);
 
             writer.WriteVarShort(activeTitle);
@@ -69,18 +69,22 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var titles_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  titles_[i] = reader.ReadVarShort();
+                 if (titles_[i] < 0)
+                     throw new Exception("Forbidden value on titles_[i] = " + titles_[i] + ", it doesn't respect the following condition : titles_[i] < 0");
             }
             titles = titles_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var ornaments_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  ornaments_[i] = reader.ReadVarShort();
+                 if (ornaments_[i] < 0)
+                     throw new Exception("Forbidden value on ornaments_[i] = " + ornaments_[i] + ", it doesn't respect the following condition : ornaments_[i] < 0");
             }
             ornaments = ornaments_;
             activeTitle = reader.ReadVarShort();

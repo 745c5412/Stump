@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:47
+// Generated on 02/17/2017 01:57:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var cellId_before = writer.Position;
             var cellId_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in cellId)
             {
                  writer.WriteVarShort(entry);
@@ -41,18 +41,20 @@ namespace Stump.DofusProtocol.Messages
             }
             var cellId_after = writer.Position;
             writer.Seek((int)cellId_before);
-            writer.WriteUShort((ushort)cellId_count);
+            writer.WriteShort((short)cellId_count);
             writer.Seek((int)cellId_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var cellId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  cellId_[i] = reader.ReadVarShort();
+                 if (cellId_[i] > 559)
+                     throw new Exception("Forbidden value on cellId_[i] = " + cellId_[i] + ", it doesn't respect the following condition : cellId_[i] > 559");
             }
             cellId = cellId_;
         }

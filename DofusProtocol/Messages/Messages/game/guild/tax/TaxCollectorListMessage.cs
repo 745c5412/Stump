@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:55
+// Generated on 02/17/2017 01:58:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public TaxCollectorListMessage(IEnumerable<Types.TaxCollectorInformations> informations, sbyte nbcollectorMax, IEnumerable<Types.TaxCollectorFightersInformation> fightersInformations)
+        public TaxCollectorListMessage(IEnumerable<TaxCollectorInformations> informations, sbyte nbcollectorMax, IEnumerable<Types.TaxCollectorFightersInformation> fightersInformations)
          : base(informations)
         {
             this.nbcollectorMax = nbcollectorMax;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(nbcollectorMax);
             var fightersInformations_before = writer.Position;
             var fightersInformations_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in fightersInformations)
             {
                  entry.Serialize(writer);
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var fightersInformations_after = writer.Position;
             writer.Seek((int)fightersInformations_before);
-            writer.WriteUShort((ushort)fightersInformations_count);
+            writer.WriteShort((short)fightersInformations_count);
             writer.Seek((int)fightersInformations_after);
 
         }
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
             nbcollectorMax = reader.ReadSByte();
             if (nbcollectorMax < 0)
                 throw new Exception("Forbidden value on nbcollectorMax = " + nbcollectorMax + ", it doesn't respect the following condition : nbcollectorMax < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var fightersInformations_ = new Types.TaxCollectorFightersInformation[limit];
             for (int i = 0; i < limit; i++)
             {

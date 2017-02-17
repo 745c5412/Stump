@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
         public override ObjectItem GetObjectItem()
         {
             return new ObjectItem(
-                (byte)Position,
+                (sbyte)Position,
                 (short)Template.Id,
                 Effects.Where(entry => !entry.Hidden).Select(entry => entry.GetObjectEffect()),
                 Guid,

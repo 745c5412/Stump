@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:42
+// Generated on 02/17/2017 01:57:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarShort(id);
             var parameters_before = writer.Position;
             var parameters_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in parameters)
             {
                  writer.WriteUTF(entry);
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var parameters_after = writer.Position;
             writer.Seek((int)parameters_before);
-            writer.WriteUShort((ushort)parameters_count);
+            writer.WriteShort((short)parameters_count);
             writer.Seek((int)parameters_after);
 
             writer.WriteBoolean(forceOpen);
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
             id = reader.ReadVarShort();
             if (id < 0)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var parameters_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {

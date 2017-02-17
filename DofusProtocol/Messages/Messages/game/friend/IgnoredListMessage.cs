@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:53
+// Generated on 02/17/2017 01:58:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<Types.IgnoredInformations> ignoredList;
+        public IEnumerable<IgnoredInformations> ignoredList;
         
         public IgnoredListMessage()
         {
         }
         
-        public IgnoredListMessage(IEnumerable<Types.IgnoredInformations> ignoredList)
+        public IgnoredListMessage(IEnumerable<IgnoredInformations> ignoredList)
         {
             this.ignoredList = ignoredList;
         }
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var ignoredList_before = writer.Position;
             var ignoredList_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in ignoredList)
             {
                  writer.WriteShort(entry.TypeId);
@@ -42,18 +42,18 @@ namespace Stump.DofusProtocol.Messages
             }
             var ignoredList_after = writer.Position;
             writer.Seek((int)ignoredList_before);
-            writer.WriteUShort((ushort)ignoredList_count);
+            writer.WriteShort((short)ignoredList_count);
             writer.Seek((int)ignoredList_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
-            var ignoredList_ = new Types.IgnoredInformations[limit];
+            var limit = reader.ReadShort();
+            var ignoredList_ = new IgnoredInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 ignoredList_[i] = Types.ProtocolTypeManager.GetInstance<Types.IgnoredInformations>(reader.ReadShort());
+                 ignoredList_[i] = Types.ProtocolTypeManager.GetInstance<IgnoredInformations>(reader.ReadShort());
                  ignoredList_[i].Deserialize(reader);
             }
             ignoredList = ignoredList_;

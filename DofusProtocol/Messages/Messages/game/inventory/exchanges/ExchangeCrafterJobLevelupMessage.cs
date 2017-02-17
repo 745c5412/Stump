@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:57
+// Generated on 02/17/2017 01:58:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,25 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public byte crafterJobLevel;
+        public sbyte crafterJobLevel;
         
         public ExchangeCrafterJobLevelupMessage()
         {
         }
         
-        public ExchangeCrafterJobLevelupMessage(byte crafterJobLevel)
+        public ExchangeCrafterJobLevelupMessage(sbyte crafterJobLevel)
         {
             this.crafterJobLevel = crafterJobLevel;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteByte(crafterJobLevel);
+            writer.WriteSByte(crafterJobLevel);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            crafterJobLevel = reader.ReadByte();
+            crafterJobLevel = reader.ReadSByte();
             if (crafterJobLevel < 0 || crafterJobLevel > 255)
                 throw new Exception("Forbidden value on crafterJobLevel = " + crafterJobLevel + ", it doesn't respect the following condition : crafterJobLevel < 0 || crafterJobLevel > 255");
         }

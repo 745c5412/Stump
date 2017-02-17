@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:36
+// Generated on 02/17/2017 01:57:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public CharactersListWithRemodelingMessage(IEnumerable<Types.CharacterBaseInformations> characters, bool hasStartupActions, IEnumerable<Types.CharacterToRemodelInformations> charactersToRemodel)
+        public CharactersListWithRemodelingMessage(IEnumerable<CharacterBaseInformations> characters, bool hasStartupActions, IEnumerable<Types.CharacterToRemodelInformations> charactersToRemodel)
          : base(characters, hasStartupActions)
         {
             this.charactersToRemodel = charactersToRemodel;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var charactersToRemodel_before = writer.Position;
             var charactersToRemodel_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in charactersToRemodel)
             {
                  entry.Serialize(writer);
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var charactersToRemodel_after = writer.Position;
             writer.Seek((int)charactersToRemodel_before);
-            writer.WriteUShort((ushort)charactersToRemodel_count);
+            writer.WriteShort((short)charactersToRemodel_count);
             writer.Seek((int)charactersToRemodel_after);
 
         }
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var charactersToRemodel_ = new Types.CharacterToRemodelInformations[limit];
             for (int i = 0; i < limit; i++)
             {

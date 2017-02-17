@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:51
+// Generated on 02/17/2017 01:58:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,8 +44,6 @@ namespace Stump.DofusProtocol.Messages
         {
             useAdditionnal = reader.ReadBoolean();
             statId = reader.ReadSByte();
-            if (statId < 0)
-                throw new Exception("Forbidden value on statId = " + statId + ", it doesn't respect the following condition : statId < 0");
             boostPoint = reader.ReadVarShort();
             if (boostPoint < 0)
                 throw new Exception("Forbidden value on boostPoint = " + boostPoint + ", it doesn't respect the following condition : boostPoint < 0");

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:47
+// Generated on 02/17/2017 01:57:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarShort(totalPage);
             var paddockList_before = writer.Position;
             var paddockList_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in paddockList)
             {
                  entry.Serialize(writer);
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var paddockList_after = writer.Position;
             writer.Seek((int)paddockList_before);
-            writer.WriteUShort((ushort)paddockList_count);
+            writer.WriteShort((short)paddockList_count);
             writer.Seek((int)paddockList_after);
 
         }
@@ -60,7 +60,7 @@ namespace Stump.DofusProtocol.Messages
             totalPage = reader.ReadVarShort();
             if (totalPage < 0)
                 throw new Exception("Forbidden value on totalPage = " + totalPage + ", it doesn't respect the following condition : totalPage < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var paddockList_ = new Types.PaddockInformationsForSell[limit];
             for (int i = 0; i < limit; i++)
             {

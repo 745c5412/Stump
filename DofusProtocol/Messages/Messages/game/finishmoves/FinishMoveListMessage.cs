@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:52
+// Generated on 02/17/2017 01:58:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var finishMoves_before = writer.Position;
             var finishMoves_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in finishMoves)
             {
                  entry.Serialize(writer);
@@ -41,14 +41,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var finishMoves_after = writer.Position;
             writer.Seek((int)finishMoves_before);
-            writer.WriteUShort((ushort)finishMoves_count);
+            writer.WriteShort((short)finishMoves_count);
             writer.Seek((int)finishMoves_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var finishMoves_ = new Types.FinishMoveInformations[limit];
             for (int i = 0; i < limit; i++)
             {

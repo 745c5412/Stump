@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:35
+// Generated on 02/16/2017 20:46:29
 using System;
 using System.Collections.Generic;
 
@@ -14,5 +14,6 @@ namespace Stump.DofusProtocol.Enums
         CHARACTER_REMODELING_COSMETIC = 4,
         CHARACTER_REMODELING_BREED = 8,
         CHARACTER_REMODELING_GENDER = 16,
+        CHARACTER_OPT_REMODELING_NAME = 32,
     }
 }

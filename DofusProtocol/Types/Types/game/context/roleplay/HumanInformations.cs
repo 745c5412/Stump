@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Types
         
         public Types.ActorRestrictionsInformations restrictions;
         public bool sex;
-        public IEnumerable<Types.HumanOption> options;
+        public IEnumerable<HumanOption> options;
         
         public HumanInformations()
         {
         }
         
-        public HumanInformations(Types.ActorRestrictionsInformations restrictions, bool sex, IEnumerable<Types.HumanOption> options)
+        public HumanInformations(Types.ActorRestrictionsInformations restrictions, bool sex, IEnumerable<HumanOption> options)
         {
             this.restrictions = restrictions;
             this.sex = sex;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteBoolean(sex);
             var options_before = writer.Position;
             var options_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in options)
             {
                  writer.WriteShort(entry.TypeId);
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             }
             var options_after = writer.Position;
             writer.Seek((int)options_before);
-            writer.WriteUShort((ushort)options_count);
+            writer.WriteShort((short)options_count);
             writer.Seek((int)options_after);
 
         }
@@ -57,11 +57,11 @@ namespace Stump.DofusProtocol.Types
             restrictions = new Types.ActorRestrictionsInformations();
             restrictions.Deserialize(reader);
             sex = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
-            var options_ = new Types.HumanOption[limit];
+            var limit = reader.ReadShort();
+            var options_ = new HumanOption[limit];
             for (int i = 0; i < limit; i++)
             {
-                 options_[i] = Types.ProtocolTypeManager.GetInstance<Types.HumanOption>(reader.ReadShort());
+                 options_[i] = Types.ProtocolTypeManager.GetInstance<HumanOption>(reader.ReadShort());
                  options_[i].Deserialize(reader);
             }
             options = options_;

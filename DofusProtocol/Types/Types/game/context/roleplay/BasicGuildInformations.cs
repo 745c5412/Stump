@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Types
         
         public int guildId;
         public string guildName;
-        public byte guildLevel;
+        public sbyte guildLevel;
         
         public BasicGuildInformations()
         {
         }
         
-        public BasicGuildInformations(int guildId, string guildName, byte guildLevel)
+        public BasicGuildInformations(int guildId, string guildName, sbyte guildLevel)
         {
             this.guildId = guildId;
             this.guildName = guildName;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteVarInt(guildId);
             writer.WriteUTF(guildName);
-            writer.WriteByte(guildLevel);
+            writer.WriteSByte(guildLevel);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             if (guildId < 0)
                 throw new Exception("Forbidden value on guildId = " + guildId + ", it doesn't respect the following condition : guildId < 0");
             guildName = reader.ReadUTF();
-            guildLevel = reader.ReadByte();
+            guildLevel = reader.ReadSByte();
             if (guildLevel < 0 || guildLevel > 200)
                 throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 0 || guildLevel > 200");
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:15
+// Generated on 02/17/2017 01:53:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,8 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
+        public uint instanceId;
+        public bool secondHand;
         public int modelId;
         public string ownerName;
         public bool ownerConnected;
@@ -27,14 +29,16 @@ namespace Stump.DofusProtocol.Types
         public sbyte nbChest;
         public IEnumerable<int> skillListIds;
         public bool isLocked;
-        public int price;
+        public long price;
         
         public HouseInformationsForSell()
         {
         }
         
-        public HouseInformationsForSell(int modelId, string ownerName, bool ownerConnected, short worldX, short worldY, short subAreaId, sbyte nbRoom, sbyte nbChest, IEnumerable<int> skillListIds, bool isLocked, int price)
+        public HouseInformationsForSell(uint instanceId, bool secondHand, int modelId, string ownerName, bool ownerConnected, short worldX, short worldY, short subAreaId, sbyte nbRoom, sbyte nbChest, IEnumerable<int> skillListIds, bool isLocked, long price)
         {
+            this.instanceId = instanceId;
+            this.secondHand = secondHand;
             this.modelId = modelId;
             this.ownerName = ownerName;
             this.ownerConnected = ownerConnected;
@@ -50,6 +54,8 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
+            writer.WriteUInt(instanceId);
+            writer.WriteBoolean(secondHand);
             writer.WriteVarInt(modelId);
             writer.WriteUTF(ownerName);
             writer.WriteBoolean(ownerConnected);
@@ -60,7 +66,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(nbChest);
             var skillListIds_before = writer.Position;
             var skillListIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in skillListIds)
             {
                  writer.WriteInt(entry);
@@ -68,15 +74,19 @@ namespace Stump.DofusProtocol.Types
             }
             var skillListIds_after = writer.Position;
             writer.Seek((int)skillListIds_before);
-            writer.WriteUShort((ushort)skillListIds_count);
+            writer.WriteShort((short)skillListIds_count);
             writer.Seek((int)skillListIds_after);
 
             writer.WriteBoolean(isLocked);
-            writer.WriteVarInt(price);
+            writer.WriteVarLong(price);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
+            instanceId = reader.ReadUInt();
+            if (instanceId < 0 || instanceId > 4294967295)
+                throw new Exception("Forbidden value on instanceId = " + instanceId + ", it doesn't respect the following condition : instanceId < 0 || instanceId > 4294967295");
+            secondHand = reader.ReadBoolean();
             modelId = reader.ReadVarInt();
             if (modelId < 0)
                 throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");
@@ -93,7 +103,7 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             nbRoom = reader.ReadSByte();
             nbChest = reader.ReadSByte();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var skillListIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -101,9 +111,9 @@ namespace Stump.DofusProtocol.Types
             }
             skillListIds = skillListIds_;
             isLocked = reader.ReadBoolean();
-            price = reader.ReadVarInt();
-            if (price < 0)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
+            price = reader.ReadVarLong();
+            if (price < 0 || price > 9007199254740990)
+                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 9007199254740990");
         }
         
         

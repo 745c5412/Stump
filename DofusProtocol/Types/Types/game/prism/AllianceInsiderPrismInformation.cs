@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUTF(lastTimeSlotModificationAuthorName);
             var modulesObjects_before = writer.Position;
             var modulesObjects_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in modulesObjects)
             {
                  entry.Serialize(writer);
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Types
             }
             var modulesObjects_after = writer.Position;
             writer.Seek((int)modulesObjects_before);
-            writer.WriteUShort((ushort)modulesObjects_count);
+            writer.WriteShort((short)modulesObjects_count);
             writer.Seek((int)modulesObjects_after);
 
         }
@@ -72,7 +72,7 @@ namespace Stump.DofusProtocol.Types
             if (lastTimeSlotModificationAuthorId < 0 || lastTimeSlotModificationAuthorId > 9007199254740990)
                 throw new Exception("Forbidden value on lastTimeSlotModificationAuthorId = " + lastTimeSlotModificationAuthorId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorId < 0 || lastTimeSlotModificationAuthorId > 9007199254740990");
             lastTimeSlotModificationAuthorName = reader.ReadUTF();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var modulesObjects_ = new Types.ObjectItem[limit];
             for (int i = 0; i < limit; i++)
             {

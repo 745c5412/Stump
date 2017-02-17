@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(playerCount);
             var monsters_before = writer.Position;
             var monsters_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in monsters)
             {
                  entry.Serialize(writer);
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             }
             var monsters_after = writer.Position;
             writer.Seek((int)monsters_before);
-            writer.WriteUShort((ushort)monsters_count);
+            writer.WriteShort((short)monsters_count);
             writer.Seek((int)monsters_after);
 
         }
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             playerCount = reader.ReadInt();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var monsters_ = new Types.MonsterInGroupLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {

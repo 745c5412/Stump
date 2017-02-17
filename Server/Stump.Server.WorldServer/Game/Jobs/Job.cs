@@ -255,19 +255,19 @@ namespace Stump.Server.WorldServer.Game.Jobs
         }
 
         public JobExperience GetJobExperience()
-            => new JobExperience((sbyte)Template.Id, (byte)Level, Experience, LowerBoundExperience, UpperBoundExperience);
+            => new JobExperience((sbyte)Template.Id, (sbyte)Level, Experience, LowerBoundExperience, UpperBoundExperience);
 
         public JobDescription GetJobDescription()
             => new JobDescription((sbyte) Template.Id, Template.Skills.Where(x => x.LevelMin <= Level).Select(x => GetSkillActionDescription(x)));
 
         public JobCrafterDirectorySettings GetJobCrafterDirectorySettings()
-            => new JobCrafterDirectorySettings((sbyte) Template.Id, (byte)MinLevelCraftSetting, WorkForFree);
+            => new JobCrafterDirectorySettings((sbyte) Template.Id, (sbyte)MinLevelCraftSetting, WorkForFree);
 
         public JobCrafterDirectoryListEntry GetJobCrafterDirectoryListEntry()
             =>
                 new JobCrafterDirectoryListEntry(
                     new JobCrafterDirectoryEntryPlayerInfo(Owner.Id, Owner.Name, (sbyte) Owner.AlignmentSide, (sbyte) Owner.Breed.Id, Owner.Sex != SexTypeEnum.SEX_FEMALE, Owner.Map.AvailableJobs.Contains(Template),
                         (short) Owner.Map.Position.X, (short) Owner.Map.Position.Y, Owner.Map.Id, (short) Owner.SubArea.Id, Owner.Status),
-                    new JobCrafterDirectoryEntryJobInfo((sbyte) Template.Id, (byte) Level, WorkForFree, (byte) MinLevelCraftSetting));
+                    new JobCrafterDirectoryEntryJobInfo((sbyte) Template.Id, (sbyte) Level, WorkForFree, (sbyte) MinLevelCraftSetting));
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:47
+// Generated on 02/17/2017 01:57:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,26 +18,25 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public Types.PaddockInformations properties;
+        public Types.PaddockInstancesInformations properties;
         
         public PaddockPropertiesMessage()
         {
         }
         
-        public PaddockPropertiesMessage(Types.PaddockInformations properties)
+        public PaddockPropertiesMessage(Types.PaddockInstancesInformations properties)
         {
             this.properties = properties;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(properties.TypeId);
             properties.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            properties = Types.ProtocolTypeManager.GetInstance<Types.PaddockInformations>(reader.ReadShort());
+            properties = new Types.PaddockInstancesInformations();
             properties.Deserialize(reader);
         }
         

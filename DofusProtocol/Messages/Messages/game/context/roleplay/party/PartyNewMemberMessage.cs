@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:49
+// Generated on 02/17/2017 01:58:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyNewMemberMessage(int partyId, Types.PartyMemberInformations memberInformations)
+        public PartyNewMemberMessage(int partyId, PartyMemberInformations memberInformations)
          : base(partyId, memberInformations)
         {
         }

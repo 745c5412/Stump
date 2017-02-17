@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:17
+// Generated on 02/17/2017 01:53:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,8 +66,6 @@ namespace Stump.DofusProtocol.Types
             if (patch < 0)
                 throw new Exception("Forbidden value on patch = " + patch + ", it doesn't respect the following condition : patch < 0");
             buildType = reader.ReadSByte();
-            if (buildType < 0)
-                throw new Exception("Forbidden value on buildType = " + buildType + ", it doesn't respect the following condition : buildType < 0");
         }
         
         

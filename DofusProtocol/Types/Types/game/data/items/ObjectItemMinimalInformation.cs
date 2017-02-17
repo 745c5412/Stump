@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:14
+// Generated on 02/17/2017 01:53:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short objectGID;
-        public IEnumerable<Types.ObjectEffect> effects;
+        public IEnumerable<ObjectEffect> effects;
         
         public ObjectItemMinimalInformation()
         {
         }
         
-        public ObjectItemMinimalInformation(short objectGID, IEnumerable<Types.ObjectEffect> effects)
+        public ObjectItemMinimalInformation(short objectGID, IEnumerable<ObjectEffect> effects)
         {
             this.objectGID = objectGID;
             this.effects = effects;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(objectGID);
             var effects_before = writer.Position;
             var effects_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in effects)
             {
                  writer.WriteShort(entry.TypeId);
@@ -45,7 +45,7 @@ namespace Stump.DofusProtocol.Types
             }
             var effects_after = writer.Position;
             writer.Seek((int)effects_before);
-            writer.WriteUShort((ushort)effects_count);
+            writer.WriteShort((short)effects_count);
             writer.Seek((int)effects_after);
 
         }
@@ -56,11 +56,11 @@ namespace Stump.DofusProtocol.Types
             objectGID = reader.ReadVarShort();
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
-            var limit = reader.ReadUShort();
-            var effects_ = new Types.ObjectEffect[limit];
+            var limit = reader.ReadShort();
+            var effects_ = new ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {
-                 effects_[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
+                 effects_[i] = Types.ProtocolTypeManager.GetInstance<ObjectEffect>(reader.ReadShort());
                  effects_[i].Deserialize(reader);
             }
             effects = effects_;

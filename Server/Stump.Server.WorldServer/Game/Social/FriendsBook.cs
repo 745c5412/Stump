@@ -336,7 +336,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
 
             if (character.Map != Owner.Map)
-                CharacterHandler.SendCharacterLevelUpInformationMessage(Owner.Client, character, character.Level);
+                CharacterHandler.SendCharacterLevelUpInformationMessage(Owner.Client, character, (sbyte)character.Level);
         }
 
         void OnFriendLogout(Character character)

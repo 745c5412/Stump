@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public byte level;
-        public IEnumerable<Types.FightResultAdditionalData> additional;
+        public sbyte level;
+        public IEnumerable<FightResultAdditionalData> additional;
         
         public FightResultPlayerListEntry()
         {
         }
         
-        public FightResultPlayerListEntry(short outcome, sbyte wave, Types.FightLoot rewards, double id, bool alive, byte level, IEnumerable<Types.FightResultAdditionalData> additional)
+        public FightResultPlayerListEntry(short outcome, sbyte wave, Types.FightLoot rewards, double id, bool alive, sbyte level, IEnumerable<FightResultAdditionalData> additional)
          : base(outcome, wave, rewards, id, alive)
         {
             this.level = level;
@@ -34,10 +34,10 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteByte(level);
+            writer.WriteSByte(level);
             var additional_before = writer.Position;
             var additional_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in additional)
             {
                  writer.WriteShort(entry.TypeId);
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             }
             var additional_after = writer.Position;
             writer.Seek((int)additional_before);
-            writer.WriteUShort((ushort)additional_count);
+            writer.WriteShort((short)additional_count);
             writer.Seek((int)additional_after);
 
         }
@@ -54,14 +54,14 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            level = reader.ReadByte();
+            level = reader.ReadSByte();
             if (level < 1 || level > 206)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 206");
-            var limit = reader.ReadUShort();
-            var additional_ = new Types.FightResultAdditionalData[limit];
+            var limit = reader.ReadShort();
+            var additional_ = new FightResultAdditionalData[limit];
             for (int i = 0; i < limit; i++)
             {
-                 additional_[i] = Types.ProtocolTypeManager.GetInstance<Types.FightResultAdditionalData>(reader.ReadShort());
+                 additional_[i] = Types.ProtocolTypeManager.GetInstance<FightResultAdditionalData>(reader.ReadShort());
                  additional_[i].Deserialize(reader);
             }
             additional = additional_;

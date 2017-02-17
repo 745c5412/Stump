@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:38
+// Generated on 02/17/2017 01:57:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,8 +57,6 @@ namespace Stump.DofusProtocol.Messages
             if (timestamp < 0)
                 throw new Exception("Forbidden value on timestamp = " + timestamp + ", it doesn't respect the following condition : timestamp < 0");
             channel = reader.ReadSByte();
-            if (channel < 0)
-                throw new Exception("Forbidden value on channel = " + channel + ", it doesn't respect the following condition : channel < 0");
             fingerprint = reader.ReadUTF();
             reason = reader.ReadSByte();
             if (reason < 0)

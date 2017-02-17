@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:07
+// Generated on 02/17/2017 01:58:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public byte requestId;
+        public sbyte requestId;
         public sbyte contactType;
         
         public ContactLookRequestMessage()
         {
         }
         
-        public ContactLookRequestMessage(byte requestId, sbyte contactType)
+        public ContactLookRequestMessage(sbyte requestId, sbyte contactType)
         {
             this.requestId = requestId;
             this.contactType = contactType;
@@ -33,18 +33,16 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteByte(requestId);
+            writer.WriteSByte(requestId);
             writer.WriteSByte(contactType);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            requestId = reader.ReadByte();
+            requestId = reader.ReadSByte();
             if (requestId < 0 || requestId > 255)
                 throw new Exception("Forbidden value on requestId = " + requestId + ", it doesn't respect the following condition : requestId < 0 || requestId > 255");
             contactType = reader.ReadSByte();
-            if (contactType < 0)
-                throw new Exception("Forbidden value on contactType = " + contactType + ", it doesn't respect the following condition : contactType < 0");
         }
         
     }

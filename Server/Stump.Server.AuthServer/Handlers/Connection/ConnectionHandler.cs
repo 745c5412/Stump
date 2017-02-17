@@ -53,7 +53,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                         if (DateTime.Now - authClient.InQueueUntil <= TimeSpan.FromSeconds(3))
                             continue;
 
-                        SendQueueStatusMessage(authClient, (ushort) count, (ushort) ConnectionQueue.Count);
+                        SendQueueStatusMessage(authClient, (short)count, (short)ConnectionQueue.Count);
                         authClient.QueueShowed = true;
                     }
 
@@ -242,7 +242,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 date.GetUnixTimeStampLong()));
         }
 
-        public static void SendQueueStatusMessage(IPacketReceiver client, ushort position, ushort total)
+        public static void SendQueueStatusMessage(IPacketReceiver client, short position, short total)
         {
             client.Send(new LoginQueueStatusMessage(position, total));
         }
@@ -310,9 +310,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.SaveNow();
 
             client.Send(new SelectedServerDataMessage(
-                (short) world.Id,
+                (short)world.Id,
                 world.Address,
-                world.Port,
+                (short)world.Port,
                 (client.UserGroup.Role >= world.RequiredRole || client.UserGroup.AvailableServers.Contains(world.Id)),
                 Encoding.ASCII.GetBytes(client.Account.Ticket).Select(x => (sbyte)x)));
 

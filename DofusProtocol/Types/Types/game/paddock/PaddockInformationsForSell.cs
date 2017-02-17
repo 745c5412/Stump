@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,13 +23,13 @@ namespace Stump.DofusProtocol.Types
         public short subAreaId;
         public sbyte nbMount;
         public sbyte nbObject;
-        public int price;
+        public long price;
         
         public PaddockInformationsForSell()
         {
         }
         
-        public PaddockInformationsForSell(string guildOwner, short worldX, short worldY, short subAreaId, sbyte nbMount, sbyte nbObject, int price)
+        public PaddockInformationsForSell(string guildOwner, short worldX, short worldY, short subAreaId, sbyte nbMount, sbyte nbObject, long price)
         {
             this.guildOwner = guildOwner;
             this.worldX = worldX;
@@ -48,7 +48,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(subAreaId);
             writer.WriteSByte(nbMount);
             writer.WriteSByte(nbObject);
-            writer.WriteVarInt(price);
+            writer.WriteVarLong(price);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -65,9 +65,9 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             nbMount = reader.ReadSByte();
             nbObject = reader.ReadSByte();
-            price = reader.ReadVarInt();
-            if (price < 0)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
+            price = reader.ReadVarLong();
+            if (price < 0 || price > 9007199254740990)
+                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 9007199254740990");
         }
         
         

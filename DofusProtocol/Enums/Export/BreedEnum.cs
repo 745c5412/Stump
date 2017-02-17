@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:34
+// Generated on 02/16/2017 20:46:28
 using System;
 using System.Collections.Generic;
 
@@ -26,6 +26,7 @@ namespace Stump.DofusProtocol.Enums
         Steamer = 15,
         Eliotrope = 16,
         Huppermage = 17,
+        Ouginak = 18,
         SUMMONED = -1,
         MONSTER = -2,
         MONSTER_GROUP = -3,

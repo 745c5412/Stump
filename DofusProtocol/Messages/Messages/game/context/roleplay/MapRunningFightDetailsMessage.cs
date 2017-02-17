@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:42
+// Generated on 02/17/2017 01:57:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int fightId;
-        public IEnumerable<Types.GameFightFighterLightInformations> attackers;
-        public IEnumerable<Types.GameFightFighterLightInformations> defenders;
+        public IEnumerable<GameFightFighterLightInformations> attackers;
+        public IEnumerable<GameFightFighterLightInformations> defenders;
         
         public MapRunningFightDetailsMessage()
         {
         }
         
-        public MapRunningFightDetailsMessage(int fightId, IEnumerable<Types.GameFightFighterLightInformations> attackers, IEnumerable<Types.GameFightFighterLightInformations> defenders)
+        public MapRunningFightDetailsMessage(int fightId, IEnumerable<GameFightFighterLightInformations> attackers, IEnumerable<GameFightFighterLightInformations> defenders)
         {
             this.fightId = fightId;
             this.attackers = attackers;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(fightId);
             var attackers_before = writer.Position;
             var attackers_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in attackers)
             {
                  writer.WriteShort(entry.TypeId);
@@ -47,12 +47,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var attackers_after = writer.Position;
             writer.Seek((int)attackers_before);
-            writer.WriteUShort((ushort)attackers_count);
+            writer.WriteShort((short)attackers_count);
             writer.Seek((int)attackers_after);
 
             var defenders_before = writer.Position;
             var defenders_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in defenders)
             {
                  writer.WriteShort(entry.TypeId);
@@ -61,7 +61,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var defenders_after = writer.Position;
             writer.Seek((int)defenders_before);
-            writer.WriteUShort((ushort)defenders_count);
+            writer.WriteShort((short)defenders_count);
             writer.Seek((int)defenders_after);
 
         }
@@ -71,19 +71,19 @@ namespace Stump.DofusProtocol.Messages
             fightId = reader.ReadInt();
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
-            var limit = reader.ReadUShort();
-            var attackers_ = new Types.GameFightFighterLightInformations[limit];
+            var limit = reader.ReadShort();
+            var attackers_ = new GameFightFighterLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 attackers_[i] = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterLightInformations>(reader.ReadShort());
+                 attackers_[i] = Types.ProtocolTypeManager.GetInstance<GameFightFighterLightInformations>(reader.ReadShort());
                  attackers_[i].Deserialize(reader);
             }
             attackers = attackers_;
-            limit = reader.ReadUShort();
-            var defenders_ = new Types.GameFightFighterLightInformations[limit];
+            limit = reader.ReadShort();
+            var defenders_ = new GameFightFighterLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 defenders_[i] = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterLightInformations>(reader.ReadShort());
+                 defenders_[i] = Types.ProtocolTypeManager.GetInstance<GameFightFighterLightInformations>(reader.ReadShort());
                  defenders_[i].Deserialize(reader);
             }
             defenders = defenders_;

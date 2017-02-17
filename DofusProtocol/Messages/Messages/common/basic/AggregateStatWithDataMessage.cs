@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:29
+// Generated on 02/17/2017 01:57:31
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<Types.StatisticData> datas;
+        public IEnumerable<StatisticData> datas;
         
         public AggregateStatWithDataMessage()
         {
         }
         
-        public AggregateStatWithDataMessage(short statId, IEnumerable<Types.StatisticData> datas)
+        public AggregateStatWithDataMessage(short statId, IEnumerable<StatisticData> datas)
          : base(statId)
         {
             this.datas = datas;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             var datas_before = writer.Position;
             var datas_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in datas)
             {
                  writer.WriteShort(entry.TypeId);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var datas_after = writer.Position;
             writer.Seek((int)datas_before);
-            writer.WriteUShort((ushort)datas_count);
+            writer.WriteShort((short)datas_count);
             writer.Seek((int)datas_after);
 
         }
@@ -52,11 +52,11 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            var datas_ = new Types.StatisticData[limit];
+            var limit = reader.ReadShort();
+            var datas_ = new StatisticData[limit];
             for (int i = 0; i < limit; i++)
             {
-                 datas_[i] = Types.ProtocolTypeManager.GetInstance<Types.StatisticData>(reader.ReadShort());
+                 datas_[i] = Types.ProtocolTypeManager.GetInstance<StatisticData>(reader.ReadShort());
                  datas_[i].Deserialize(reader);
             }
             datas = datas_;

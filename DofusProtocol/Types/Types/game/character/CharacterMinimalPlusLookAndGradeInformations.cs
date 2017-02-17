@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:10
+// Generated on 02/17/2017 01:52:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public CharacterMinimalPlusLookAndGradeInformations(long id, string name, byte level, Types.EntityLook entityLook, int grade)
+        public CharacterMinimalPlusLookAndGradeInformations(long id, string name, sbyte level, Types.EntityLook entityLook, int grade)
          : base(id, name, level, entityLook)
         {
             this.grade = grade;

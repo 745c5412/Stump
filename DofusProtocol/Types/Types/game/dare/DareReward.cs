@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:14
+// Generated on 02/17/2017 01:53:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Types
         
         public sbyte type;
         public short monsterId;
-        public uint kamas;
+        public long kamas;
         public double dareId;
         
         public DareReward()
         {
         }
         
-        public DareReward(sbyte type, short monsterId, uint kamas, double dareId)
+        public DareReward(sbyte type, short monsterId, long kamas, double dareId)
         {
             this.type = type;
             this.monsterId = monsterId;
@@ -38,21 +38,19 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteSByte(type);
             writer.WriteVarShort(monsterId);
-            writer.WriteUInt(kamas);
+            writer.WriteVarLong(kamas);
             writer.WriteDouble(dareId);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
             type = reader.ReadSByte();
-            if (type < 0)
-                throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
             monsterId = reader.ReadVarShort();
             if (monsterId < 0)
                 throw new Exception("Forbidden value on monsterId = " + monsterId + ", it doesn't respect the following condition : monsterId < 0");
-            kamas = reader.ReadUInt();
-            if (kamas < 0 || kamas > 4294967295)
-                throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0 || kamas > 4294967295");
+            kamas = reader.ReadVarLong();
+            if (kamas < 0 || kamas > 9007199254740990)
+                throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0 || kamas > 9007199254740990");
             dareId = reader.ReadDouble();
             if (dareId < 0 || dareId > 9007199254740990)
                 throw new Exception("Forbidden value on dareId = " + dareId + ", it doesn't respect the following condition : dareId < 0 || dareId > 9007199254740990");

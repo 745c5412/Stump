@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:38
+// Generated on 02/17/2017 01:57:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +40,6 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             resultCode = reader.ReadSByte();
-            if (resultCode < 0)
-                throw new Exception("Forbidden value on resultCode = " + resultCode + ", it doesn't respect the following condition : resultCode < 0");
             smileyId = reader.ReadVarShort();
             if (smileyId < 0)
                 throw new Exception("Forbidden value on smileyId = " + smileyId + ", it doesn't respect the following condition : smileyId < 0");

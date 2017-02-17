@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:55
+// Generated on 02/17/2017 01:58:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<Types.TaxCollectorInformations> informations;
+        public IEnumerable<TaxCollectorInformations> informations;
         
         public AbstractTaxCollectorListMessage()
         {
         }
         
-        public AbstractTaxCollectorListMessage(IEnumerable<Types.TaxCollectorInformations> informations)
+        public AbstractTaxCollectorListMessage(IEnumerable<TaxCollectorInformations> informations)
         {
             this.informations = informations;
         }
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var informations_before = writer.Position;
             var informations_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in informations)
             {
                  writer.WriteShort(entry.TypeId);
@@ -42,18 +42,18 @@ namespace Stump.DofusProtocol.Messages
             }
             var informations_after = writer.Position;
             writer.Seek((int)informations_before);
-            writer.WriteUShort((ushort)informations_count);
+            writer.WriteShort((short)informations_count);
             writer.Seek((int)informations_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
-            var informations_ = new Types.TaxCollectorInformations[limit];
+            var limit = reader.ReadShort();
+            var informations_ = new TaxCollectorInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 informations_[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorInformations>(reader.ReadShort());
+                 informations_[i] = Types.ProtocolTypeManager.GetInstance<TaxCollectorInformations>(reader.ReadShort());
                  informations_[i].Deserialize(reader);
             }
             informations = informations_;

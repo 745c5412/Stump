@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:11
+// Generated on 02/17/2017 01:52:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public byte grade;
+        public sbyte grade;
         public short minHonorForGrade;
         public short maxHonorForGrade;
         public short honor;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightResultPvpData(byte grade, short minHonorForGrade, short maxHonorForGrade, short honor, short honorDelta)
+        public FightResultPvpData(sbyte grade, short minHonorForGrade, short maxHonorForGrade, short honor, short honorDelta)
         {
             this.grade = grade;
             this.minHonorForGrade = minHonorForGrade;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteByte(grade);
+            writer.WriteSByte(grade);
             writer.WriteVarShort(minHonorForGrade);
             writer.WriteVarShort(maxHonorForGrade);
             writer.WriteVarShort(honor);
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            grade = reader.ReadByte();
+            grade = reader.ReadSByte();
             if (grade < 0 || grade > 255)
                 throw new Exception("Forbidden value on grade = " + grade + ", it doesn't respect the following condition : grade < 0 || grade > 255");
             minHonorForGrade = reader.ReadVarShort();

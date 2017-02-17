@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:50
+// Generated on 02/17/2017 01:58:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyCompanionUpdateLightMessage(int partyId, long id, int lifePoints, int maxLifePoints, short prospecting, byte regenRate, sbyte indexId)
+        public PartyCompanionUpdateLightMessage(int partyId, long id, int lifePoints, int maxLifePoints, short prospecting, sbyte regenRate, sbyte indexId)
          : base(partyId, id, lifePoints, maxLifePoints, prospecting, regenRate)
         {
             this.indexId = indexId;

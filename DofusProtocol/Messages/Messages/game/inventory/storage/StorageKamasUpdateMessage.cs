@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:05
+// Generated on 02/17/2017 01:58:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,27 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int kamasTotal;
+        public long kamasTotal;
         
         public StorageKamasUpdateMessage()
         {
         }
         
-        public StorageKamasUpdateMessage(int kamasTotal)
+        public StorageKamasUpdateMessage(long kamasTotal)
         {
             this.kamasTotal = kamasTotal;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(kamasTotal);
+            writer.WriteVarLong(kamasTotal);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            kamasTotal = reader.ReadInt();
+            kamasTotal = reader.ReadVarLong();
+            if (kamasTotal < 0 || kamasTotal > 9007199254740990)
+                throw new Exception("Forbidden value on kamasTotal = " + kamasTotal + ", it doesn't respect the following condition : kamasTotal < 0 || kamasTotal > 9007199254740990");
         }
         
     }

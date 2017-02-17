@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:12
+// Generated on 02/17/2017 01:52:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public Types.HumanInformations humanoidInfo;
+        public HumanInformations humanoidInfo;
         public int accountId;
         
         public GameRolePlayHumanoidInformations()
         {
         }
         
-        public GameRolePlayHumanoidInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, string name, Types.HumanInformations humanoidInfo, int accountId)
+        public GameRolePlayHumanoidInformations(double contextualId, Types.EntityLook look, EntityDispositionInformations disposition, string name, HumanInformations humanoidInfo, int accountId)
          : base(contextualId, look, disposition, name)
         {
             this.humanoidInfo = humanoidInfo;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            humanoidInfo = Types.ProtocolTypeManager.GetInstance<Types.HumanInformations>(reader.ReadShort());
+            humanoidInfo = Types.ProtocolTypeManager.GetInstance<HumanInformations>(reader.ReadShort());
             humanoidInfo.Deserialize(reader);
             accountId = reader.ReadInt();
             if (accountId < 0)

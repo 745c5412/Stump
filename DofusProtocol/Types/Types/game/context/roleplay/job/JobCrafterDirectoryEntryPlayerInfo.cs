@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,13 +27,13 @@ namespace Stump.DofusProtocol.Types
         public short worldY;
         public int mapId;
         public short subAreaId;
-        public Types.PlayerStatus status;
+        public PlayerStatus status;
         
         public JobCrafterDirectoryEntryPlayerInfo()
         {
         }
         
-        public JobCrafterDirectoryEntryPlayerInfo(long playerId, string playerName, sbyte alignmentSide, sbyte breed, bool sex, bool isInWorkshop, short worldX, short worldY, int mapId, short subAreaId, Types.PlayerStatus status)
+        public JobCrafterDirectoryEntryPlayerInfo(long playerId, string playerName, sbyte alignmentSide, sbyte breed, bool sex, bool isInWorkshop, short worldX, short worldY, int mapId, short subAreaId, PlayerStatus status)
         {
             this.playerId = playerId;
             this.playerName = playerName;
@@ -72,8 +72,6 @@ namespace Stump.DofusProtocol.Types
             playerName = reader.ReadUTF();
             alignmentSide = reader.ReadSByte();
             breed = reader.ReadSByte();
-            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage)
-                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage");
             sex = reader.ReadBoolean();
             isInWorkshop = reader.ReadBoolean();
             worldX = reader.ReadShort();
@@ -86,7 +84,7 @@ namespace Stump.DofusProtocol.Types
             subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
+            status = Types.ProtocolTypeManager.GetInstance<PlayerStatus>(reader.ReadShort());
             status.Deserialize(reader);
         }
         

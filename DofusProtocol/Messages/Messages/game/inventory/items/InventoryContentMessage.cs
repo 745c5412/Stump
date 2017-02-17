@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:02
+// Generated on 02/17/2017 01:58:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public IEnumerable<Types.ObjectItem> objects;
-        public int kamas;
+        public long kamas;
         
         public InventoryContentMessage()
         {
         }
         
-        public InventoryContentMessage(IEnumerable<Types.ObjectItem> objects, int kamas)
+        public InventoryContentMessage(IEnumerable<Types.ObjectItem> objects, long kamas)
         {
             this.objects = objects;
             this.kamas = kamas;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var objects_before = writer.Position;
             var objects_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in objects)
             {
                  entry.Serialize(writer);
@@ -43,15 +43,15 @@ namespace Stump.DofusProtocol.Messages
             }
             var objects_after = writer.Position;
             writer.Seek((int)objects_before);
-            writer.WriteUShort((ushort)objects_count);
+            writer.WriteShort((short)objects_count);
             writer.Seek((int)objects_after);
 
-            writer.WriteVarInt(kamas);
+            writer.WriteVarLong(kamas);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var objects_ = new Types.ObjectItem[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -59,9 +59,9 @@ namespace Stump.DofusProtocol.Messages
                  objects_[i].Deserialize(reader);
             }
             objects = objects_;
-            kamas = reader.ReadVarInt();
-            if (kamas < 0)
-                throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
+            kamas = reader.ReadVarLong();
+            if (kamas < 0 || kamas > 9007199254740990)
+                throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0 || kamas > 9007199254740990");
         }
         
     }

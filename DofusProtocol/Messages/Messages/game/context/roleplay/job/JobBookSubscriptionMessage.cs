@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:45
+// Generated on 02/17/2017 01:57:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var subscriptions_before = writer.Position;
             var subscriptions_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in subscriptions)
             {
                  entry.Serialize(writer);
@@ -41,14 +41,14 @@ namespace Stump.DofusProtocol.Messages
             }
             var subscriptions_after = writer.Position;
             writer.Seek((int)subscriptions_before);
-            writer.WriteUShort((ushort)subscriptions_count);
+            writer.WriteShort((short)subscriptions_count);
             writer.Seek((int)subscriptions_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var subscriptions_ = new Types.JobBookSubscription[limit];
             for (int i = 0; i < limit; i++)
             {

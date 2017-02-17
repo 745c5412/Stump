@@ -1,6 +1,6 @@
 
 
-// Generated on 09/26/2016 01:50:35
+// Generated on 02/16/2017 20:46:29
 using System;
 using System.Collections.Generic;
 
@@ -35,6 +35,7 @@ namespace Stump.DofusProtocol.Enums
         INVENTORY_POSITION_ROLEPLAY_BUFFER = 26,
         INVENTORY_POSITION_FOLLOWER = 27,
         INVENTORY_POSITION_COMPANION = 28,
+        INVENTORY_POSITION_COSTUME = 30,
         INVENTORY_POSITION_NOT_EQUIPED = 63,
     }
 }

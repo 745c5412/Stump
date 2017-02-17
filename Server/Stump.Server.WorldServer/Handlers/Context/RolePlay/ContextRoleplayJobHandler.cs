@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendJobLevelUpMessage(IPacketReceiver client, Job job)
         {
-            client.Send(new JobLevelUpMessage((byte) job.Level, job.GetJobDescription()));
+            client.Send(new JobLevelUpMessage((sbyte) job.Level, job.GetJobDescription()));
         }
 
         public static void SendJobBookSubscriptionMessage(IPacketReceiver client, JobBookSubscription[] subscriptions)

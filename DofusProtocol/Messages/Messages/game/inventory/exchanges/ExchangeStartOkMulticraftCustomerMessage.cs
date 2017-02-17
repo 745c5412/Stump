@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:01
+// Generated on 02/17/2017 01:58:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int skillId;
-        public byte crafterJobLevel;
+        public sbyte crafterJobLevel;
         
         public ExchangeStartOkMulticraftCustomerMessage()
         {
         }
         
-        public ExchangeStartOkMulticraftCustomerMessage(int skillId, byte crafterJobLevel)
+        public ExchangeStartOkMulticraftCustomerMessage(int skillId, sbyte crafterJobLevel)
         {
             this.skillId = skillId;
             this.crafterJobLevel = crafterJobLevel;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarInt(skillId);
-            writer.WriteByte(crafterJobLevel);
+            writer.WriteSByte(crafterJobLevel);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Messages
             skillId = reader.ReadVarInt();
             if (skillId < 0)
                 throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");
-            crafterJobLevel = reader.ReadByte();
+            crafterJobLevel = reader.ReadSByte();
             if (crafterJobLevel < 0 || crafterJobLevel > 255)
                 throw new Exception("Forbidden value on crafterJobLevel = " + crafterJobLevel + ", it doesn't respect the following condition : crafterJobLevel < 0 || crafterJobLevel > 255");
         }

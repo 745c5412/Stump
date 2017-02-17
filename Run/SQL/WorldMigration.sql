@@ -1,7 +1,3 @@
--- UPDATE Items AppearanceId
-UPDATE dev_238_data.Items item1 JOIN dev_uptodate_data.Items item2 ON (item1.Id = item2.Id) SET item1.AppearanceId = item2.AppearanceId;
-UPDATE dev_238_data.Weapons item1 JOIN dev_uptodate_data.Weapons item2 ON (item1.Id = item2.Id) SET item1.AppearanceId = item2.AppearanceId;
-
 -- UPDATE interactives_spawns TemplateId
 UPDATE dev_238_world.interactives_spawns io1 JOIN dev_uptodate_world.interactives_spawns io2 ON (io1.Id = io2.Id) SET io1.TemplateId = io2.TemplateId;
 
@@ -40,10 +36,10 @@ UPDATE dev_238_world.world_maps maps1 JOIN dev_238_data.MapScrollActions mapScro
 UPDATE dev_238_world.world_maps maps1 JOIN dev_238_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.RightNeighbourId = mapScroll.RightMapId WHERE mapScroll.RightMapId != 0;
 
 -- UPDATE mounts_templates
-UPDATE dev_238_world.mounts_templates mounts1 JOIN dev_uptodate_world.mounts_templates mounts2 ON (mounts1.Id = mounts2.Id) SET mounts1.ScrollId = mounts2.ScrollId;
+UPDATE dev_240_world.mounts_templates mounts1 JOIN epsilon_world.mounts_templates mounts2 ON (mounts1.Id = mounts2.Id) SET mounts1.ScrollId = mounts2.ScrollId;
 
 -- UPDATE monsters_spawns
-UPDATE dev_238_world.monsters_spawns monsters1 JOIN dev_uptodate_world.monsters_spawns monsters2 ON (monsters1.MonsterId = monsters2.MonsterId AND monsters1.SubAreaId = monsters2.SubAreaId) SET monsters1.IsDisabled = monsters2.IsDisabled;
+UPDATE dev_240_world.monsters_spawns monsters1 JOIN epsilon_world.monsters_spawns monsters2 ON (monsters1.MonsterId = monsters2.MonsterId AND monsters1.SubAreaId = monsters2.SubAreaId) SET monsters1.IsDisabled = monsters2.IsDisabled;
 
 -- CLEANUP monsters_spells
 DELETE FROM monsters_spells WHERE SpellId = -1;

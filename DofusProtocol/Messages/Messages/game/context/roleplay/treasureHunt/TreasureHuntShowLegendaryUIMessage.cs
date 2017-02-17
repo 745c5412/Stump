@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:51
+// Generated on 02/17/2017 01:58:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var availableLegendaryIds_before = writer.Position;
             var availableLegendaryIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in availableLegendaryIds)
             {
                  writer.WriteVarShort(entry);
@@ -41,18 +41,20 @@ namespace Stump.DofusProtocol.Messages
             }
             var availableLegendaryIds_after = writer.Position;
             writer.Seek((int)availableLegendaryIds_before);
-            writer.WriteUShort((ushort)availableLegendaryIds_count);
+            writer.WriteShort((short)availableLegendaryIds_count);
             writer.Seek((int)availableLegendaryIds_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var availableLegendaryIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  availableLegendaryIds_[i] = reader.ReadVarShort();
+                 if (availableLegendaryIds_[i] < 0)
+                     throw new Exception("Forbidden value on availableLegendaryIds_[i] = " + availableLegendaryIds_[i] + ", it doesn't respect the following condition : availableLegendaryIds_[i] < 0");
             }
             availableLegendaryIds = availableLegendaryIds_;
         }

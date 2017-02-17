@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:08
+// Generated on 02/17/2017 01:58:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public sbyte returnType;
         public sbyte keyType;
         public string token;
         
@@ -25,23 +26,24 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public HaapiApiKeyMessage(sbyte keyType, string token)
+        public HaapiApiKeyMessage(sbyte returnType, sbyte keyType, string token)
         {
+            this.returnType = returnType;
             this.keyType = keyType;
             this.token = token;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteSByte(returnType);
             writer.WriteSByte(keyType);
             writer.WriteUTF(token);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            returnType = reader.ReadSByte();
             keyType = reader.ReadSByte();
-            if (keyType < 0)
-                throw new Exception("Forbidden value on keyType = " + keyType + ", it doesn't respect the following condition : keyType < 0");
             token = reader.ReadUTF();
         }
         

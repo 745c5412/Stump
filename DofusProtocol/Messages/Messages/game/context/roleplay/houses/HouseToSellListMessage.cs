@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:45
+// Generated on 02/17/2017 01:57:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarShort(totalPage);
             var houseList_before = writer.Position;
             var houseList_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in houseList)
             {
                  entry.Serialize(writer);
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var houseList_after = writer.Position;
             writer.Seek((int)houseList_before);
-            writer.WriteUShort((ushort)houseList_count);
+            writer.WriteShort((short)houseList_count);
             writer.Seek((int)houseList_after);
 
         }
@@ -60,7 +60,7 @@ namespace Stump.DofusProtocol.Messages
             totalPage = reader.ReadVarShort();
             if (totalPage < 0)
                 throw new Exception("Forbidden value on totalPage = " + totalPage + ", it doesn't respect the following condition : totalPage < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var houseList_ = new Types.HouseInformationsForSell[limit];
             for (int i = 0; i < limit; i++)
             {

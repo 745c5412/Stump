@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:16
+// Generated on 02/17/2017 01:53:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Types
         
         public short subAreaId;
         public Types.ProtectedEntityWaitingForHelpInfo waitingForHelpInfo;
-        public IEnumerable<Types.CharacterMinimalPlusLookInformations> allyCharactersInformations;
-        public IEnumerable<Types.CharacterMinimalPlusLookInformations> enemyCharactersInformations;
+        public IEnumerable<CharacterMinimalPlusLookInformations> allyCharactersInformations;
+        public IEnumerable<CharacterMinimalPlusLookInformations> enemyCharactersInformations;
         
         public PrismFightersInformation()
         {
         }
         
-        public PrismFightersInformation(short subAreaId, Types.ProtectedEntityWaitingForHelpInfo waitingForHelpInfo, IEnumerable<Types.CharacterMinimalPlusLookInformations> allyCharactersInformations, IEnumerable<Types.CharacterMinimalPlusLookInformations> enemyCharactersInformations)
+        public PrismFightersInformation(short subAreaId, Types.ProtectedEntityWaitingForHelpInfo waitingForHelpInfo, IEnumerable<CharacterMinimalPlusLookInformations> allyCharactersInformations, IEnumerable<CharacterMinimalPlusLookInformations> enemyCharactersInformations)
         {
             this.subAreaId = subAreaId;
             this.waitingForHelpInfo = waitingForHelpInfo;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Types
             waitingForHelpInfo.Serialize(writer);
             var allyCharactersInformations_before = writer.Position;
             var allyCharactersInformations_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in allyCharactersInformations)
             {
                  writer.WriteShort(entry.TypeId);
@@ -49,12 +49,12 @@ namespace Stump.DofusProtocol.Types
             }
             var allyCharactersInformations_after = writer.Position;
             writer.Seek((int)allyCharactersInformations_before);
-            writer.WriteUShort((ushort)allyCharactersInformations_count);
+            writer.WriteShort((short)allyCharactersInformations_count);
             writer.Seek((int)allyCharactersInformations_after);
 
             var enemyCharactersInformations_before = writer.Position;
             var enemyCharactersInformations_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in enemyCharactersInformations)
             {
                  writer.WriteShort(entry.TypeId);
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Types
             }
             var enemyCharactersInformations_after = writer.Position;
             writer.Seek((int)enemyCharactersInformations_before);
-            writer.WriteUShort((ushort)enemyCharactersInformations_count);
+            writer.WriteShort((short)enemyCharactersInformations_count);
             writer.Seek((int)enemyCharactersInformations_after);
 
         }
@@ -75,19 +75,19 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             waitingForHelpInfo = new Types.ProtectedEntityWaitingForHelpInfo();
             waitingForHelpInfo.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            var allyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
+            var limit = reader.ReadShort();
+            var allyCharactersInformations_ = new CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 allyCharactersInformations_[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
+                 allyCharactersInformations_[i] = Types.ProtocolTypeManager.GetInstance<CharacterMinimalPlusLookInformations>(reader.ReadShort());
                  allyCharactersInformations_[i].Deserialize(reader);
             }
             allyCharactersInformations = allyCharactersInformations_;
-            limit = reader.ReadUShort();
-            var enemyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
+            limit = reader.ReadShort();
+            var enemyCharactersInformations_ = new CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 enemyCharactersInformations_[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
+                 enemyCharactersInformations_[i] = Types.ProtocolTypeManager.GetInstance<CharacterMinimalPlusLookInformations>(reader.ReadShort());
                  enemyCharactersInformations_[i].Deserialize(reader);
             }
             enemyCharactersInformations = enemyCharactersInformations_;

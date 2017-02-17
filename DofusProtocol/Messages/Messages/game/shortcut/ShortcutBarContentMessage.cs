@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:06
+// Generated on 02/17/2017 01:58:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte barType;
-        public IEnumerable<Types.Shortcut> shortcuts;
+        public IEnumerable<Shortcut> shortcuts;
         
         public ShortcutBarContentMessage()
         {
         }
         
-        public ShortcutBarContentMessage(sbyte barType, IEnumerable<Types.Shortcut> shortcuts)
+        public ShortcutBarContentMessage(sbyte barType, IEnumerable<Shortcut> shortcuts)
         {
             this.barType = barType;
             this.shortcuts = shortcuts;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(barType);
             var shortcuts_before = writer.Position;
             var shortcuts_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in shortcuts)
             {
                  writer.WriteShort(entry.TypeId);
@@ -45,7 +45,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var shortcuts_after = writer.Position;
             writer.Seek((int)shortcuts_before);
-            writer.WriteUShort((ushort)shortcuts_count);
+            writer.WriteShort((short)shortcuts_count);
             writer.Seek((int)shortcuts_after);
 
         }
@@ -53,13 +53,11 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             barType = reader.ReadSByte();
-            if (barType < 0)
-                throw new Exception("Forbidden value on barType = " + barType + ", it doesn't respect the following condition : barType < 0");
-            var limit = reader.ReadUShort();
-            var shortcuts_ = new Types.Shortcut[limit];
+            var limit = reader.ReadShort();
+            var shortcuts_ = new Shortcut[limit];
             for (int i = 0; i < limit; i++)
             {
-                 shortcuts_[i] = Types.ProtocolTypeManager.GetInstance<Types.Shortcut>(reader.ReadShort());
+                 shortcuts_[i] = Types.ProtocolTypeManager.GetInstance<Shortcut>(reader.ReadShort());
                  shortcuts_[i].Deserialize(reader);
             }
             shortcuts = shortcuts_;

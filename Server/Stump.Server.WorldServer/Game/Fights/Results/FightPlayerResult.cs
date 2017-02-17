@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             if (PvpData != null)
                 additionalDatas.Add(PvpData.GetFightResultAdditionalData());
 
-            return new FightResultPlayerListEntry((short) Outcome, 0, Loot.GetFightLoot(), Id, Alive, Level,
+            return new FightResultPlayerListEntry((short) Outcome, 0, Loot.GetFightLoot(), Id, Alive, (sbyte)Level,
                 additionalDatas);
         }
 

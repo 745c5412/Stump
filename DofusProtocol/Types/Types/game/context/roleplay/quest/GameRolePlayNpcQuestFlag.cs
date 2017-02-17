@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:13
+// Generated on 02/17/2017 01:52:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
         {
             var questsToValidId_before = writer.Position;
             var questsToValidId_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in questsToValidId)
             {
                  writer.WriteVarShort(entry);
@@ -42,12 +42,12 @@ namespace Stump.DofusProtocol.Types
             }
             var questsToValidId_after = writer.Position;
             writer.Seek((int)questsToValidId_before);
-            writer.WriteUShort((ushort)questsToValidId_count);
+            writer.WriteShort((short)questsToValidId_count);
             writer.Seek((int)questsToValidId_after);
 
             var questsToStartId_before = writer.Position;
             var questsToStartId_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in questsToStartId)
             {
                  writer.WriteVarShort(entry);
@@ -55,25 +55,29 @@ namespace Stump.DofusProtocol.Types
             }
             var questsToStartId_after = writer.Position;
             writer.Seek((int)questsToStartId_before);
-            writer.WriteUShort((ushort)questsToStartId_count);
+            writer.WriteShort((short)questsToStartId_count);
             writer.Seek((int)questsToStartId_after);
 
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var questsToValidId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  questsToValidId_[i] = reader.ReadVarShort();
+                 if (questsToValidId_[i] < 0)
+                     throw new Exception("Forbidden value on questsToValidId_[i] = " + questsToValidId_[i] + ", it doesn't respect the following condition : questsToValidId_[i] < 0");
             }
             questsToValidId = questsToValidId_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var questsToStartId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  questsToStartId_[i] = reader.ReadVarShort();
+                 if (questsToStartId_[i] < 0)
+                     throw new Exception("Forbidden value on questsToStartId_[i] = " + questsToStartId_[i] + ", it doesn't respect the following condition : questsToStartId_[i] < 0");
             }
             questsToStartId = questsToStartId_;
         }

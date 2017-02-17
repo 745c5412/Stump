@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:10
+// Generated on 02/17/2017 01:52:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,8 +57,6 @@ namespace Stump.DofusProtocol.Types
             if (honorNextGradeFloor < 0 || honorNextGradeFloor > 20000)
                 throw new Exception("Forbidden value on honorNextGradeFloor = " + honorNextGradeFloor + ", it doesn't respect the following condition : honorNextGradeFloor < 0 || honorNextGradeFloor > 20000");
             aggressable = reader.ReadSByte();
-            if (aggressable < 0)
-                throw new Exception("Forbidden value on aggressable = " + aggressable + ", it doesn't respect the following condition : aggressable < 0");
         }
         
         

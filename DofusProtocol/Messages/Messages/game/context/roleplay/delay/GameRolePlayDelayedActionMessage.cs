@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:43
+// Generated on 02/17/2017 01:57:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +46,6 @@ namespace Stump.DofusProtocol.Messages
             if (delayedCharacterId < -9007199254740990 || delayedCharacterId > 9007199254740990)
                 throw new Exception("Forbidden value on delayedCharacterId = " + delayedCharacterId + ", it doesn't respect the following condition : delayedCharacterId < -9007199254740990 || delayedCharacterId > 9007199254740990");
             delayTypeId = reader.ReadSByte();
-            if (delayTypeId < 0)
-                throw new Exception("Forbidden value on delayTypeId = " + delayTypeId + ", it doesn't respect the following condition : delayTypeId < 0");
             delayEndTime = reader.ReadDouble();
             if (delayEndTime < 0 || delayEndTime > 9007199254740990)
                 throw new Exception("Forbidden value on delayEndTime = " + delayEndTime + ", it doesn't respect the following condition : delayEndTime < 0 || delayEndTime > 9007199254740990");

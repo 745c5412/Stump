@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:34
+// Generated on 02/17/2017 01:57:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,8 +41,6 @@ namespace Stump.DofusProtocol.Messages
         {
             recrutedName = reader.ReadUTF();
             invitationState = reader.ReadSByte();
-            if (invitationState < 0)
-                throw new Exception("Forbidden value on invitationState = " + invitationState + ", it doesn't respect the following condition : invitationState < 0");
         }
         
     }

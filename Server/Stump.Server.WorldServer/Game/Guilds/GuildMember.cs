@@ -129,22 +129,23 @@ namespace Stump.Server.WorldServer.Game.Guilds
             protected set;
         }
 
-        public CharacterMinimalInformations GetCharacterMinimalInformations() => new CharacterMinimalInformations(Id, Name, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank));
+        public CharacterMinimalInformations GetCharacterMinimalInformations() => new CharacterMinimalInformations(Id, Name, (sbyte)ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank));
 
         public NetworkGuildMember GetNetworkGuildMember()
         {
             if (IsConnected)
             {
-                return new NetworkGuildMember(Id, Character.Name, Character.Level, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
+                return new NetworkGuildMember(Id, Character.Name, (sbyte)Character.Level, Character.Sex == SexTypeEnum.SEX_FEMALE, false, (sbyte)Character.Breed.Id, RankId,
                                               GivenExperience, (sbyte)GivenPercent, (int)Rights, Character.IsInFight() ? (sbyte)2 : (sbyte)1,
-                                              (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, (short)Character.SmileyMoodId,
+                                              (sbyte)Character.AlignmentSide, (short)DateTime.Now.Hour, (short)Character.SmileyMoodId,
                                               Record.AccountId, 0, Character.Status);
             }
 
-            return new NetworkGuildMember(Id, Name, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),
-                (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
+            return new NetworkGuildMember(Id, Name, (sbyte)ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),
+                Sex == SexTypeEnum.SEX_FEMALE, false,
+                (sbyte)Breed, RankId,
                 GivenExperience, (sbyte)GivenPercent, (int)Rights, 0,
-                (sbyte)AlignementSide, LastConnection != null ? (ushort)(DateTime.Now - LastConnection.Value).TotalHours : (ushort)0, 0,
+                (sbyte)AlignementSide, LastConnection != null ? (short)(DateTime.Now - LastConnection.Value).TotalHours : (short)0, 0,
                 Record.AccountId, 0, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_OFFLINE));
         }
 

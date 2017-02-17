@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:44
+// Generated on 02/17/2017 01:57:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var cellIds_before = writer.Position;
             var cellIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in cellIds)
             {
                  writer.WriteVarShort(entry);
@@ -45,12 +45,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var cellIds_after = writer.Position;
             writer.Seek((int)cellIds_before);
-            writer.WriteUShort((ushort)cellIds_count);
+            writer.WriteShort((short)cellIds_count);
             writer.Seek((int)cellIds_after);
 
             var funitureIds_before = writer.Position;
             var funitureIds_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in funitureIds)
             {
                  writer.WriteInt(entry);
@@ -58,12 +58,12 @@ namespace Stump.DofusProtocol.Messages
             }
             var funitureIds_after = writer.Position;
             writer.Seek((int)funitureIds_before);
-            writer.WriteUShort((ushort)funitureIds_count);
+            writer.WriteShort((short)funitureIds_count);
             writer.Seek((int)funitureIds_after);
 
             var orientations_before = writer.Position;
             var orientations_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in orientations)
             {
                  writer.WriteSByte(entry);
@@ -71,32 +71,36 @@ namespace Stump.DofusProtocol.Messages
             }
             var orientations_after = writer.Position;
             writer.Seek((int)orientations_before);
-            writer.WriteUShort((ushort)orientations_count);
+            writer.WriteShort((short)orientations_count);
             writer.Seek((int)orientations_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var cellIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  cellIds_[i] = reader.ReadVarShort();
+                 if (cellIds_[i] < 0)
+                     throw new Exception("Forbidden value on cellIds_[i] = " + cellIds_[i] + ", it doesn't respect the following condition : cellIds_[i] < 0");
             }
             cellIds = cellIds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var funitureIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  funitureIds_[i] = reader.ReadInt();
             }
             funitureIds = funitureIds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadShort();
             var orientations_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
                  orientations_[i] = reader.ReadSByte();
+                 if (orientations_[i] < 0)
+                     throw new Exception("Forbidden value on orientations_[i] = " + orientations_[i] + ", it doesn't respect the following condition : orientations_[i] < 0");
             }
             orientations = orientations_;
         }

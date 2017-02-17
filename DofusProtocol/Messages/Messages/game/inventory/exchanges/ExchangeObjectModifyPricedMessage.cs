@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:57:59
+// Generated on 02/17/2017 01:58:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ExchangeObjectModifyPricedMessage(int objectUID, int quantity, int price)
+        public ExchangeObjectModifyPricedMessage(int objectUID, int quantity, long price)
          : base(objectUID, quantity, price)
         {
         }

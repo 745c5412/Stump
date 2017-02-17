@@ -1,6 +1,6 @@
 
 
-// Generated on 12/26/2016 21:58:01
+// Generated on 02/17/2017 01:58:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
             var typeDescription_before = writer.Position;
             var typeDescription_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteShort(0);
             foreach (var entry in typeDescription)
             {
                  writer.WriteVarInt(entry);
@@ -41,18 +41,20 @@ namespace Stump.DofusProtocol.Messages
             }
             var typeDescription_after = writer.Position;
             writer.Seek((int)typeDescription_before);
-            writer.WriteUShort((ushort)typeDescription_count);
+            writer.WriteShort((short)typeDescription_count);
             writer.Seek((int)typeDescription_after);
 
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadShort();
             var typeDescription_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  typeDescription_[i] = reader.ReadVarInt();
+                 if (typeDescription_[i] < 0)
+                     throw new Exception("Forbidden value on typeDescription_[i] = " + typeDescription_[i] + ", it doesn't respect the following condition : typeDescription_[i] < 0");
             }
             typeDescription = typeDescription_;
         }
