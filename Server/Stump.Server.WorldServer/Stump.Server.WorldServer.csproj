@@ -321,6 +321,7 @@
     <Compile Include="Database\Shortcuts\PresetShortcut.cs" />
     <Compile Include="Database\Social\BadWordRecord.cs" />
     <Compile Include="Database\Social\Emote.cs" />
+    <Compile Include="Database\Spells\FinishMoveTemplate.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\Spells\SpellEffectFix.cs" />
     <Compile Include="Database\Tinsel\OrnamentRecord.cs" />
@@ -442,7 +443,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Targets\SummonerCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GiveOgrines.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GuildPotion.cs" />
-    <Compile Include="Game\Effects\Handlers\Usables\LearnFatalBlow.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\LearnFinishMove.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnSmileyPack.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnEmote.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreEnergy.cs" />
@@ -773,6 +774,7 @@
     <Compile Include="Game\Maps\Cells\Shapes\Single.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\Xelor\TemporalDustCastHandler.cs" />
+    <Compile Include="Game\Spells\FinishMove.cs" />
     <Compile Include="Game\Spells\SpellCastResult.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
@@ -784,6 +786,7 @@
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayAlmanaxHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayJobHandler.cs" />
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
+    <Compile Include="Handlers\FinishMove\FinishMoveHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Guilds\GuildHandler.cs" />
     <Compile Include="Handlers\Idols\IdolHandler.cs" />

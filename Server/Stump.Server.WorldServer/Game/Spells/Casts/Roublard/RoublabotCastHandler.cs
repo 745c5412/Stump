@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 {
-    [SpellCastHandler(SpellIdEnum.ROUBLABOT)]
+    [SpellCastHandler(SpellIdEnum.BOOMBOT)]
     public class RoublabotCastHandler : DefaultSpellCastHandler
     {
         public RoublabotCastHandler(SpellCastInformations cast)

@@ -59,18 +59,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     }
                 case MonsterIdEnum.GARDIENNE_3288:
                     {
-                        spellToCast = new Spell((int)SpellIdEnum.SAUVETAGE, 1);
+                        spellToCast = new Spell((int)SpellIdEnum.RESCUE, 1);
                         target = fighter.Team.Fighters.FirstOrDefault(x => x.HasState((int)SpellStatesEnum.SECOURISME_131));
                         break;
                     }
                 case MonsterIdEnum.HARPONNEUSE_3287:
                     {
                         if (HasState((int)SpellStatesEnum.TELLURIQUE_127))
-                            spellToCast = new Spell((int)SpellIdEnum.BOUMBOUMT, 1);
+                            spellToCast = new Spell((int)SpellIdEnum.BOOBOOME, 1);
                         else if (HasState((int)SpellStatesEnum.AQUATIQUE_128))
-                            spellToCast = new Spell((int)SpellIdEnum.BOUMBOUME, 1);
+                            spellToCast = new Spell((int)SpellIdEnum.BWOOBWOOM, 1);
                         else if (HasState((int)SpellStatesEnum.ARDENT_129))
-                            spellToCast = new Spell((int)SpellIdEnum.BOUMBOUMF, 1);
+                            spellToCast = new Spell((int)SpellIdEnum.BOOBOOMF, 1);
 
                         target = fighter.OpposedTeam.Fighters.FirstOrDefault(x => x.HasState((int)SpellStatesEnum.EMBUSCADE_130));
                         break;

@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 {
-    [SpellCastHandler(SpellIdEnum.PARADE_DES_VIEUX_JOUETS)]
+    [SpellCastHandler(SpellIdEnum.OLD_TOY_PARADE)]
     public class OldToyParadeCastHandler : DefaultSpellCastHandler
     {
         public OldToyParadeCastHandler(SpellCastInformations cast)

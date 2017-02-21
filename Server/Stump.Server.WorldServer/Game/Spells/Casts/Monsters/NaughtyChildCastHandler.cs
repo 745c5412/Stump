@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 {
-    [SpellCastHandler(SpellIdEnum.VILAIN_GARNEMENT)]
+    [SpellCastHandler(SpellIdEnum.NAUGHTY_CHILD)]
     public class NaughtyChildCastHandler : DefaultSpellCastHandler
     {
         public NaughtyChildCastHandler(SpellCastInformations cast)

@@ -3,7 +3,8 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
-using System.Linq;using Stump.Server.WorldServer.Game.Spells.Casts;
+using System.Linq;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
@@ -20,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             {
                 var target = Fight.GetOneFighter(trigger.CenterCell);
 
-                if (Spell.Id == (int)SpellIdEnum.TRAITEMENT_RUNIQUE && target == null)
+                if (Spell.Id == (int)SpellIdEnum.RUNIC_TREATMENT && target == null)
                     target = Caster;
 
                 if (target == null)

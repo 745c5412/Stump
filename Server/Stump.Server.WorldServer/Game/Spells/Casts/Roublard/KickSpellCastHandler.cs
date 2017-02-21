@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 {
-    [SpellCastHandler(SpellIdEnum.BOTTE)]
+    [SpellCastHandler(SpellIdEnum.KICKBACK_2795)]
     public class KickSpellCastHandler : DefaultSpellCastHandler
     {
         public KickSpellCastHandler(SpellCastInformations cast)

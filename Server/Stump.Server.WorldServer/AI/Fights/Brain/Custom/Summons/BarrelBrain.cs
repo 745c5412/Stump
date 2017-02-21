@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Summons
 
             var barrel = (SummonedMonster) Fighter;
 
-            var spellBeuverie = barrel.Spells.FirstOrDefault(x => x.Value.Template.Id == (int)SpellIdEnum.BEUVERIE).Value;
+            var spellBeuverie = barrel.Spells.FirstOrDefault(x => x.Value.Template.Id == (int)SpellIdEnum.BINGE).Value;
 
             if (spellBeuverie == null)
                 return;

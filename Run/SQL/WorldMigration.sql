@@ -17,23 +17,23 @@ UPDATE world_maps SET LeftNeighbourCellId = NULL WHERE LeftNeighbourCellId = 0;
 UPDATE world_maps SET RightNeighbourCellId = NULL WHERE RightNeighbourCellId = 0;
 
 -- UPDATE world_maps
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.TopNeighbourId = maps2.TopNeighbourId;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BottomNeighbourId = maps2.BottomNeighbourId;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.LeftNeighbourId = maps2.LeftNeighbourId;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.RightNeighbourId = maps2.RightNeighbourId;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.TopNeighbourId = maps2.TopNeighbourId;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BottomNeighbourId = maps2.BottomNeighbourId;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.LeftNeighbourId = maps2.LeftNeighbourId;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.RightNeighbourId = maps2.RightNeighbourId;
 
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.TopNeighbourCellId = maps2.TopNeighbourCellId;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BottomNeighbourCellId = maps2.BottomNeighbourCellId;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.LeftNeighbourCellId = maps2.LeftNeighbourCellId;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.RightNeighbourCellId = maps2.RightNeighbourCellId;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.TopNeighbourCellId = maps2.TopNeighbourCellId;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BottomNeighbourCellId = maps2.BottomNeighbourCellId;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.LeftNeighbourCellId = maps2.LeftNeighbourCellId;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.RightNeighbourCellId = maps2.RightNeighbourCellId;
 
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BlueCellsCSV = maps2.BlueCellsCSV;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_uptodate_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.RedCellsCSV = maps2.RedCellsCSV;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BlueCellsCSV = maps2.BlueCellsCSV;
+UPDATE dev_240_world.world_maps maps1 JOIN epsilon_world.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.RedCellsCSV = maps2.RedCellsCSV;
 
-UPDATE dev_238_world.world_maps maps1 JOIN dev_238_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.TopNeighbourId = mapScroll.TopMapId WHERE mapScroll.TopMapId != 0;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_238_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.BottomNeighbourId = mapScroll.BottomMapId WHERE mapScroll.BottomMapId != 0;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_238_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.LeftNeighbourId = mapScroll.LeftMapId WHERE mapScroll.LeftMapId != 0;
-UPDATE dev_238_world.world_maps maps1 JOIN dev_238_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.RightNeighbourId = mapScroll.RightMapId WHERE mapScroll.RightMapId != 0;
+UPDATE dev_240_world.world_maps maps1 JOIN dev_240_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.TopNeighbourId = mapScroll.TopMapId WHERE mapScroll.TopMapId != 0;
+UPDATE dev_240_world.world_maps maps1 JOIN dev_240_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.BottomNeighbourId = mapScroll.BottomMapId WHERE mapScroll.BottomMapId != 0;
+UPDATE dev_240_world.world_maps maps1 JOIN dev_240_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.LeftNeighbourId = mapScroll.LeftMapId WHERE mapScroll.LeftMapId != 0;
+UPDATE dev_240_world.world_maps maps1 JOIN dev_240_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.RightNeighbourId = mapScroll.RightMapId WHERE mapScroll.RightMapId != 0;
 
 -- UPDATE mounts_templates
 UPDATE dev_240_world.mounts_templates mounts1 JOIN epsilon_world.mounts_templates mounts2 ON (mounts1.Id = mounts2.Id) SET mounts1.ScrollId = mounts2.ScrollId;

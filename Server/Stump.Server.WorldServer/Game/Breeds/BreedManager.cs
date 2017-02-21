@@ -168,24 +168,24 @@ namespace Stump.Server.WorldServer.Game.Breeds
         {
             var specialSpellsList = new List<SpellIdEnum>
             {
-                SpellIdEnum.MISE_EN_GARDE,
-                SpellIdEnum.LAISSE_SPIRITUELLE_420,
-                SpellIdEnum.RETRAITE_ANTICIPÉE,
-                SpellIdEnum.POISSE,
-                SpellIdEnum.RAULEBAQUE,
-                SpellIdEnum.FÉLINTION,
-                SpellIdEnum.MOT_DÉCISIF,
+                SpellIdEnum.REINFORCED_PROTECTION,
+                SpellIdEnum.SPIRITUAL_LEASH_420,
+                SpellIdEnum.PULL_OUT,
+                SpellIdEnum.JINX,
+                SpellIdEnum.RHOL_BAK,
+                SpellIdEnum.FELINTION,
+                SpellIdEnum.DECISIVE_WORD,
                 SpellIdEnum.BROKLE,
-                SpellIdEnum.FLÈCHE_DE_DISPERSION,
-                SpellIdEnum.ARBRE_DE_VIE,
-                SpellIdEnum.DOULEUR_PARTAGÉE,
+                SpellIdEnum.DISPERSING_ARROW,
+                SpellIdEnum.THE_TREE_OF_LIFE,
+                SpellIdEnum.PAIN_SHARED,
                 SpellIdEnum.DIFFRACTION,
                 SpellIdEnum.FOCUS,
-                SpellIdEnum.ROUBLABOT,
-                SpellIdEnum.IVRESSE,
-                SpellIdEnum.BRISE_L_ÂME,
+                SpellIdEnum.BOOMBOT,
+                SpellIdEnum.DRUNKENNESS,
+                SpellIdEnum.BREAKWATER_3277,
                 SpellIdEnum.FOCUS,
-                SpellIdEnum.TRAVERSÉE
+                SpellIdEnum.JOURNEY
             };
 
             specialSpellsList.ForEach(x => character.Spells.UnLearnSpell((int)x));

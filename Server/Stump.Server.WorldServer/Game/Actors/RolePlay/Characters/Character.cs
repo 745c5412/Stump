@@ -79,10 +79,8 @@ using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Handlers.Mounts;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
-using Stump.Server.WorldServer.Game.Exchanges.Paddock;
 using Stump.Server.WorldServer.Game.Idols;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Handlers.PvP;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
@@ -3329,23 +3327,39 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion Emotes
 
-        #region FatalBlows
+        #region FinishMove
 
-        public ReadOnlyCollection<SpellIdEnum> FatalBlows => Record.FatalBlows.AsReadOnly();
+        public ReadOnlyCollection<FinishMove> FinishMoves => Record.FinishMoves.AsReadOnly();
 
-        public bool HasFatalBlow(SpellIdEnum fatal) => FatalBlows.Contains(fatal);
+        public bool HasFinishMove(int finishMove) => FinishMoves.Any(x => x.Id == finishMove);
 
-        public void AddFatalBlow(SpellIdEnum fatal)
+        public void AddFinishMove(int finishMove)
         {
-            if (HasFatalBlow(fatal))
+            if (HasFinishMove(finishMove))
                 return;
 
-            Record.FatalBlows.Add(fatal);
+            Record.FinishMoves.Add(new FinishMove(finishMove, false));
         }
 
-        public bool RemoveFatalBlow(SpellIdEnum fatal) => Record.FatalBlows.Remove(fatal);
+        public bool RemoveFinishMove(int finishMove)
+        {
+            if (HasFinishMove(finishMove))
+                return false;
 
-        #endregion FatalBlows
+            return Record.FinishMoves.Remove(GetFinishMove(finishMove));
+        }
+
+        public FinishMove GetFinishMove(int finishMove)
+        {
+            return Record.FinishMoves.FirstOrDefault(x => x.Id == finishMove);
+        }
+
+        public FinishMoveInformations[] GetFinishMovesInformations()
+        {
+            return FinishMoves.Select(x => x.GetInformations()).ToArray();
+        }
+
+        #endregion FinishMove
 
         #region Friend & Ennemies
 

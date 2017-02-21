@@ -34,13 +34,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             new double[] {30, 4},
             new double[] {40, 3},
             new double[] {50, 2},
-            new[] {60, 1.5},
+            new double[] {60, 1.5},
             new double[] {70, 1}
         };
 
         [Variable(true)]
         public static int RequiredLevel = 60;
-
 
         public Mount(Character character, MountRecord record)
         {

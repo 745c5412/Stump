@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 {
-    [SpellCastHandler(SpellIdEnum.MOT_D_AMITIÉ_129)]
+    [SpellCastHandler(SpellIdEnum.FRIENDSHIP_WORD_129)]
     public class FriendshipWordCastHandler : DefaultSpellCastHandler
     {
         public FriendshipWordCastHandler(SpellCastInformations informations)

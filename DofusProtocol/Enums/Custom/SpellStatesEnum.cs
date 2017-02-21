@@ -1874,5 +1874,161 @@ namespace Stump.DofusProtocol.Enums
         /// Terre
         /// </summary>
         TERRE_482 = 482,
+        /// <summary>
+        /// Scarabouse
+        /// </summary>
+        SCARABOUSE_483 = 483,
+        /// <summary>
+        /// Pétanque
+        /// </summary>
+        PETANQUE_484 = 484,
+        /// <summary>
+        /// Bouse
+        /// </summary>
+        BOUSE_485 = 485,
+        /// <summary>
+        /// Bousier
+        /// </summary>
+        BOUSIER_486 = 486,
+        /// <summary>
+        /// Flèche amplificatrice
+        /// </summary>
+        FLECHE_AMPLIFICATRICE_487 = 487,
+        /// <summary>
+        /// Voyageur
+        /// </summary>
+        VOYAGEUR_488 = 488,
+        /// <summary>
+        /// Ecorché
+        /// </summary>
+        ECORCHE_489 = 489,
+        /// <summary>
+        /// Survivant
+        /// </summary>
+        SURVIVANT_490 = 490,
+        /// <summary>
+        /// Aucun élémentaire restant
+        /// </summary>
+        AUCUN_ELEMENTAIRE_RESTANT_491 = 491,
+        /// <summary>
+        /// Chakanoubis
+        /// </summary>
+        CHAKANOUBIS_492 = 492,
+        /// <summary>
+        /// Sceau I
+        /// </summary>
+        SCEAU_I_493 = 493,
+        /// <summary>
+        /// Sceau II
+        /// </summary>
+        SCEAU_II_494 = 494,
+        /// <summary>
+        /// Sceau III
+        /// </summary>
+        SCEAU_III_495 = 495,
+        /// <summary>
+        /// Rebond
+        /// </summary>
+        REBOND_496 = 496,
+        /// <summary>
+        /// Canine
+        /// </summary>
+        CANINE_497 = 497,
+        /// <summary>
+        /// Saoul
+        /// </summary>
+        SAOUL_498 = 498,
+        /// <summary>
+        /// Triple oeil
+        /// </summary>
+        TRIPLE_OEIL_499 = 499,
+        /// <summary>
+        /// Double oeil
+        /// </summary>
+        DOUBLE_OEIL_500 = 500,
+        /// <summary>
+        /// Cyclope
+        /// </summary>
+        CYCLOPE_501 = 501,
+        /// <summary>
+        /// Déjection salissante
+        /// </summary>
+        DEJECTION_SALISSANTE_502 = 502,
+        /// <summary>
+        /// Poison de proximité
+        /// </summary>
+        POISON_DE_PROXIMITE_503 = 503,
+        /// <summary>
+        /// Assoupissement
+        /// </summary>
+        ASSOUPISSEMENT_504 = 504,
+        /// <summary>
+        /// Rayon ténébreux
+        /// </summary>
+        RAYON_TENEBREUX_505 = 505,
+        /// <summary>
+        /// Invulnérabilité maudite
+        /// </summary>
+        INVULNERABILITE_MAUDITE_506 = 506,
+        /// <summary>
+        /// Déjection sanguine
+        /// </summary>
+        DEJECTION_SANGUINE_507 = 507,
+        /// <summary>
+        /// Déjection acide
+        /// </summary>
+        DEJECTION_ACIDE_508 = 508,
+        /// <summary>
+        /// Masticroc
+        /// </summary>
+        MASTICROC_509 = 509,
+        /// <summary>
+        /// Epée volante
+        /// </summary>
+        EPEE_VOLANTE_510 = 510,
+        /// <summary>
+        /// Tourbillon
+        /// </summary>
+        TOURBILLON_511 = 511,
+        /// <summary>
+        /// Châtiments
+        /// </summary>
+        CHATIMENTS_512 = 512,
+        /// <summary>
+        /// Rage
+        /// </summary>
+        RAGE_513 = 513,
+        /// <summary>
+        /// Raage
+        /// </summary>
+        RAAGE_514 = 514,
+        /// <summary>
+        /// Rage Ouginak
+        /// </summary>
+        RAGE_OUGINAK_515 = 515,
+        /// <summary>
+        /// Proie
+        /// </summary>
+        PROIE_516 = 516,
+        /// <summary>
+        /// Transformation Ouginak
+        /// </summary>
+        TRANSFORMATION_OUGINAK_517 = 517,
+        /// <summary>
+        /// Dofus Emeraude
+        /// </summary>
+        DOFUS_EMERAUDE_518 = 518,
+        /// <summary>
+        /// Dofus Ocre
+        /// </summary>
+        DOFUS_OCRE_519 = 519,
+        /// <summary>
+        /// Panique
+        /// </summary>
+        PANIQUE_520 = 520,
+        /// <summary>
+        /// Fatigué
+        /// </summary>
+        FATIGUE_521 = 521,
     }
 }

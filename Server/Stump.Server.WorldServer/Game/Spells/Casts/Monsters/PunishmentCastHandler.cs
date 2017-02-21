@@ -6,8 +6,8 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 {
     [SpellCastHandler(SpellIdEnum.PROPOLIS)]
-    [SpellCastHandler(SpellIdEnum.GLOURSBI_BOULGA)]
-    [SpellCastHandler(SpellIdEnum.RUSE_DU_WABBIT)]
+    [SpellCastHandler(SpellIdEnum.BEARBARONESS)]
+    [SpellCastHandler(SpellIdEnum.WABBIT_WUSE)]
     public class PunishmentCastHandler : DefaultSpellCastHandler
     {
         public PunishmentCastHandler(SpellCastInformations cast)

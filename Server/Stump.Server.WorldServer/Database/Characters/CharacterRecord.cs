@@ -9,6 +9,8 @@ using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.DofusProtocol.Enums.Custom;
+using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Database.Characters
 {
@@ -73,7 +75,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
             Emotes = new List<EmotesEnum> { EmotesEnum.EMOTE_S_ASSEOIR };
             SmileyPacks = new List<SmileyPacksEnum> { SmileyPacksEnum.BASIC_PACK };
-            FatalBlows = new List<SpellIdEnum> { SpellIdEnum.COUP_FATAL_BASE };
+            FinishMoves = new List<FinishMove> { new FinishMove(1, true) };
             Idols = new List<int>();
         }
 
@@ -100,8 +102,8 @@ namespace Stump.Server.WorldServer.Database.Characters
         private List<SmileyPacksEnum> m_smileyPacks = new List<SmileyPacksEnum>();
         private string m_smileyPacksCSV;
 
-        private List<SpellIdEnum> m_fatalBlows = new List<SpellIdEnum>();
-        private string m_fatalBlowsCSV;
+        private List<FinishMove> m_finishMoves = new List<FinishMove>();
+        private string m_finishMovesCSV;
 
         private List<int> m_idols = new List<int>();
         private string m_idolsCSV;
@@ -322,30 +324,35 @@ namespace Stump.Server.WorldServer.Database.Characters
         }
 
         [Ignore]
-        public List<SpellIdEnum> FatalBlows
+        public List<FinishMove> FinishMoves
         {
             get
             {
-                return m_fatalBlows;
+                return m_finishMoves;
             }
             set
             {
-                m_fatalBlows = value;
-                m_fatalBlowsCSV = m_fatalBlows.Select(x => (short)x).ToCSV(",");
+                m_finishMoves = value;
+                m_finishMovesCSV = m_finishMoves.Select(x => $"{x.Id}|{x.State}").ToCSV(",");
             }
         }
 
         [NullString]
-        public string FatalBlowsCSV
+        public string FinishMovesCSV
         {
             get
             {
-                return m_fatalBlowsCSV;
+                return m_finishMovesCSV;
             }
             set
             {
-                m_fatalBlowsCSV = value;
-                m_fatalBlows = !string.IsNullOrEmpty(m_fatalBlowsCSV) ? m_fatalBlowsCSV.FromCSV<short>(",").Select(x => (SpellIdEnum)x).ToList() : new List<SpellIdEnum>();
+                m_finishMovesCSV = value;
+                m_finishMoves = !string.IsNullOrEmpty(m_finishMovesCSV) ? m_finishMovesCSV.FromCSV<string>(",")
+                    .Select(x =>
+                        {
+                            var finishMoveStr = x.Split('|');
+                            return new FinishMove(int.Parse(finishMoveStr[0]), bool.Parse(finishMoveStr[1]));
+                        }).ToList() : new List<FinishMove>();
             }
         }
 
@@ -839,7 +846,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             m_ornamentsCSV = m_ornaments.ToCSV(",");
             m_emotesCSV = m_emotes.Select(x => (short)x).ToCSV(",");
             m_smileyPacksCSV = m_smileyPacks.Select(x => (short)x).ToCSV(",");
-            m_fatalBlowsCSV = m_fatalBlows.Select(x => (short)x).ToCSV(",");
+            m_finishMovesCSV = m_finishMoves.Select(x => $"{x.Id}|{x.State}").ToCSV(",");
             m_idolsCSV = m_idols.ToCSV(",");
         }
     }

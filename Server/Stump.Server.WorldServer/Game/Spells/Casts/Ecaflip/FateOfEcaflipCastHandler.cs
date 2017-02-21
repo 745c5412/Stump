@@ -7,8 +7,8 @@ using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 {
-    [SpellCastHandler(SpellIdEnum.DESTIN_D_ECAFLIP)]
-    [SpellCastHandler(SpellIdEnum.DESTIN_D_ECAFLIP_DU_DOPEUL)]
+    [SpellCastHandler(SpellIdEnum.FATE_OF_ECAFLIP_120)]
+    [SpellCastHandler(SpellIdEnum.DOPPLESQUE_FATE_OF_ECAFLIP)]
     public class FateOfEcaflipCastHandler : DefaultSpellCastHandler
     {
         public FateOfEcaflipCastHandler(SpellCastInformations cast)

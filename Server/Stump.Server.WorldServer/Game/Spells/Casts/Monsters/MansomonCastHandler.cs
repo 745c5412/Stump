@@ -3,7 +3,7 @@ using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 {
-    [SpellCastHandler(SpellIdEnum.MANSOMON)]
+    [SpellCastHandler(SpellIdEnum.PINGWINCE)]
     public class MansomonCastHandler : DefaultSpellCastHandler
     {
         public MansomonCastHandler(SpellCastInformations cast)

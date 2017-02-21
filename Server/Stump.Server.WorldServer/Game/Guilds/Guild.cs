@@ -41,18 +41,18 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public static readonly short[] TAX_COLLECTOR_SPELLS =
         {
-            (short) SpellIdEnum.ROCHER,
-            (short) SpellIdEnum.VAGUE,
+            (short) SpellIdEnum.ROCK,
+            (short) SpellIdEnum.WAVE,
             (short) SpellIdEnum.CYCLONE,
-            (short) SpellIdEnum.FLAMME,
-            (short) SpellIdEnum.DÉSTABILISATION,
-            (short) SpellIdEnum.DÉSENVOUTEMENT,
-            (short) SpellIdEnum.MOT_SOIGNANT,
-            (short) SpellIdEnum.ARMURE_AQUEUSE,
-            (short) SpellIdEnum.ARMURE_TERRESTRE,
-            (short) SpellIdEnum.ARMURE_VENTEUSE,
-            (short) SpellIdEnum.ARMURE_INCANDESCENTE,
-            (short) SpellIdEnum.COMPULSION_DE_MASSE,
+            (short) SpellIdEnum.FLAME,
+            (short) SpellIdEnum.DESTABILISATION,
+            (short) SpellIdEnum.UNBEWITCHMENT,
+            (short) SpellIdEnum.WORD_OF_HEALING,
+            (short) SpellIdEnum.AQUEOUS_SHIELD,
+            (short) SpellIdEnum.EARTH_SHIELD,
+            (short) SpellIdEnum.WIND_SHIELD,
+            (short) SpellIdEnum.GLOWING_SHIELD,
+            (short) SpellIdEnum.MASS_COMPULSION,
         };
         public const int TAX_COLLECTOR_MAX_PODS = 5000;
         public const int TAX_COLLECTOR_MAX_PROSPECTING = 500;

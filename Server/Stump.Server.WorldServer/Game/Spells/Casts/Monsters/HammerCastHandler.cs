@@ -6,8 +6,8 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 {
-    [SpellCastHandler(SpellIdEnum.MARTEAU_D_OKIM)]
-    [SpellCastHandler(SpellIdEnum.MARTEAU_DE_MUNGAM)]
+    [SpellCastHandler(SpellIdEnum.TEERTS_HAMMER)]
+    [SpellCastHandler(SpellIdEnum.BENANDGERRIZ_HAMMER)]
     public class HammerCastHandler : DefaultSpellCastHandler
     {
         public HammerCastHandler(SpellCastInformations cast)
@@ -22,14 +22,14 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 
             //Base Effects
             Handlers[0].Apply();
-            Handlers[Spell.Id == (int)SpellIdEnum.MARTEAU_DE_MUNGAM ? 1 : (Critical ? 2 : 1)].Apply();
+            Handlers[Spell.Id == (int)SpellIdEnum.BENANDGERRIZ_HAMMER ? 1 : (Critical ? 2 : 1)].Apply();
 
             if (!Critical)
                 return;
 
             Handlers[3].Apply(); //Frozen State
 
-            if (Spell.Id == (int) SpellIdEnum.MARTEAU_DE_MUNGAM)
+            if (Spell.Id == (int) SpellIdEnum.BENANDGERRIZ_HAMMER)
                 Handlers[4].Apply();
             else
             {
@@ -68,11 +68,11 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
             if (damage.Source == target)
                 return;
 
-            if (damage.Spell != null && damage.Spell.Id != (int)SpellIdEnum.COUP_DE_POING)
+            if (damage.Spell != null && damage.Spell.Id != (int)SpellIdEnum.PUNCH_0)
                 return;
 
-            Handlers[Spell.Id == (int)SpellIdEnum.MARTEAU_DE_MUNGAM ? 2 : 1].Apply(); //Remove Effects
-            Handlers[Spell.Id == (int)SpellIdEnum.MARTEAU_DE_MUNGAM ? 5 : 4].Apply(); //Dispell State
+            Handlers[Spell.Id == (int)SpellIdEnum.BENANDGERRIZ_HAMMER ? 2 : 1].Apply(); //Remove Effects
+            Handlers[Spell.Id == (int)SpellIdEnum.BENANDGERRIZ_HAMMER ? 5 : 4].Apply(); //Dispell State
         }
     }
 }

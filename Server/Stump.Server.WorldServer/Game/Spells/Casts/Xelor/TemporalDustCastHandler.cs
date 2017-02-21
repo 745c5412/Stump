@@ -3,7 +3,7 @@ using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Xelor
 {
-    [SpellCastHandler(SpellIdEnum.POUSSIÈRE_TEMPORELLE)]
+    [SpellCastHandler(SpellIdEnum.TEMPORAL_DUST_96)]
     public class TemporalDustCastHandler : DefaultSpellCastHandler
     {
         public TemporalDustCastHandler(SpellCastInformations cast)

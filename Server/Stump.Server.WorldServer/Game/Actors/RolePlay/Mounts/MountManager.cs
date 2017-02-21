@@ -42,8 +42,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         
         public HarnessRecord GetHarness(int id)
         {
-            HarnessRecord record;
-            return !m_harness.TryGetValue(id, out record) ? null : record;
+            return !m_harness.TryGetValue(id, out HarnessRecord record) ? null : record;
         }
 
         public MountTemplate GetTemplate(int id)

@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
                     if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160 || Effect.EffectId == EffectsEnum.Effect_CastSpell_2160)
                     {
-                        if (Spell.Id == (int)SpellIdEnum.DOFUS_ABYSSAL)
+                        if (Spell.Id == (int)SpellIdEnum.ABYSSAL_DOFUS)
                         {
                             var ignored = new[]
                                 {
@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             }
             else
             {
-                if (buff.Spell.Id == (int)SpellIdEnum.GLOURSOMPTUEUX)
+                if (buff.Spell.Id == (int)SpellIdEnum.BEARBARKENTINE)
                 {
                     buff.Target.CastSpell(new SpellCastInformations(buff.Target, buff.Spell, buff.Caster.Cell)
                     {

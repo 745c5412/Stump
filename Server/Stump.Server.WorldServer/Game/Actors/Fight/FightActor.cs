@@ -221,15 +221,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             KillAllSummons();
             RemoveAndDispellAllBuffs();
 
-            if (Fight.CheckFightEnd(false) && killedBy is CharacterFighter && (killedBy as CharacterFighter).Character.FatalBlows.Any())
+            if (Fight.CheckFightEnd(false) && killedBy is CharacterFighter characterFighter && characterFighter.Character.FinishMoves.Any(x => x.State))
             {
                 var durationChance = Fight.GetFightDuration().TotalMinutes * 10;
                 var rand = new AsyncRandom().Next(0, 100);
 
                 if (durationChance > rand)
                 {
+                    var finishMove = characterFighter.Character.FinishMoves.Where(x => x.State).RandomElementOrDefault();
+
+                    if (finishMove == null)
+                        return;
+
                     Fight.ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, (ActionsEnum) 2029, killedBy,
-                        this, Cell, FightSpellCastCriticalEnum.NORMAL, false, new Spell((int) (killedBy as CharacterFighter).Character.FatalBlows.RandomElementOrDefault(), 1)));
+                        this, Cell, FightSpellCastCriticalEnum.NORMAL, false, new Spell(finishMove.FinishSpell.Spell, 1)));
                 }
             }
 
@@ -1829,46 +1834,46 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (spell == null)
                 return false;
 
-            return spell.Template.Id == (int) SpellIdEnum.EXPLOSION_SOURNOISE
-                   || spell.Template.Id == (int) SpellIdEnum.EXPLOSION_DE_MASSE
-                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_MORTEL_SRAM
-                   || spell.Template.Id == (int) SpellIdEnum.CONCENTRATION_DE_CHAKRA
-                   || spell.Template.Id == (int) SpellIdEnum.VERTIGE
-                   || spell.Template.Id == (int) SpellIdEnum.SORT_ENFLAMMÉ
-                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_1503
-                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_RALENTISSANT
+            return spell.Template.Id == (int) SpellIdEnum.TRICKY_EXPLOSION
+                   || spell.Template.Id == (int) SpellIdEnum.MASS_EXPLOSION
+                   || spell.Template.Id == (int) SpellIdEnum.SRAM_LETHAL_TRAP
+                   || spell.Template.Id == (int) SpellIdEnum.CHAKRA_CONCENTRATION_62
+                   || spell.Template.Id == (int) SpellIdEnum.VERTIGO_694
+                   || spell.Template.Id == (int) SpellIdEnum.BURNING_SPELL
+                   || spell.Template.Id == (int) SpellIdEnum.AGGRESSIVE_GLYPH_1503
+                   || spell.Template.Id == (int) SpellIdEnum.SLOWING_GLYPH
                    || spell.Template.Id == (int) SpellIdEnum.PULSE
-                   || spell.Template.Id == (int) SpellIdEnum.CONTRE_94
-                   || spell.Template.Id == (int) SpellIdEnum.MOT_TOURNOYANT
-                   || spell.Template.Id == (int) SpellIdEnum.MOT_TOURNOYANT_DU_DOPEUL
-                   || spell.Template.Id == (int) SpellIdEnum.MUR_DE_FEU
-                   || spell.Template.Id == (int) SpellIdEnum.MUR_D_AIR
-                   || spell.Template.Id == (int) SpellIdEnum.MUR_D_EAU
-                   || spell.Template.Id == (int) SpellIdEnum.EXPLOSION_ROUBLARDE
-                   || spell.Template.Id == (int) SpellIdEnum.AVERSE_ROUBLARDE
-                   || spell.Template.Id == (int) SpellIdEnum.TORNADE_ROUBLARDE;
+                   || spell.Template.Id == (int) SpellIdEnum.COUNTER_94
+                   || spell.Template.Id == (int) SpellIdEnum.WHIRLING_WORD_132
+                   || spell.Template.Id == (int) SpellIdEnum.DOPPLESQUE_WHIRLING_WORD
+                   || spell.Template.Id == (int) SpellIdEnum.WALL_OF_FIRE
+                   || spell.Template.Id == (int) SpellIdEnum.WALL_OF_AIR
+                   || spell.Template.Id == (int) SpellIdEnum.WALL_OF_WATER
+                   || spell.Template.Id == (int) SpellIdEnum.ROGUISH_EXPLOSION
+                   || spell.Template.Id == (int) SpellIdEnum.ROGUISH_DOWNPOUR
+                   || spell.Template.Id == (int) SpellIdEnum.ROGUISH_TORNADO;
         }
 
         public bool IsPoisonSpellCast(Spell spell)
         {
-            return spell.Template.Id == (int) SpellIdEnum.POISON_INSIDIEUX ||
-                   spell.Template.Id == (int) SpellIdEnum.POISON_INSIDIEUX_DU_DOPEUL ||
-                   spell.Template.Id == (int) SpellIdEnum.POISON_PARALYSANT ||
-                   spell.Template.Id == (int) SpellIdEnum.POISON_PARALYSANT_DU_DOPEUL ||
-                   spell.Template.Id == (int) SpellIdEnum.FLECHETTE_EMPOISONNÉE ||
-                   spell.Template.Id == (int) SpellIdEnum.FLÈCHE_EMPOISONNÉE ||
-                   spell.Template.Id == (int) SpellIdEnum.BROUILLARD_EMPOISONNÉ ||
-                   spell.Template.Id == (int) SpellIdEnum.TOURBE_EMPOISONNÉE ||
-                   spell.Template.Id == (int) SpellIdEnum.GRAINE_EMPOISONNÉE ||
-                   spell.Template.Id == (int) SpellIdEnum.RONCE_EMPOISONNÉE ||
-                   spell.Template.Id == (int) SpellIdEnum.PIÈGE_EMPOISONNÉ ||
-                   spell.Template.Id == (int) SpellIdEnum.PIÈGE_EMPOISONNÉ_DU_DOPEUL ||
-                   spell.Template.Id == (int) SpellIdEnum.VENT_EMPOISONNÉ ||
-                   spell.Template.Id == (int) SpellIdEnum.VENT_EMPOISONNÉ_DU_DOPEUL ||
-                   spell.Template.Id == (int) SpellIdEnum.TREMBLEMENT_181 ||
-                   spell.Template.Id == (int) SpellIdEnum.RONCE_INSOLENTE_188 ||
-                   spell.Template.Id == (int) SpellIdEnum.VERTIGE ||
-                   spell.Template.Id == (int) SpellIdEnum.SILENCE_DU_SRAM;
+            return spell.Template.Id == (int) SpellIdEnum.INSIDIOUS_POISON_66 ||
+                   spell.Template.Id == (int) SpellIdEnum.DOPPLESQUE_INSIDIOUS_POISON ||
+                   spell.Template.Id == (int) SpellIdEnum.PARALYSING_POISON_200 ||
+                   spell.Template.Id == (int) SpellIdEnum.DOPPLESQUE_PARALYSING_POISON ||
+                   spell.Template.Id == (int) SpellIdEnum.POISONED_DART ||
+                   spell.Template.Id == (int) SpellIdEnum.POISONED_ARROW_164 ||
+                   spell.Template.Id == (int) SpellIdEnum.POISONED_FOG ||
+                   spell.Template.Id == (int) SpellIdEnum.POISONED_PEAT ||
+                   spell.Template.Id == (int) SpellIdEnum.POISONED_SEED ||
+                   spell.Template.Id == (int) SpellIdEnum.TREACHEROUS_BRAMBLE ||
+                   spell.Template.Id == (int) SpellIdEnum.POISONED_TRAP_71 ||
+                   spell.Template.Id == (int) SpellIdEnum.DOPPLESQUE_POISONED_TRAP ||
+                   spell.Template.Id == (int) SpellIdEnum.POISONED_WIND_5615 ||
+                   spell.Template.Id == (int) SpellIdEnum.DOPPLESQUE_POISONED_WIND ||
+                   spell.Template.Id == (int) SpellIdEnum.EARTHQUAKE_181 ||
+                   spell.Template.Id == (int) SpellIdEnum.INSOLENT_BRAMBLE_188 ||
+                   spell.Template.Id == (int) SpellIdEnum.VERTIGO_694 ||
+                   spell.Template.Id == (int) SpellIdEnum.SILENCE_OF_THE_SRAMS;
         }
 
         public bool IsInvisibleSpellCast(Spell spell)
@@ -1880,17 +1885,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Trap) || // traps
                    spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
-                   spell.Template.Id == (int) SpellIdEnum.DOUBLE || // double
-                   spell.Template.Id == (int) SpellIdEnum.PULSION_DE_CHAKRA || // chakra pulsion
-                   spell.Template.Id == (int) SpellIdEnum.CONCENTRATION_DE_CHAKRA || // chakra concentration
-                   spell.Template.Id == (int) SpellIdEnum.POISON_INSIDIEUX || // insidious poison
-                   spell.Template.Id == (int) SpellIdEnum.PEUR || //Fear
-                   spell.Template.Id == (int) SpellIdEnum.POISSE ||
-                   spell.Template.Id == (int) SpellIdEnum.ROUBLARDISE ||
-                   spell.Template.Id == (int) SpellIdEnum.DOFUS_NÉBULEUX ||
-                   spell.Template.Id == (int) SpellIdEnum.DOFUS_DES_VEILLEURS ||
-                   spell.Template.Id == (int) SpellIdEnum.DOFUS_TURQUOISE ||
-                   spell.Template.Id == (int) SpellIdEnum.MAÎTRISE_D_ARME ||
+                   spell.Template.Id == (int) SpellIdEnum.DOUBLE_74 || // double
+                   spell.Template.Id == (int) SpellIdEnum.CHAKRA_IMPULSE_75 || // chakra pulsion
+                   spell.Template.Id == (int) SpellIdEnum.CHAKRA_CONCENTRATION_62 || // chakra concentration
+                   spell.Template.Id == (int) SpellIdEnum.INSIDIOUS_POISON_66 || // insidious poison
+                   spell.Template.Id == (int) SpellIdEnum.FEAR_67 || //Fear
+                   spell.Template.Id == (int) SpellIdEnum.JINX ||
+                   spell.Template.Id == (int) SpellIdEnum.ROGUERY_2763 ||
+                   spell.Template.Id == (int) SpellIdEnum.CLOUDY_DOFUS ||
+                   spell.Template.Id == (int) SpellIdEnum.WATCHERS_DOFUS ||
+                   spell.Template.Id == (int) SpellIdEnum.TURQUOISE_DOFUS ||
+                   spell.Template.Id == (int) SpellIdEnum.WEAPON_SKILL ||
                    spell.Template.Id == 6149; //DOKOKO
         }
 

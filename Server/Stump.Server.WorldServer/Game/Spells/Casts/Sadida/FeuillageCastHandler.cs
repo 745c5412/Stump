@@ -3,7 +3,7 @@ using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Sadida
 {
-    [SpellCastHandler(SpellIdEnum.FEUILLAGE)]
+    [SpellCastHandler(SpellIdEnum.FOLIAGE)]
     public class FeuillageCastHandler : DefaultSpellCastHandler
     {
         public FeuillageCastHandler(SpellCastInformations cast)

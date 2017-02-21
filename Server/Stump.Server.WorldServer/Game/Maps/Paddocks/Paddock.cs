@@ -206,19 +206,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 
         public PaddockPropertiesMessage GetPaddockPropertiesMessage()
         {
-            /*PaddockInformations informations;
-
-            if (Abandonned)
-                informations = new PaddockAbandonnedInformations((short) MaxOutdoorMount, (short) MaxItems, Price, Locked, Guild.Id);
-            else if (OnSale)
-                informations = new PaddockBuyableInformations((short) MaxOutdoorMount, (short) MaxItems, Price, Locked);
-            else if (Guild != null)
-                informations = new PaddockPrivateInformations((short) MaxOutdoorMount, (short) MaxItems, Price, Locked, Guild.Id, Guild.GetGuildInformations());
-            else
-                informations = new PaddockContentInformations((short) MaxOutdoorMount, (short) MaxItems, Id, (short) Map.Position.X, (short) Map.Position.Y,
-                    Map.Id, (short) Map.SubArea.Id, Abandonned, PaddockedMounts.Select(x => x.GetMountInformationsForPaddock()));*/
-
-            return new PaddockPropertiesMessage();
+            var properties = new PaddockInstancesInformations((short)MaxOutdoorMount, (short)MaxItems, new[] { new PaddockBuyableInformations(Price, Locked) });
+            return new PaddockPropertiesMessage(properties);
         }
 
         #endregion

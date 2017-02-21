@@ -36,9 +36,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>
         {
-            {2, SpellIdEnum.MUR_DE_FEU},
-            {3, SpellIdEnum.MUR_D_AIR},
-            {4, SpellIdEnum.MUR_D_EAU}
+            {2, SpellIdEnum.WALL_OF_FIRE},
+            {3, SpellIdEnum.WALL_OF_AIR},
+            {4, SpellIdEnum.WALL_OF_WATER}
         };
 
         static readonly Dictionary<int, Color> wallsColors = new Dictionary<int, Color>()
@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (actor != this)
                 return;
 
-            CastAutoSpell(new Spell((int)SpellIdEnum.ALLUMAGE, 1), Cell);
+            CastAutoSpell(new Spell((int)SpellIdEnum.IGNITION_2928, 1), Cell);
             CheckAndBuildWalls();
         }
 
@@ -378,6 +378,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Fight.TurnStarted -= OnTurnStarted;
             Team.FighterAdded -= OnFighterAdded;
+
+            CheckAndBuildWalls();
         }
 
 

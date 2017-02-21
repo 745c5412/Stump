@@ -28,7 +28,8 @@ namespace Stump.Server.WorldServer.Game.Spells
         private Dictionary<int, SpellBombTemplate> m_spellsBomb;
         private Dictionary<int, SpellType> m_spellsTypes;
         private Dictionary<int, SpellState> m_spellsState;
-        private Dictionary<int, SpellEffectFix> m_spellsEffectsFixs; 
+        private Dictionary<int, SpellEffectFix> m_spellsEffectsFixs;
+        private Dictionary<int, FinishMoveTemplate> m_finishMoves;
 
         private delegate SpellCastHandler SpellCastConstructor(SpellCastInformations cast);
 
@@ -47,6 +48,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             m_spellsState = Database.Fetch<SpellState>(SpellStateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_spellsBomb = Database.Fetch<SpellBombTemplate>(SpellBombRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_spellsEffectsFixs = Database.Fetch<SpellEffectFix>(SpellEffectFixRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_finishMoves = Database.Fetch<FinishMoveTemplate>(FinishMoveRelator.FetchQuery).ToDictionary(entry => entry.Id);
 
             ApplyEffectFixes();
             InitializeHandlers();
@@ -234,6 +236,11 @@ namespace Stump.Server.WorldServer.Game.Spells
         public SpellCastHandler GetSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
         {
             return GetSpellCastHandler(new SpellCastInformations(caster, spell, targetedCell, critical));
+        }
+
+        public FinishMoveTemplate GetFinishMove(int finishMove)
+        {
+            return m_finishMoves.TryGetValue(finishMove, out var template) ? template : null;
         }
     }
 }

@@ -90,18 +90,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         {
             switch (spell.Id)
             {
-                case (int)SpellIdEnum.PIÈGE_MORTEL:
+                case (int)SpellIdEnum.LETHAL_TRAP_80:
                     return Color.FromArgb(0, 0, 0, 0);
-                case (int)SpellIdEnum.PIÈGE_RÉPULSIF:
+                case (int)SpellIdEnum.REPELLING_TRAP_73:
                     return Color.FromArgb(0, 155, 240, 237);
-                case (int)SpellIdEnum.PIÈGE_EMPOISONNÉ:
+                case (int)SpellIdEnum.POISONED_TRAP_71:
                     return Color.FromArgb(0, 105, 28, 117);
-                case (int)SpellIdEnum.PIÈGE_DE_SILENCE:
+                case (int)SpellIdEnum.TRAP_OF_SILENCE_77:
                     return Color.FromArgb(0, 49, 45, 134);
-                case (int)SpellIdEnum.PIÈGE_D_IMMOBILISATION:
+                case (int)SpellIdEnum.PARALYSING_TRAP_69:
                     return Color.FromArgb(0, 34, 117, 28);
-                case (int)SpellIdEnum.PIÈGE_SOURNOIS:
-                case (int)SpellIdEnum.PIÈGE_DE_MASSE:
+                case (int)SpellIdEnum.TRICKY_TRAP_65:
+                case (int)SpellIdEnum.MASS_TRAP_79:
                     return Color.FromArgb(0, 90, 52, 28);
                 default:
                     return Color.Brown;

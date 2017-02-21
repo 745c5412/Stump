@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public IEnumerable<Types.FinishMoveInformations> finishMoves;
-        
+
         public FinishMoveListMessage()
         {
         }
@@ -28,7 +28,7 @@ namespace Stump.DofusProtocol.Messages
         {
             this.finishMoves = finishMoves;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             var finishMoves_before = writer.Position;

@@ -1013,7 +1013,7 @@ namespace DBSynchroniser
                 return;
 
             var i = 0;
-            foreach (var item in items)
+            foreach (var item in items.Where(x => x.Level != 999))
             {
                 var appearanceId = (short)item.SkinId;
 
@@ -1031,6 +1031,7 @@ namespace DBSynchroniser
                 }
 
                 Database.Database.Execute($"UPDATE `Items` SET `AppearanceId` = '{appearanceId}' WHERE `Id` = '{item.Id}'");
+                Database.Database.Execute($"UPDATE `Weapons` SET `AppearanceId` = '{appearanceId}' WHERE `Id` = '{item.Id}'");
 
                 i++;
                 UpdateCounter(i, items.Count);

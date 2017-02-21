@@ -5,9 +5,9 @@ using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 {
-    [SpellCastHandler(SpellIdEnum.EXPLOSION_ROUBLARDE)]
-    [SpellCastHandler(SpellIdEnum.AVERSE_ROUBLARDE)]
-    [SpellCastHandler(SpellIdEnum.TORNADE_ROUBLARDE)]
+    [SpellCastHandler(SpellIdEnum.ROGUISH_EXPLOSION)]
+    [SpellCastHandler(SpellIdEnum.ROGUISH_DOWNPOUR)]
+    [SpellCastHandler(SpellIdEnum.ROGUISH_TORNADO)]
     public class ExplosionCastHandler : DefaultSpellCastHandler
     {
         public ExplosionCastHandler(SpellCastInformations cast)

@@ -31,16 +31,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             switch ((ChallengeEnum)Id)
             {
                 case ChallengeEnum.JARDINIER:
-                    m_spell = (int)SpellIdEnum.CAWOTTE_367;
+                    m_spell = (int)SpellIdEnum.CAWWOT_367;
                     break;
                 case ChallengeEnum.FOSSOYEUR:
-                    m_spell = (int)SpellIdEnum.INVOCATION_DE_CHAFERFU;
+                    m_spell = (int)SpellIdEnum.SUMMONING_OF_CHAFERFU;
                     break;
                 case ChallengeEnum.CASINO_ROYAL:
-                    m_spell = (int)SpellIdEnum.ROULETTE;
+                    m_spell = (int)SpellIdEnum.ROULETTE_101;
                     break;
                 case ChallengeEnum.ARAKNOPHILE:
-                    m_spell = (int)SpellIdEnum.INVOCATION_D_ARAKNE_370;
+                    m_spell = (int)SpellIdEnum.SUMMONING_OF_ARACHNEE_370;
                     break;
             }
         }
