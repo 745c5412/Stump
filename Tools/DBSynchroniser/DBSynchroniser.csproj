@@ -179,7 +179,7 @@
     <Compile Include="Records\Export\communication\ChatChannel.cs" />
     <Compile Include="Records\Export\communication\Emoticon.cs" />
     <Compile Include="Records\Export\communication\InfoMessage.cs" />
-    <Compile Include="Records\Export\communication\Smiley#8050.cs" />
+    <Compile Include="Records\Export\communication\Smiley.cs" />
     <Compile Include="Records\Export\communication\SmileyCategory.cs" />
     <Compile Include="Records\Export\communication\SmileyPack.cs" />
     <Compile Include="Records\Export\dare\DareCriteria.cs" />
@@ -202,7 +202,7 @@
     <Compile Include="Records\Export\items\Incarnation.cs" />
     <Compile Include="Records\Export\items\IncarnationLevel.cs" />
     <Compile Include="Records\Export\items\Item.cs" />
-    <Compile Include="Records\Export\items\ItemSet#906.cs" />
+    <Compile Include="Records\Export\items\ItemSet.cs" />
     <Compile Include="Records\Export\items\ItemType.cs" />
     <Compile Include="Records\Export\items\PresetIcon.cs" />
     <Compile Include="Records\Export\items\VeteranReward.cs" />
@@ -234,7 +234,7 @@
     <Compile Include="Records\Export\mounts\MountBone.cs" />
     <Compile Include="Records\Export\mounts\MountFamily.cs" />
     <Compile Include="Records\Export\mounts\RideFood.cs" />
-    <Compile Include="Records\Export\notifications\Notification#32.cs" />
+    <Compile Include="Records\Export\notifications\Notification.cs" />
     <Compile Include="Records\Export\npcs\Npc.cs" />
     <Compile Include="Records\Export\npcs\NpcAction.cs" />
     <Compile Include="Records\Export\npcs\NpcMessage.cs" />

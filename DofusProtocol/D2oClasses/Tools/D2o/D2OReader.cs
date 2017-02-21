@@ -249,15 +249,16 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 var searchEntry = new D2OSearchEntry(m_reader.ReadUTF(), m_reader.ReadInt() + contentOffset, (D2OFieldType) m_reader.ReadInt(),
                     m_reader.ReadInt());
 
-                m_searchEntries.Add(searchEntry.FieldName, searchEntry);
+                if (!m_searchEntries.ContainsKey(searchEntry.FieldName))
+                    m_searchEntries.Add(searchEntry.FieldName, searchEntry);
+
                 tableLen -= (int)(bytesAvailable - m_reader.BytesAvailable);
             }
         }
 
         private Dictionary<int, object> BuildSortIndex(string field)
         {
-            D2OSearchEntry searchEntry;
-            if (!m_searchEntries.TryGetValue(field, out searchEntry))
+            if (!m_searchEntries.TryGetValue(field, out var searchEntry))
                 throw new Exception(string.Format("{0} is not a search field", field));
 
             var result = new Dictionary<int, object>();

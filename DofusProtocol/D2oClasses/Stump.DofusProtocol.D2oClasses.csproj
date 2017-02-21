@@ -241,7 +241,7 @@
     <Compile Include="Classes\communication\ChatChannel.cs" />
     <Compile Include="Classes\communication\Emoticon.cs" />
     <Compile Include="Classes\communication\InfoMessage.cs" />
-    <Compile Include="Classes\communication\Smiley#8050.cs" />
+    <Compile Include="Classes\communication\Smiley.cs" />
     <Compile Include="Classes\communication\SmileyCategory.cs" />
     <Compile Include="Classes\communication\SmileyPack.cs" />
     <Compile Include="Classes\dare\DareCriteria.cs" />
@@ -328,7 +328,7 @@
     <Compile Include="Classes\items\Incarnation.cs" />
     <Compile Include="Classes\items\IncarnationLevel.cs" />
     <Compile Include="Classes\items\Item.cs" />
-    <Compile Include="Classes\items\ItemSet#906.cs" />
+    <Compile Include="Classes\items\ItemSet.cs" />
     <Compile Include="Classes\items\ItemType.cs" />
     <Compile Include="Classes\items\PresetIcon.cs" />
     <Compile Include="Classes\items\VeteranReward.cs" />
@@ -362,7 +362,7 @@
     <Compile Include="Classes\mounts\MountBone.cs" />
     <Compile Include="Classes\mounts\MountFamily.cs" />
     <Compile Include="Classes\mounts\RideFood.cs" />
-    <Compile Include="Classes\notifications\Notification#32.cs" />
+    <Compile Include="Classes\notifications\Notification.cs" />
     <Compile Include="Classes\npcs\Npc.cs" />
     <Compile Include="Classes\npcs\NpcAction.cs" />
     <Compile Include="Classes\npcs\NpcMessage.cs" />
