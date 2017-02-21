@@ -365,12 +365,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool BlockSight => IsAlive() && VisibleState != VisibleStateEnum.INVISIBLE;
 
-        public bool IsSacrificeProtected
-        {
-            get;
-            set;
-        }
-
         public virtual bool IsVisibleInTimeline => CanPlay();
 
         public bool IsRevived
@@ -385,9 +379,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
+        public FightActor LastAttacker
+        {
+            get;
+            private set;
+        }
+
         #region Stats
 
-            public abstract 
+        public abstract 
 
         byte Level
         {
@@ -884,6 +884,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var isCloseRangeAttack = damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1;
 
             OnBeforeDamageInflicted(damage);
+            LastAttacker = damage.Source;
 
             damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.BeforeAttack, damage);
             TriggerBuffs(damage.Source, BuffTriggerType.BeforeDamaged, damage);
